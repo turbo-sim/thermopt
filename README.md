@@ -1,12 +1,12 @@
 
-# ThermoCycles
+# ThermoOpt
 
-ThermoCycles is a python package for the modeling and optimization of thermodynamic cycles.
+``ThermoOpt`` is a python package for the modeling and optimization of thermodynamic cycles.
 
 
 ## Quick installation guide (from Git repository)
 
-This guide will walk you through installing `Turboflow` using `Poetry`, which manages dependencies and virtual environments efficiently.
+This guide will walk you through installing ``Thermopt`` using ``Poetry``, which manages dependencies and virtual environments efficiently.
 
 ### 1. Install Poetry
 
@@ -21,7 +21,7 @@ poetry --version
 
 ### 2. Clone the Repository
 
-If you haven't cloned the `ThermOpt` repository yet, do so:
+If you haven't cloned the ``ThermOpt`` repository yet, do so:
 ```sh
 git clone https://github.com/turbo-sim/thermopt
 cd thermopt
