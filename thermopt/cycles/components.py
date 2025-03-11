@@ -3,7 +3,7 @@ import numpy as np
 from scipy.integrate import solve_ivp
 
 # from .. import utilities
-from .. import fluid_properties as props
+from .. import properties as props
 
 
 def heat_exchanger(
@@ -78,7 +78,7 @@ def heat_transfer_process(fluid, h_1, p_1, h_2, p_2, num_steps=25):
 
     # Calculate states for hot side
     for p, h in zip(p_array, h_array):
-        states.append(fluid.set_state(props.HmassP_INPUTS, h, p))
+        states.append(fluid.get_state(props.HmassP_INPUTS, h, p))
 
     # Store inlet and outlet states
     state_in = states[0]
@@ -133,20 +133,20 @@ def compression_process(
     """
 
     # Compute inlet state
-    state_in = fluid.set_state(props.HmassP_INPUTS, h_in, p_in)
-    state_out_is = fluid.set_state(props.PSmass_INPUTS, p_out, state_in.s)
+    state_in = fluid.get_state(props.HmassP_INPUTS, h_in, p_in, supersaturation=True)
+    state_out_is = fluid.get_state(props.PSmass_INPUTS, p_out, state_in.s, supersaturation=True)
 
     # Evaluate compression process
     if efficiency_type == "isentropic":
         # Compute outlet state according to the definition of isentropic efficiency
         h_out = state_in.h + (state_out_is.h - state_in.h) / efficiency
-        state_out = fluid.set_state(props.HmassP_INPUTS, h_out, p_out)
+        state_out = fluid.get_state(props.HmassP_INPUTS, h_out, p_out, supersaturation=True)
         states = [state_in, state_out]
 
     elif efficiency_type == "polytropic":
         # Differential equation defining the polytropic compression
         def odefun(p, h):
-            state = fluid.set_state(props.HmassP_INPUTS, h, p)
+            state = fluid.get_state(props.HmassP_INPUTS, h, p, supersaturation=True)
             dhdp = 1.0 / (efficiency * state.rho)
             return dhdp, state
 
@@ -169,14 +169,6 @@ def compression_process(
     # Compute work
     isentropic_work = state_out_is.h - state_in.h
     specific_work = state_out.h - state_in.h
-
-    # Compute degree of superheating
-    state_in = props.calculate_superheating(state_in, fluid)
-    state_out = props.calculate_superheating(state_out, fluid)
-
-    # Compute degree of subcooling
-    state_in = props.calculate_subcooling(state_in, fluid)
-    state_out = props.calculate_subcooling(state_out, fluid)
 
     # Create result dictionary
     result = {
@@ -233,18 +225,18 @@ def expansion_process(
     """
 
     # Compute inlet state
-    state_in = fluid.set_state(props.HmassP_INPUTS, h_in, p_in)
-    state_out_is = fluid.set_state(props.PSmass_INPUTS, p_out, state_in.s)
+    state_in = fluid.get_state(props.HmassP_INPUTS, h_in, p_in, supersaturation=True)
+    state_out_is = fluid.get_state(props.PSmass_INPUTS, p_out, state_in.s, supersaturation=True)
     if efficiency_type == "isentropic":
         # Compute outlet state according to the definition of isentropic efficiency
         h_out = state_in.h - efficiency * (state_in.h - state_out_is.h)
-        state_out = fluid.set_state(props.HmassP_INPUTS, h_out, p_out)
+        state_out = fluid.get_state(props.HmassP_INPUTS, h_out, p_out, supersaturation=True)
         states = [state_in, state_out]
 
     elif efficiency_type == "polytropic":
         # Differential equation defining the polytropic expansion
         def odefun(p, h):
-            state = fluid.set_state(props.HmassP_INPUTS, h, p)
+            state = fluid.get_state(props.HmassP_INPUTS, h, p, supersaturation=True)
             dhdp = efficiency / state.rho
             return dhdp, state
 
@@ -268,13 +260,13 @@ def expansion_process(
     isentropic_work = state_in.h - state_out_is.h
     specific_work = state_in.h - state_out.h
 
-    # Compute degree of superheating
-    state_in = props.calculate_superheating(state_in, fluid)
-    state_out = props.calculate_superheating(state_out, fluid)
+    # # Compute degree of superheating
+    # state_in = props.calculate_superheating(state_in, fluid)
+    # state_out = props.calculate_superheating(state_out, fluid)
 
-    # Compute degree of subcooling
-    state_in = props.calculate_subcooling(state_in, fluid)
-    state_out = props.calculate_subcooling(state_out, fluid)
+    # # Compute degree of subcooling
+    # state_in = props.calculate_subcooling(state_in, fluid)
+    # state_out = props.calculate_subcooling(state_out, fluid)
 
     # Create result dictionary
     result = {
@@ -300,7 +292,7 @@ def isenthalpic_valve(state_in, p_out, fluid, N=50):
     h_array = state_in.h * p_array
     states = []
     for p, h in zip(p_array, h_array):
-        states.append(fluid.set_state(props.HmassP_INPUTS, h, p))
+        states.append(fluid.get_state(props.HmassP_INPUTS, h, p))
     return states
 
 

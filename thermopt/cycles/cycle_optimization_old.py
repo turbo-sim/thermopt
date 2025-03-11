@@ -175,14 +175,14 @@
 #         T_sink = self.fixed_parameters["heat_sink"]["inlet_temperature"]
 #         crit = self.fluid.critical_point
 #         if T_sink < crit.T:
-#             state_sat = self.fluid.set_state(props.QT_INPUTS, 0.0, T_sink)
+#             state_sat = self.fluid.get_state(props.QT_INPUTS, 0.0, T_sink)
 #         else:
-#             state_sat = self.fluid.set_state(props.DmassT_INPUTS, crit.rho, T_sink)
+#             state_sat = self.fluid.get_state(props.DmassT_INPUTS, crit.rho, T_sink)
 
 #         # Compute dilute gas state at heat source temperature
 #         T_source = self.fixed_parameters["heat_source"]["inlet_temperature"]
 #         p_triple = 1.01 * self.fluid.triple_point_liquid.p
-#         state_dilute = self.fluid.set_state(props.PT_INPUTS, p_triple, T_source)
+#         state_dilute = self.fluid.get_state(props.PT_INPUTS, p_triple, T_source)
 
 #         # Save states in the fixed parameters dictionary
 #         self.fixed_parameters_bis = copy.deepcopy(self.fixed_parameters)
