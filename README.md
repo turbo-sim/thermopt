@@ -4,36 +4,66 @@
 ThermoCycles is a python package for the modeling and optimization of thermodynamic cycles.
 
 
-## Quick Installation Guide
+## Quick installation guide (from Git repository)
 
-This guide will walk you through the process of installing `Turboflow` via `pip`. To isolate the Turboflow installation and avoid conflicts with other Python packages, it is recommended to create a dedicated Conda virtual environment.
+This guide will walk you through installing `Turboflow` using `Poetry`, which manages dependencies and virtual environments efficiently.
 
-1. [Install Miniconda](https://docs.anaconda.com/free/miniconda/miniconda-install/) if you don't have it already.
+### 1. Install Poetry
 
-2. Open a terminal or command prompt and create a new virtual environment named `turboflow_env` with Python 3.11:
-   ```
-   conda create --name turboflow_env python=3.11
-   ```
-
-3. Activate the newly created virtual environment:
-   ```
-   conda activate turboflow_env
-   ```
-
-4. Install Turboflow using pip within the activated virtual environment:
-   ```
-   pip install turboflow
-   ```
-
-5. Verify the installation by running the following command in your terminal:
-   ```
-   python -c "import turboflow; turboflow.print_package_info()"
-   ```
-
-   If the installation was successful, you should see the Turboflow banner and package information displayed in the console output.
-
-Congratulations! You have now successfully installed Turboflow in its own Conda virtual environment using pip. You're ready to start using Turboflow in your Python projects.
+If you haven't installed Poetry yet, follow the official guide:  
+[Poetry Installation](https://python-poetry.org/docs/#installation)
 
 
+Verify the installation:
+```sh
+poetry --version
+```
 
+### 2. Clone the Repository
 
+If you haven't cloned the `ThermOpt` repository yet, do so:
+```sh
+git clone https://github.com/turbo-sim/thermopt
+cd thermopt
+```
+
+### 3. Create a Virtual Environment and Install Dependencies
+
+Poetry will automatically create a virtual environment and install all dependencies specified in `pyproject.toml`:
+```sh
+poetry install
+```
+
+### 4. Activate the Virtual Environment
+
+To activate the virtual environment, run:
+```sh
+poetry shell
+```
+
+To deactivate it, simply type:
+```sh
+exit
+```
+
+### 5. Verify the Installation
+
+Run the following command inside the Poetry shell or using `poetry run`:
+```sh
+poetry run python -c "import thermopt; thermopt.print_package_info()"
+```
+If successful, this will display the Thermopt banner and package details.
+
+### 6. Installing Additional Packages
+
+To install new dependencies:
+```sh
+poetry add <package-name>
+```
+
+For development dependencies:
+```sh
+poetry add --dev <package-name>
+```
+
+---
