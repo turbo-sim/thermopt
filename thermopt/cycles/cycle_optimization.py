@@ -8,10 +8,12 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from ..config_validation import read_configuration_file
+
 from .. import utilities
 from .. import pysolver_view as psv
-from .. import fluid_properties as props
+from .. import properties as props
+
+from ..config_validation import read_configuration_file
 
 from . import brayton_recuperated
 from . import brayton_split_compression
@@ -79,22 +81,52 @@ class ThermodynamicCycleOptimization:
         self.problem.fitness(self.problem.x0)
         return self.problem
 
+    # def setup_solver(self):
+    #     """
+    #     Configures and returns the optimization solver.
+    #     """
+
+    #     # TODO add control to plotting and saving
+
+    #     # Optimize the thermodynamic cycle
+    #     self.solver = psv.OptimizationSolver(
+    #         self.problem,
+    #         **self.config["solver_options"],
+    #         callback_functions=[
+    #             self.problem.plot_cycle_callback,
+    #             self.problem.save_config_callback,
+    #         ],
+    #     )
+
+    #     return self.solver
+    
+
     def setup_solver(self):
         """
         Configures and returns the optimization solver.
         """
 
+        # Extract callback flags from config
+        callback_flags = self.config["solver_options"].pop("callbacks", {})
+
+        # Define available callbacks
+        callbacks = []
+        if callback_flags.get("plot_cycle", False):
+            callbacks.append(self.problem.plot_cycle_callback)
+        if callback_flags.get("save_cycle", False):
+            callbacks.append(self.problem.save_cycle_callback)
+        if callback_flags.get("save_config", False):
+            callbacks.append(self.problem.save_config_callback)
+
         # Optimize the thermodynamic cycle
         self.solver = psv.OptimizationSolver(
             self.problem,
             **self.config["solver_options"],
-            callback_functions=[
-                self.problem.plot_cycle_callback,
-                self.problem.save_config_callback,
-            ],
+            callback_functions=callbacks,
         )
 
         return self.solver
+
 
     def run_optimization(self):
         """
@@ -120,13 +152,14 @@ class ThermodynamicCycleOptimization:
         """
         Generates additional output files, such as Excel files or plots.
         """
-        # Code to handle output generation like creating plots or exporting to Excel
+        # TODO Code to handle output generation like creating plots or exporting to Excel
 
     def create_animation(self):
         """
         Creates an animation of the optimization history.
         """
-        # Code to generate animation from the optimization results
+        # TODO Code to generate animation from the optimization results
+
 
 
 class ThermodynamicCycleProblem(psv.OptimizationProblem):
@@ -261,14 +294,14 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         T_sink = self.fixed_parameters["heat_sink"]["inlet_temperature"]
         crit = self.fluid.critical_point
         if T_sink < crit.T:
-            state_sat = self.fluid.set_state(props.QT_INPUTS, 0.0, T_sink)
+            state_sat = self.fluid.get_state(props.QT_INPUTS, 0.0, T_sink)
         else:
-            state_sat = self.fluid.set_state(props.DmassT_INPUTS, crit.rho, T_sink)
+            state_sat = self.fluid.get_state(props.DmassT_INPUTS, crit.rho, T_sink)
 
         # Compute dilute gas state at heat source temperature
         T_source = self.fixed_parameters["heat_source"]["inlet_temperature"]
         p_triple = 1.01 * self.fluid.triple_point_liquid.p
-        state_dilute = self.fluid.set_state(props.PT_INPUTS, p_triple, T_source)
+        state_dilute = self.fluid.get_state(props.PT_INPUTS, p_triple, T_source)
 
         # Save states in the fixed parameters dictionary
         self.fixed_parameters_bis = copy.deepcopy(self.fixed_parameters)
@@ -292,9 +325,10 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         config_file : str
             Path to the configuration file.
         """
-        config = utilities.read_configuration_file(config_file)
+        config = read_configuration_file(config_file)
         self.update_configuration(config["problem_formulation"])
         self._calculate_special_points()
+
 
     def save_current_configuration(self, filename):
         """Save the current configuration to a YAML file."""
@@ -325,12 +359,11 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         # Call the existing function to save the configuration
         self.save_current_configuration(filename)
 
+
     def fitness(self, x):
         """
         Evaluate optimization problem
         """
-
-        # print("x", x)
         # Update configuration with the current values of x
         self.update_variables(x)
 
@@ -358,6 +391,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
 
         return out
 
+
     def update_variables(self, x):
         """Update the problem variables based on the new values provided by the optimizer."""
         self.vars_normalized = dict(zip(self.keys, x))
@@ -369,15 +403,19 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
                 # Optionally handle the error or log a warning if the key does not exist
                 print(f"Warning: {k} is not a recognized design variable.")
 
+
     def get_bounds(self):
         dim = len(self.vars_normalized)
         return ([0.0] * dim, [1.00] * dim)
 
+
     def get_nec(self):
         return psv.count_constraints(self.c_eq)
 
+
     def get_nic(self):
         return psv.count_constraints(self.c_ineq)
+
 
     def _scale_normalized_to_physical(self, vars_normalized):
         # Define helper function
@@ -412,6 +450,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
                 raise ValueError(f"Error processing bounds for '{key}': {e}")
 
         return vars_physical
+
 
     def to_excel(self, filename="performance.xlsx"):
         """
@@ -508,6 +547,27 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             df.to_excel(writer, index=False, sheet_name="cycle_states")
             df_2.to_excel(writer, index=False, sheet_name="energy_analysis")
 
+
+    def plot_cycle_callback(self, x, iter):
+        """
+        Plot the thermodynamic cycle during optimization.
+        """
+        self.plot_cycle()
+        self.figure.suptitle(f"Optimization iteration: {iter:03d}", fontsize=14, y=0.90)
+
+    def save_cycle_callback(self, x, iter):
+        """
+        Save the thermodynamic cycle figure during optimization.
+        """
+        # Ensure the directory exists
+        self.optimization_dir = os.path.join(self.out_dir, "optimization")
+        os.makedirs(self.optimization_dir, exist_ok=True)
+
+        # Save the plot
+        filename = os.path.join(self.optimization_dir, f"iteration_{iter:03d}.png")
+        self.figure.savefig(filename)
+
+
     def plot_cycle(self):
         """
         Plots or updates the thermodynamic cycle diagrams based on current settings,
@@ -542,6 +602,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
 
         # Initialize the figure and axes
         if not (self.figure and plt.fignum_exists(self.figure.number)):
+
             # Reset the graphics objects if the figure was closed
             self.graphics = copy.deepcopy(GRAPHICS_PLACEHOLDER)
             self.figure, self.axes = plt.subplots(
@@ -562,7 +623,8 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         # Adjust layout and refresh plot
         self.figure.tight_layout(pad=2)
         plt.draw()
-        plt.pause(0.05)
+        plt.pause(0.01)
+
 
     def plot_cycle_realtime(self, configuration_file, update_interval=0.1):
         """
@@ -616,60 +678,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             if self.enter_pressed:
                 break
 
-    def plot_cycle_callback(self, x, iter):
-        """
-        Plot and save the thermodynamic cycle at different optimization iterations
 
-        This function is intended to be passed as callback argument to the optimization solver
-        """
-        # Update and plot the cycle diagram
-        # self.figure.suptitle(f"Optimization iteration: {iter:03d}", fontsize=14, y=0.90)
-        self.plot_cycle()
-
-        # Create a 'results' directory if it doesn't exist
-        self.optimization_dir = os.path.join(self.out_dir, "optimization")
-        os.makedirs(self.optimization_dir, exist_ok=True)
-
-        # Use the solver's iteration number for the filename
-        filename = os.path.join(self.optimization_dir, f"iteration_{iter:03d}.png")
-        self.figure.savefig(filename)
-
-    def _get_diagram_default_settings(self, plot_config):
-        """
-        Merges user-provided plot settings with default settings.
-
-        Parameters
-        ----------
-        user_settings : dict
-            A dictionary of user-defined plot settings.
-
-        Returns
-        -------
-        dict
-            A dictionary containing the merged plot settings.
-        """
-        default_settings = {
-            "x_variable": "s",
-            "y_variable": "T",
-            "x_scale": "linear",
-            "y_scale": "linear",
-            "plot_saturation_line": True,
-            "plot_critical_point": True,
-            "plot_quality_isolines": False,
-            "plot_pseudocritical_line": False,
-            "plot_triple_point_vap": False,
-            "plot_triple_point_liq": False,
-            "plot_spinodal_line": False,
-            # Add other default settings here
-        }
-
-        # Combine the global fluid settings with the "plots" settings
-        fluid_settings = self.plot_settings.get("fluid", {})
-        fluid_settings = {} if fluid_settings is None else fluid_settings
-        plot_config = plot_config | fluid_settings
-
-        # Merge with default values
-        return default_settings | plot_config
 
     def _plot_thermodynamic_diagram(self, ax, plot_config, ax_index=0):
         """
@@ -693,8 +702,8 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             The index of the axes in the figure, used for identifying and updating existing plots.
         """
         # Set up axes properties
-        ax.set_xlabel(LABEL_MAPPING[plot_config["x_variable"]])
-        ax.set_ylabel(LABEL_MAPPING[plot_config["y_variable"]])
+        ax.set_xlabel(LABEL_MAPPING[plot_config["x_prop"]])
+        ax.set_ylabel(LABEL_MAPPING[plot_config["y_prop"]])
         ax.set_xscale(plot_config["x_scale"])
         ax.set_yscale(plot_config["y_scale"])
 
@@ -738,7 +747,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
 
         # Retrieve component data
         x_data, y_data, color = self._get_process_data(
-            name, plot_settings["x_variable"], plot_settings["y_variable"]
+            name, plot_settings["x_prop"], plot_settings["y_prop"]
         )
 
         # Initialize the dictionary for this axis index if it does not exist
@@ -922,10 +931,10 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
                 plot_elements["cold_line"].set_data(Q0 + Q_cold, T_cold)
 
                 # Update endpoints
-                plot_elements["hot_start"].set_data(Q0 + Q_hot[0], T_hot[0])
-                plot_elements["hot_end"].set_data(Q0 + Q_hot[-1], T_hot[-1])
-                plot_elements["cold_start"].set_data(Q0 + Q_cold[0], T_cold[0])
-                plot_elements["cold_end"].set_data(Q0 + Q_cold[-1], T_cold[-1])
+                plot_elements["hot_start"].set_data([Q0 + Q_hot[0]], [T_hot[0]])
+                plot_elements["hot_end"].set_data([Q0 + Q_hot[-1]], [T_hot[-1]])
+                plot_elements["cold_start"].set_data([Q0 + Q_cold[0]], [T_cold[0]])
+                plot_elements["cold_end"].set_data([Q0 + Q_cold[-1]], [T_cold[-1]])
 
                 # Update vertical lines
                 plot_elements["start_line"].set_xdata([Q0, Q0])
@@ -963,3 +972,41 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             Q0 += Q_hot[-1]
 
         ax.set_xlim(left=0 - Q0 / 50, right=Q0 + Q0 / 50)
+
+
+    def _get_diagram_default_settings(self, plot_config):
+        """
+        Merges user-provided plot settings with default settings.
+
+        Parameters
+        ----------
+        user_settings : dict
+            A dictionary of user-defined plot settings.
+
+        Returns
+        -------
+        dict
+            A dictionary containing the merged plot settings.
+        """
+        default_settings = {
+            "x_prop": "s",
+            "y_prop": "T",
+            "x_scale": "linear",
+            "y_scale": "linear",
+            "plot_saturation_line": True,
+            "plot_critical_point": True,
+            "plot_quality_isolines": False,
+            "plot_pseudocritical_line": False,
+            "plot_triple_point_vapor": False,
+            "plot_triple_point_liquid": False,
+            "plot_spinodal_line": False,
+            # Add other default settings here
+        }
+
+        # Combine the global fluid settings with the "plots" settings
+        fluid_settings = self.plot_settings.get("fluid", {})
+        fluid_settings = {} if fluid_settings is None else fluid_settings
+        plot_config = plot_config | fluid_settings
+
+        # Merge with default values
+        return default_settings | plot_config

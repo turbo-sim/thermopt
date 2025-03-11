@@ -1,6 +1,6 @@
 import copy
 from .. import utilities
-from .. import fluid_properties as props
+from .. import properties as props
 
 from .components import compression_process, expansion_process, heat_exchanger
 
@@ -37,7 +37,7 @@ def evaluate_cycle(
     p_sink_out = parameters["heat_sink"].pop("exit_pressure")
 
     # Compute coldest state at the heat source exit
-    source_out_min = heating_fluid.set_state(
+    source_out_min = heating_fluid.get_state(
         props.PT_INPUTS, p_source_out, T_source_out_min
     )
 
@@ -165,10 +165,10 @@ def evaluate_cycle(
     p_out_cold = turbine["state_in"].p
     T_in_hot = parameters["heat_source"].pop("inlet_temperature")
     p_in_hot = parameters["heat_source"].pop("inlet_pressure")
-    h_in_hot = heating_fluid.set_state(props.PT_INPUTS, p_in_hot, T_in_hot).h
+    h_in_hot = heating_fluid.get_state(props.PT_INPUTS, p_in_hot, T_in_hot).h
     T_out_hot = heat_source_temperature_out
     p_out_hot = p_in_hot * (1 - dp_heater_h)
-    h_out_hot = heating_fluid.set_state(props.PT_INPUTS, p_out_hot, T_out_hot).h
+    h_out_hot = heating_fluid.get_state(props.PT_INPUTS, p_out_hot, T_out_hot).h
     num_elements = parameters["heater"].pop("num_elements")
     heater = heat_exchanger(
         heating_fluid,
@@ -203,7 +203,7 @@ def evaluate_cycle(
     # Evaluate heat sink pump
     T_in = parameters["heat_sink"].pop("inlet_temperature")
     p_in = parameters["heat_sink"].pop("inlet_pressure")
-    h_in = cooling_fluid.set_state(props.PT_INPUTS, p_in, T_in).h
+    h_in = cooling_fluid.get_state(props.PT_INPUTS, p_in, T_in).h
     p_out = p_sink_out / (1 - dp_cooler_c)
     efficiency = parameters["heat_sink_pump"].pop("efficiency")
     efficiency_type = parameters["heat_sink_pump"].pop("efficiency_type")
@@ -221,7 +221,7 @@ def evaluate_cycle(
     h_in_cold = heat_sink_pump["state_out"].h
     p_out_cold = p_in_cold * (1 - dp_cooler_c)
     T_out_cold = heat_sink_temperature_out
-    h_out_cold = cooling_fluid.set_state(props.PT_INPUTS, p_out_cold, T_out_cold).h
+    h_out_cold = cooling_fluid.get_state(props.PT_INPUTS, p_out_cold, T_out_cold).h
     h_in_hot = recuperator_lowT["hot_side"]["state_out"].h
     p_in_hot = recuperator_lowT["hot_side"]["state_out"].p
     h_out_hot = main_compressor["state_in"].h
