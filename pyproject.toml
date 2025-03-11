@@ -1,0 +1,43 @@
+[tool.poetry]
+name = "thermopt"
+version = "0.1.15"
+description = "A Python tool for the analysis and optimization of thermodynamic cycles."
+authors = ["Roberto Agromayor"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/turbo-sim/thermopt"
+documentation = "https://github.com/turbo-sim/thermopt"
+
+
+[tool.poetry.dependencies]
+python = "^3.10"
+numpy = "^1.26.4"
+scipy = "^1.13.1"
+matplotlib = "^3.9.0"
+pandas = "^2.2.2"
+openpyxl = "^3.1.2"
+CoolProp = "^6.6.0"
+PyYAML = "^6.0.1"
+toml = "^0.10.2"
+cycler = "^0.12.1"
+
+[tool.poetry.group.dev.dependencies]
+ipython = "^8.24.0"
+black = "^24.4.2"
+pytest = "^8.2.1"
+pyzotero = "^1.5.19"
+numpydoc = "^1.7.0"
+sphinx = "^7.3.7"
+sphinx-tabs = "^3.4.5"
+sphinx-book-theme = "^1.1.2"
+sphinx-rtd-theme = "^2.0.0"
+sphinxcontrib-bibtex = "^2.6.2"
+sphinxawesome-theme = "^5.1.5"
+sphinx-design = "^0.6.0"
+sphinx-togglebutton = "^0.3.2"
+bump2version = "^1.0.1"
+pydantic = "^2.7.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
