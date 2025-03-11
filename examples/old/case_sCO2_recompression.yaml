@@ -1,21 +1,27 @@
-solver_options:
-  library: pygmo
-  method: snopt
-  tolerance: 1e-5
-  max_iterations: 50
-  derivative_method: 2-point
-  derivative_abs_step: 1e-8
-  print_convergence: True
-  plot_convergence: False
+
+solver_options: 
+  library: scipy
+  method: slsqp
+  derivative_method: 2-point 
+  derivative_abs_step: 1e-6 
+  print_convergence: True 
   logger: None
   update_on: gradient
+  options: 
+    tolerance: 1e-5 # Optional
+    max_iterations: 200 # Optional
+  callbacks:
+    plot_cycle: True
+    save_cycle: True
+    save_config: True
+  
 
-    
 problem_formulation:
 
   cycle_topology: split_compression
 
   plot_settings:
+
     pinch_point_diagram: False
 
     fluid: 
@@ -27,8 +33,8 @@ problem_formulation:
       plot_triple_point_vapor: False
 
     diagrams:
-      - x_variable: s
-        y_variable: T
+      - x_prop: s
+        y_prop: T
         x_scale: linear
         y_scale: linear
       # - x_variable: h
@@ -112,11 +118,9 @@ problem_formulation:
       efficiency: 0.80
       efficiency_type: "isentropic"
 
-
   objective_function:
     variable: $energy_analysis.cycle_efficiency
     type: maximize
-
 
   design_variables:
     heat_source_exit_temperature:
@@ -185,7 +189,6 @@ problem_formulation:
       type: ">"
       value: 10
       normalize: 1000
-
 
     - variable: $components.recuperator_lowT.cold_side.state_out.T - $components.split_compressor.state_out.T
       type: "="
