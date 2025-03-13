@@ -15,6 +15,10 @@ cycle.problem.plot_cycle_realtime(CONFIG_FILE)
 cycle.run_optimization()
 cycle.save_results()
 
+# Create an animation of the optimization progress
+cycle.create_animation(format="mp4", fps=1)
+
 # Keep plots open
 plt.show()
+
 

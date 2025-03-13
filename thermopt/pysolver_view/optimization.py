@@ -116,8 +116,6 @@ class OptimizationSolver:
         problem,
         library="scipy",
         method="slsqp",
-        # tolerance=1e-6,
-        # max_iterations=100,
         options={},
         derivative_method="2-point",
         derivative_abs_step=None,
@@ -150,8 +148,6 @@ class OptimizationSolver:
 
         # Define options dictionary
         self.options = copy.deepcopy(options) if options else {}
-        # self.options["tol"] = tolerance
-        # self.options["max_iter"] = max_iterations
 
         # Check for logger validity
         if self.logger is not None:
@@ -263,7 +259,7 @@ class OptimizationSolver:
         """
         # Initialize convergence plot
         if self.plot:
-            self._plot_callback(initialize=True)
+            self._plot_callback([], [], initialize=True)
 
         # Get start datetime
         self.start_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -419,6 +415,24 @@ class OptimizationSolver:
 
         return grad
 
+    def _handle_output(self, message):
+        """
+        Handles output by printing to the screen or logging it.
+
+        Parameters
+        ----------
+        message : str
+            The message to output.
+        log_only : bool, optional
+            If True, only logs the message (ignores `self.display`). Default is False.
+        """
+        if self.logger:
+            for line in message.splitlines():
+                self.logger.info(line)
+                
+        if self.display and not self.logger:
+            print(message)
+
     def _write_header(self):
         """
         Print a formatted header for the optimization report.
@@ -444,15 +458,9 @@ class OptimizationSolver:
             separator,
         ]
 
-        # Display to stdout
-        if self.display:
-            for line in lines_to_output:
-                print(line)
-
-        # Write to log
-        if self.logger:
-            for line in lines_to_output:
-                self.logger.info(line)
+        # Print or log content
+        for line in lines_to_output:
+            self._handle_output(line)
 
         # Store text in memory
         self.solution_report.extend(lines_to_output)
@@ -507,21 +515,14 @@ class OptimizationSolver:
 
         # Current convergence message
         status = f" {self.grad_count:13d}{self.func_count:13d}{self.cache['f']:+16.3e}{violation_max:+18.3e}{norm_step:+18.3e} "
-
-        # Display to stdout
-        if self.display:
-            print(status)
-
-        # Write to log
-        if self.logger:
-            self.logger.info(status)
+        self._handle_output(status)
 
         # Store text in memory
         self.solution_report.append(status)
 
         # Refresh the plot with current values
         if self.plot:
-            self._plot_callback()
+            self._plot_callback([], [])
 
         # Evaluate callback functions
         if self.callback_functions:
@@ -556,20 +557,14 @@ class OptimizationSolver:
             lines_to_output += solution_vars
         lines_to_output += [separator, ""]
 
-        # Display to stdout
-        if self.display:
-            for line in lines_to_output:
-                print(line)
-
-        # Write to log
-        if self.logger:
-            for line in lines_to_output:
-                self.logger.info(line)
+        # Print or log content
+        for line in lines_to_output:
+            self._handle_output(line)
 
         # Store text in memory
         self.solution_report.extend(lines_to_output)
 
-    def _plot_callback(self, initialize=False):
+    def _plot_callback(self, x, iter, initialize=False):
         """
         Callback function to dynamically update the convergence progress plot.
 
@@ -598,8 +593,10 @@ class OptimizationSolver:
             self.ax_1.xaxis.set_major_locator(
                 MaxNLocator(integer=True)
             )  # Integer ticks
+            self.ax_1.grid(False)
             if self.N_eq > 0 or self.N_ineq > 0:
                 self.ax_2 = self.ax_1.twinx()
+                self.ax_2.grid(False)
                 self.ax_2.set_ylabel("Constraint violation")
                 self.ax_2.set_yscale(self.plot_scale_constraints)
                 (self.obj_line_2,) = self.ax_2.plot(
@@ -741,7 +738,7 @@ class OptimizationSolver:
             If this method is called before the problem has been solved.
         """
         if self.x_final is not None:
-            self._plot_callback(initialize=True)
+            self._plot_callback([], [], initialize=True)
         else:
             raise ValueError(
                 "This method can only be used after invoking the 'solve()' method."
@@ -761,7 +758,7 @@ class OptimizationSolver:
             # Save plots
             fullfile = os.path.join(output_dir, filename)
             savefig_in_formats(self.fig, fullfile, formats=[".png", ".svg"])
-
+            
         return self.fig
 
 

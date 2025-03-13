@@ -3,18 +3,20 @@ solver_options:
   library: scipy
   method: slsqp
   derivative_method: 2-point 
-  derivative_abs_step: 1e-6 
+  derivative_abs_step: 1e-5 
   print_convergence: True 
-  plot_convergence: True
+  plot_convergence: False
   logger: None
   update_on: gradient
   options: 
-    tolerance: 1e-5 # Optional
-    max_iterations: 200 # Optional
+    tolerance: 1e-5 
+    max_iterations: 200
   callbacks:
-    plot_cycle: True
     save_cycle: True
     save_config: True
+    plot_cycle: True
+    plot_convergence: False
+
   
     
 problem_formulation:
@@ -72,8 +74,8 @@ problem_formulation:
       exit_pressure: 101325
 
     heat_sink:
-      inlet_temperature: 15 + 273.15
-      exit_temperature_min: 25 + 273.15
+      inlet_temperature: 10 + 273.15
+      exit_temperature_min: 20 + 273.15
       exit_temperature_max: 30 + 273.15
       inlet_pressure: 101325
       exit_pressure: 101325
@@ -115,23 +117,23 @@ problem_formulation:
     heat_source_exit_temperature:
       min: $heat_source.exit_temperature_min
       max: $heat_source.exit_temperature_max
-      value: $heat_source.exit_temperature_min + 0.40*($heat_source.exit_temperature_max - $heat_source.exit_temperature_min)
+      value: $heat_source.exit_temperature_min + 0.20*($heat_source.exit_temperature_max - $heat_source.exit_temperature_min)
     heat_sink_exit_temperature:
       min: $heat_sink.exit_temperature_min
       max: $heat_sink.exit_temperature_max
       value: $heat_sink.exit_temperature_max
     compressor_inlet_pressure:
-      min: 1.05*$working_fluid.critical_point.p
+      min: 1.1*$working_fluid.critical_point.p
       max: 5.00*$working_fluid.critical_point.p
-      value: 1.50*$working_fluid.critical_point.p
+      value: 2.0*$working_fluid.critical_point.p
     compressor_inlet_enthalpy:
       min: 0.9*$working_fluid.liquid_at_heat_sink_temperature.h
       max: 2.0*$working_fluid.liquid_at_heat_sink_temperature.h
-      value: 1.25*$working_fluid.liquid_at_heat_sink_temperature.h
+      value: 1.4*$working_fluid.liquid_at_heat_sink_temperature.h
     turbine_inlet_pressure:
       min: 1.1*$working_fluid.critical_point.p
       max: 5.0*$working_fluid.critical_point.p
-      value: 4*$working_fluid.critical_point.p
+      value: 6*$working_fluid.critical_point.p
     turbine_inlet_enthalpy:
       min: 1.10*$working_fluid.critical_point.h
       max: 1.00*$working_fluid.gas_at_heat_source_temperature.h
@@ -139,7 +141,7 @@ problem_formulation:
     recuperator_effectiveness:
       min: 0.0
       max: 1.0
-      value: 0.6
+      value: 0.8
 
   constraints:
     - variable: $components.heater.temperature_difference

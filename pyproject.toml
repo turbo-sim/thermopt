@@ -20,6 +20,7 @@ CoolProp = "^6.6.0"
 PyYAML = "^6.0.1"
 toml = "^0.10.2"
 cycler = "^0.12.1"
+imageio = {extras = ["ffmpeg"], version = "^2.37.0"}
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.24.0"
