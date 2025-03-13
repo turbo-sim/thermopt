@@ -52,6 +52,11 @@ def render_and_evaluate(expression, data):
       it can execute arbitrary code. Ensure that the context and expressions are from a trusted
       source.
     """
+
+    # Return the value directly when it is not a string (e.g, float or integer)
+    if not isinstance(expression, str):
+        return expression
+
     # Pattern to find $variable expressions
     pattern = re.compile(r"\$(\w+(\.\w+)*)")
 
