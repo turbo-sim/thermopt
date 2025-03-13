@@ -193,10 +193,6 @@ class OptimizationSolver:
             "norm_step": [],
         }
 
-        # Initialize convergence plot
-        if self.plot:
-            self._plot_callback(initialize=True)
-
         # Initialize dictionary for cached variables
         self.cache = {
             "x": None,
@@ -265,6 +261,10 @@ class OptimizationSolver:
             An array with the optimal vector of design variables
 
         """
+        # Initialize convergence plot
+        if self.plot:
+            self._plot_callback(initialize=True)
+
         # Get start datetime
         self.start_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 

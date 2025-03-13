@@ -18,7 +18,6 @@ from .properties import *
 # from .brayton_split_compression import *
 
 
-
 # Set plot options
 set_plot_options()
 

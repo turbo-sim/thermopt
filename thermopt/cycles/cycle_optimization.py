@@ -9,7 +9,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-from .. import utilities
+from .. import utilities as utils
 from .. import pysolver_view as psv
 from .. import properties as props
 
@@ -19,8 +19,8 @@ from . import brayton_recuperated
 from . import brayton_split_compression
 
 
-utilities.set_plot_options()
-COLORS_MATLAB = utilities.COLORS_MATLAB
+utils.set_plot_options()
+COLORS_MATLAB = utils.COLORS_MATLAB
 LABEL_MAPPING = {
     "s": "Entropy [J/kg/K]",
     "T": "Temperature [K]",
@@ -81,25 +81,6 @@ class ThermodynamicCycleOptimization:
         self.problem.fitness(self.problem.x0)
         return self.problem
 
-    # def setup_solver(self):
-    #     """
-    #     Configures and returns the optimization solver.
-    #     """
-
-    #     # TODO add control to plotting and saving
-
-    #     # Optimize the thermodynamic cycle
-    #     self.solver = psv.OptimizationSolver(
-    #         self.problem,
-    #         **self.config["solver_options"],
-    #         callback_functions=[
-    #             self.problem.plot_cycle_callback,
-    #             self.problem.save_config_callback,
-    #         ],
-    #     )
-
-    #     return self.solver
-    
 
     def setup_solver(self):
         """
@@ -133,6 +114,7 @@ class ThermodynamicCycleOptimization:
         Executes the optimization process.
         """
         self.solver.solve(self.problem.x0)
+
 
     def save_results(self):
         """
@@ -208,16 +190,20 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         config : dict
             Dictionary containing the configuration for the thermodynamic cycle problem.
         """
+
+        # As the first step, process the fixed parameters for dynamic calculations
+        self.fixed_parameters = configuration["fixed_parameters"]
+        self.fluid = props.Fluid(**self.fixed_parameters["working_fluid"])
+        self._calculate_special_points()
+
         # Initialize variables
         self.figure = None
         self.figure_TQ = None
         self.configuration = copy.deepcopy(configuration)
-        self.update_configuration(self.configuration)
         self.graphics = copy.deepcopy(GRAPHICS_PLACEHOLDER)
 
-        # Create fluid object to calculate states used for the scaling of design variables
-        self.fluid = props.Fluid(**self.fixed_parameters["working_fluid"])
-        self._calculate_special_points()
+        self.update_configuration(self.configuration)
+        # TODO customize
 
         # Define filename with unique date-time identifier
         if out_dir == None:
@@ -246,13 +232,14 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         self.constraints = conf["constraints"]
         self.fixed_parameters = conf["fixed_parameters"]
         self.objective_function = conf["objective_function"]
-        self.vars_normalized = {
-            k: v["value"] for k, v in conf["design_variables"].items()
-        }
-        self.lower_bounds = {k: v["min"] for k, v in conf["design_variables"].items()}
-        self.upper_bounds = {k: v["max"] for k, v in conf["design_variables"].items()}
-        self.keys = list(self.vars_normalized.keys())
-        self.x0 = np.asarray([var for var in self.vars_normalized.values()])
+        self.scale = conf["design_variables_scale"]
+        self.vars_keys = list(conf["design_variables"].keys())
+        self.lb_dict = {k: v["min"] for k, v in conf["design_variables"].items()}
+        self.ub_dict = {k: v["max"] for k, v in conf["design_variables"].items()}
+        self.vars_physical = {k: v["value"] for k, v in conf["design_variables"].items()}
+        self.vars_normalized = self._scale_physical_to_normalized(self.vars_physical)
+        self.x0 = np.asarray([var for var in self.vars_normalized.values()])  # Normalized values
+
 
     def _calculate_special_points(self):
         """
@@ -313,6 +300,71 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             "gas_at_heat_source_temperature": state_dilute.to_dict(),
         }
 
+
+    def _scale_physical_to_normalized(self, vars_physical):
+        """
+        Scale physical variables to a normalized range [0, self.scale].
+
+        Parameters
+        ----------
+        vars_physical : dict
+            Dictionary of physical values to be normalized.
+
+        Returns
+        -------
+        dict
+            Dictionary of normalized values.
+        
+        Raises
+        ------
+        ValueError
+            If bounds are missing or evaluation fails.
+        """
+        vars_normalized = {}
+        for key, value in vars_physical.items():
+            try:
+                value = utils.render_and_evaluate(value, self.fixed_parameters_bis)
+                lower = utils.render_and_evaluate(self.lb_dict[key], self.fixed_parameters_bis)
+                upper = utils.render_and_evaluate(self.ub_dict[key], self.fixed_parameters_bis)
+                vars_normalized[key] = self.scale * (value - lower) / (upper - lower)
+            except (KeyError, ValueError) as e:
+                raise ValueError(f"Error processing bounds for '{key}': {e}")
+
+        return vars_normalized
+
+
+    def _scale_normalized_to_physical(self, vars_normalized):
+        """
+        Scale normalized variables back to physical values.
+
+        Parameters
+        ----------
+        vars_normalized : dict
+            Dictionary of normalized values in the range [0, self.scale].
+
+        Returns
+        -------
+        dict
+            Dictionary of physical values.
+        
+        Raises
+        ------
+        ValueError
+            If bounds are missing or evaluation fails.
+        """
+        vars_physical = {}
+        for key, value in vars_normalized.items():
+            try:
+                value = utils.render_and_evaluate(value, self.fixed_parameters_bis)
+                lower = utils.render_and_evaluate(self.lb_dict[key], self.fixed_parameters_bis)
+                upper = utils.render_and_evaluate(self.ub_dict[key], self.fixed_parameters_bis)
+                vars_physical[key] = lower + (upper - lower) * (value / self.scale)
+            except (KeyError, ValueError) as e:
+                raise ValueError(f"Error processing bounds for '{key}': {e}")
+
+        return vars_physical
+    
+
     def load_configuration_file(self, config_file):
         """
         Load and update the problem's configuration from a specified file.
@@ -333,9 +385,10 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
     def save_current_configuration(self, filename):
         """Save the current configuration to a YAML file."""
         config_data = {k: v for k, v in self.configuration.items()}
-        config_data = utilities.convert_numpy_to_python(config_data, precision=12)
+        config_data = utils.convert_numpy_to_python(config_data, precision=12)
         with open(filename, "w") as file:
             yaml.dump(config_data, file, default_flow_style=False, sort_keys=False)
+
 
     def save_config_callback(self, x, iter):
         """
@@ -364,8 +417,18 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         """
         Evaluate optimization problem
         """
+
+        # Convert variables from physical to normalized
+        self.vars_normalized = dict(zip(self.vars_keys, x))
+        self.vars_physical = self._scale_normalized_to_physical(self.vars_normalized)
+
         # Update configuration with the current values of x
-        self.update_variables(x)
+        for k, v in self.vars_physical.items():
+            if k in self.configuration["design_variables"]:
+                self.configuration["design_variables"][k]["value"] = v
+            else:
+                # Optionally handle the error or log a warning if the key does not exist
+                raise KeyError(f"{k} is not a recognized design variable.")
 
         # Evaluate thermodynamic cycle
         if self.cycle_topology in CYCLE_TOPOLOGIES.keys():
@@ -392,21 +455,9 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         return out
 
 
-    def update_variables(self, x):
-        """Update the problem variables based on the new values provided by the optimizer."""
-        self.vars_normalized = dict(zip(self.keys, x))
-        self.vars_physical = self._scale_normalized_to_physical(self.vars_normalized)
-        for k, v in self.vars_normalized.items():
-            if k in self.configuration["design_variables"]:
-                self.configuration["design_variables"][k]["value"] = v
-            else:
-                # Optionally handle the error or log a warning if the key does not exist
-                print(f"Warning: {k} is not a recognized design variable.")
-
-
     def get_bounds(self):
         dim = len(self.vars_normalized)
-        return ([0.0] * dim, [1.00] * dim)
+        return ([0.0] * dim, [self.scale] * dim)
 
 
     def get_nec(self):
@@ -415,41 +466,6 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
 
     def get_nic(self):
         return psv.count_constraints(self.c_ineq)
-
-
-    def _scale_normalized_to_physical(self, vars_normalized):
-        # Define helper function
-        def scale_value(min_val, max_val, normalized_val):
-            return min_val + (max_val - min_val) * normalized_val
-
-        # Loop over normalized variables
-        vars_physical = {}
-        for key, value in vars_normalized.items():
-            try:
-                # Fetch the bounds expressions
-                lower_expr = self.lower_bounds[key]
-                upper_expr = self.upper_bounds[key]
-
-                # Try to evaluate bounds as expressions if they are strings
-                if isinstance(lower_expr, str):
-                    lower = utilities.render_and_evaluate(
-                        lower_expr, self.fixed_parameters_bis
-                    )
-                else:
-                    lower = lower_expr
-                if isinstance(upper_expr, str):
-                    upper = utilities.render_and_evaluate(
-                        upper_expr, self.fixed_parameters_bis
-                    )
-                else:
-                    upper = upper_expr
-
-                vars_physical[key] = scale_value(lower, upper, value)
-
-            except (KeyError, ValueError) as e:
-                raise ValueError(f"Error processing bounds for '{key}': {e}")
-
-        return vars_physical
 
 
     def to_excel(self, filename="performance.xlsx"):
@@ -608,7 +624,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             self.figure, self.axes = plt.subplots(
                 nrows, ncols, figsize=(5.2 * ncols, 4.8)
             )
-            self.axes = utilities.ensure_iterable(self.axes)
+            self.axes = utils.ensure_iterable(self.axes)
 
         # Plot or update each thermodynamic_diagram
         for i, ax in enumerate(self.axes[:-1] if include_pinch_diagram else self.axes):

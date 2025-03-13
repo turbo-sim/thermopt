@@ -5,6 +5,7 @@ solver_options:
   derivative_method: 2-point 
   derivative_abs_step: 1e-6 
   print_convergence: True 
+  plot_convergence: True
   logger: None
   update_on: gradient
   options: 
@@ -38,6 +39,7 @@ problem_formulation:
       #   y_prop: p
       #   x_scale: linear
       #   y_scale: log
+      
 
   fixed_parameters:
 
@@ -72,7 +74,7 @@ problem_formulation:
     heat_sink:
       inlet_temperature: 15 + 273.15
       exit_temperature_min: 25 + 273.15
-      exit_temperature_max: 25 + 273.15
+      exit_temperature_max: 30 + 273.15
       inlet_pressure: 101325
       exit_pressure: 101325
 
@@ -107,35 +109,37 @@ problem_formulation:
       efficiency: 0.80
       efficiency_type: "isentropic"
 
+  design_variables_scale: 10
+
   design_variables:
     heat_source_exit_temperature:
       min: $heat_source.exit_temperature_min
       max: $heat_source.exit_temperature_max
-      value: 0.5
+      value: $heat_source.exit_temperature_min + 0.40*($heat_source.exit_temperature_max - $heat_source.exit_temperature_min)
     heat_sink_exit_temperature:
       min: $heat_sink.exit_temperature_min
       max: $heat_sink.exit_temperature_max
-      value: 0.5
+      value: $heat_sink.exit_temperature_max
     compressor_inlet_pressure:
-      min: 0.50*$working_fluid.critical_point.p
+      min: 1.05*$working_fluid.critical_point.p
       max: 5.00*$working_fluid.critical_point.p
-      value: 0.2
+      value: 1.50*$working_fluid.critical_point.p
     compressor_inlet_enthalpy:
       min: 0.9*$working_fluid.liquid_at_heat_sink_temperature.h
       max: 2.0*$working_fluid.liquid_at_heat_sink_temperature.h
-      value: 0.2
+      value: 1.25*$working_fluid.liquid_at_heat_sink_temperature.h
     turbine_inlet_pressure:
-      min: 0.5*$working_fluid.critical_point.p
+      min: 1.1*$working_fluid.critical_point.p
       max: 5.0*$working_fluid.critical_point.p
-      value: 0.5
+      value: 4*$working_fluid.critical_point.p
     turbine_inlet_enthalpy:
       min: 1.10*$working_fluid.critical_point.h
       max: 1.00*$working_fluid.gas_at_heat_source_temperature.h
-      value: 0.90
+      value: 0.9*$working_fluid.gas_at_heat_source_temperature.h
     recuperator_effectiveness:
       min: 0.0
       max: 1.0
-      value: 0.7
+      value: 0.6
 
   constraints:
     - variable: $components.heater.temperature_difference
