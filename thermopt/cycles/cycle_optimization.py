@@ -71,7 +71,8 @@ class ThermodynamicCycleOptimization:
         """
         Loads configuration from a YAML file.
         """
-        return read_configuration_file(config_file)
+        self.config = read_configuration_file(config_file)
+        return self.config
 
     def setup_problem(self):
         """
@@ -86,26 +87,12 @@ class ThermodynamicCycleOptimization:
         """
         Configures and returns the optimization solver.
         """
-
-        # Extract callback flags from config
-        callback_flags = self.config["solver_options"].pop("callbacks", {})
-
-        # Define available callbacks
-        callbacks = []
-        if callback_flags.get("plot_cycle", False):
-            callbacks.append(self.problem.plot_cycle_callback)
-        if callback_flags.get("save_cycle", False):
-            callbacks.append(self.problem.save_cycle_callback)
-        if callback_flags.get("save_config", False):
-            callbacks.append(self.problem.save_config_callback)
-
-        # Optimize the thermodynamic cycle
+        solver_options = {k: v for k, v in self.config["solver_options"].items() if k != "callbacks"}
         self.solver = psv.OptimizationSolver(
             self.problem,
-            **self.config["solver_options"],
-            callback_functions=callbacks,
+            **solver_options,  # Pass all options except "callbacks"
+            callback_functions=None,
         )
-
         return self.solver
 
 
@@ -113,8 +100,27 @@ class ThermodynamicCycleOptimization:
         """
         Executes the optimization process.
         """
-        self.solver.solve(self.problem.x0)
+        # Extract callback flags safely
+        callback_flags = self.config["solver_options"].get("callbacks", {})
 
+        # Assign callback functions
+        self.solver.callback_functions = []
+
+        if callback_flags.get("plot_cycle", False):
+            self.solver.callback_functions.append(self.problem.plot_cycle_callback)
+
+        if callback_flags.get("save_cycle", False):
+            self.solver.callback_functions.append(self.problem.save_cycle_callback)
+
+        if callback_flags.get("save_config", False):
+            self.solver.callback_functions.append(self.problem.save_config_callback)
+
+        if callback_flags.get("plot_convergence", False):
+            self.solver._plot_callback([], [], initialize=True)
+            self.solver.callback_functions.append(self.solver._plot_callback)
+
+        # Solve optimization problem
+        self.solver.solve(self.problem.x0)
 
     def save_results(self):
         """
@@ -123,25 +129,51 @@ class ThermodynamicCycleOptimization:
         filename = os.path.join(self.out_dir, "optimal_solution")
         self.problem.to_excel(filename=filename + ".xlsx")
         self.problem.save_current_configuration(filename=filename + ".yaml")
+        self.plot_convergence_history(savefile=True)
+        self.print_convergence_history(savefile=True)
 
-        # Print final solution values
-        print()
-        print("Optimal set of design variables (normalized)")
-        for key, value in self.problem.vars_normalized.items():
-            print(f"{key:40}: {value:0.3f}")
+    def plot_convergence_history(self, savefile=False):
+        filename = "convergence_history"
+        self.solver.plot_convergence_history(savefile=savefile, filename=filename, output_dir=self.out_dir)
+        
 
-    def generate_output_files(self):
-        """
-        Generates additional output files, such as Excel files or plots.
-        """
-        # TODO Code to handle output generation like creating plots or exporting to Excel
+    def print_convergence_history(self, savefile=False):
+        filename = "convergence_history.txt"
+        self.solver.print_convergence_history(savefile=savefile, filename=filename, output_dir=self.out_dir)
 
-    def create_animation(self):
-        """
-        Creates an animation of the optimization history.
-        """
-        # TODO Code to generate animation from the optimization results
 
+
+    def create_animation(self, format="both", fps=1):
+        """
+        Creates an animation from optimization history.
+
+        Parameters
+        ----------
+        format : str, optional
+            Format of animation ("gif", "mp4", or "both"), default is "both".
+        duration : float, optional
+            Duration of each frame in GIF (default is 0.5 sec).
+        fps : int, optional
+            Frames per second for MP4 (default is 10).
+        """
+        image_folder = os.path.join(self.out_dir, "optimization")
+        gif_file = os.path.join(self.out_dir, "optimization_animation.gif")
+        mp4_file = os.path.join(self.out_dir, "optimization_animation.mp4")
+
+        # Check if the folder contains images
+        image_files = sorted(f for f in os.listdir(image_folder) if f.endswith(".png"))
+        if not image_files:
+            print("No images found for animation. Skipping animation creation.")
+            return
+
+        # Call the utility functions
+        if format in ["gif", "both"]:
+            utils.create_gif(image_folder, gif_file, duration=len(image_files)/fps)
+            print(f"GIF saved at {gif_file}")
+
+        if format in ["mp4", "both"]:
+            utils.create_mp4(image_folder, mp4_file, fps=1)
+            print(f"MP4 saved at {mp4_file}")
 
 
 class ThermodynamicCycleProblem(psv.OptimizationProblem):
@@ -569,7 +601,8 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         Plot the thermodynamic cycle during optimization.
         """
         self.plot_cycle()
-        self.figure.suptitle(f"Optimization iteration: {iter:03d}", fontsize=14, y=0.90)
+        self.figure.suptitle(f"Optimization iteration: {iter:03d}", fontsize=14, y=0.95)
+        self.figure.tight_layout(pad=1)
 
     def save_cycle_callback(self, x, iter):
         """
@@ -581,7 +614,8 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
 
         # Save the plot
         filename = os.path.join(self.optimization_dir, f"iteration_{iter:03d}.png")
-        self.figure.savefig(filename)
+        self.figure.savefig(filename, dpi=500)
+        
 
 
     def plot_cycle(self):
@@ -637,7 +671,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             self._plot_pinch_point_diagram(self.axes[-1], ncols - 1)
 
         # Adjust layout and refresh plot
-        self.figure.tight_layout(pad=2)
+        self.figure.tight_layout(pad=1)
         plt.draw()
         plt.pause(0.01)
 
@@ -682,6 +716,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             self.load_configuration_file(configuration_file)
             self.fitness(self.x0)
             self.plot_cycle()
+            self.figure.suptitle(f"Iterative thermodynamic cycle configuration", fontsize=14, y=0.95)
 
             # Wait for the specified interval before updating again
             time.sleep(update_interval)
