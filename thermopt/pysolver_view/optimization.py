@@ -269,12 +269,12 @@ class OptimizationSolver:
 
         # Print report header
         self._write_header()
-
         # Define new problem with anonymous methods (avoid problems when Pygmo creates a deep copy)
         problem = _PygmoProblem(self)
 
         # Fetch the solver function
         lib_wrapper = OPTIMIZATION_LIBRARIES[self.library]
+        self._print_convergence_progress(x0)
         solution = lib_wrapper(problem, x0, self.method, self.options)
 
         # Retrieve last solution (also works for gradient-free solvers when updating on gradient)

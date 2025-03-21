@@ -17,6 +17,7 @@ from ..config_validation import read_configuration_file
 
 from . import brayton_recuperated
 from . import brayton_split_compression
+from . import brayton_heat_pump
 
 
 utils.set_plot_options()
@@ -37,6 +38,7 @@ CYCLE_TOPOLOGIES = {
     "recuperated": brayton_recuperated.evaluate_cycle,
     "split_compression": brayton_split_compression.evaluate_cycle,
     "recompression": brayton_split_compression.evaluate_cycle,
+    "recuperated_heat_pump": brayton_heat_pump.evaluate_cycle,
 }
 
 GRAPHICS_PLACEHOLDER = {
@@ -119,7 +121,6 @@ class ThermodynamicCycleOptimization:
             self.solver._plot_callback([], [], initialize=True)
             self.solver.callback_functions.append(self.solver._plot_callback)
 
-        # Solve optimization problem
         self.solver.solve(self.problem.x0)
 
     def save_results(self):
@@ -453,6 +454,8 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         # Convert variables from physical to normalized
         self.vars_normalized = dict(zip(self.vars_keys, x))
         self.vars_physical = self._scale_normalized_to_physical(self.vars_normalized)
+        
+        # self.print_design_variable_bounds(x)
 
         # Update configuration with the current values of x
         for k, v in self.vars_physical.items():
@@ -490,6 +493,30 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
     def get_bounds(self):
         dim = len(self.vars_normalized)
         return ([0.0] * dim, [self.scale] * dim)
+
+    def print_design_variable_bounds(self, x):
+        """
+        Print the design variable names, lower bounds, values, and upper bounds.
+        """
+        # Ensure vars_keys and x are correctly matched
+        if len(self.vars_keys) != len(x):
+            raise ValueError("Mismatch between variable keys and design variable values.")
+
+        # Get the lower and upper bounds
+        lb, ub = self.get_bounds()
+
+        # Print the table header
+        print()
+        print("-" * 80)
+        print(f"{'Variable':<50}{'Lower ':<10}{'Value':<10}{'Upper':<10}")
+        print("-" * 80)
+
+        # Print each variable with its corresponding bounds and value
+        for key, lower, value, upper in zip(self.vars_keys, lb, x, ub):
+            print(f"{key:<50}{lower:<10.4f}{value:<10.4f}{upper:<10.4f}")
+
+        print("-" * 80)
+        
 
 
     def get_nec(self):
@@ -664,7 +691,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         for i, ax in enumerate(self.axes[:-1] if include_pinch_diagram else self.axes):
             plot_config = self.plot_settings["diagrams"][i]
             plot_config = self._get_diagram_default_settings(plot_config)
-            self._plot_thermodynamic_diagram(ax, plot_config, i)
+            self._plot_thermodynamic_diagram(ax, self.cycle_data, plot_config, i)
 
         # Plot or update the pinch point diagram
         if include_pinch_diagram:
@@ -731,7 +758,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
 
 
 
-    def _plot_thermodynamic_diagram(self, ax, plot_config, ax_index=0):
+    def _plot_thermodynamic_diagram(self, ax, cycle_data, plot_config, ax_index=0):
         """
         Plots or updates the thermodynamic diagram on a specified axes.
 
@@ -762,7 +789,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         self.fluid.plot_phase_diagram(axes=ax, **plot_config)
 
         # Plot thermodynamic processes
-        for name, component in self.cycle_data["components"].items():
+        for name, component in cycle_data["components"].items():
             # Handle heat exchanger components in a special way
             if component["type"] == "heat_exchanger":
                 for side in ["hot_side", "cold_side"]:

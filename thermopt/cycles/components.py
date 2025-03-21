@@ -61,6 +61,8 @@ def heat_exchanger(
         "cold_side": cold_side,
         "q_hot_side": dh_hot,
         "q_cold_side": dh_cold,
+        "temperature_hot_side": hot_side["states"]["T"],
+        "temperature_cold_side": cold_side["states"]["T"],
         "temperature_difference": dT,
         "mass_flow_ratio": mass_ratio,
     }
@@ -138,7 +140,6 @@ def compression_process(
 
     # Evaluate compression process
     if efficiency_type == "isentropic":
-        # Compute outlet state according to the definition of isentropic efficiency
         h_out = state_in.h + (state_out_is.h - state_in.h) / efficiency
         state_out = fluid.get_state(props.HmassP_INPUTS, h_out, p_out, supersaturation=True)
         states = [state_in, state_out]
@@ -225,18 +226,18 @@ def expansion_process(
     """
 
     # Compute inlet state
-    state_in = fluid.get_state(props.HmassP_INPUTS, h_in, p_in, supersaturation=True)
-    state_out_is = fluid.get_state(props.PSmass_INPUTS, p_out, state_in.s, supersaturation=True)
+    state_in = fluid.get_state(props.HmassP_INPUTS, h_in, p_in, supersaturation=True, generalize_quality=True)
+    state_out_is = fluid.get_state(props.PSmass_INPUTS, p_out, state_in.s, supersaturation=True, generalize_quality=True)
     if efficiency_type == "isentropic":
         # Compute outlet state according to the definition of isentropic efficiency
         h_out = state_in.h - efficiency * (state_in.h - state_out_is.h)
-        state_out = fluid.get_state(props.HmassP_INPUTS, h_out, p_out, supersaturation=True)
+        state_out = fluid.get_state(props.HmassP_INPUTS, h_out, p_out, supersaturation=True, generalize_quality=True)
         states = [state_in, state_out]
 
     elif efficiency_type == "polytropic":
         # Differential equation defining the polytropic expansion
         def odefun(p, h):
-            state = fluid.get_state(props.HmassP_INPUTS, h, p, supersaturation=True)
+            state = fluid.get_state(props.HmassP_INPUTS, h, p, supersaturation=True, generalize_quality=True)
             dhdp = efficiency / state.rho
             return dhdp, state
 
@@ -270,7 +271,7 @@ def expansion_process(
 
     # Create result dictionary
     result = {
-        "type": "turbine",
+        "type": "expander",
         "fluid_name": fluid.name,
         "states": props.states_to_dict(states),
         "state_in": state_in,
