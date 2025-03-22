@@ -15,9 +15,11 @@ from .. import properties as props
 
 from ..config_validation import read_configuration_file
 
-from . import brayton_recuperated
-from . import brayton_split_compression
-from . import brayton_heat_pump
+from . import cycle_power_simple
+from . import cycle_power_recuperated
+from . import cycle_power_split_compression
+from . import cycle_refrigeration_simple
+from . import cycle_refrigeration_recuperated
 
 
 utils.set_plot_options()
@@ -35,10 +37,15 @@ LABEL_MAPPING = {
 
 # Cycle configurations available
 CYCLE_TOPOLOGIES = {
-    "recuperated": brayton_recuperated.evaluate_cycle,
-    "split_compression": brayton_split_compression.evaluate_cycle,
-    "recompression": brayton_split_compression.evaluate_cycle,
-    "recuperated_heat_pump": brayton_heat_pump.evaluate_cycle,
+    "simple": cycle_power_simple.evaluate_cycle,
+    "power_simple": cycle_power_simple.evaluate_cycle,
+    "recuperated": cycle_power_recuperated.evaluate_cycle,
+    "power_recuperated": cycle_power_recuperated.evaluate_cycle,
+    "power_split_compression": cycle_power_split_compression.evaluate_cycle,
+    "split_compression": cycle_power_split_compression.evaluate_cycle,
+    "recompression": cycle_power_split_compression.evaluate_cycle,
+    "refrigeration_simple": cycle_refrigeration_simple.evaluate_cycle,
+    "refrigeration_recuperated": cycle_refrigeration_recuperated.evaluate_cycle,
 }
 
 GRAPHICS_PLACEHOLDER = {
@@ -266,13 +273,13 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         self.fixed_parameters = conf["fixed_parameters"]
         self.objective_function = conf["objective_function"]
         self.scale = conf["design_variables_scale"]
-        self.vars_keys = list(conf["design_variables"].keys())
+        self.vars_names = list(conf["design_variables"].keys())
         self.lb_dict = {k: v["min"] for k, v in conf["design_variables"].items()}
         self.ub_dict = {k: v["max"] for k, v in conf["design_variables"].items()}
         self.vars_physical = {k: v["value"] for k, v in conf["design_variables"].items()}
         self.vars_normalized = self._scale_physical_to_normalized(self.vars_physical)
         self.x0 = np.asarray([var for var in self.vars_normalized.values()])  # Normalized values
-
+        self.x0 = psv.check_and_clip_initial_guess(self.x0, self.get_bounds(), self.vars_names)
 
     def _calculate_special_points(self):
         """
@@ -359,7 +366,10 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
                 value = utils.render_and_evaluate(value, self.fixed_parameters_bis)
                 lower = utils.render_and_evaluate(self.lb_dict[key], self.fixed_parameters_bis)
                 upper = utils.render_and_evaluate(self.ub_dict[key], self.fixed_parameters_bis)
-                vars_normalized[key] = self.scale * (value - lower) / (upper - lower)
+                if upper == lower:  # Handle case ub=ub separately (fixed design variable)
+                    vars_normalized[key] = 0.0  # or any constant, since it won't be optimized anyway
+                else:
+                    vars_normalized[key] = self.scale * (value - lower) / (upper - lower)
             except (KeyError, ValueError) as e:
                 raise ValueError(f"Error processing bounds for '{key}': {e}")
 
@@ -391,7 +401,10 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
                 value = utils.render_and_evaluate(value, self.fixed_parameters_bis)
                 lower = utils.render_and_evaluate(self.lb_dict[key], self.fixed_parameters_bis)
                 upper = utils.render_and_evaluate(self.ub_dict[key], self.fixed_parameters_bis)
-                vars_physical[key] = lower + (upper - lower) * (value / self.scale)
+                if upper == lower:  # Handle case ub=ub separately (fixed design variable)
+                    vars_physical[key] = lower
+                else:
+                    vars_physical[key] = lower + (upper - lower) * (value / self.scale)
             except (KeyError, ValueError) as e:
                 raise ValueError(f"Error processing bounds for '{key}': {e}")
 
@@ -452,7 +465,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         """
 
         # Convert variables from physical to normalized
-        self.vars_normalized = dict(zip(self.vars_keys, x))
+        self.vars_normalized = dict(zip(self.vars_names, x))
         self.vars_physical = self._scale_normalized_to_physical(self.vars_normalized)
         
         # self.print_design_variable_bounds(x)
@@ -494,29 +507,88 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         dim = len(self.vars_normalized)
         return ([0.0] * dim, [self.scale] * dim)
 
-    def print_design_variable_bounds(self, x):
-        """
-        Print the design variable names, lower bounds, values, and upper bounds.
-        """
-        # Ensure vars_keys and x are correctly matched
-        if len(self.vars_keys) != len(x):
-            raise ValueError("Mismatch between variable keys and design variable values.")
 
-        # Get the lower and upper bounds
-        lb, ub = self.get_bounds()
+    def print_optimization_report(self):
+        self.print_design_variables_report(normalized=True)
+        self.print_design_variables_report(normalized=False)
+        self.print_constraint_report()
 
-        # Print the table header
+
+    def print_design_variables_report(self, normalized=True):
+        """
+        Print design variable bounds and current values.
+
+        Parameters
+        ----------
+        normalized : bool
+            Whether to print normalized values. If False, physical values are printed.
+        """
+        vars_dict = self.vars_normalized if normalized else self.vars_physical
+        lb_raw = (
+            [0.0] * len(vars_dict)
+            if normalized
+            else [utils.render_and_evaluate(self.lb_dict[k], self.fixed_parameters_bis) for k in self.vars_names]
+        )
+        ub_raw = (
+            [self.scale] * len(vars_dict)
+            if normalized
+            else [utils.render_and_evaluate(self.ub_dict[k], self.fixed_parameters_bis) for k in self.vars_names]
+        )
+        values = [vars_dict[k] for k in self.vars_names]
+
         print()
         print("-" * 80)
-        print(f"{'Variable':<50}{'Lower ':<10}{'Value':<10}{'Upper':<10}")
+        scale_type = "normalized" if normalized else "physical"
+        print(f"{'Optimization variables report (' + scale_type + ' values)':<80}")
+        print("-" * 80)
+        print(f"{'Variable name':<35}{'Lower':>15}{'Value':>15}{'Upper':>15}")
         print("-" * 80)
 
-        # Print each variable with its corresponding bounds and value
-        for key, lower, value, upper in zip(self.vars_keys, lb, x, ub):
-            print(f"{key:<50}{lower:<10.4f}{value:<10.4f}{upper:<10.4f}")
+        for key, lb, val, ub in zip(self.vars_names, lb_raw, values, ub_raw):
+            if normalized:
+                print(f"{key:<35}{lb:>15.4f}{val:>15.4f}{ub:>15.4f}")
+            else:
+                print(f"{key:<35}{lb:>15.3e}{val:>15.3e}{ub:>15.3e}")
 
         print("-" * 80)
-        
+
+
+
+    def print_constraint_report(self):
+        """
+        Print a detailed report of constraint evaluations.
+        """
+        if "constraints_report" not in self.cycle_data:
+            print("No constraint report available.")
+            return
+
+        max_name_width = 50  # Truncated name length (fits well with other columns)
+
+        print()
+        print("-" * 80)
+        print(f"{'Optimization constraints report':<80}")
+        print("-" * 80)
+        print(f"{'Constraint name':<52}{'Value':>10}{'Target':>12}{'Ok?':>6}")
+        print("-" * 80)
+
+        for entry in self.cycle_data["constraints_report"]:
+            name = entry["name"]
+            ctype = entry["type"]
+            target = entry["target"]
+            value = entry["value"]
+            satisfied = "yes" if entry["satisfied"] else "no"
+
+            # Truncate name if needed
+            if len(name) > max_name_width:
+                name = "..." + name[-(max_name_width - 3):]
+
+            symbol_target = f"{ctype} {target:.3f}"
+            print(f"{name:<52}{value:>10.3f}{symbol_target:>12}{satisfied:>6}")
+
+        print("-" * 80)
+
+
+
 
 
     def get_nec(self):

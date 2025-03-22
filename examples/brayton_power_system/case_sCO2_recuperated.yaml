@@ -1,4 +1,3 @@
-
 solver_options: 
   library: scipy
   method: slsqp
@@ -95,8 +94,8 @@ problem_formulation:
       pressure_drop_cold_side: 0.00
       num_elements: 25
 
-    turbine:
-      efficiency: 0.90
+    expander:
+      efficiency: 0.9
       efficiency_type: "isentropic"
 
     compressor:
@@ -117,7 +116,7 @@ problem_formulation:
     heat_source_exit_temperature:
       min: $heat_source.exit_temperature_min
       max: $heat_source.exit_temperature_max
-      value: $heat_source.exit_temperature_min + 0.20*($heat_source.exit_temperature_max - $heat_source.exit_temperature_min)
+      value: $heat_source.exit_temperature_min + 0.50*($heat_source.exit_temperature_max - $heat_source.exit_temperature_min)
     heat_sink_exit_temperature:
       min: $heat_sink.exit_temperature_min
       max: $heat_sink.exit_temperature_max
@@ -130,18 +129,18 @@ problem_formulation:
       min: 0.9*$working_fluid.liquid_at_heat_sink_temperature.h
       max: 2.0*$working_fluid.liquid_at_heat_sink_temperature.h
       value: 1.4*$working_fluid.liquid_at_heat_sink_temperature.h
-    turbine_inlet_pressure:
+    expander_inlet_pressure:
       min: 1.1*$working_fluid.critical_point.p
       max: 5.0*$working_fluid.critical_point.p
-      value: 6*$working_fluid.critical_point.p
-    turbine_inlet_enthalpy:
+      value: 4*$working_fluid.critical_point.p
+    expander_inlet_enthalpy:
       min: 1.10*$working_fluid.critical_point.h
       max: 1.00*$working_fluid.gas_at_heat_source_temperature.h
       value: 0.9*$working_fluid.gas_at_heat_source_temperature.h
     recuperator_effectiveness:
       min: 0.0
       max: 1.0
-      value: 0.8
+      value: 0.25
 
   constraints:
     - variable: $components.heater.temperature_difference
@@ -160,7 +159,7 @@ problem_formulation:
     #   type: ">"
     #   value: $working_fluid.critical_point.T + 1
     
-    # - variable: components.turbine.state_in.T
+    # - variable: components.expander.state_in.T
     #   type: "<"
     #   value: 450 + 273.15
 
