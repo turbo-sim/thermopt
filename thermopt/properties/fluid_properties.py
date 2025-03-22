@@ -93,6 +93,7 @@ DmolarUmolar_INPUTS = CP.DmolarUmolar_INPUTS
 PHASE_INDEX = {attr: getattr(CP, attr) for attr in dir(CP) if attr.startswith("iphase")}
 INPUT_PAIRS = {attr: getattr(CP, attr) for attr in dir(CP) if attr.endswith("_INPUTS")}
 INPUT_PAIRS = sorted(INPUT_PAIRS.items(), key=lambda x: x[1])
+INPUT_TYPE_MAP = {v: k for k, v in INPUT_PAIRS}
 
 def _handle_computation_exceptions(func):
     @wraps(func)
@@ -105,7 +106,19 @@ def _handle_computation_exceptions(func):
         except Exception as e:
             self.converged_flag = False
             if self.exceptions:
-                raise RuntimeError(f"Failed to compute properties: {str(e)}")
+                input_type = args[0]
+                value_1 = args[1]
+                value_2 = args[2]
+                label = INPUT_TYPE_MAP.get(input_type, f"Unknown input type ({input_type})")
+
+                msg = (
+                    f"Thermodynamic property calculations failed:\n"
+                    f"  Input type : {label}\n"
+                    f"  Property 1 : {value_1}\n"
+                    f"  Property 2 : {value_2}\n"
+                    f"  Error      : {str(e)}"
+                )
+                raise RuntimeError(msg)
             return None
     return wrapper
 
@@ -870,6 +883,7 @@ def states_to_dict_2d(states):
                     state_dict_2d[field] = np.empty((m, n), dtype=dtype)
                 state_dict_2d[field][i, j] = value
     return state_dict_2d
+    
 
 
 # ------------------------------------------------------------------------------------ #
@@ -1108,10 +1122,11 @@ def compute_property_grid(
 
     # Initialize dictionary to store properties and pre-allocate storage
     properties_dict = {}
+    m, n = len(range_1), len(range_2)
 
     # Compute properties at each point
-    for i in range(len(range_2)):
-        for j in range(len(range_1)):
+    for i in range(m):
+        for j in range(n):
             # Set state of the fluid
             state = fluid.get_state(
                 input_pair,
@@ -1122,12 +1137,15 @@ def compute_property_grid(
             )
 
             # Store the properties (initialize as empty array if new key)
-            for key in state:
+            for key, value in state.items():
                 if key not in properties_dict.keys():
-                    properties_dict[key] = np.zeros_like(grid1)
+                    dtype = type(value)  # Determine dtype from the first occurrence
+                    properties_dict[key] = np.empty((m, n), dtype=dtype)
+                    # properties_dict[key] = np.zeros_like(grid1)
                 properties_dict[key][i, j] = state[key]
 
     return properties_dict
+   
 
 
 def compute_property_grid_rhoT(

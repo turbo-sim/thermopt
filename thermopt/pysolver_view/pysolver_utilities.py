@@ -1,5 +1,6 @@
 import os
 import logging
+import warnings
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -286,3 +287,52 @@ def create_logger(name, path=None, use_datetime=True):
     logger = logging.getLogger()
 
     return logger
+
+
+def check_and_clip_initial_guess(initial_guess, bounds, variable_names):
+    """
+    Checks if the initial guess is within the given bounds and clips it if necessary.
+    
+    Parameters
+    ----------
+    initial_guess : numpy.ndarray
+        Initial guess for the optimization variables.
+    bounds : tuple of numpy.ndarray
+        A tuple containing two arrays: lower bounds and upper bounds.
+    variable_names : list of str
+        List of variable names corresponding to the design variables.
+        
+    Returns
+    -------
+    numpy.ndarray
+        Adjusted initial guess.
+    """
+    lb, ub = bounds
+    clipped = initial_guess.clip(lb, ub)  # works in both NumPy and JAX
+
+    # Optionally issue warnings for out-of-bounds values
+    for i, (x, cx, l, u) in enumerate(zip(initial_guess, clipped, lb, ub)):
+        if x != cx:
+            print(
+                f"\nWarning: optimization variable out of bounds\n"
+                f"  Name       : {variable_names[i]}\n"
+                f"  Original   : {x}\n"
+                f"  Bounds     : [{l}, {u}]\n"
+                f"  Clipped to : {cx}\n"
+            )
+
+    return clipped
+
+    # lb, ub = bounds
+    # for i, (x, l, u) in enumerate(zip(initial_guess, lb, ub)):
+    #     if not l <= x <= u:
+    #         # Use JAX's .at method to modify the array
+    #         # initial_guess = initial_guess.at[i].set(jnp.clip(x, l, u))
+    #         initial_guess = initial_guess.at[i].set(np.clip(x, l, u))
+    #         warnings.warn(
+    #             f"Variable '{variable_names[i]}' was out of bounds ({x} not in [{l}, {u}]). "
+    #             f"Clipped to {initial_guess[i]}.",
+    #             UserWarning
+    #         )
+
+    # return initial_guess

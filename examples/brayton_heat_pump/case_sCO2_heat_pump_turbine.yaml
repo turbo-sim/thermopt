@@ -1,0 +1,178 @@
+
+solver_options: 
+  library: scipy
+  method: slsqp
+  derivative_method: 2-point 
+  derivative_abs_step: 1e-5
+  print_convergence: True 
+  plot_convergence: False
+  logger: None
+  update_on: gradient
+  options: 
+    tolerance: 1e-5 
+    max_iterations: 200
+  callbacks:
+    save_cycle: True
+    save_config: True
+    plot_cycle: True
+    plot_convergence: False
+
+  
+    
+problem_formulation:
+
+  cycle_topology: recuperated_heat_pump
+
+  plot_settings:
+    pinch_point_diagram: False
+    fluid: 
+      plot_saturation_line: True
+      plot_critical_point: True
+      plot_quality_isolines: False
+      plot_pseudocritical_line: False
+      plot_triple_point_liquid: False
+      plot_triple_point_vapor: False
+    diagrams:
+      - x_prop: s
+        y_prop: T
+        x_scale: linear
+        y_scale: linear
+      # - x_prop: h
+      #   y_prop: p
+      #   x_scale: linear
+      #   y_scale: log
+      
+
+  fixed_parameters:
+
+    working_fluid:
+      name: CO2
+      backend: HEOS
+      exceptions: True
+
+    heating_fluid:
+        name: nitrogen
+        backend: HEOS
+        exceptions: True
+
+    cooling_fluid:
+      name: water
+      backend: HEOS
+      exceptions: True
+
+    heat_duty: 35e6
+
+    # Second law analysis not implemented yet
+    # ambient_temperature: 300
+    # ambient_pressure: 101325
+
+    heat_source:
+      inlet_temperature: 10 + 273.15
+      exit_temperature_max: 5 + 273.15
+      exit_temperature_min: -10 + 273.15
+      inlet_pressure: 101325
+      exit_pressure: 101325
+
+    heat_sink:
+      inlet_temperature: 40 + 273.15
+      exit_temperature_min: 120 + 273.15
+      exit_temperature_max: 125 + 273.15
+      inlet_pressure: 101325*100
+      exit_pressure: 101325*100
+
+    heater:
+      pressure_drop_hot_side: 0.00
+      pressure_drop_cold_side: 0.01
+      num_elements: 25
+
+    recuperator:
+      pressure_drop_hot_side: 0.01
+      pressure_drop_cold_side: 0.01
+      num_elements: 25
+
+    cooler:
+      pressure_drop_hot_side: 0.01
+      pressure_drop_cold_side: 0.00
+      num_elements: 25
+
+    expander:
+      efficiency: 0.75
+      efficiency_type: "isentropic"
+
+    compressor:
+      efficiency: 0.85
+      efficiency_type: "isentropic"
+
+    heat_source_pump:
+      efficiency: 0.80
+      efficiency_type: "isentropic"
+
+    heat_sink_pump:
+      efficiency: 0.80
+      efficiency_type: "isentropic"
+
+  design_variables_scale: 10
+
+  design_variables:
+    heat_source_exit_temperature:
+      min: $heat_source.exit_temperature_min
+      max: $heat_source.exit_temperature_max
+      value: $heat_source.exit_temperature_min + 0.20*($heat_source.exit_temperature_max - $heat_source.exit_temperature_min)
+
+    heat_sink_exit_temperature:
+      min: $heat_sink.exit_temperature_min
+      max: $heat_sink.exit_temperature_max
+      value: $heat_sink.exit_temperature_max
+
+    compressor_inlet_pressure:
+      min: 1.1*$working_fluid.triple_point_liquid.p
+      max: 2.00*$working_fluid.critical_point.p
+      value: 0.25*$working_fluid.critical_point.p
+
+    compressor_inlet_enthalpy:
+      min: 1.10*$working_fluid.critical_point.h
+      max: 3.00*$working_fluid.critical_point.h
+      value: 1.35*$working_fluid.critical_point.h
+
+    expander_inlet_pressure:
+      min: 1.1*$working_fluid.triple_point_liquid.p
+      max: 5.0*$working_fluid.critical_point.p
+      value: 2.5*$working_fluid.critical_point.p
+
+    expander_inlet_enthalpy:
+      min: 0.5*$working_fluid.critical_point.h
+      max: 0.99*$working_fluid.triple_point_vapor.h
+      value: 0.70*$working_fluid.critical_point.h
+    recuperator_effectiveness:
+      min: 0.0
+      max: 1e-6
+      # max: 1
+      value: 0.00000
+
+  constraints:
+    - variable: $components.heater.temperature_difference
+      type: ">"
+      value: 10
+      normalize: True
+    - variable: $components.cooler.temperature_difference
+      type: ">"
+      value: 10
+      normalize: True
+    # - variable: $components.recuperator.heat_flow_rate
+    #   type: "="
+    #   value: 0
+    #   normalize: 10e6
+    # - variable: $components.compressor.state_in.Q
+    #   type: "="
+    #   value: 0.95
+    - variable: $components.compressor.state_in.superheating
+      type: ">"
+      value: 1.00
+    # - variable: components.expander.state_in.T
+    #   type: "<"
+    #   value: 450 + 273.15
+
+  objective_function:
+    variable: $energy_analysis.COP_heat_pump
+    type: maximize
+

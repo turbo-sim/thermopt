@@ -166,6 +166,77 @@ def render_nested_value(nested_key, data):
     return value
 
 
+# def evaluate_constraints(data, constraints):
+#     """
+#     Evaluates the constraints based on the provided data and constraint definitions.
+
+#     Parameters
+#     ----------
+#     data : dict
+#         A dictionary containing performance data against which the constraints will be evaluated.
+#     constraints : list of dicts
+#         A list of constraint definitions, where each constraint is defined as a dictionary.
+#         Each dictionary must have 'variable' (str), 'type' (str, one of '=', '>', '<'), and 'value' (numeric).
+
+#     Returns
+#     -------
+#     tuple of numpy.ndarray
+#         Returns two numpy arrays: the first is an array of equality constraints, and the second is an array of
+#         inequality constraints. These arrays are flattened and concatenated from the evaluated constraint values.
+
+#     Raises
+#     ------
+#     ValueError
+#         If an unknown constraint type is specified in the constraints list.
+#     """
+#     # Initialize constraint lists
+#     c_eq = []  # Equality constraints
+#     c_ineq = []  # Inequality constraints
+
+#     # Loop over all constraint from configuration file
+#     for constraint in constraints:
+#         name = constraint["variable"]
+#         constraint_type = constraint["type"]
+#         target = constraint["value"]
+#         normalize = constraint.get("normalize", False)
+
+#         # Get the performance value for the given variable name
+#         current = render_and_evaluate(name, data)
+#         if isinstance(target, str):  # Try to render variable when not a number
+#             target = render_and_evaluate(target, data)
+
+#         # Evaluate constraint
+#         # mismatch = current - target
+#         mismatch = target - current
+
+#         # Normalize constraint according to specifications
+#         normalize_factor = normalize if num.is_numeric(normalize) else target
+#         if normalize is not False:
+#             if normalize_factor == 0:
+#                 raise ValueError(
+#                     f"Cannot normalize constraint '{name} {constraint_type} {target}' because the normalization factor is '{normalize_factor}' (division by zero)."
+#                 )
+#             mismatch /= normalize_factor
+
+#         # Add constraints to lists
+#         if constraint_type == "=":
+#             c_eq.append(mismatch)
+#         elif constraint_type == ">":
+#             c_ineq.append(mismatch)
+#         elif constraint_type == "<":
+#             # Change sign because optimizer handles c_ineq > 0
+#             c_ineq.append(-mismatch)
+#         else:
+#             raise ValueError(f"Unknown constraint type: {constraint_type}")
+
+#     # Flatten and concatenate constraints
+#     c_eq = np.hstack([np.atleast_1d(item) for item in c_eq]) if c_eq else np.array([])
+#     c_ineq = (
+#         np.hstack([np.atleast_1d(item) for item in c_ineq]) if c_ineq else np.array([])
+#     )
+
+#     return c_eq, c_ineq
+
 def evaluate_constraints(data, constraints):
     """
     Evaluates the constraints based on the provided data and constraint definitions.
@@ -180,63 +251,83 @@ def evaluate_constraints(data, constraints):
 
     Returns
     -------
-    tuple of numpy.ndarray
-        Returns two numpy arrays: the first is an array of equality constraints, and the second is an array of
-        inequality constraints. These arrays are flattened and concatenated from the evaluated constraint values.
-
-    Raises
-    ------
-    ValueError
-        If an unknown constraint type is specified in the constraints list.
+    tuple:
+        - NumPy array of equality constraint residuals
+        - NumPy array of inequality constraint residuals
+        - List of dicts with detailed constraint evaluation
     """
     # Initialize constraint lists
-    c_eq = []  # Equality constraints
-    c_ineq = []  # Inequality constraints
+    c_eq = []
+    c_ineq = []
+    output = []
 
     # Loop over all constraint from configuration file
     for constraint in constraints:
-        name = constraint["variable"]
+        name_expr = constraint["variable"]
         constraint_type = constraint["type"]
         target = constraint["value"]
         normalize = constraint.get("normalize", False)
 
-        # Get the performance value for the given variable name
-        current = render_and_evaluate(name, data)
-        if isinstance(target, str):  # Try to render variable when not a number
+        # Evaluate constraint value
+        current = render_and_evaluate(name_expr, data)
+        if isinstance(target, str):
             target = render_and_evaluate(target, data)
 
-        # Evaluate constraint
-        # mismatch = current - target
-        mismatch = target - current
+        # Always treat current as array for uniform handling
+        current = np.atleast_1d(current)
 
-        # Normalize constraint according to specifications
-        normalize_factor = normalize if num.is_numeric(normalize) else target
-        if normalize is not False:
-            if normalize_factor == 0:
-                raise ValueError(
-                    f"Cannot normalize constraint '{name} {constraint_type} {target}' because the normalization factor is '{normalize_factor}' (division by zero)."
-                )
-            mismatch /= normalize_factor
+        for i, curr_val in enumerate(current):
+            # mismatch = target - curr_val
+            mismatch = curr_val - target
 
-        # Add constraints to lists
-        if constraint_type == "=":
-            c_eq.append(mismatch)
-        elif constraint_type == ">":
-            c_ineq.append(mismatch)
-        elif constraint_type == "<":
-            # Change sign because optimizer handles c_ineq > 0
-            c_ineq.append(-mismatch)
-        else:
-            raise ValueError(f"Unknown constraint type: {constraint_type}")
+            if normalize is not False:
+                normalize_factor = normalize if num.is_numeric(normalize) else target
+                if normalize_factor == 0:
+                    raise ValueError(
+                        f"Cannot normalize constraint '{name_expr}[{i}] {constraint_type} {target}' "
+                        f"because normalization factor is 0."
+                    )
+                norm_mismatch = mismatch / normalize_factor
+            else:
+                norm_mismatch = mismatch
+                normalize_factor = None
 
-    # Flatten and concatenate constraints
-    c_eq = np.hstack([np.atleast_1d(item) for item in c_eq]) if c_eq else np.array([])
-    c_ineq = (
-        np.hstack([np.atleast_1d(item) for item in c_ineq]) if c_ineq else np.array([])
-    )
+            # Determine satisfaction
+            tol = 1e-4
+            if constraint_type == "=":
+                satisfied = np.isclose(norm_mismatch, 0.0, atol=tol)
+                c_eq.append(norm_mismatch)
 
-    return c_eq, c_ineq
+            elif constraint_type == ">":
+                satisfied = norm_mismatch > -tol or np.isclose(norm_mismatch, 0.0, atol=tol)
+                c_ineq.append(-norm_mismatch)  # We flip sign: constraint is norm_mismatch ≥ 0 → -norm_mismatch ≤ 0
 
+            elif constraint_type == "<":
+                satisfied = norm_mismatch < tol or np.isclose(norm_mismatch, 0.0, atol=tol)
+                c_ineq.append(norm_mismatch)  # Constraint is norm_mismatch ≤ 0
+
+            else:
+                raise ValueError(f"Unknown constraint type: {constraint_type}")
+
+
+            # Add index if current is an array
+            name_out = f"{name_expr}[{i}]" if current.size > 1 else name_expr
+
+            # print(name_out)
+            output.append({
+                "name": name_out,
+                "value": curr_val,
+                "type": constraint_type,
+                "target": target,
+                "mismatch": mismatch,
+                "normalized_mismatch": norm_mismatch,
+                "satisfied": satisfied,
+                "normalize": normalize_factor,
+            })
+
+    return c_eq, c_ineq, output
+
+      
 
 def evaluate_objective_function(data, objective_function):
     """

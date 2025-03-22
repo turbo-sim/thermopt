@@ -1,3 +1,3 @@
-from .cycle_optimization import *
+from .optimize_cycle import *
 from .components import *
 

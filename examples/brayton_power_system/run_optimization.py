@@ -11,12 +11,12 @@ CONFIG_FILE = "case_sCO2_recuperated.yaml"
 cycle = th.ThermodynamicCycleOptimization(CONFIG_FILE)
 cycle.problem.plot_cycle_realtime(CONFIG_FILE)
 
-# Perform cycle opetimization
+# Perform cycle optimization
 cycle.run_optimization()
 cycle.save_results()
 
-# Create an animation of the optimization progress
-cycle.create_animation(format="mp4", fps=1)
+# # Create an animation of the optimization progress
+cycle.create_animation(format="mp4", fps=0.1)
 
 # Keep plots open
 plt.show()
