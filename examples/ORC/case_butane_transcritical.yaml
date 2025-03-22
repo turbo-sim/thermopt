@@ -1,13 +1,20 @@
-solver_options:
+solver_options: 
+  library: scipy
   method: slsqp
-  tol: 1e-6
-  max_iter: 200
-  derivative_method: 2-point
-  derivative_rel_step: 1e-5
-  display: True
-  plot: False
+  derivative_method: 2-point 
+  derivative_abs_step: 1e-5 
+  print_convergence: True 
+  plot_convergence: False
   logger: None
   update_on: gradient
+  options: 
+    tolerance: 1e-5 
+    max_iterations: 200
+  callbacks:
+    save_cycle: True
+    save_config: True
+    plot_cycle: True
+    plot_convergence: False
 
 
 problem_formulation:
@@ -15,7 +22,7 @@ problem_formulation:
   cycle_topology: recuperated
 
   plot_settings:
-    pinch_point_diagram: True
+    pinch_point_diagram: False
     fluid: 
       plot_saturation_line: True
       plot_critical_point: True
@@ -24,8 +31,8 @@ problem_formulation:
       plot_triple_point_liquid: False
       plot_triple_point_vapor: False
     diagrams:
-      - x_variable: s
-        y_variable: T
+      - x_prop: s
+        y_prop: T
         x_scale: linear
         y_scale: linear
 
@@ -35,10 +42,10 @@ problem_formulation:
     working_fluid:
       name: butane
       backend: HEOS
-      exceptions: False
+      exceptions: True
 
     heating_fluid:
-        name: water
+        name: nitrogen
         backend: HEOS
         exceptions: True
 
@@ -47,18 +54,18 @@ problem_formulation:
       backend: HEOS
       exceptions: True
 
-    net_power: 1
+    net_power: 1e6
     
     # Second law analysis not implemented yet
     # ambient_temperature: 300
     # ambient_pressure: 101325
 
     heat_source:
-      inlet_temperature: 120 + 273.15
-      exit_temperature_max: 120 + 273.15
+      inlet_temperature: 250 + 273.15
+      exit_temperature_max: 100 + 273.15
       exit_temperature_min: 20 + 273.15
-      inlet_pressure: 10*101325
-      exit_pressure: 10*101325
+      inlet_pressure: 1*101325
+      exit_pressure: 1*101325
 
     heat_sink:
       inlet_temperature: 20 + 273.15
@@ -70,7 +77,7 @@ problem_formulation:
     heater:
       pressure_drop_hot_side: 0.01
       pressure_drop_cold_side: 0.01
-      num_elements: 50
+      num_elements: 25
 
     recuperator:
       pressure_drop_hot_side: 0.01
@@ -80,14 +87,14 @@ problem_formulation:
     cooler:
       pressure_drop_hot_side: 0.01
       pressure_drop_cold_side: 0.01
-      num_elements: 50
+      num_elements: 25
 
-    turbine:
+    expander:
       efficiency: 0.90
       efficiency_type: "isentropic"
 
     compressor:
-      efficiency: 0.80
+      efficiency: 0.85
       efficiency_type: "isentropic"
 
     heat_source_pump:
@@ -98,34 +105,38 @@ problem_formulation:
       efficiency: 0.80
       efficiency_type: "isentropic"
 
+
+  # Problem scale affects the optimization convergence. Values above one lead to smaller line search step sizes and more conservative convergence (recommended)
+  design_variables_scale: 25
+
   design_variables:
     heat_source_exit_temperature:
       min: $heat_source.exit_temperature_min
       max: $heat_source.exit_temperature_max
-      value: 0.1
+      value: $heat_source.exit_temperature_min + 0.90*($heat_source.exit_temperature_max - $heat_source.exit_temperature_min)
     heat_sink_exit_temperature:
       min: $heat_sink.exit_temperature_min
       max: $heat_sink.exit_temperature_max
-      value: 0.5
+      value: $heat_sink.exit_temperature_max
     compressor_inlet_pressure:
       min: 0.9*$working_fluid.liquid_at_heat_sink_temperature.p
-      max: 2.5*$working_fluid.liquid_at_heat_sink_temperature.p
-      value: 0.5
+      max: 3.0*$working_fluid.liquid_at_heat_sink_temperature.p
+      value: 2*$working_fluid.liquid_at_heat_sink_temperature.p
     compressor_inlet_enthalpy:
-      min: 0.9*$working_fluid.liquid_at_heat_sink_temperature.h
-      max: 1.5*$working_fluid.liquid_at_heat_sink_temperature.h
-      value: 0.2
-    turbine_inlet_pressure:
-      min: 0.9*$working_fluid.liquid_at_heat_sink_temperature.p
-      max: 1.5*$working_fluid.critical_point.p
-      value: 0.5
-    turbine_inlet_enthalpy:
+      min: 0.0*($working_fluid.critical_point.h - $working_fluid.liquid_at_heat_sink_temperature.h) + $working_fluid.liquid_at_heat_sink_temperature.h
+      max:  0.5*($working_fluid.critical_point.h - $working_fluid.liquid_at_heat_sink_temperature.h) + $working_fluid.liquid_at_heat_sink_temperature.h
+      value: 0.1*($working_fluid.critical_point.h - $working_fluid.liquid_at_heat_sink_temperature.h) + $working_fluid.liquid_at_heat_sink_temperature.h
+    expander_inlet_pressure:
+      min: 0.1*$working_fluid.triple_point_vapor.p
+      max: 3.0*$working_fluid.critical_point.p
+      value: 0.8*$working_fluid.critical_point.p
+    expander_inlet_enthalpy:
       min: 0.20*$working_fluid.gas_at_heat_source_temperature.h
       max: 1.00*$working_fluid.gas_at_heat_source_temperature.h
-      value: 0.5
+      value: 0.90*$working_fluid.gas_at_heat_source_temperature.h
     recuperator_effectiveness:
       min: 0.0
-      max: 0.0
+      max: 1.0
       value: 0.0
 
 
@@ -133,26 +144,46 @@ problem_formulation:
   constraints:
     - variable: $components.heater.temperature_difference
       type: ">"
-      value: 5
+      value: 10
       normalize: True
 
     - variable: $components.cooler.temperature_difference
       type: ">"
-      value: 5
+      value: 10
       normalize: True
+
+
+    - variable: $components.compressor.state_in.subcooling
+      type: ">"
+      value: 1.0
+      normalize: True
+
+    # - variable: $components.expander.state_in.superheating
+    #   type: ">"
+    #   value: 5
 
     # - variable: $components.recuperator.temperature_difference
     #   type: ">"
     #   value: 10
 
-    - variable: $components.turbine.state_in.Q
-      type: ">"
-      value: 1.0
+    # - variable: $components.expander.state_in.p
+    #   type: "<"
+    #   value: 250e5
 
-    - variable: $components.compressor.state_in.subcooling
-      type: ">"
-      value: 1
-      normalize: True
+    # - variable: $components.compressor.state_in.Q
+    #   type: "<"
+    #   value: 0.01
+
+    # - variable: $components.expander.state_in.Q
+    #   type: "<"
+    #   value: 0.7
+
+
+
+    # - variable: $components.expander.state_out.superheating
+    #   type: ">"
+    #   value: 1
+
 
 
   objective_function:

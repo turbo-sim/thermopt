@@ -18,10 +18,9 @@ solver_options:
     plot_convergence: False
 
   
-    
 problem_formulation:
 
-  cycle_topology: recuperated_heat_pump
+  cycle_topology: refrigeration_recuperated
 
   plot_settings:
     pinch_point_diagram: False
@@ -86,9 +85,9 @@ problem_formulation:
       num_elements: 25
 
     recuperator:
-      pressure_drop_hot_side: 0.01
-      pressure_drop_cold_side: 0.01
-      num_elements: 25
+      pressure_drop_hot_side: 0.00
+      pressure_drop_cold_side: 0.00
+      num_elements: 10
 
     cooler:
       pressure_drop_hot_side: 0.01
@@ -96,7 +95,7 @@ problem_formulation:
       num_elements: 25
 
     expander:
-      efficiency: 0.0
+      efficiency: 0.00
       efficiency_type: "isentropic"
 
     compressor:
@@ -111,6 +110,7 @@ problem_formulation:
       efficiency: 0.80
       efficiency_type: "isentropic"
 
+  # Problem scale affects the optimization convergence. Values above one lead to smaller line search step sizes and more conservative convergence (recommended)
   design_variables_scale: 10
 
   design_variables:
@@ -143,11 +143,11 @@ problem_formulation:
       min: 0.5*$working_fluid.critical_point.h
       max: 0.99*$working_fluid.triple_point_vapor.h
       value: 0.70*$working_fluid.critical_point.h
+
     recuperator_effectiveness:
       min: 0.0
-      max: 1e-6
-      # max: 1
-      value: 0.00000
+      max: 0.0
+      value: 0.0
 
   constraints:
     - variable: $components.heater.temperature_difference
@@ -158,13 +158,6 @@ problem_formulation:
       type: ">"
       value: 10
       normalize: True
-    # - variable: $components.recuperator.heat_flow_rate
-    #   type: "="
-    #   value: 0
-    #   normalize: 10e6
-    # - variable: $components.compressor.state_in.Q
-    #   type: "="
-    #   value: 0.95
     - variable: $components.compressor.state_in.superheating
       type: ">"
       value: 1.00
