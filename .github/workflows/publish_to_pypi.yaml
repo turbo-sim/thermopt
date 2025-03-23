@@ -4,8 +4,13 @@ name: publish_to_pypi
 
 on:
   push:
+    branches:
+      - main
     tags:
-      - 'v*.*.*'  # Triggers only on version tags
+      - 'v*.*.*'
+  pull_request:
+    branches:
+      - main
 
 jobs:
   publish_to_pypi:
