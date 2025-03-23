@@ -1,14 +1,14 @@
-from pydantic import BaseModel, ValidationError
-# from .turbo_configurations import AxialTurbine, CentrifugalCompressor
-from typing import Union
+# from pydantic import BaseModel, ValidationError
+# # from .turbo_configurations import AxialTurbine, CentrifugalCompressor
+# from typing import Union
 import yaml
 import numbers
 import numpy as np
 from . import utilities
 
-TURBOMACHINERIES = [
-    "axial_turbine",
-    "centrifugal_compressor"]
+# TURBOMACHINERIES = [
+#     "axial_turbine",
+#     "centrifugal_compressor"]
 
 
 def convert_configuration_options(config):
@@ -177,84 +177,84 @@ def object_to_dict(obj):
         return obj
 
 
-# Function to load and validate the configuration file
-def load_config(config_file_path: str, print_summary=False):
-    """
-    Load and process a configuration file.
+# # Function to load and validate the configuration file
+# def load_config(config_file_path: str, print_summary=False):
+#     """
+#     Load and process a configuration file.
 
-    This function reads a YAML configuration file, validates its contents,
-    and converts it into a configuration object for turbomachinery analysis.
-    The configuration can be printed as a summary if specified.
+#     This function reads a YAML configuration file, validates its contents,
+#     and converts it into a configuration object for turbomachinery analysis.
+#     The configuration can be printed as a summary if specified.
 
-    Parameters
-    ----------
-    config_file_path : str
-        Path to the YAML configuration file.
-    print_summary : bool, optional
-        Whether to print a summary of the loaded configuration (default is True).
+#     Parameters
+#     ----------
+#     config_file_path : str
+#         Path to the YAML configuration file.
+#     print_summary : bool, optional
+#         Whether to print a summary of the loaded configuration (default is True).
 
-    Returns
-    -------
-    dict
-        A dictionary representation of the configuration object,
-        with all nested attributes recursively converted.
+#     Returns
+#     -------
+#     dict
+#         A dictionary representation of the configuration object,
+#         with all nested attributes recursively converted.
 
-    Raises
-    ------
-    FileNotFoundError
-        If the configuration file is not found.
-    ValueError
-        If required fields are missing or contain invalid values.
-    yaml.YAMLError
-        If there is an error parsing the YAML file.
+#     Raises
+#     ------
+#     FileNotFoundError
+#         If the configuration file is not found.
+#     ValueError
+#         If required fields are missing or contain invalid values.
+#     yaml.YAMLError
+#         If there is an error parsing the YAML file.
 
-    """
+#     """
 
-    try:
-        with open(config_file_path, "r") as config_file:
-            # Load config file
-            config_data = yaml.safe_load(config_file)
+#     try:
+#         with open(config_file_path, "r") as config_file:
+#             # Load config file
+#             config_data = yaml.safe_load(config_file)
 
-            # Convert string representation of numbers to number and lists to arrays
-            config_data = convert_configuration_options(config_data)
-            if "turbomachinery" not in config_data:
-                raise ValueError("Missing 'turbomachinery' field in configuration.")
+#             # Convert string representation of numbers to number and lists to arrays
+#             config_data = convert_configuration_options(config_data)
+#             if "turbomachinery" not in config_data:
+#                 raise ValueError("Missing 'turbomachinery' field in configuration.")
 
-            turbomachinery_type = config_data["turbomachinery"]
+#             turbomachinery_type = config_data["turbomachinery"]
 
-            if turbomachinery_type == "axial_turbine":
-                config = AxialTurbine(**config_data)
-            elif turbomachinery_type == 'centrifugal_compressor':
-                config =  CentrifugalCompressor(**config_data)
-            else:
-                raise ValueError(
-                    f"Unknown turbomachinery type: {turbomachinery_type}. Available turbomachineries are: {TURBOMACHINERIES}"
-                )
-            # Convert configuration object to a nested dictionary
-            config = object_to_dict(config)
+#             if turbomachinery_type == "axial_turbine":
+#                 config = AxialTurbine(**config_data)
+#             elif turbomachinery_type == 'centrifugal_compressor':
+#                 config =  CentrifugalCompressor(**config_data)
+#             else:
+#                 raise ValueError(
+#                     f"Unknown turbomachinery type: {turbomachinery_type}. Available turbomachineries are: {TURBOMACHINERIES}"
+#                 )
+#             # Convert configuration object to a nested dictionary
+#             config = object_to_dict(config)
 
-            if config is not None:
-                # Print configuration summary
-                if print_summary:
-                    succsess_message = "Configuration loaded successfully: "
-                    dashed_line = "-" * len(succsess_message)
-                    print(dashed_line)
-                    print(succsess_message)
-                    print(dashed_line)
-                    utilities.print_dict(config)
-                    print(dashed_line)
-                    print("\n")
+#             if config is not None:
+#                 # Print configuration summary
+#                 if print_summary:
+#                     succsess_message = "Configuration loaded successfully: "
+#                     dashed_line = "-" * len(succsess_message)
+#                     print(dashed_line)
+#                     print(succsess_message)
+#                     print(dashed_line)
+#                     utilities.print_dict(config)
+#                     print(dashed_line)
+#                     print("\n")
 
-            return config
+#             return config
 
-    except FileNotFoundError:
-        print("Configuration file not found.")
-    except ValidationError as e:
-        print("Validation error in configuration file:")
-        print(e)
-    except yaml.YAMLError as e:
-        print("Error parsing YAML file:")
-        print(e)
+#     except FileNotFoundError:
+#         print("Configuration file not found.")
+#     except ValidationError as e:
+#         print("Validation error in configuration file:")
+#         print(e)
+#     except yaml.YAMLError as e:
+#         print("Error parsing YAML file:")
+#         print(e)
 
 
 def read_configuration_file(filename):

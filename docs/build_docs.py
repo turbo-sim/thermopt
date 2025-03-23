@@ -1,6 +1,6 @@
 import subprocess
 
-def run_sphinx_apidoc(output_dir, src_dir,exclude = None, force = False):
+def run_sphinx_apidoc(output_dir, src_dir,exclude=None, force=False):
     """
     Run the sphinx-apidoc command to generate API documentation.
 
@@ -59,5 +59,5 @@ if __name__ == "__main__":
     # run_script("build_nomenclature.py")
     # run_script("build_bibliography.py")
     # run_script("build_configuration.py")
-    run_sphinx_apidoc(output_dir="source/api/", src_dir="../barotropy")
+    run_sphinx_apidoc(output_dir="source/api/", src_dir="../thermopt")
     run_sphinx_build(docs_dir=".", build_dir="_build")#, builder="html")

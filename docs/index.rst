@@ -29,6 +29,7 @@ Use the panel to the left or the table of contents below to navigate the documen
    source/installation
    source/tutorials
    source/cycle_optimization
+   source/developer_guide
    source/bibliography
    source/api/thermopt
 
