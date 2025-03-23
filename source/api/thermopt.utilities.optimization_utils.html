@@ -1,0 +1,611 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>thermopt.utilities.optimization_utils module &#8212; thermopt v0.0.5 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=113287e0"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'source/api/thermopt.utilities.optimization_utils';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="thermopt.config module" href="thermopt.config.html" />
+    <link rel="prev" title="thermopt.utilities.numerics module" href="thermopt.utilities.numerics.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">thermopt v0.0.5 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cycle_optimization.html">Cycle optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide.html">Developer guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="thermopt.html">thermopt package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="thermopt.cycles.html">thermopt.cycles package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.components.html">thermopt.cycles.components module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_power_recuperated.html">thermopt.cycles.cycle_power_recuperated module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_power_simple.html">thermopt.cycles.cycle_power_simple module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_power_split_compression.html">thermopt.cycles.cycle_power_split_compression module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_refrigeration_recuperated.html">thermopt.cycles.cycle_refrigeration_recuperated module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_refrigeration_simple.html">thermopt.cycles.cycle_refrigeration_simple module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.optimize_cycle.html">thermopt.cycles.optimize_cycle module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="thermopt.properties.html">thermopt.properties package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.properties.core_calculations.html">thermopt.properties.core_calculations module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.properties.fluid_properties.html">thermopt.properties.fluid_properties module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="thermopt.pysolver_view.html">thermopt.pysolver_view package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.nonlinear_system.html">thermopt.pysolver_view.nonlinear_system module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.nonlinear_system_problems.html">thermopt.pysolver_view.nonlinear_system_problems module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.numerical_differentiation.html">thermopt.pysolver_view.numerical_differentiation module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.optimization.html">thermopt.pysolver_view.optimization module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.optimization_problems.html">thermopt.pysolver_view.optimization_problems module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.optimization_wrappers.html">thermopt.pysolver_view.optimization_wrappers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.pysolver_utilities.html">thermopt.pysolver_view.pysolver_utilities module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="thermopt.utilities.html">thermopt.utilities package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="thermopt.utilities.file_utils.html">thermopt.utilities.file_utils module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.utilities.graphics.html">thermopt.utilities.graphics module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.utilities.numerics.html">thermopt.utilities.numerics module</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">thermopt.utilities.optimization_utils module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="thermopt.config.html">thermopt.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermopt.math.html">thermopt.math module</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/source/api/thermopt.utilities.optimization_utils.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>thermopt.utilities.optimization_utils module</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.utilities.optimization_utils.evaluate_constraints"><code class="docutils literal notranslate"><span class="pre">evaluate_constraints()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.utilities.optimization_utils.evaluate_objective_function"><code class="docutils literal notranslate"><span class="pre">evaluate_objective_function()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.utilities.optimization_utils.render_and_evaluate"><code class="docutils literal notranslate"><span class="pre">render_and_evaluate()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.utilities.optimization_utils.render_nested_value"><code class="docutils literal notranslate"><span class="pre">render_nested_value()</span></code></a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-thermopt.utilities.optimization_utils">
+<span id="thermopt-utilities-optimization-utils-module"></span><h1>thermopt.utilities.optimization_utils module<a class="headerlink" href="#module-thermopt.utilities.optimization_utils" title="Link to this heading">#</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="thermopt.utilities.optimization_utils.evaluate_constraints">
+<span class="sig-prename descclassname"><span class="pre">thermopt.utilities.optimization_utils.</span></span><span class="sig-name descname"><span class="pre">evaluate_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraints</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/utilities/optimization_utils.html#evaluate_constraints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.utilities.optimization_utils.evaluate_constraints" title="Link to this definition">#</a></dt>
+<dd><p>Evaluates the constraints based on the provided data and constraint definitions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">dict</span></dt><dd><p>A dictionary containing performance data against which the constraints will be evaluated.</p>
+</dd>
+<dt><strong>constraints</strong><span class="classifier">list of dicts</span></dt><dd><p>A list of constraint definitions, where each constraint is defined as a dictionary.
+Each dictionary must have ‘variable’ (str), ‘type’ (str, one of ‘=’, ‘&gt;’, ‘&lt;’), and ‘value’ (numeric).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>tuple:</dt><dd><ul class="simple">
+<li><p>NumPy array of equality constraint residuals</p></li>
+<li><p>NumPy array of inequality constraint residuals</p></li>
+<li><p>List of dicts with detailed constraint evaluation</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="thermopt.utilities.optimization_utils.evaluate_objective_function">
+<span class="sig-prename descclassname"><span class="pre">thermopt.utilities.optimization_utils.</span></span><span class="sig-name descname"><span class="pre">evaluate_objective_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objective_function</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/utilities/optimization_utils.html#evaluate_objective_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.utilities.optimization_utils.evaluate_objective_function" title="Link to this definition">#</a></dt>
+<dd><p>Evaluates the objective function based on the provided data and configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">dict</span></dt><dd><p>A dictionary containing performance data against which the objective function will be evaluated.</p>
+</dd>
+<dt><strong>objective_function</strong><span class="classifier">dict</span></dt><dd><p>A dictionary defining the objective function. It must have ‘variable’ (str)
+and ‘type’ (str, either ‘minimize’ or ‘maximize’).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>float</dt><dd><p>The value of the objective function, adjusted for optimization. Positive for minimization and
+negative for maximization.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>If an unknown objective function type is specified in the configuration.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="thermopt.utilities.optimization_utils.render_and_evaluate">
+<span class="sig-prename descclassname"><span class="pre">thermopt.utilities.optimization_utils.</span></span><span class="sig-name descname"><span class="pre">render_and_evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expression</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/utilities/optimization_utils.html#render_and_evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.utilities.optimization_utils.render_and_evaluate" title="Link to this definition">#</a></dt>
+<dd><p>Render variables prefixed with ‘$’ in an expression and evaluate the resulting expression.</p>
+<p>This function processes an input string <cite>expr</cite>, identifying all occurrences of variables
+indicated by a leading ‘$’ symbol. Each such variable is resolved to its value from the
+provided <cite>context</cite> dictionary. The expression with all variables resolved is then evaluated
+and the result is returned.</p>
+<p>This function is useful to render strings defined in a YAML configuration file to values
+that are calculated within the code and stored in a dicitonary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>expr</strong><span class="classifier">str</span></dt><dd><p>The expression string containing variables to be rendered. Variables in the
+expression are expected to be prefixed with a ‘$’ symbol.</p>
+</dd>
+<dt><strong>data</strong><span class="classifier">dict</span></dt><dd><p>A dictionary containing variables and their corresponding values. These variables
+are used to render values in the expression.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>The result of evaluating the rendered expression. The type of the result depends on the</dt><dd></dd>
+<dt>expression.</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p><cite>pattern</cite>: A regular expression pattern used to identify variables within the expression.
+Variables are expected to be in the format <cite>$variableName</cite>, potentially with dot-separated
+sub-properties (e.g., <cite>$variable.property</cite>).</p></li>
+<li><p><cite>replace_with_value</cite>: An inner function that takes a regex match object and returns
+the value of the variable from <cite>context</cite>. <cite>match.group(1)</cite> returns the first captured
+group from the matched text, which in this case is the variable name excluding the
+leading ‘$’ symbol. For example, in <cite>$variableName</cite>, <cite>match.group(1)</cite> would return
+<cite>variableName</cite>.</p></li>
+<li><p>The function uses Python’s <cite>eval</cite> for evaluation, which should be used cautiously as
+it can execute arbitrary code. Ensure that the context and expressions are from a trusted
+source.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="thermopt.utilities.optimization_utils.render_nested_value">
+<span class="sig-prename descclassname"><span class="pre">thermopt.utilities.optimization_utils.</span></span><span class="sig-name descname"><span class="pre">render_nested_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nested_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/utilities/optimization_utils.html#render_nested_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.utilities.optimization_utils.render_nested_value" title="Link to this definition">#</a></dt>
+<dd><p>Retrieves a value from a nested structure (dictionaries or objects with attributes) using a dot-separated key.</p>
+<p>This function is designed to navigate through a combination of dictionaries and objects. For an object to be
+compatible with this function, it must implement a <cite>keys()</cite> method that returns its attribute names.</p>
+<p>This function is intended as a subroutine of the more genera <code class="docutils literal notranslate"><span class="pre">render_expression</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>nested_key</strong><span class="classifier">str</span></dt><dd><p>A dot-separated key string that specifies the path in the structure.
+For example, ‘level1.level2.key’ will retrieve data[‘level1’][‘level2’][‘key’] if data is a dictionary,
+or data.level1.level2.key if data is an object or a combination of dictionaries and objects.</p>
+</dd>
+<dt><strong>data</strong><span class="classifier">dict or object</span></dt><dd><p>The starting dictionary or object from which to retrieve the value. This can be a nested structure
+of dictionaries and objects.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>value</dt><dd><p>The value retrieved from the nested structure using the specified key.
+The type of the value depends on what is stored at the specified key in the structure.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>KeyError</dt><dd><p>If the specified nested key is not found in the data structure. The error message includes the part
+of the path that was successfully traversed and the available keys or attributes at the last valid level.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="thermopt.utilities.numerics.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">thermopt.utilities.numerics module</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="thermopt.config.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">thermopt.config module</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.utilities.optimization_utils.evaluate_constraints"><code class="docutils literal notranslate"><span class="pre">evaluate_constraints()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.utilities.optimization_utils.evaluate_objective_function"><code class="docutils literal notranslate"><span class="pre">evaluate_objective_function()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.utilities.optimization_utils.render_and_evaluate"><code class="docutils literal notranslate"><span class="pre">render_and_evaluate()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.utilities.optimization_utils.render_nested_value"><code class="docutils literal notranslate"><span class="pre">render_nested_value()</span></code></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Roberto Agromayor
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Sustainable Thermal Power DTU.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
