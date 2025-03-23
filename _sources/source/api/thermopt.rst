@@ -1,4 +1,4 @@
-thermopt package
+API Reference
 ================
 
 .. automodule:: thermopt
