@@ -23,7 +23,7 @@ set_plot_options()
 
 
 # Package info
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 PACKAGE_NAME = "thermopt"
 URL_GITHUB = "https://github.com/turbo-sim/thermopt"
 URL_DOCS = "https://turbo-sim.github.io/thermopt/"
