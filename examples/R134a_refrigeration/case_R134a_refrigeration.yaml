@@ -126,8 +126,8 @@ problem_formulation:
 
     compressor_inlet_enthalpy:
       min: 0.50*$working_fluid.critical_point.h
-      max: 3.00*$working_fluid.critical_point.h
-      value: 1.02*$working_fluid.critical_point.h
+      max: 2.00*$working_fluid.critical_point.h
+      value: 0.95*$working_fluid.critical_point.h
 
     expander_inlet_pressure:
       min: 1.10*$working_fluid.triple_point_liquid.p

@@ -1,4 +1,4 @@
-.. _barotropic_model:
+.. _cycle_optimization:
 
 
 Cycle optimization

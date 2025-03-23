@@ -13,7 +13,7 @@ from .. import utilities as utils
 from .. import pysolver_view as psv
 from .. import properties as props
 
-from ..config_validation import read_configuration_file
+from ..config import read_configuration_file
 
 from . import cycle_power_simple
 from . import cycle_power_recuperated
