@@ -4,7 +4,7 @@
 
 📚 **Documentation**: [https://turbo-sim.github.io/thermopt/](https://turbo-sim.github.io/thermopt/) *(under construction)*
 
----
+
 
 ## 🚀 User installation (via PyPI)
 
@@ -21,7 +21,6 @@ You can then verify the installation with:
 python -c "import thermopt; thermopt.print_package_info()"
 ```
 
----
 
 ## 🛠️ Developer installation (from source with Poetry)
 
@@ -72,13 +71,9 @@ This guide walks you through installation for development using `Poetry`, which 
    ```
 
 
-
-
----
-
 ## 📂 Examples
 
-The `examples/` directory contains a variety of ready-to-run thermodynamic cycle cases, covering different working fluids and applications.
+The [examples](examples) directory contains a variety of ready-to-run thermodynamic cycle cases, covering different working fluids and applications.
 
 Each example:
 - Is defined in a `.yaml` input file
