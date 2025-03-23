@@ -22,7 +22,6 @@ from . import cycle_refrigeration_simple
 from . import cycle_refrigeration_recuperated
 
 
-utils.set_plot_options()
 COLORS_MATLAB = utils.COLORS_MATLAB
 LABEL_MAPPING = {
     "s": "Entropy [J/kg/K]",
@@ -63,34 +62,45 @@ class ThermodynamicCycleOptimization:
             config_file (str): The path to the YAML configuration file.
         """
 
-        # Define filename with unique date-time identifier
-        if out_dir == None:
-            current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-            self.out_dir = f"results/case_{current_time}"
+        # Create output directory
+        if out_dir is None:
+            timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            self.out_dir = f"results/case_{timestamp}"
+        else:
+            self.out_dir = out_dir
 
-        # Create a directory to save simulation results
-        if not os.path.exists(self.out_dir):
-            os.makedirs(self.out_dir)
+        os.makedirs(self.out_dir, exist_ok=True)
 
-        self.config = self.load_config(config_file)
-        self.problem = self.setup_problem()
-        self.solver = self.setup_solver()
+        self.config = self.read_config(config_file)
 
-    def load_config(self, config_file):
+
+    def read_config(self, config_file):
         """
         Loads configuration from a YAML file.
         """
         self.config = read_configuration_file(config_file)
-        return self.config
+        self.load_config(self.config)
+        return self.config   
+
+    def load_config(self, config_dict):
+        """
+        Load a new configuration and update the problem and solver objects.
+        
+        Parameters:
+            config_obj (dict): A dictionary-like configuration object.
+        """
+        self.config = config_dict
+        self.problem = self.setup_problem()
+        self.solver = self.setup_solver()
+        return self.config   
 
     def setup_problem(self):
         """
         Sets up the ThermodynamicCycleProblem based on the loaded configuration.
         """
-        self.problem = ThermodynamicCycleProblem(self.config["problem_formulation"])
+        self.problem = ThermodynamicCycleProblem(self.config["problem_formulation"], out_dir=self.out_dir)
         self.problem.fitness(self.problem.x0)
         return self.problem
-
 
     def setup_solver(self):
         """
@@ -104,8 +114,25 @@ class ThermodynamicCycleOptimization:
         )
         return self.solver
 
+    def set_config_value(self, path, value):
+        """
+        Updates a value in the nested config dictionary using a dot-separated path
+        and refreshes problem and solver.
 
-    def run_optimization(self):
+        Example:
+            set_config_value("problem_formulation.fixed_parameters.expander.efficiency", 0.8)
+        """
+        keys = path.split(".")
+        cfg = self.config
+        for key in keys[:-1]:
+            cfg = cfg[key]
+        cfg[keys[-1]] = value
+
+        # Reinitialize problem and solver
+        self.load_config(self.config)
+
+
+    def run_optimization(self, x0=None):
         """
         Executes the optimization process.
         """
@@ -128,7 +155,10 @@ class ThermodynamicCycleOptimization:
             self.solver._plot_callback([], [], initialize=True)
             self.solver.callback_functions.append(self.solver._plot_callback)
 
-        self.solver.solve(self.problem.x0)
+        if x0 is None:
+            self.solver.solve(self.problem.x0)
+        else:
+            self.solver.solve(x0)
 
     def save_results(self):
         """
@@ -137,8 +167,9 @@ class ThermodynamicCycleOptimization:
         filename = os.path.join(self.out_dir, "optimal_solution")
         self.problem.to_excel(filename=filename + ".xlsx")
         self.problem.save_current_configuration(filename=filename + ".yaml")
-        self.plot_convergence_history(savefile=True)
+        # self.plot_convergence_history(savefile=True)
         self.print_convergence_history(savefile=True)
+        self.problem.print_optimization_report(savefile=True)
 
     def plot_convergence_history(self, savefile=False):
         filename = "convergence_history"
@@ -246,7 +277,8 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         # TODO customize
 
         # Define filename with unique date-time identifier
-        if out_dir == None:
+        self.out_dir = out_dir
+        if self.out_dir is None:
             current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             self.out_dir = f"results/case_{current_time}"
 
@@ -508,21 +540,50 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         return ([0.0] * dim, [self.scale] * dim)
 
 
-    def print_optimization_report(self):
-        self.print_design_variables_report(normalized=True)
-        self.print_design_variables_report(normalized=False)
-        self.print_constraint_report()
+    def print_optimization_report(self, savefile=False, filename=None):
+        """
+        Print or save a complete optimization report, including variables and constraints.
+
+        Parameters
+        ----------
+        savefile : bool
+            If True, the report is written to file instead of printed.
+        filename : str, optional
+            Output filename. Defaults to 'optimization_report.txt'.
+        output_dir : str, optional
+            Output directory. Defaults to 'output'.
+        """
+        report = []
+        report.append(self.print_design_variables_report(normalized=True))
+        report.append(self.print_design_variables_report(normalized=False))
+        report.append(self.print_constraint_report())
+        full_report = "\n".join(report)
+        if savefile:
+            if filename is None:
+                filename = "optimization_report.txt"
+            fullpath = os.path.join(self.out_dir, filename)
+            with open(fullpath, "w") as f:
+                f.write(full_report)
+        else:
+            print(full_report)
+
 
 
     def print_design_variables_report(self, normalized=True):
         """
-        Print design variable bounds and current values.
+        Generate design variable report as a string.
 
         Parameters
         ----------
         normalized : bool
-            Whether to print normalized values. If False, physical values are printed.
+            Whether to show normalized values or physical values.
+
+        Returns
+        -------
+        str
+            The formatted report.
         """
+        lines = []
         vars_dict = self.vars_normalized if normalized else self.vars_physical
         lb_raw = (
             [0.0] * len(vars_dict)
@@ -536,40 +597,45 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         )
         values = [vars_dict[k] for k in self.vars_names]
 
-        print()
-        print("-" * 80)
         scale_type = "normalized" if normalized else "physical"
-        print(f"{'Optimization variables report (' + scale_type + ' values)':<80}")
-        print("-" * 80)
-        print(f"{'Variable name':<35}{'Lower':>15}{'Value':>15}{'Upper':>15}")
-        print("-" * 80)
+        lines.append("")
+        lines.append("-" * 80)
+        lines.append(f"{'Optimization variables report (' + scale_type + ' values)':<80}")
+        lines.append("-" * 80)
+        lines.append(f"{'Variable name':<35}{'Lower':>15}{'Value':>15}{'Upper':>15}")
+        lines.append("-" * 80)
 
         for key, lb, val, ub in zip(self.vars_names, lb_raw, values, ub_raw):
             if normalized:
-                print(f"{key:<35}{lb:>15.4f}{val:>15.4f}{ub:>15.4f}")
+                lines.append(f"{key:<35}{lb:>15.4f}{val:>15.4f}{ub:>15.4f}")
             else:
-                print(f"{key:<35}{lb:>15.3e}{val:>15.3e}{ub:>15.3e}")
+                lines.append(f"{key:<35}{lb:>15.3e}{val:>15.3e}{ub:>15.3e}")
 
-        print("-" * 80)
-
+        lines.append("-" * 80)
+        return "\n".join(lines)
 
 
     def print_constraint_report(self):
         """
-        Print a detailed report of constraint evaluations.
+        Generate constraint report as a string.
+
+        Returns
+        -------
+        str
+            The formatted report.
         """
+        lines = []
+
         if "constraints_report" not in self.cycle_data:
-            print("No constraint report available.")
-            return
+            return "No constraint report available."
 
-        max_name_width = 50  # Truncated name length (fits well with other columns)
-
-        print()
-        print("-" * 80)
-        print(f"{'Optimization constraints report':<80}")
-        print("-" * 80)
-        print(f"{'Constraint name':<52}{'Value':>10}{'Target':>12}{'Ok?':>6}")
-        print("-" * 80)
+        max_name_width = 50
+        lines.append("")
+        lines.append("-" * 80)
+        lines.append(f"{'Optimization constraints report':<80}")
+        lines.append("-" * 80)
+        lines.append(f"{'Constraint name':<52}{'Value':>10}{'Target':>12}{'Ok?':>6}")
+        lines.append("-" * 80)
 
         for entry in self.cycle_data["constraints_report"]:
             name = entry["name"]
@@ -578,17 +644,14 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             value = entry["value"]
             satisfied = "yes" if entry["satisfied"] else "no"
 
-            # Truncate name if needed
             if len(name) > max_name_width:
                 name = "..." + name[-(max_name_width - 3):]
 
             symbol_target = f"{ctype} {target:.3f}"
-            print(f"{name:<52}{value:>10.3f}{symbol_target:>12}{satisfied:>6}")
+            lines.append(f"{name:<52}{value:>10.3f}{symbol_target:>12}{satisfied:>6}")
 
-        print("-" * 80)
-
-
-
+        lines.append("-" * 80)
+        return "\n".join(lines)
 
 
     def get_nec(self):
@@ -826,6 +889,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
 
             # Exit interactive plotting when the user presses enter
             if self.enter_pressed:
+                plt.close(self.figure)
                 break
 
 
