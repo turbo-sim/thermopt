@@ -2,8 +2,8 @@
 
 ``ThermoOpt`` is a Python package for the modeling and optimization of thermodynamic cycles.
 
-📚 **Documentation**: [https://turbo-sim.github.io/thermopt/](https://turbo-sim.github.io/thermopt/) *(under construction)*
-
+📚 **Documentation**: [https://turbo-sim.github.io/thermopt/](https://turbo-sim.github.io/thermopt/) *(under construction)*  
+📦 **PyPI package**: [https://pypi.org/project/thermopt/](https://pypi.org/project/thermopt/)
 
 
 ## 🚀 User installation (via PyPI)
