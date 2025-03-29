@@ -67,5 +67,6 @@ venv/
 # Results folders
 **/output/
 **/results/
+**/results*/
 
 **/assignments/

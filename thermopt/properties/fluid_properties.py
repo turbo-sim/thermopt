@@ -808,12 +808,6 @@ class FluidState:
         # Returns a string representation of the FluidState instance, including its class name, properties, and fluid name.
         return f"{self.__class__.__name__}({self._properties}, '{self.fluid_name}')"
 
-    # def __str__(self):
-    #     # TODO: modify so it is also possible to print non-numeric data
-    #     prop_str = "\n   ".join([f"{k}: {v:6e}" for k, v in self._properties.items()])
-    #     # prop_str = "\n   ".join([f"{k}: {str(v)}" for k, v in self._properties.items()])
-    #     return f"FluidState:\n   {prop_str}"
-
     def __str__(self):
         # Make object print()-able
         prop_str = "\n   ".join(
