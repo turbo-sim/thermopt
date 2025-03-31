@@ -2178,28 +2178,26 @@ diagrams = ["jinja2", "railroad-diagrams"]
 
 [[package]]
 name = "pysolver-view"
-version = "0.2.1"
+version = "0.3.1"
 description = "Visualization of solver convergence evolution"
 optional = false
-python-versions = ">=3.11,<3.14"
+python-versions = "<3.14,>=3.11"
 groups = ["main"]
-files = []
-develop = true
+files = [
+    {file = "pysolver_view-0.3.1-py3-none-any.whl", hash = "sha256:4c1c625935a81192a7d3bf4be5465a5d6af6e501bf002f4910447d1d0140eead"},
+    {file = "pysolver_view-0.3.1.tar.gz", hash = "sha256:d587793f01cddb4e2d810a424ca8e4dd3334ee5036c1aa85da1e6045b03e99bb"},
+]
 
 [package.dependencies]
-cycler = "^0.12.1"
-jax = "^0.5.3"
-matplotlib = "^3.10.1"
-numpy = "^2.2.4"
-openpyxl = "^3.1.5"
-pandas = "^2.2.3"
-PyYAML = "^6.0.2"
-scipy = "^1.15.2"
-toml = "^0.10.2"
-
-[package.source]
-type = "directory"
-url = "../pysolver_view"
+cycler = ">=0.12.1,<0.13.0"
+jax = ">=0.5.3,<0.6.0"
+matplotlib = ">=3.10.1,<4.0.0"
+numpy = ">=2.2.4,<3.0.0"
+openpyxl = ">=3.1.5,<4.0.0"
+pandas = ">=2.2.3,<3.0.0"
+PyYAML = ">=6.0.2,<7.0.0"
+scipy = ">=1.15.2,<2.0.0"
+toml = ">=0.10.2,<0.11.0"
 
 [[package]]
 name = "pytest"
@@ -3204,4 +3202,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.14"
-content-hash = "dca570cbc6d1d518f80e4d46dbce9813e816c017902076dfd4996ff8e1016e83"
+content-hash = "9182aceee8f3ad4c53d1a0a86700b9927af77a71bc1f934a7945e7062e15e552"
