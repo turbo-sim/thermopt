@@ -345,31 +345,51 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># This handles the case of a numpy array with a single scalar value.</span>
             <span class="k">return</span> <span class="n">convert_numpy_to_python</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="n">precision</span><span class="p">)</span>
+        
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">generic</span><span class="p">):</span>
+        <span class="n">scalar</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">scalar</span><span class="p">),</span> <span class="n">precision</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">scalar</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">scalar</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">scalar</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">scalar</span>  <span class="c1"># fallback for other np.generic types</span>
 
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span>
-        <span class="n">data</span><span class="p">,</span>
-        <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">intc</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
-    <span class="p">):</span>
-        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span>
 
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)):</span>
-        <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">item</span><span class="p">()),</span> <span class="n">precision</span><span class="p">)</span>
-
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
-
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">unicode_</span><span class="p">)):</span>
-        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
-
-    <span class="c1"># This will handle Python built-in types and other types that are not numpy.</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
-            <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)):</span>
         <span class="k">return</span> <span class="n">data</span>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported data type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
+    <span class="c1"># elif isinstance(</span>
+    <span class="c1">#     data,</span>
+    <span class="c1">#     (np.integer, np.int_, np.intc, np.intp, np.int8, np.int16, np.int32, np.int64),</span>
+    <span class="c1"># ):</span>
+    <span class="c1">#     return int(data.item())</span>
+
+    <span class="c1"># elif isinstance(data, (np.float_, np.float16, np.float32, np.float64)):</span>
+    <span class="c1">#     return round(float(data.item()), precision)</span>
+
+    <span class="c1"># elif isinstance(data, np.bool_):</span>
+    <span class="c1">#     return bool(data.item())</span>
+
+    <span class="c1"># elif isinstance(data, (np.str_, np.unicode_)):</span>
+    <span class="c1">#     return str(data.item())</span>
+
+    <span class="c1"># # This will handle Python built-in types and other types that are not numpy.</span>
+    <span class="c1"># elif isinstance(data, (float, int, str, bool)):</span>
+    <span class="c1">#     if isinstance(data, float):</span>
+    <span class="c1">#         return round(data, precision)</span>
+    <span class="c1">#     return data</span>
+
+    <span class="c1"># else:</span>
+    <span class="c1">#     raise TypeError(f&quot;Unsupported data type: {type(data)}&quot;)</span>
 
 
 <div class="viewcode-block" id="compare_contents_or_files">
