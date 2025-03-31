@@ -2,19 +2,21 @@ solver_options:
   library: scipy
   method: slsqp
   derivative_method: 2-point 
-  derivative_abs_step: 1e-5 
+  derivative_abs_step: 1e-6
   print_convergence: True 
   plot_convergence: False
   logger: None
   update_on: gradient
-  options: 
-    tolerance: 1e-5 
-    max_iterations: 200
+  tolerance: 1e-6 
+  max_iterations: 200
+  problem_scale: 10
   callbacks:
-    save_cycle: True
+    save_plot: True
     save_config: True
+    save_report: True
     plot_cycle: True
     plot_convergence: False
+
     
 problem_formulation:
 
@@ -122,8 +124,6 @@ problem_formulation:
     variable: $energy_analysis.cycle_efficiency
     type: maximize
 
-  # Problem scale affects the optimization convergence. Values above one lead to smaller line search step sizes and more conservative convergence (recommended)
-  design_variables_scale: 10
   
   design_variables:
     heat_source_exit_temperature:
@@ -155,16 +155,6 @@ problem_formulation:
       min: 0.5*$working_fluid.gas_at_heat_source_temperature.h
       max: 1.0*$working_fluid.gas_at_heat_source_temperature.h
       value: 0.9*$working_fluid.gas_at_heat_source_temperature.h
-
-    # split_compressor_inlet_enthalpy:
-    #   min: 1.2*$working_fluid.liquid_at_heat_sink_temperature.h
-    #   max: 1.00*$working_fluid.gas_at_heat_source_temperature.h
-    #   value: 0.28
-
-    # recuperator_intermediate_enthalpy:
-    #   min: 1.10*$working_fluid.critical_point.h
-    #   max: 1.00*$working_fluid.gas_at_heat_source_temperature.h
-    #   value: 0.5
 
     split_compressor_inlet_enthalpy:
       min: 1.0*$working_fluid.liquid_at_heat_sink_temperature.h

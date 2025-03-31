@@ -8,14 +8,13 @@ th.print_package_info()
 # CONFIG_FILE = "./case_sCO2_heat_pump_valve.yaml"
 CONFIG_FILE = "./case_sCO2_heat_pump_turbine.yaml"
 
-# Initialize Brayton cycle problem
+# Initialize cycle problem
 cycle = th.ThermodynamicCycleOptimization(CONFIG_FILE)
 cycle.problem.plot_cycle_realtime(CONFIG_FILE, update_interval=0.1)
 
 # Perform cycle optimization
 cycle.run_optimization()
 cycle.save_results()
-cycle.problem.print_optimization_report()
 
 # Create an animation of the optimization progress
 cycle.create_animation(format="mp4", fps=1)

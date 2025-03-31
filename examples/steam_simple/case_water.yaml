@@ -2,17 +2,18 @@ solver_options:
   library: scipy
   method: slsqp
   derivative_method: 2-point 
-  derivative_abs_step: 1e-5 
+  derivative_abs_step: 1e-6
   print_convergence: True 
   plot_convergence: False
   logger: None
   update_on: gradient
-  options: 
-    tolerance: 1e-5 
-    max_iterations: 200
+  tolerance: 1e-6 
+  max_iterations: 200
+  problem_scale: 10
   callbacks:
-    save_cycle: True
+    save_plot: True
     save_config: True
+    save_report: True
     plot_cycle: True
     plot_convergence: False
 
@@ -62,7 +63,7 @@ problem_formulation:
     heat_source:
       inlet_temperature: 400 + 273.15
       exit_temperature_max: 390 + 273.15
-      exit_temperature_min: 200 + 273.15
+      exit_temperature_min: 25 + 273.15
       inlet_pressure: 101325
       exit_pressure: 101325
 
@@ -98,9 +99,6 @@ problem_formulation:
     heat_sink_pump:
       efficiency: 1
       efficiency_type: "isentropic"
-
-  # Problem scale affects the optimization convergence. Values above one lead to smaller line search step sizes and more conservative convergence (recommended)
-  design_variables_scale: 10  
 
   design_variables:
     heat_source_exit_temperature:

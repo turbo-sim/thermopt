@@ -2,17 +2,18 @@ solver_options:
   library: scipy
   method: slsqp
   derivative_method: 2-point 
-  derivative_abs_step: 1e-5 
+  derivative_abs_step: 1e-6
   print_convergence: True 
   plot_convergence: False
   logger: None
   update_on: gradient
-  options: 
-    tolerance: 1e-5 
-    max_iterations: 200
+  tolerance: 1e-6 
+  max_iterations: 200
+  problem_scale: 20
   callbacks:
-    save_cycle: True
+    save_plot: True
     save_config: True
+    save_report: True
     plot_cycle: True
     plot_convergence: False
 
@@ -106,34 +107,37 @@ problem_formulation:
       efficiency_type: "isentropic"
 
 
-  # Problem scale affects the optimization convergence. Values above one lead to smaller line search step sizes and more conservative convergence (recommended)
-  design_variables_scale: 25
-
   design_variables:
     heat_source_exit_temperature:
       min: $heat_source.exit_temperature_min
       max: $heat_source.exit_temperature_max
       value: $heat_source.exit_temperature_min + 0.90*($heat_source.exit_temperature_max - $heat_source.exit_temperature_min)
+
     heat_sink_exit_temperature:
       min: $heat_sink.exit_temperature_min
       max: $heat_sink.exit_temperature_max
       value: $heat_sink.exit_temperature_max
+
     compressor_inlet_pressure:
       min: 0.9*$working_fluid.liquid_at_heat_sink_temperature.p
       max: 3.0*$working_fluid.liquid_at_heat_sink_temperature.p
       value: 2*$working_fluid.liquid_at_heat_sink_temperature.p
+
     compressor_inlet_enthalpy:
       min: 0.0*($working_fluid.critical_point.h - $working_fluid.liquid_at_heat_sink_temperature.h) + $working_fluid.liquid_at_heat_sink_temperature.h
       max:  0.5*($working_fluid.critical_point.h - $working_fluid.liquid_at_heat_sink_temperature.h) + $working_fluid.liquid_at_heat_sink_temperature.h
       value: 0.1*($working_fluid.critical_point.h - $working_fluid.liquid_at_heat_sink_temperature.h) + $working_fluid.liquid_at_heat_sink_temperature.h
+
     expander_inlet_pressure:
       min: 0.1*$working_fluid.triple_point_vapor.p
       max: 3.0*$working_fluid.critical_point.p
       value: 0.8*$working_fluid.critical_point.p
+
     expander_inlet_enthalpy:
       min: 0.20*$working_fluid.gas_at_heat_source_temperature.h
       max: 1.00*$working_fluid.gas_at_heat_source_temperature.h
       value: 0.90*$working_fluid.gas_at_heat_source_temperature.h
+
     recuperator_effectiveness:
       min: 0.0
       max: 1.0
@@ -151,7 +155,6 @@ problem_formulation:
       type: ">"
       value: 10
       normalize: True
-
 
     - variable: $components.compressor.state_in.subcooling
       type: ">"
