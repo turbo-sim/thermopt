@@ -38,30 +38,50 @@ def convert_numpy_to_python(data, precision=10):
         else:
             # This handles the case of a numpy array with a single scalar value.
             return convert_numpy_to_python(data.item(), precision)
+        
+    elif isinstance(data, np.generic):
+        scalar = data.item()
+        if np.issubdtype(type(data), np.floating):
+            return round(float(scalar), precision)
+        elif np.issubdtype(type(data), np.integer):
+            return int(scalar)
+        elif np.issubdtype(type(data), np.bool_):
+            return bool(scalar)
+        elif np.issubdtype(type(data), np.str_):
+            return str(scalar)
+        return scalar  # fallback for other np.generic types
 
-    elif isinstance(
-        data,
-        (np.integer, np.int_, np.intc, np.intp, np.int8, np.int16, np.int32, np.int64),
-    ):
-        return int(data.item())
+    elif isinstance(data, float):
+        return round(data, precision)
 
-    elif isinstance(data, (np.float_, np.float16, np.float32, np.float64)):
-        return round(float(data.item()), precision)
-
-    elif isinstance(data, np.bool_):
-        return bool(data.item())
-
-    elif isinstance(data, (np.str_, np.unicode_)):
-        return str(data.item())
-
-    # This will handle Python built-in types and other types that are not numpy.
-    elif isinstance(data, (float, int, str, bool)):
-        if isinstance(data, float):
-            return round(data, precision)
+    elif isinstance(data, (int, str, bool)):
         return data
 
     else:
         raise TypeError(f"Unsupported data type: {type(data)}")
+    # elif isinstance(
+    #     data,
+    #     (np.integer, np.int_, np.intc, np.intp, np.int8, np.int16, np.int32, np.int64),
+    # ):
+    #     return int(data.item())
+
+    # elif isinstance(data, (np.float_, np.float16, np.float32, np.float64)):
+    #     return round(float(data.item()), precision)
+
+    # elif isinstance(data, np.bool_):
+    #     return bool(data.item())
+
+    # elif isinstance(data, (np.str_, np.unicode_)):
+    #     return str(data.item())
+
+    # # This will handle Python built-in types and other types that are not numpy.
+    # elif isinstance(data, (float, int, str, bool)):
+    #     if isinstance(data, float):
+    #         return round(data, precision)
+    #     return data
+
+    # else:
+    #     raise TypeError(f"Unsupported data type: {type(data)}")
 
 
 def compare_contents_or_files(file_or_content_1, file_or_content_2):

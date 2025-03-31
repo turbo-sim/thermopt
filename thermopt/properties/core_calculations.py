@@ -1,9 +1,10 @@
 import numpy as np
 import CoolProp.CoolProp as CP
+import pysolver_view as psv
 
 from .. import math as math
 from .. import utilities as utils
-from .. import pysolver_view as psv
+# from .. import pysolver_view as psv
 
 
 # Define property aliases

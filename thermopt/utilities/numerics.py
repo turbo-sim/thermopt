@@ -48,14 +48,22 @@ def is_numeric(value):
         Returns True if the value is a numeric type (excluding booleans),
         otherwise False.
     """
-    if isinstance(value, numbers.Number) and not isinstance(value, bool):
+    # Exclude Python bool
+    if isinstance(value, bool):
+        return False
+
+    # Python numbers (int, float, complex)
+    if isinstance(value, numbers.Number):
         return True
-    if isinstance(value, (np.int_, np.float_, np.complex_)):
-        return True
+
+    # NumPy scalar types
+    if isinstance(value, np.generic):
+        return np.issubdtype(type(value), np.number) and not np.issubdtype(type(value), np.bool_)
+
+    # NumPy arrays
     if isinstance(value, np.ndarray):
-        return np.issubdtype(value.dtype, np.number) and not np.issubdtype(
-            value.dtype, np.bool_
-        )
+        return np.issubdtype(value.dtype, np.number) and not np.issubdtype(value.dtype, np.bool_)
+
     return False
 
 

@@ -1,12 +1,12 @@
 import numpy as np
-
 import matplotlib.pyplot as plt
 import CoolProp.CoolProp as CP
+import pysolver_view as psv
 
 from functools import wraps
 
 from . import core_calculations as props
-from .. import pysolver_view as psv
+
 from ..utilities import print_dict
 
 MEANLINE_PROPERTIES = [

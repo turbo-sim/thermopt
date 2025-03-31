@@ -7,10 +7,9 @@ import threading
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
+import pysolver_view as psv
 
 from .. import utilities as utils
-from .. import pysolver_view as psv
 from .. import properties as props
 
 from ..config import read_configuration_file
@@ -71,8 +70,8 @@ class ThermodynamicCycleOptimization:
 
         os.makedirs(self.out_dir, exist_ok=True)
 
+        # Read configuration file
         self.config = self.read_config(config_file)
-
 
     def read_config(self, config_file):
         """
@@ -80,25 +79,27 @@ class ThermodynamicCycleOptimization:
         """
         self.config = read_configuration_file(config_file)
         self.load_config(self.config)
-        return self.config   
+        return self.config
 
     def load_config(self, config_dict):
         """
         Load a new configuration and update the problem and solver objects.
-        
+
         Parameters:
             config_obj (dict): A dictionary-like configuration object.
         """
         self.config = config_dict
         self.problem = self.setup_problem()
         self.solver = self.setup_solver()
-        return self.config   
+        return self.config
 
     def setup_problem(self):
         """
         Sets up the ThermodynamicCycleProblem based on the loaded configuration.
         """
-        self.problem = ThermodynamicCycleProblem(self.config["problem_formulation"], out_dir=self.out_dir)
+        self.problem = ThermodynamicCycleProblem(
+            self.config["problem_formulation"], out_dir=self.out_dir
+        )
         self.problem.fitness(self.problem.x0)
         return self.problem
 
@@ -106,7 +107,9 @@ class ThermodynamicCycleOptimization:
         """
         Configures and returns the optimization solver.
         """
-        solver_options = {k: v for k, v in self.config["solver_options"].items() if k != "callbacks"}
+        solver_options = {
+            k: v for k, v in self.config["solver_options"].items() if k != "callbacks"
+        }
         self.solver = psv.OptimizationSolver(
             self.problem,
             **solver_options,  # Pass all options except "callbacks"
@@ -131,7 +134,6 @@ class ThermodynamicCycleOptimization:
         # Reinitialize problem and solver
         self.load_config(self.config)
 
-
     def run_optimization(self, x0=None):
         """
         Executes the optimization process.
@@ -145,11 +147,14 @@ class ThermodynamicCycleOptimization:
         if callback_flags.get("plot_cycle", False):
             self.solver.callback_functions.append(self.problem.plot_cycle_callback)
 
-        if callback_flags.get("save_cycle", False):
-            self.solver.callback_functions.append(self.problem.save_cycle_callback)
+        if callback_flags.get("save_plot", False):
+            self.solver.callback_functions.append(self.problem.save_plot_callback)
 
         if callback_flags.get("save_config", False):
             self.solver.callback_functions.append(self.problem.save_config_callback)
+
+        if callback_flags.get("save_report", False):
+            self.solver.callback_functions.append(self.problem.save_report_callback)
 
         if callback_flags.get("plot_convergence", False):
             self.solver._plot_callback([], [], initialize=True)
@@ -165,22 +170,32 @@ class ThermodynamicCycleOptimization:
         Saves the results of the optimization, including configurations and output files.
         """
         filename = os.path.join(self.out_dir, "optimal_solution")
-        self.problem.to_excel(filename=filename + ".xlsx")
+        self.problem.save_data_to_excel(filename=filename + ".xlsx")
         self.problem.save_current_configuration(filename=filename + ".yaml")
-        # self.plot_convergence_history(savefile=True)
         self.print_convergence_history(savefile=True)
-        self.problem.print_optimization_report(savefile=True)
+        self.print_optimization_report(savefile=True)
+        self.plot_convergence_history(savefile=True, showfig=False)
 
-    def plot_convergence_history(self, savefile=False):
+    def plot_convergence_history(self, savefile=False, showfig=True):
         filename = "convergence_history"
-        self.solver.plot_convergence_history(savefile=savefile, filename=filename, output_dir=self.out_dir)
-        
+        self.solver.plot_convergence_history(
+            savefile=savefile,
+            filename=filename,
+            output_dir=self.out_dir,
+            showfig=showfig,
+        )
 
     def print_convergence_history(self, savefile=False):
         filename = "convergence_history.txt"
-        self.solver.print_convergence_history(savefile=savefile, filename=filename, output_dir=self.out_dir)
+        self.solver.print_convergence_history(
+            savefile=savefile, filename=filename, output_dir=self.out_dir
+        )
 
-
+    def print_optimization_report(self, savefile=False):
+        filename = "optimization_report.txt"
+        self.solver.print_optimization_report(
+            savefile=savefile, filename=filename, output_dir=self.out_dir
+        )
 
     def create_animation(self, format="both", fps=1):
         """
@@ -207,7 +222,7 @@ class ThermodynamicCycleOptimization:
 
         # Call the utility functions
         if format in ["gif", "both"]:
-            utils.create_gif(image_folder, gif_file, duration=len(image_files)/fps)
+            utils.create_gif(image_folder, gif_file, duration=len(image_files) / fps)
             print(f"GIF saved at {gif_file}")
 
         if format in ["mp4", "both"]:
@@ -262,6 +277,8 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             Dictionary containing the configuration for the thermodynamic cycle problem.
         """
 
+        # TODO improve output directory functionality. Is it needed?
+
         # As the first step, process the fixed parameters for dynamic calculations
         self.fixed_parameters = configuration["fixed_parameters"]
         self.fluid = props.Fluid(**self.fixed_parameters["working_fluid"])
@@ -273,8 +290,8 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         self.configuration = copy.deepcopy(configuration)
         self.graphics = copy.deepcopy(GRAPHICS_PLACEHOLDER)
 
-        self.update_configuration(self.configuration)
-        # TODO customize
+        # Update problem based on current configuration
+        self.update_problem(self.configuration)
 
         # Define filename with unique date-time identifier
         self.out_dir = out_dir
@@ -286,10 +303,22 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         if not os.path.exists(self.out_dir):
             os.makedirs(self.out_dir)
 
-        # # Save the initial configuration as YAML file
-        # self.save_current_configuration("initial_configuration.yaml")
+    def load_configuration_file(self, config_file):
+        """
+        Load and update the problem's configuration from a specified file.
 
-    def update_configuration(self, configuration):
+        Useful to plot the cycle according to the latest version of the configuration
+        file in real time (interactive initial guess generation)
+
+        Parameters
+        ----------
+        config_file : str
+            Path to the configuration file.
+        """
+        config = read_configuration_file(config_file)
+        self.update_problem(config["problem_formulation"])
+
+    def update_problem(self, configuration):
         """
         Update the problem's configuration based on the provided dictionary.
 
@@ -304,14 +333,24 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         self.constraints = conf["constraints"]
         self.fixed_parameters = conf["fixed_parameters"]
         self.objective_function = conf["objective_function"]
-        self.scale = conf["design_variables_scale"]
-        self.vars_names = list(conf["design_variables"].keys())
+        self.variable_names = list(conf["design_variables"].keys())
         self.lb_dict = {k: v["min"] for k, v in conf["design_variables"].items()}
         self.ub_dict = {k: v["max"] for k, v in conf["design_variables"].items()}
-        self.vars_physical = {k: v["value"] for k, v in conf["design_variables"].items()}
-        self.vars_normalized = self._scale_physical_to_normalized(self.vars_physical)
-        self.x0 = np.asarray([var for var in self.vars_normalized.values()])  # Normalized values
-        self.x0 = psv.check_and_clip_initial_guess(self.x0, self.get_bounds(), self.vars_names)
+        self.x0_dict = {k: v["value"] for k, v in conf["design_variables"].items()}
+
+        # Calculate special points before rendering
+        self._calculate_special_points()
+
+        # Evaluate symbolic expressions using data in "params" dict
+        self.lb = []
+        self.ub = []
+        self.x0 = []
+        for k in self.variable_names:
+            self.lb.append(utils.render_and_evaluate(self.lb_dict[k], self.params))
+            self.ub.append(utils.render_and_evaluate(self.ub_dict[k], self.params))
+            self.x0.append(utils.render_and_evaluate(self.x0_dict[k], self.params))
+        self.x0 = np.array(self.x0)
+
 
     def _calculate_special_points(self):
         """
@@ -363,8 +402,8 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         state_dilute = self.fluid.get_state(props.PT_INPUTS, p_triple, T_source)
 
         # Save states in the fixed parameters dictionary
-        self.fixed_parameters_bis = copy.deepcopy(self.fixed_parameters)
-        self.fixed_parameters_bis["working_fluid"] = {
+        self.params = copy.deepcopy(self.fixed_parameters)
+        self.params["working_fluid"] = {
             "critical_point": self.fluid.critical_point.to_dict(),
             "triple_point_liquid": self.fluid.triple_point_liquid.to_dict(),
             "triple_point_vapor": self.fluid.triple_point_vapor.to_dict(),
@@ -372,93 +411,55 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             "gas_at_heat_source_temperature": state_dilute.to_dict(),
         }
 
-
-    def _scale_physical_to_normalized(self, vars_physical):
+    def fitness(self, x):
         """
-        Scale physical variables to a normalized range [0, self.scale].
-
-        Parameters
-        ----------
-        vars_physical : dict
-            Dictionary of physical values to be normalized.
-
-        Returns
-        -------
-        dict
-            Dictionary of normalized values.
-        
-        Raises
-        ------
-        ValueError
-            If bounds are missing or evaluation fails.
+        Evaluate optimization problem
         """
-        vars_normalized = {}
-        for key, value in vars_physical.items():
-            try:
-                value = utils.render_and_evaluate(value, self.fixed_parameters_bis)
-                lower = utils.render_and_evaluate(self.lb_dict[key], self.fixed_parameters_bis)
-                upper = utils.render_and_evaluate(self.ub_dict[key], self.fixed_parameters_bis)
-                if upper == lower:  # Handle case ub=ub separately (fixed design variable)
-                    vars_normalized[key] = 0.0  # or any constant, since it won't be optimized anyway
-                else:
-                    vars_normalized[key] = self.scale * (value - lower) / (upper - lower)
-            except (KeyError, ValueError) as e:
-                raise ValueError(f"Error processing bounds for '{key}': {e}")
 
-        return vars_normalized
+        # Link variable names and values
+        self.x0_dict = dict(zip(self.variable_names, x))
 
+        # Update configuration with the current values of x
+        for k, v in self.x0_dict.items():
+            if k in self.configuration["design_variables"]:
+                self.configuration["design_variables"][k]["value"] = v
+            else:
+                # Optionally handle the error or log a warning if the key does not exist
+                raise KeyError(f"{k} is not a recognized design variable.")
 
-    def _scale_normalized_to_physical(self, vars_normalized):
-        """
-        Scale normalized variables back to physical values.
+        # Evaluate thermodynamic cycle
+        if self.cycle_topology in CYCLE_TOPOLOGIES.keys():
+            self.cycle_data = CYCLE_TOPOLOGIES[self.cycle_topology](
+                self.x0_dict,
+                self.fixed_parameters,
+                self.constraints,
+                self.objective_function,
+            )
+        else:
+            options = ", ".join(f"'{k}'" for k in CYCLE_TOPOLOGIES.keys())
+            raise ValueError(
+                f"Invalid cycle topology: '{self.cycle_topology}'. Available options: {options}"
+            )
 
-        Parameters
-        ----------
-        vars_normalized : dict
-            Dictionary of normalized values in the range [0, self.scale].
+        # Define objective function and constraints
+        self.f = self.cycle_data["objective_function"]
+        self.c_eq = self.cycle_data["equality_constraints"]
+        self.c_ineq = self.cycle_data["inequality_constraints"]
+        self.constraint_data = self.cycle_data["constraints_report"]
 
-        Returns
-        -------
-        dict
-            Dictionary of physical values.
-        
-        Raises
-        ------
-        ValueError
-            If bounds are missing or evaluation fails.
-        """
-        vars_physical = {}
-        for key, value in vars_normalized.items():
-            try:
-                value = utils.render_and_evaluate(value, self.fixed_parameters_bis)
-                lower = utils.render_and_evaluate(self.lb_dict[key], self.fixed_parameters_bis)
-                upper = utils.render_and_evaluate(self.ub_dict[key], self.fixed_parameters_bis)
-                if upper == lower:  # Handle case ub=ub separately (fixed design variable)
-                    vars_physical[key] = lower
-                else:
-                    vars_physical[key] = lower + (upper - lower) * (value / self.scale)
-            except (KeyError, ValueError) as e:
-                raise ValueError(f"Error processing bounds for '{key}': {e}")
+        # Combine objective function and constraints
+        out = psv.combine_objective_and_constraints(self.f, self.c_eq, self.c_ineq)
 
-        return vars_physical
-    
+        return out
 
-    def load_configuration_file(self, config_file):
-        """
-        Load and update the problem's configuration from a specified file.
+    def get_bounds(self):
+        return self.lb, self.ub
 
-        Useful to plot the cycle according to the latest version of the configuration
-        file in real time (interactive initial guess generation)
+    def get_nec(self):
+        return psv.count_constraints(self.c_eq)
 
-        Parameters
-        ----------
-        config_file : str
-            Path to the configuration file.
-        """
-        config = read_configuration_file(config_file)
-        self.update_configuration(config["problem_formulation"])
-        self._calculate_special_points()
-
+    def get_nic(self):
+        return psv.count_constraints(self.c_ineq)
 
     def save_current_configuration(self, filename):
         """Save the current configuration to a YAML file."""
@@ -467,7 +468,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         with open(filename, "w") as file:
             yaml.dump(config_data, file, default_flow_style=False, sort_keys=False)
 
-
+    # TODO: should I move callbacks and plotting to a separate class?
     def save_config_callback(self, x, iter):
         """
         A callback function to save the current configuration during optimization iterations.
@@ -490,272 +491,29 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         # Call the existing function to save the configuration
         self.save_current_configuration(filename)
 
-
-    def fitness(self, x):
+    def save_report_callback(self, x, iter):
         """
-        Evaluate optimization problem
-        """
+        A callback function to save the current configuration during optimization iterations.
 
-        # Convert variables from physical to normalized
-        self.vars_normalized = dict(zip(self.vars_names, x))
-        self.vars_physical = self._scale_normalized_to_physical(self.vars_normalized)
-        
-        # self.print_design_variable_bounds(x)
+        Parameters:
+        - x : The current solution vector from the optimizer.
+        - iter : The current optimization iteration count.
 
-        # Update configuration with the current values of x
-        for k, v in self.vars_physical.items():
-            if k in self.configuration["design_variables"]:
-                self.configuration["design_variables"][k]["value"] = v
-            else:
-                # Optionally handle the error or log a warning if the key does not exist
-                raise KeyError(f"{k} is not a recognized design variable.")
-
-        # Evaluate thermodynamic cycle
-        if self.cycle_topology in CYCLE_TOPOLOGIES.keys():
-            self.cycle_data = CYCLE_TOPOLOGIES[self.cycle_topology](
-                self.vars_physical,
-                self.fixed_parameters,
-                self.constraints,
-                self.objective_function,
-            )
-        else:
-            options = ", ".join(f"'{k}'" for k in CYCLE_TOPOLOGIES.keys())
-            raise ValueError(
-                f"Invalid cycle topology: '{self.cycle_topology}'. Available options: {options}"
-            )
-
-        # Define objective function and constraints
-        self.f = self.cycle_data["objective_function"]
-        self.c_eq = self.cycle_data["equality_constraints"]
-        self.c_ineq = self.cycle_data["inequality_constraints"]
-
-        # Combine objective function and constraints
-        out = psv.combine_objective_and_constraints(self.f, self.c_eq, self.c_ineq)
-
-        return out
-
-
-    def get_bounds(self):
-        dim = len(self.vars_normalized)
-        return ([0.0] * dim, [self.scale] * dim)
-
-
-    def print_optimization_report(self, savefile=False, filename=None):
-        """
-        Print or save a complete optimization report, including variables and constraints.
-
-        Parameters
-        ----------
-        savefile : bool
-            If True, the report is written to file instead of printed.
-        filename : str, optional
-            Output filename. Defaults to 'optimization_report.txt'.
-        output_dir : str, optional
-            Output directory. Defaults to 'output'.
-        """
-        report = []
-        report.append(self.print_design_variables_report(normalized=True))
-        report.append(self.print_design_variables_report(normalized=False))
-        report.append(self.print_constraint_report())
-        full_report = "\n".join(report)
-        if savefile:
-            if filename is None:
-                filename = "optimization_report.txt"
-            fullpath = os.path.join(self.out_dir, filename)
-            with open(fullpath, "w") as f:
-                f.write(full_report)
-        else:
-            print(full_report)
-
-
-
-    def print_design_variables_report(self, normalized=True):
-        """
-        Generate design variable report as a string.
-
-        Parameters
-        ----------
-        normalized : bool
-            Whether to show normalized values or physical values.
-
-        Returns
-        -------
-        str
-            The formatted report.
-        """
-        lines = []
-        vars_dict = self.vars_normalized if normalized else self.vars_physical
-        lb_raw = (
-            [0.0] * len(vars_dict)
-            if normalized
-            else [utils.render_and_evaluate(self.lb_dict[k], self.fixed_parameters_bis) for k in self.vars_names]
-        )
-        ub_raw = (
-            [self.scale] * len(vars_dict)
-            if normalized
-            else [utils.render_and_evaluate(self.ub_dict[k], self.fixed_parameters_bis) for k in self.vars_names]
-        )
-        values = [vars_dict[k] for k in self.vars_names]
-
-        scale_type = "normalized" if normalized else "physical"
-        lines.append("")
-        lines.append("-" * 80)
-        lines.append(f"{'Optimization variables report (' + scale_type + ' values)':<80}")
-        lines.append("-" * 80)
-        lines.append(f"{'Variable name':<35}{'Lower':>15}{'Value':>15}{'Upper':>15}")
-        lines.append("-" * 80)
-
-        for key, lb, val, ub in zip(self.vars_names, lb_raw, values, ub_raw):
-            if normalized:
-                lines.append(f"{key:<35}{lb:>15.4f}{val:>15.4f}{ub:>15.4f}")
-            else:
-                lines.append(f"{key:<35}{lb:>15.3e}{val:>15.3e}{ub:>15.3e}")
-
-        lines.append("-" * 80)
-        return "\n".join(lines)
-
-
-    def print_constraint_report(self):
-        """
-        Generate constraint report as a string.
-
-        Returns
-        -------
-        str
-            The formatted report.
-        """
-        lines = []
-
-        if "constraints_report" not in self.cycle_data:
-            return "No constraint report available."
-
-        max_name_width = 50
-        lines.append("")
-        lines.append("-" * 80)
-        lines.append(f"{'Optimization constraints report':<80}")
-        lines.append("-" * 80)
-        lines.append(f"{'Constraint name':<52}{'Value':>10}{'Target':>12}{'Ok?':>6}")
-        lines.append("-" * 80)
-
-        for entry in self.cycle_data["constraints_report"]:
-            name = entry["name"]
-            ctype = entry["type"]
-            target = entry["target"]
-            value = entry["value"]
-            satisfied = "yes" if entry["satisfied"] else "no"
-
-            if len(name) > max_name_width:
-                name = "..." + name[-(max_name_width - 3):]
-
-            symbol_target = f"{ctype} {target:.3f}"
-            lines.append(f"{name:<52}{value:>10.3f}{symbol_target:>12}{satisfied:>6}")
-
-        lines.append("-" * 80)
-        return "\n".join(lines)
-
-
-    def get_nec(self):
-        return psv.count_constraints(self.c_eq)
-
-
-    def get_nic(self):
-        return psv.count_constraints(self.c_ineq)
-
-
-    def to_excel(self, filename="performance.xlsx"):
-        """
-        Exports the cycle performance data to Excel file
+        This function acts as a bridge between the optimizer callback requirements and the
+        existing `save_current_configuration` function.
         """
 
-        # Define variable map
-        variable_map = {
-            "fluid_name": {"name": "fluid_name", "unit": "-"},
-            "T": {"name": "temperature", "unit": "K"},
-            "p": {"name": "pressure", "unit": "Pa"},
-            "rho": {"name": "density", "unit": "kg/m3"},
-            "Q": {"name": "quality", "unit": "-"},
-            "Z": {"name": "compressibility_factor", "unit": "-"},
-            "u": {"name": "internal_energy", "unit": "J/kg"},
-            "h": {"name": "enthalpy", "unit": "J/kg"},
-            "s": {"name": "entropy", "unit": "J/kg/K"},
-            "cp": {"name": "isobaric_heat_capacity", "unit": "J/kg/K"},
-            "cv": {"name": "isochoric_heat_capacity", "unit": "J/kg/K"},
-            "gamma": {"name": "heat_capacity_ratio", "unit": "-"},
-            "a": {"name": "speed_of_sound", "unit": "m/s"},
-            "mu": {"name": "dynamic_viscosity", "unit": "Pa*s"},
-            "k": {"name": "thermal_conductivity", "unit": "W/m/K"},
-            "superheating": {"name": "superheating_degree", "unit": "K"},
-            "subcooling": {"name": "subcooling_degree", "unit": "K"},
-        }
+        # Create a 'results' directory if it doesn't exist
+        self.optimization_dir = os.path.join(self.out_dir, "optimization")
+        os.makedirs(self.optimization_dir, exist_ok=True)
 
-        # Initialize a list to hold all rows of the DataFrame
-        data_rows = []
+        # Define the filename using the solver's iteration number
+        filename = os.path.join(self.optimization_dir, f"iteration_{iter:03d}.txt")
 
-        # Prepare the headers and units rows
-        headers = ["state"]
-        units_row = ["units"]
-
-        for key in variable_map:
-            headers.append(variable_map[key]["name"])
-            units_row.append(variable_map[key]["unit"])
-
-        # Iterate over each component in the dictionary
-        for component_name, component in self.cycle_data["components"].items():
-            if component["type"] == "heat_exchanger":
-                # Handle heat exchanger sides separately
-                for side in ["hot_side", "cold_side"]:
-                    # Append the data for state_in and state_out to the rows list
-                    state_in = component[side]["state_in"].to_dict()
-                    state_out = component[side]["state_out"].to_dict()
-                    data_rows.append(
-                        [f"{component_name}_{side}_in"]
-                        + [state_in.get(key, None) for key in variable_map]
-                    )
-                    data_rows.append(
-                        [f"{component_name}_{side}_out"]
-                        + [state_out.get(key, None) for key in variable_map]
-                    )
-            else:
-                # Handle non-heat exchanger components
-                # Append the data for state_in and state_out to the rows list
-                state_in = component["state_in"].to_dict()
-                state_out = component["state_out"].to_dict()
-                data_rows.append(
-                    [f"{component_name}_in"]
-                    + [state_in.get(key, None) for key in variable_map]
-                )
-                data_rows.append(
-                    [f"{component_name}_out"]
-                    + [state_out.get(key, None) for key in variable_map]
-                )
-
-        # Create a DataFrame with data rows
-        df = pd.DataFrame(data_rows, columns=headers)
-
-        # Insert the units row
-        df.loc[-1] = units_row  # Adding a row
-        df.index = df.index + 1  # Shifting index
-        df = df.sort_index()  # Sorting by index
-
-        # # Export to Excel
-        # df.to_excel(
-        #     os.path.join(self.out_dir, filename),
-        #     index=False,
-        #     header=True,
-        #     sheet_name="cycle_states",
-        # )
-
-        # Prepare energy_analysis data
-        df_2 = pd.DataFrame(
-            list(self.cycle_data["energy_analysis"].items()),
-            columns=["Parameter", "Value"],
-        )
-
-        # Export to Excel
-        # filename = os.path.join(self.out_dir, filename)
-        with pd.ExcelWriter(filename, engine="openpyxl") as writer:
-            df.to_excel(writer, index=False, sheet_name="cycle_states")
-            df_2.to_excel(writer, index=False, sheet_name="energy_analysis")
+        # Call the existing function to save the configuration
+        report = self.make_optimization_report(self.scale_normalized_to_physical(x))
+        with open(filename, "w") as f:
+            f.write(report)
 
 
     def plot_cycle_callback(self, x, iter):
@@ -766,7 +524,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         self.figure.suptitle(f"Optimization iteration: {iter:03d}", fontsize=14, y=0.95)
         self.figure.tight_layout(pad=1)
 
-    def save_cycle_callback(self, x, iter):
+    def save_plot_callback(self, x, iter):
         """
         Save the thermodynamic cycle figure during optimization.
         """
@@ -777,8 +535,6 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         # Save the plot
         filename = os.path.join(self.optimization_dir, f"iteration_{iter:03d}.png")
         self.figure.savefig(filename, dpi=500)
-        
-
 
     def plot_cycle(self):
         """
@@ -837,7 +593,6 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         plt.draw()
         plt.pause(0.01)
 
-
     def plot_cycle_realtime(self, configuration_file, update_interval=0.1):
         """
         Perform interactive plotting, updating the plot based on the configuration file.
@@ -878,7 +633,9 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             self.load_configuration_file(configuration_file)
             self.fitness(self.x0)
             self.plot_cycle()
-            self.figure.suptitle(f"Iterative thermodynamic cycle configuration", fontsize=14, y=0.95)
+            self.figure.suptitle(
+                f"Iterative thermodynamic cycle configuration", fontsize=14, y=0.95
+            )
 
             # Wait for the specified interval before updating again
             time.sleep(update_interval)
@@ -891,8 +648,6 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             if self.enter_pressed:
                 plt.close(self.figure)
                 break
-
-
 
     def _plot_thermodynamic_diagram(self, ax, cycle_data, plot_config, ax_index=0):
         """
@@ -1187,7 +942,6 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
 
         ax.set_xlim(left=0 - Q0 / 50, right=Q0 + Q0 / 50)
 
-
     def _get_diagram_default_settings(self, plot_config):
         """
         Merges user-provided plot settings with default settings.
@@ -1224,3 +978,98 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
 
         # Merge with default values
         return default_settings | plot_config
+
+    def save_data_to_excel(self, filename="performance.xlsx"):
+        """
+        Exports the cycle performance data to Excel file
+        """
+
+        # Define variable map
+        variable_map = {
+            "fluid_name": {"name": "fluid_name", "unit": "-"},
+            "T": {"name": "temperature", "unit": "K"},
+            "p": {"name": "pressure", "unit": "Pa"},
+            "rho": {"name": "density", "unit": "kg/m3"},
+            "Q": {"name": "quality", "unit": "-"},
+            "Z": {"name": "compressibility_factor", "unit": "-"},
+            "u": {"name": "internal_energy", "unit": "J/kg"},
+            "h": {"name": "enthalpy", "unit": "J/kg"},
+            "s": {"name": "entropy", "unit": "J/kg/K"},
+            "cp": {"name": "isobaric_heat_capacity", "unit": "J/kg/K"},
+            "cv": {"name": "isochoric_heat_capacity", "unit": "J/kg/K"},
+            "gamma": {"name": "heat_capacity_ratio", "unit": "-"},
+            "a": {"name": "speed_of_sound", "unit": "m/s"},
+            "mu": {"name": "dynamic_viscosity", "unit": "Pa*s"},
+            "k": {"name": "thermal_conductivity", "unit": "W/m/K"},
+            "superheating": {"name": "superheating_degree", "unit": "K"},
+            "subcooling": {"name": "subcooling_degree", "unit": "K"},
+        }
+
+        # Initialize a list to hold all rows of the DataFrame
+        data_rows = []
+
+        # Prepare the headers and units rows
+        headers = ["state"]
+        units_row = ["units"]
+
+        for key in variable_map:
+            headers.append(variable_map[key]["name"])
+            units_row.append(variable_map[key]["unit"])
+
+        # Iterate over each component in the dictionary
+        for component_name, component in self.cycle_data["components"].items():
+            if component["type"] == "heat_exchanger":
+                # Handle heat exchanger sides separately
+                for side in ["hot_side", "cold_side"]:
+                    # Append the data for state_in and state_out to the rows list
+                    state_in = component[side]["state_in"].to_dict()
+                    state_out = component[side]["state_out"].to_dict()
+                    data_rows.append(
+                        [f"{component_name}_{side}_in"]
+                        + [state_in.get(key, None) for key in variable_map]
+                    )
+                    data_rows.append(
+                        [f"{component_name}_{side}_out"]
+                        + [state_out.get(key, None) for key in variable_map]
+                    )
+            else:
+                # Handle non-heat exchanger components
+                # Append the data for state_in and state_out to the rows list
+                state_in = component["state_in"].to_dict()
+                state_out = component["state_out"].to_dict()
+                data_rows.append(
+                    [f"{component_name}_in"]
+                    + [state_in.get(key, None) for key in variable_map]
+                )
+                data_rows.append(
+                    [f"{component_name}_out"]
+                    + [state_out.get(key, None) for key in variable_map]
+                )
+
+        # Create a DataFrame with data rows
+        df = pd.DataFrame(data_rows, columns=headers)
+
+        # Insert the units row
+        df.loc[-1] = units_row  # Adding a row
+        df.index = df.index + 1  # Shifting index
+        df = df.sort_index()  # Sorting by index
+
+        # # Export to Excel
+        # df.to_excel(
+        #     os.path.join(self.out_dir, filename),
+        #     index=False,
+        #     header=True,
+        #     sheet_name="cycle_states",
+        # )
+
+        # Prepare energy_analysis data
+        df_2 = pd.DataFrame(
+            list(self.cycle_data["energy_analysis"].items()),
+            columns=["Parameter", "Value"],
+        )
+
+        # Export to Excel
+        # filename = os.path.join(self.out_dir, filename)
+        with pd.ExcelWriter(filename, engine="openpyxl") as writer:
+            df.to_excel(writer, index=False, sheet_name="cycle_states")
+            df_2.to_excel(writer, index=False, sheet_name="energy_analysis")

@@ -303,7 +303,7 @@ def evaluate_cycle(
     # c_ineq = None
 
     # Set colors for plotting
-    heater["hot_side"]["color"] = COLORS_MATLAB[1]
+    heater["hot_side"]["color"] = COLORS_MATLAB[6]
     heater["cold_side"]["color"] = COLORS_MATLAB[1]
     recuperator["hot_side"]["color"] = COLORS_MATLAB[1]
     recuperator["cold_side"]["color"] = COLORS_MATLAB[1]

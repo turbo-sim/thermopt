@@ -1,4 +1,13 @@
-# from .cycles.components import *
+# # Highlight exception messages
+# # https://stackoverflow.com/questions/25109105/how-to-colorize-the-output-of-python-errors-in-the-gnome-terminal/52797444#52797444
+# try:
+#     import IPython.core.ultratb
+# except ImportError:
+#     # No IPython. Use default exception printing.
+#     pass
+# else:
+#     import sys
+#     sys.excepthook = IPython.core.ultratb.FormattedTB(color_scheme='linux', call_pdb=False)
 
 # Import submodules
 from .math import *
@@ -6,7 +15,7 @@ from .math import *
 from .config import *
 
 # Import subpackages
-from .pysolver_view import *
+from pysolver_view import *
 from .properties import *
 from .utilities import *
 
@@ -29,7 +38,7 @@ BREAKLINE = 80 * "-"
 
 def print_banner():
     """Prints a banner."""
-    banner = """
+    banner = r"""
       ________                        ____        __ 
      /_  __/ /_  ___  _________ ___  / __ \____  / /_
       / / / __ \/ _ \/ ___/ __ `__ \/ / / / __ \/ __/
