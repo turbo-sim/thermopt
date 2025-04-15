@@ -96,6 +96,28 @@ INPUT_PAIRS = {attr: getattr(CP, attr) for attr in dir(CP) if attr.endswith("_IN
 INPUT_PAIRS = sorted(INPUT_PAIRS.items(), key=lambda x: x[1])
 INPUT_TYPE_MAP = {v: k for k, v in INPUT_PAIRS}
 
+
+# Convert each input key to a tuple of FluidState variable names
+# Capitalized names that should not be lowercased
+preserve_case = {'T', 'Q'}
+
+def extract_vars(name):
+    base = name.replace("_INPUTS", "")
+    parts = []
+    current = base[0]
+    for c in base[1:]:
+        if c.isupper():
+            parts.append(current)
+            current = c
+        else:
+            current += c
+    parts.append(current)
+    return tuple(p if p in preserve_case else p.lower() for p in parts)
+
+INPUT_PAIR_MAP = {k: extract_vars(v) for k, v in INPUT_TYPE_MAP.items()}
+
+
+
 def _handle_computation_exceptions(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):

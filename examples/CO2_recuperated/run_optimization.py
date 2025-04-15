@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 th.print_package_info()
 
 # Define configuration filename
-CONFIG_FILE = "case_sCO2_recuperated.yaml"
+CONFIG_FILE = "case_sCO2_recuperated_ipopt.yaml"
 
 # Initialize cycle problem
 cycle = th.ThermodynamicCycleOptimization(CONFIG_FILE)

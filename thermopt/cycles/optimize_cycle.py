@@ -157,8 +157,8 @@ class ThermodynamicCycleOptimization:
             self.solver.callback_functions.append(self.problem.save_report_callback)
 
         if callback_flags.get("plot_convergence", False):
-            self.solver._plot_callback([], [], initialize=True)
-            self.solver.callback_functions.append(self.solver._plot_callback)
+            self.solver._plot_convergence_callback([], [], initialize=True)
+            self.solver.callback_functions.append(self.solver._plot_convergence_callback)
 
         if x0 is None:
             self.solver.solve(self.problem.x0)
