@@ -325,6 +325,8 @@ document.write(`
     <span class="n">variables</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
     <span class="n">parameters</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
 
+    <span class="c1">#print(&quot;hello&quot;)</span>
+
     <span class="c1"># Initialize fluid objects</span>
     <span class="n">working_fluid</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">Fluid</span><span class="p">(</span>
         <span class="o">**</span><span class="n">parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;working_fluid&quot;</span><span class="p">),</span> <span class="n">identifier</span><span class="o">=</span><span class="s2">&quot;working_fluid&quot;</span>
@@ -337,47 +339,47 @@ document.write(`
     <span class="p">)</span>
 
     <span class="c1"># Extract heat source/sink parameters and give short names</span>
-    <span class="n">T_source_out_max</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exit_temperature_max&quot;</span><span class="p">)</span>
-    <span class="n">T_source_out_min</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exit_temperature_min&quot;</span><span class="p">)</span>
-    <span class="n">T_sink_out_max</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_sink&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exit_temperature_max&quot;</span><span class="p">)</span>
-    <span class="n">T_sink_out_min</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_sink&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exit_temperature_min&quot;</span><span class="p">)</span>
+    <span class="c1"># T_source_out_max = parameters[&quot;heat_source&quot;].pop(&quot;exit_temperature_max&quot;)</span>
+    <span class="c1"># T_source_out_min = parameters[&quot;heat_source&quot;].pop(&quot;exit_temperature_min&quot;)</span>
+    <span class="c1"># T_sink_out_max = parameters[&quot;heat_sink&quot;].pop(&quot;exit_temperature_max&quot;)</span>
+    <span class="c1"># T_sink_out_min = parameters[&quot;heat_sink&quot;].pop(&quot;exit_temperature_min&quot;)</span>
     <span class="n">p_source_out</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exit_pressure&quot;</span><span class="p">)</span>
     <span class="n">p_sink_out</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_sink&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exit_pressure&quot;</span><span class="p">)</span>
 
     <span class="c1"># Compute coldest state at the heat source exit</span>
-    <span class="n">source_out_min</span> <span class="o">=</span> <span class="n">heating_fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span>
-        <span class="n">props</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p_source_out</span><span class="p">,</span> <span class="n">T_source_out_min</span>
-    <span class="p">)</span>
+    <span class="c1"># source_out_min = heating_fluid.get_state(</span>
+    <span class="c1">#     props.PT_INPUTS, p_source_out, T_source_out_min</span>
+    <span class="c1"># )</span>
 
     <span class="c1"># Extract pressure drops and give short names</span>
-    <span class="n">dp_heater_h</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heater&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pressure_drop_hot_side&quot;</span><span class="p">)</span>
-    <span class="n">dp_heater_c</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heater&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pressure_drop_cold_side&quot;</span><span class="p">)</span>
-    <span class="n">dp_cooler_h</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;cooler&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pressure_drop_hot_side&quot;</span><span class="p">)</span>
-    <span class="n">dp_cooler_c</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;cooler&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pressure_drop_cold_side&quot;</span><span class="p">)</span>
+    <span class="n">dp_heater_h</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heater_charge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pressure_drop_hot_side&quot;</span><span class="p">)</span>
+    <span class="n">dp_heater_c</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heater_charge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pressure_drop_cold_side&quot;</span><span class="p">)</span>
+    <span class="n">dp_cooler_h</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;cooler_charge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pressure_drop_hot_side&quot;</span><span class="p">)</span>
+    <span class="n">dp_cooler_c</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;cooler_charge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pressure_drop_cold_side&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">recuperated</span><span class="p">:</span>
-        <span class="n">dp_recup_h</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;recuperator&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pressure_drop_hot_side&quot;</span><span class="p">)</span>
-        <span class="n">dp_recup_c</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;recuperator&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pressure_drop_cold_side&quot;</span><span class="p">)</span>
+        <span class="n">dp_recup_h</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;recuperator_charge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pressure_drop_hot_side&quot;</span><span class="p">)</span>
+        <span class="n">dp_recup_c</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;recuperator_charge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pressure_drop_cold_side&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">dp_recup_c</span><span class="p">,</span> <span class="n">dp_recup_h</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span>
 
     <span class="c1"># Extract design variables from dictionary (make sure all are used)</span>
-    <span class="n">expander_inlet_p</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;expander_inlet_pressure&quot;</span><span class="p">)</span>
-    <span class="n">expander_inlet_h</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;expander_inlet_enthalpy&quot;</span><span class="p">)</span>
-    <span class="n">compressor_inlet_p</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;compressor_inlet_pressure&quot;</span><span class="p">)</span>
-    <span class="n">compressor_inlet_h</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;compressor_inlet_enthalpy&quot;</span><span class="p">)</span>
-    <span class="n">heat_source_temperature_out</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;heat_source_exit_temperature&quot;</span><span class="p">)</span>
-    <span class="n">heat_sink_temperature_out</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;heat_sink_exit_temperature&quot;</span><span class="p">)</span>
+    <span class="n">expander_inlet_p</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;expander_inlet_pressure_charge&quot;</span><span class="p">)</span>
+    <span class="n">expander_inlet_h</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;expander_inlet_enthalpy_charge&quot;</span><span class="p">)</span>
+    <span class="n">compressor_inlet_p</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;compressor_inlet_pressure_charge&quot;</span><span class="p">)</span>
+    <span class="n">compressor_inlet_h</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;compressor_inlet_enthalpy_charge&quot;</span><span class="p">)</span>
+    <span class="n">heat_source_temperature_out</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;heat_source_exit_temperature_charge&quot;</span><span class="p">)</span>
+    <span class="n">heat_sink_temperature_out</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;heat_sink_exit_temperature_charge&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">recuperated</span><span class="p">:</span>
-        <span class="n">recuperator_effectiveness</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;recuperator_effectiveness&quot;</span><span class="p">)</span>
+        <span class="n">recuperator_effectiveness</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;recuperator_effectiveness_charge&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">recuperator_effectiveness</span> <span class="o">=</span> <span class="mf">0.0</span>
 
     <span class="c1"># Evaluate compressor</span>
     <span class="n">dp</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">dp_cooler_h</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">dp_recup_h</span><span class="p">)</span>
     <span class="n">compressor_outlet_p</span> <span class="o">=</span> <span class="n">expander_inlet_p</span> <span class="o">/</span> <span class="n">dp</span>
-    <span class="n">compressor_eff</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;compressor&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;efficiency&quot;</span><span class="p">)</span>
-    <span class="n">compressor_eff_type</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;compressor&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;efficiency_type&quot;</span><span class="p">)</span>
-    <span class="n">compressor</span> <span class="o">=</span> <span class="n">compression_process</span><span class="p">(</span>
+    <span class="n">compressor_eff</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;compressor_charge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;efficiency&quot;</span><span class="p">)</span>
+    <span class="n">compressor_eff_type</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;compressor_charge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;efficiency_type&quot;</span><span class="p">)</span>
+    <span class="n">compressor_charge</span> <span class="o">=</span> <span class="n">compression_process</span><span class="p">(</span>
         <span class="n">working_fluid</span><span class="p">,</span>
         <span class="n">compressor_inlet_h</span><span class="p">,</span>
         <span class="n">compressor_inlet_p</span><span class="p">,</span>
@@ -390,9 +392,9 @@ document.write(`
     <span class="c1"># Evaluate expander</span>
     <span class="n">dp</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">dp_heater_c</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">dp_recup_c</span><span class="p">)</span>
     <span class="n">expander_outlet_p</span> <span class="o">=</span> <span class="n">compressor_inlet_p</span> <span class="o">/</span> <span class="n">dp</span>
-    <span class="n">expander_efficiency</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;expander&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;efficiency&quot;</span><span class="p">)</span>
-    <span class="n">expander_efficiency_type</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;expander&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;efficiency_type&quot;</span><span class="p">)</span>
-    <span class="n">expander</span> <span class="o">=</span> <span class="n">expansion_process</span><span class="p">(</span>
+    <span class="n">expander_efficiency</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;expander_charge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;efficiency&quot;</span><span class="p">)</span>
+    <span class="n">expander_efficiency_type</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;expander_charge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;efficiency_type&quot;</span><span class="p">)</span>
+    <span class="n">expander_charge</span> <span class="o">=</span> <span class="n">expansion_process</span><span class="p">(</span>
         <span class="n">working_fluid</span><span class="p">,</span>
         <span class="n">expander_inlet_h</span><span class="p">,</span>
         <span class="n">expander_inlet_p</span><span class="p">,</span>
@@ -403,21 +405,21 @@ document.write(`
 
     <span class="c1"># Evaluate recuperator</span>
     <span class="n">eps</span> <span class="o">=</span> <span class="n">recuperator_effectiveness</span>
-    <span class="n">T_out_hot</span> <span class="o">=</span> <span class="n">expander</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
-    <span class="n">p_out_cold</span> <span class="o">=</span> <span class="n">compressor</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span>
-    <span class="n">h_out_cold</span> <span class="o">=</span> <span class="n">compressor</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span>
+    <span class="n">T_out_hot</span> <span class="o">=</span> <span class="n">expander_charge</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">p_out_cold</span> <span class="o">=</span> <span class="n">compressor_charge</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span>
+    <span class="n">h_out_cold</span> <span class="o">=</span> <span class="n">compressor_charge</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span>
     <span class="n">p_in_cold</span> <span class="o">=</span> <span class="n">p_out_cold</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">dp_recup_c</span><span class="p">)</span>
     <span class="n">h_in_cold_ideal</span> <span class="o">=</span> <span class="n">working_fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p_in_cold</span><span class="p">,</span> <span class="n">T_out_hot</span><span class="p">)</span><span class="o">.</span><span class="n">h</span>
     <span class="n">h_in_cold_actual</span> <span class="o">=</span> <span class="n">h_out_cold</span> <span class="o">-</span> <span class="n">eps</span> <span class="o">*</span> <span class="p">(</span><span class="n">h_out_cold</span> <span class="o">-</span> <span class="n">h_in_cold_ideal</span><span class="p">)</span>
-    <span class="n">p_out_hot</span> <span class="o">=</span> <span class="n">expander</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span>
-    <span class="n">h_out_hot</span> <span class="o">=</span> <span class="n">expander</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span>
+    <span class="n">p_out_hot</span> <span class="o">=</span> <span class="n">expander_charge</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span>
+    <span class="n">h_out_hot</span> <span class="o">=</span> <span class="n">expander_charge</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span>
     <span class="n">p_in_hot</span> <span class="o">=</span> <span class="n">p_out_hot</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">dp_recup_h</span><span class="p">)</span>
     <span class="n">h_in_hot</span> <span class="o">=</span> <span class="n">h_out_hot</span> <span class="o">+</span> <span class="p">(</span><span class="n">h_out_cold</span> <span class="o">-</span> <span class="n">h_in_cold_actual</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">recuperated</span><span class="p">:</span>
-        <span class="n">num_elements</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;recuperator&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;num_elements&quot;</span><span class="p">)</span>
+        <span class="n">num_elements</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;recuperator_charge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;num_elements&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">num_elements</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="n">recuperator</span> <span class="o">=</span> <span class="n">heat_exchanger</span><span class="p">(</span>
+    <span class="n">recuperator_charge</span> <span class="o">=</span> <span class="n">heat_exchanger</span><span class="p">(</span>
         <span class="n">working_fluid</span><span class="p">,</span>
         <span class="n">h_in_hot</span><span class="p">,</span>
         <span class="n">h_out_hot</span><span class="p">,</span>
@@ -433,18 +435,19 @@ document.write(`
     <span class="p">)</span>
 
     <span class="c1"># Evaluate heater</span>
-    <span class="n">h_in_cold</span> <span class="o">=</span> <span class="n">expander</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span>
-    <span class="n">p_in_cold</span> <span class="o">=</span> <span class="n">expander</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span>
-    <span class="n">h_out_cold</span> <span class="o">=</span> <span class="n">recuperator</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span>
-    <span class="n">p_out_cold</span> <span class="o">=</span> <span class="n">recuperator</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span>
+    <span class="n">h_in_cold</span> <span class="o">=</span> <span class="n">expander_charge</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span>
+    <span class="n">p_in_cold</span> <span class="o">=</span> <span class="n">expander_charge</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span>
+    <span class="n">h_out_cold</span> <span class="o">=</span> <span class="n">recuperator_charge</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span>
+    <span class="n">p_out_cold</span> <span class="o">=</span> <span class="n">recuperator_charge</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span>
     <span class="n">T_in_hot</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;inlet_temperature&quot;</span><span class="p">)</span>
+    <span class="n">T_heat_sink_out_discharge</span> <span class="o">=</span> <span class="n">T_in_hot</span>                           <span class="c1">#an addition</span>
     <span class="n">p_in_hot</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;inlet_pressure&quot;</span><span class="p">)</span>
     <span class="n">h_in_hot</span> <span class="o">=</span> <span class="n">heating_fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p_in_hot</span><span class="p">,</span> <span class="n">T_in_hot</span><span class="p">)</span><span class="o">.</span><span class="n">h</span>
     <span class="n">T_out_hot</span> <span class="o">=</span> <span class="n">heat_source_temperature_out</span>
     <span class="n">p_out_hot</span> <span class="o">=</span> <span class="n">p_in_hot</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">dp_heater_h</span><span class="p">)</span>
     <span class="n">h_out_hot</span> <span class="o">=</span> <span class="n">heating_fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p_out_hot</span><span class="p">,</span> <span class="n">T_out_hot</span><span class="p">)</span><span class="o">.</span><span class="n">h</span>
-    <span class="n">num_elements</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heater&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;num_elements&quot;</span><span class="p">)</span>
-    <span class="n">heater</span> <span class="o">=</span> <span class="n">heat_exchanger</span><span class="p">(</span>
+    <span class="n">num_elements</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heater_charge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;num_elements&quot;</span><span class="p">)</span>
+    <span class="n">heater_charge</span> <span class="o">=</span> <span class="n">heat_exchanger</span><span class="p">(</span>
         <span class="n">heating_fluid</span><span class="p">,</span>
         <span class="n">h_in_hot</span><span class="p">,</span>
         <span class="n">h_out_hot</span><span class="p">,</span>
@@ -461,12 +464,12 @@ document.write(`
 
     <span class="c1"># Evaluate heat source pump</span>
     <span class="c1"># TODO place on other side?</span>
-    <span class="n">h_in</span> <span class="o">=</span> <span class="n">heater</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span>
-    <span class="n">p_in</span> <span class="o">=</span> <span class="n">heater</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span>
+    <span class="n">h_in</span> <span class="o">=</span> <span class="n">heater_charge</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span>
+    <span class="n">p_in</span> <span class="o">=</span> <span class="n">heater_charge</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span>
     <span class="n">p_out</span> <span class="o">=</span> <span class="n">p_source_out</span>
-    <span class="n">efficiency</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_source_pump&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;efficiency&quot;</span><span class="p">)</span>
-    <span class="n">efficiency_type</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_source_pump&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;efficiency_type&quot;</span><span class="p">)</span>
-    <span class="n">heat_source_pump</span> <span class="o">=</span> <span class="n">compression_process</span><span class="p">(</span>
+    <span class="n">efficiency</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_source_pump_charge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;efficiency&quot;</span><span class="p">)</span>
+    <span class="n">efficiency_type</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_source_pump_charge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;efficiency_type&quot;</span><span class="p">)</span>
+    <span class="n">heat_source_pump_charge</span> <span class="o">=</span> <span class="n">compression_process</span><span class="p">(</span>
         <span class="n">heating_fluid</span><span class="p">,</span>
         <span class="n">h_in</span><span class="p">,</span>
         <span class="n">p_in</span><span class="p">,</span>
@@ -478,12 +481,13 @@ document.write(`
     <span class="c1"># Evaluate heat sink pump</span>
     <span class="c1"># TODO place on other side?</span>
     <span class="n">T_in</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_sink&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;inlet_temperature&quot;</span><span class="p">)</span>
+    <span class="n">T_heat_sink_in</span> <span class="o">=</span> <span class="n">T_in</span>                                         <span class="c1">#an addition</span>
     <span class="n">p_in</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_sink&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;inlet_pressure&quot;</span><span class="p">)</span>
     <span class="n">h_in</span> <span class="o">=</span> <span class="n">cooling_fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p_in</span><span class="p">,</span> <span class="n">T_in</span><span class="p">)</span><span class="o">.</span><span class="n">h</span>
     <span class="n">p_out</span> <span class="o">=</span> <span class="n">p_sink_out</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">dp_cooler_c</span><span class="p">)</span>
-    <span class="n">efficiency</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_sink_pump&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;efficiency&quot;</span><span class="p">)</span>
-    <span class="n">efficiency_type</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_sink_pump&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;efficiency_type&quot;</span><span class="p">)</span>
-    <span class="n">heat_sink_pump</span> <span class="o">=</span> <span class="n">compression_process</span><span class="p">(</span>
+    <span class="n">efficiency</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_sink_pump_charge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;efficiency&quot;</span><span class="p">)</span>
+    <span class="n">efficiency_type</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_sink_pump_charge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;efficiency_type&quot;</span><span class="p">)</span>
+    <span class="n">heat_sink_pump_charge</span> <span class="o">=</span> <span class="n">compression_process</span><span class="p">(</span>
         <span class="n">cooling_fluid</span><span class="p">,</span>
         <span class="n">h_in</span><span class="p">,</span>
         <span class="n">p_in</span><span class="p">,</span>
@@ -493,17 +497,17 @@ document.write(`
     <span class="p">)</span>
 
     <span class="c1"># Evaluate cooler</span>
-    <span class="n">p_in_cold</span> <span class="o">=</span> <span class="n">heat_sink_pump</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span>
-    <span class="n">h_in_cold</span> <span class="o">=</span> <span class="n">heat_sink_pump</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span>
+    <span class="n">p_in_cold</span> <span class="o">=</span> <span class="n">heat_sink_pump_charge</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span>
+    <span class="n">h_in_cold</span> <span class="o">=</span> <span class="n">heat_sink_pump_charge</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span>
     <span class="n">p_out_cold</span> <span class="o">=</span> <span class="n">p_in_cold</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">dp_cooler_c</span><span class="p">)</span>
     <span class="n">T_out_cold</span> <span class="o">=</span> <span class="n">heat_sink_temperature_out</span>
     <span class="n">h_out_cold</span> <span class="o">=</span> <span class="n">cooling_fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p_out_cold</span><span class="p">,</span> <span class="n">T_out_cold</span><span class="p">)</span><span class="o">.</span><span class="n">h</span>
-    <span class="n">h_in_hot</span> <span class="o">=</span> <span class="n">compressor</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span>
-    <span class="n">p_in_hot</span> <span class="o">=</span> <span class="n">compressor</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span>
-    <span class="n">h_out_hot</span> <span class="o">=</span> <span class="n">recuperator</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span>
-    <span class="n">p_out_hot</span> <span class="o">=</span> <span class="n">recuperator</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span>
-    <span class="n">num_elements</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;cooler&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;num_elements&quot;</span><span class="p">)</span>
-    <span class="n">cooler</span> <span class="o">=</span> <span class="n">heat_exchanger</span><span class="p">(</span>
+    <span class="n">h_in_hot</span> <span class="o">=</span> <span class="n">compressor_charge</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span>
+    <span class="n">p_in_hot</span> <span class="o">=</span> <span class="n">compressor_charge</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span>
+    <span class="n">h_out_hot</span> <span class="o">=</span> <span class="n">recuperator_charge</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span>
+    <span class="n">p_out_hot</span> <span class="o">=</span> <span class="n">recuperator_charge</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span>
+    <span class="n">num_elements</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;cooler_charge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;num_elements&quot;</span><span class="p">)</span>
+    <span class="n">cooler_charge</span> <span class="o">=</span> <span class="n">heat_exchanger</span><span class="p">(</span>
         <span class="n">working_fluid</span><span class="p">,</span>
         <span class="n">h_in_hot</span><span class="p">,</span>
         <span class="n">h_out_hot</span><span class="p">,</span>
@@ -519,37 +523,413 @@ document.write(`
     <span class="p">)</span>
 
     <span class="c1"># Compute mass flow rates</span>
-    <span class="n">Q_duty</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;heat_duty&quot;</span><span class="p">)</span>
-    <span class="n">m_sink</span> <span class="o">=</span> <span class="n">Q_duty</span> <span class="o">/</span> <span class="n">cooler</span><span class="p">[</span><span class="s2">&quot;q_cold_side&quot;</span><span class="p">]</span>
-    <span class="n">m_total</span> <span class="o">=</span> <span class="n">m_sink</span> <span class="o">*</span> <span class="n">cooler</span><span class="p">[</span><span class="s2">&quot;mass_flow_ratio&quot;</span><span class="p">]</span>
-    <span class="n">m_source</span> <span class="o">=</span> <span class="n">m_total</span> <span class="o">*</span> <span class="n">heater</span><span class="p">[</span><span class="s2">&quot;mass_flow_ratio&quot;</span><span class="p">]</span>
-
+    <span class="n">W_charge</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;charging_power&quot;</span><span class="p">)</span> <span class="c1">#a change 219 to 222</span>
+    <span class="n">m_total_charge</span> <span class="o">=</span> <span class="n">W_charge</span> <span class="o">/</span> <span class="p">(</span><span class="n">compressor_charge</span><span class="p">[</span><span class="s2">&quot;specific_work&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">expander_charge</span><span class="p">[</span><span class="s2">&quot;specific_work&quot;</span><span class="p">])</span>   <span class="c1">#?m of working fluid?</span>
+    <span class="n">m_sink_charge</span> <span class="o">=</span> <span class="mi">1</span>   <span class="c1">#delete</span>
+    <span class="n">m_source_charge</span> <span class="o">=</span> <span class="mi">1</span>   <span class="c1">#delete</span>
+    <span class="c1">#m*(h2-h1)=m*(h2-h1)</span>
+    <span class="c1">#  dh_hot    dh_cold   from heat_exchanger(...)</span>
+    <span class="c1">#m_sink_charge*(cooler[&quot;q_cold_side&quot;]) = m_total_charge*(cooler[&quot;q_hot_side&quot;])</span>
+    <span class="n">m_sink_charge</span> <span class="o">=</span> <span class="n">m_total_charge</span><span class="o">*</span><span class="p">(</span><span class="n">cooler_charge</span><span class="p">[</span><span class="s2">&quot;q_hot_side&quot;</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">cooler_charge</span><span class="p">[</span><span class="s2">&quot;q_cold_side&quot;</span><span class="p">])</span>
+    <span class="n">m_source_charge</span> <span class="o">=</span> <span class="n">m_total_charge</span><span class="o">*</span><span class="p">(</span><span class="n">heater_charge</span><span class="p">[</span><span class="s2">&quot;q_cold_side&quot;</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">heater_charge</span><span class="p">[</span><span class="s2">&quot;q_hot_side&quot;</span><span class="p">])</span>
+    
     <span class="c1"># Add the mass flow to the components</span>
-    <span class="n">heater</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_source</span>
-    <span class="n">heater</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_total</span>
-    <span class="n">recuperator</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_total</span>
-    <span class="n">recuperator</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_total</span>
-    <span class="n">cooler</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_total</span>
-    <span class="n">cooler</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_sink</span>
-    <span class="n">expander</span><span class="p">[</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_total</span>
-    <span class="n">compressor</span><span class="p">[</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_total</span>
-    <span class="n">heat_source_pump</span><span class="p">[</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_source</span>
-    <span class="n">heat_sink_pump</span><span class="p">[</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_sink</span>
+    <span class="n">heater_charge</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_source_charge</span>
+    <span class="n">heater_charge</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_total_charge</span>
+    <span class="n">recuperator_charge</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_total_charge</span>
+    <span class="n">recuperator_charge</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_total_charge</span>
+    <span class="n">cooler_charge</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_total_charge</span>
+    <span class="n">cooler_charge</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_sink_charge</span>
+    <span class="n">expander_charge</span><span class="p">[</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_total_charge</span>
+    <span class="n">compressor_charge</span><span class="p">[</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_total_charge</span>
+    <span class="n">heat_source_pump_charge</span><span class="p">[</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_source_charge</span>
+    <span class="n">heat_sink_pump_charge</span><span class="p">[</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_sink_charge</span>
 
     <span class="c1"># Summary of components</span>
     <span class="n">components</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;expander&quot;</span><span class="p">:</span> <span class="n">expander</span><span class="p">,</span>
-        <span class="s2">&quot;compressor&quot;</span><span class="p">:</span> <span class="n">compressor</span><span class="p">,</span>
-        <span class="s2">&quot;recuperator&quot;</span><span class="p">:</span> <span class="n">recuperator</span><span class="p">,</span>
-        <span class="s2">&quot;heater&quot;</span><span class="p">:</span> <span class="n">heater</span><span class="p">,</span>
-        <span class="s2">&quot;cooler&quot;</span><span class="p">:</span> <span class="n">cooler</span><span class="p">,</span>
-        <span class="s2">&quot;heat_source_pump&quot;</span><span class="p">:</span> <span class="n">heat_source_pump</span><span class="p">,</span>
-        <span class="s2">&quot;heat_sink_pump&quot;</span><span class="p">:</span> <span class="n">heat_sink_pump</span><span class="p">,</span>
+        <span class="s2">&quot;expander&quot;</span><span class="p">:</span> <span class="n">expander_charge</span><span class="p">,</span>
+        <span class="s2">&quot;compressor&quot;</span><span class="p">:</span> <span class="n">compressor_charge</span><span class="p">,</span>
+        <span class="s2">&quot;recuperator&quot;</span><span class="p">:</span> <span class="n">recuperator_charge</span><span class="p">,</span>
+        <span class="s2">&quot;heater&quot;</span><span class="p">:</span> <span class="n">heater_charge</span><span class="p">,</span>
+        <span class="s2">&quot;cooler&quot;</span><span class="p">:</span> <span class="n">cooler_charge</span><span class="p">,</span>
+        <span class="s2">&quot;heat_source_pump&quot;</span><span class="p">:</span> <span class="n">heat_source_pump_charge</span><span class="p">,</span>
+        <span class="s2">&quot;heat_sink_pump&quot;</span><span class="p">:</span> <span class="n">heat_sink_pump_charge</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="c1"># Compute energy balances</span>
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
 
+        <span class="k">if</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;heat_exchanger&quot;</span><span class="p">:</span>
+            <span class="n">hot</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">]</span>
+            <span class="n">cold</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">]</span>
+            <span class="n">Q1</span> <span class="o">=</span> <span class="n">hot</span><span class="p">[</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">hot</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span> <span class="o">-</span> <span class="n">hot</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+            <span class="n">Q2</span> <span class="o">=</span> <span class="n">cold</span><span class="p">[</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">cold</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span> <span class="o">-</span> <span class="n">cold</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+            <span class="n">component</span><span class="p">[</span><span class="s2">&quot;heat_flow_rate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q1</span>
+            <span class="n">component</span><span class="p">[</span><span class="s2">&quot;heat_flow_rate_&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q2</span>
+            <span class="n">component</span><span class="p">[</span><span class="s2">&quot;heat_balance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q1</span> <span class="o">-</span> <span class="n">Q2</span>
+            <span class="n">component</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>                                     <span class="c1">#(want to delete)</span>
+
+        <span class="k">if</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;compressor&quot;</span><span class="p">,</span> <span class="s2">&quot;expander&quot;</span><span class="p">]:</span>
+            <span class="n">component</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;specific_work&quot;</span><span class="p">]</span>
+            <span class="n">component</span><span class="p">[</span><span class="s2">&quot;heat_flow_rate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.00</span>
+
+    <span class="c1"># First-law analysis</span>
+    <span class="n">Q_in</span> <span class="o">=</span> <span class="n">heater_charge</span><span class="p">[</span><span class="s2">&quot;heat_flow_rate&quot;</span><span class="p">]</span>
+    <span class="n">Q_out</span> <span class="o">=</span> <span class="n">cooler_charge</span><span class="p">[</span><span class="s2">&quot;heat_flow_rate&quot;</span><span class="p">]</span>
+    <span class="n">W_out</span> <span class="o">=</span> <span class="n">expander_charge</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span>
+    <span class="n">W_comp</span> <span class="o">=</span> <span class="n">compressor_charge</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span>
+    <span class="n">W_aux</span> <span class="o">=</span> <span class="n">heat_source_pump_charge</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">heat_sink_pump_charge</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span>
+    <span class="n">W_in</span> <span class="o">=</span> <span class="n">W_comp</span> <span class="o">+</span> <span class="n">W_aux</span>
+    <span class="c1"># W_net = W_out - W_in</span>
+    <span class="c1"># Q_in_max = m_source * (heater[&quot;hot_side&quot;][&quot;state_in&quot;].h - source_out_min.h)</span>
+    <span class="n">COP_heat_pump</span> <span class="o">=</span> <span class="n">Q_out</span> <span class="o">/</span> <span class="p">(</span><span class="n">W_in</span> <span class="o">-</span> <span class="n">W_out</span><span class="p">)</span>
+    <span class="n">COP_refrigeration</span> <span class="o">=</span> <span class="n">Q_in</span> <span class="o">/</span> <span class="p">(</span><span class="n">W_in</span> <span class="o">-</span> <span class="n">W_out</span><span class="p">)</span>
+    <span class="c1"># system_efficiency = (W_out - W_in) / Q_in_max</span>
+    <span class="n">backwork_ratio</span> <span class="o">=</span> <span class="n">W_out</span> <span class="o">/</span> <span class="n">W_comp</span>
+    <span class="n">energy_balance</span> <span class="o">=</span> <span class="p">(</span><span class="n">Q_in</span> <span class="o">+</span> <span class="n">W_comp</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">W_out</span> <span class="o">+</span> <span class="n">Q_out</span><span class="p">)</span>  <span class="c1"># Ignore pumps</span>
+    <span class="n">W_net</span> <span class="o">=</span> <span class="n">compressor_charge</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">expander_charge</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Define dictionary with 1st Law analysis</span>
+    <span class="n">energy_analysis</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;heater_heat_flow_charge&quot;</span><span class="p">:</span> <span class="n">Q_in</span><span class="p">,</span>
+        <span class="c1"># &quot;heater_heat_flow_max_charge&quot;: Q_in_max,</span>
+        <span class="s2">&quot;recuperator_heat_flow_charge&quot;</span><span class="p">:</span> <span class="n">recuperator_charge</span><span class="p">[</span><span class="s2">&quot;heat_flow_rate&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;cooler_heat_flow_charge&quot;</span><span class="p">:</span> <span class="n">Q_out</span><span class="p">,</span>
+        <span class="s2">&quot;expander_power_charge&quot;</span><span class="p">:</span> <span class="n">W_out</span><span class="p">,</span>
+        <span class="s2">&quot;compressor_power_charge&quot;</span><span class="p">:</span> <span class="n">W_comp</span><span class="p">,</span>
+        <span class="s2">&quot;heat_source_pump_power_charge&quot;</span><span class="p">:</span> <span class="n">heat_source_pump_charge</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;heat_sink_pump_power_charge&quot;</span><span class="p">:</span> <span class="n">heat_sink_pump_charge</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;net_cycle_power_charge&quot;</span><span class="p">:</span> <span class="n">W_net</span><span class="p">,</span>
+        <span class="c1"># &quot;net_system_power_charge&quot;: W_out - W_in,</span>
+        <span class="s2">&quot;mass_flow_heating_fluid_charge&quot;</span><span class="p">:</span> <span class="n">m_source_charge</span><span class="p">,</span>
+        <span class="s2">&quot;mass_flow_working_fluid_charge&quot;</span><span class="p">:</span> <span class="n">m_total_charge</span><span class="p">,</span>
+        <span class="s2">&quot;mass_flow_cooling_fluid_charge&quot;</span><span class="p">:</span> <span class="n">m_sink_charge</span><span class="p">,</span>
+        <span class="s2">&quot;COP_heat_pump&quot;</span><span class="p">:</span> <span class="n">COP_heat_pump</span><span class="p">,</span>
+        <span class="s2">&quot;COP_refrigeration&quot;</span><span class="p">:</span> <span class="n">COP_refrigeration</span><span class="p">,</span>
+        <span class="s2">&quot;backwork_ratio_charge&quot;</span><span class="p">:</span> <span class="n">backwork_ratio</span><span class="p">,</span>
+        <span class="s2">&quot;energy_balance_charge&quot;</span><span class="p">:</span> <span class="n">energy_balance</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Evaluate objective function and constraints</span>
+    <span class="c1"># output = {&quot;components&quot;: components}</span>
+    <span class="c1"># output = {&quot;components&quot;: components, &quot;energy_analysis&quot;: energy_analysis}</span>
+    <span class="c1"># f = utilities.evaluate_objective_function(output, objective_function)</span>
+    <span class="c1"># c_eq, c_ineq, constraint_report = utilities.evaluate_constraints(output, constraints) we have them three at the bottom</span>
+    <span class="c1"># f = None</span>
+    <span class="c1"># c_eq = None</span>
+    <span class="c1"># c_ineq = None</span>
+
+    <span class="c1"># Set colors for plotting</span>
+    <span class="n">heater_charge</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">heater_charge</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">recuperator_charge</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">recuperator_charge</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">cooler_charge</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">cooler_charge</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+    <span class="n">expander_charge</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">compressor_charge</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Check if any fixed parameter or design variable was not used</span>
+    <span class="c1"># utilities.check_for_unused_keys(parameters, &quot;parameters&quot;, raise_error=True)</span>
+    <span class="c1"># utilities.check_for_unused_keys(variables, &quot;variables&quot;, raise_error=True)</span>
+
+    <span class="c1"># Summary of components</span>
+    <span class="n">components</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;expander_charge&quot;</span><span class="p">:</span> <span class="n">expander_charge</span><span class="p">,</span>
+        <span class="s2">&quot;compressor_charge&quot;</span><span class="p">:</span> <span class="n">compressor_charge</span><span class="p">,</span>
+        <span class="s2">&quot;recuperator_charge&quot;</span><span class="p">:</span> <span class="n">recuperator_charge</span><span class="p">,</span>
+        <span class="s2">&quot;heater_charge&quot;</span><span class="p">:</span> <span class="n">heater_charge</span><span class="p">,</span>
+        <span class="s2">&quot;cooler_charge&quot;</span><span class="p">:</span> <span class="n">cooler_charge</span><span class="p">,</span>
+        <span class="s2">&quot;heat_source_pump_charge&quot;</span><span class="p">:</span> <span class="n">heat_source_pump_charge</span><span class="p">,</span>
+        <span class="s2">&quot;heat_sink_pump_charge&quot;</span><span class="p">:</span> <span class="n">heat_sink_pump_charge</span><span class="p">,</span>       <span class="c1">#(want to delete)(add _charge name above before deleting)</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Cycle performance summary</span>
+    <span class="c1"># output = {</span>
+    <span class="c1">#     **output,</span>
+    <span class="c1">#     &quot;working_fluid&quot;: working_fluid,</span>
+    <span class="c1">#     &quot;heating_fluid&quot;: heating_fluid,</span>
+    <span class="c1">#     &quot;cooling_fluid&quot;: cooling_fluid,</span>
+    <span class="c1">#     &quot;components&quot;: components,</span>
+    <span class="c1">#     &quot;objective_function&quot;: f,</span>
+    <span class="c1">#     &quot;equality_constraints&quot;: c_eq,</span>
+    <span class="c1">#     &quot;inequality_constraints&quot;: c_ineq,</span>
+    <span class="c1"># &quot;constraints_report&quot;: constraint_report,</span>
+    <span class="c1"># }                                          #we have at the end</span>
+
+    <span class="c1"># return output   #(want to delete)</span>
+
+    <span class="c1">#Written be me:</span>
+    <span class="c1">#T_heat_source_charge = 1</span>
+    <span class="c1">#T_heat_sink_charge = 1</span>
+    
+    <span class="c1"># T_source_in_charge = 1</span>
+    <span class="c1"># T_source_out_charge = 1</span>
+    <span class="c1"># T_sink_in_charge = 1</span>
+    <span class="c1"># T_sink_out_charge = 1</span>
+    
+    
+    <span class="c1">#T_heat_source_discharge = 1</span>
+    <span class="c1">#T_heat_sink_discharge = 1</span>
+    
+    <span class="n">T_source_in_discharge</span> <span class="o">=</span> <span class="n">heat_sink_temperature_out</span>
+    <span class="n">test</span> <span class="o">=</span> <span class="n">cooler_charge</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;state_out&quot;</span><span class="p">][</span><span class="s2">&quot;T&quot;</span><span class="p">]</span>
+    <span class="c1">#print(T_source_in_discharge, test)</span>
+    <span class="n">T_source_out_discharge</span> <span class="o">=</span> <span class="n">T_heat_sink_in</span>
+    <span class="n">T_sink_in_discharge</span> <span class="o">=</span> <span class="n">heat_source_temperature_out</span>
+    <span class="n">T_sink_out_discharge</span> <span class="o">=</span> <span class="n">T_heat_sink_out_discharge</span>
+    
+    <span class="n">p_source_in_discharge</span> <span class="o">=</span> <span class="n">cooler_charge</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;state_out&quot;</span><span class="p">][</span><span class="s2">&quot;p&quot;</span><span class="p">]</span>
+    <span class="n">p_source_out_discharge</span> <span class="o">=</span> <span class="n">cooler_charge</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;state_in&quot;</span><span class="p">][</span><span class="s2">&quot;p&quot;</span><span class="p">]</span>
+    <span class="n">p_sink_in_discharge</span> <span class="o">=</span> <span class="n">heater_charge</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;state_out&quot;</span><span class="p">][</span><span class="s2">&quot;p&quot;</span><span class="p">]</span>     <span class="c1">#think this through again</span>
+    <span class="n">p_sink_out_discharge</span> <span class="o">=</span> <span class="n">heater_charge</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;state_in&quot;</span><span class="p">][</span><span class="s2">&quot;p&quot;</span><span class="p">]</span>     <span class="c1">#make sure it makes sense</span>
+
+<span class="c1">###########################################################################################################################</span>
+<span class="c1">#Copy and paste from cycle_power_recuperated:</span>
+<span class="c1"># def evaluate_cycle2(</span>
+<span class="c1">#     variables,</span>
+<span class="c1">#     parameters,</span>
+<span class="c1">#     constraints,</span>
+<span class="c1">#     objective_function,</span>
+<span class="c1">#     recuperated=True,</span>
+<span class="c1"># ):</span>
+<span class="c1">#     # Create copies to not change the originals</span>
+<span class="c1">#     variables = copy.deepcopy(variables)</span>
+<span class="c1">#     parameters = copy.deepcopy(parameters)</span>
+
+<span class="c1">#     # Initialize fluid objects</span>
+<span class="c1">#     working_fluid = props.Fluid(</span>
+<span class="c1">#         **parameters.pop(&quot;working_fluid&quot;), identifier=&quot;working_fluid&quot;</span>
+<span class="c1">#     )</span>
+<span class="c1">#     heating_fluid = props.Fluid(</span>
+<span class="c1">#         **parameters.pop(&quot;heating_fluid&quot;), identifier=&quot;heating_fluid&quot;</span>
+<span class="c1">#     )</span>
+<span class="c1">#     cooling_fluid = props.Fluid(</span>
+<span class="c1">#         **parameters.pop(&quot;cooling_fluid&quot;), identifier=&quot;cooling_fluid&quot;   #(want to delete)</span>
+<span class="c1">#     )</span>
+
+    <span class="c1"># Extract heat source/sink parameters and give short names</span>
+    <span class="c1"># T_source_out_max = parameters[&quot;heat_source&quot;].pop(&quot;exit_temperature_max&quot;)</span>
+    <span class="c1"># T_source_out_min = parameters[&quot;heat_source&quot;].pop(&quot;exit_temperature_min&quot;)</span>
+    <span class="c1"># T_sink_out_max = parameters[&quot;heat_sink&quot;].pop(&quot;exit_temperature_max&quot;)</span>
+    <span class="c1"># T_sink_out_min = parameters[&quot;heat_sink&quot;].pop(&quot;exit_temperature_min&quot;)</span>
+    <span class="c1"># p_source_out = parameters[&quot;heat_source&quot;].pop(&quot;exit_pressure&quot;) #already defined</span>
+    <span class="c1"># p_sink_out = parameters[&quot;heat_sink&quot;].pop(&quot;exit_pressure&quot;) #already defined</span>
+
+    <span class="c1"># Compute coldest state at the heat source exit</span>
+    <span class="c1"># source_out_min = heating_fluid.get_state(</span>
+    <span class="c1">#     props.PT_INPUTS, p_source_out, T_source_out_min</span>
+    <span class="c1"># )</span>
+
+    <span class="c1"># Extract pressure drops and give short names</span>
+    <span class="n">dp_heater_h</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heater_discharge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pressure_drop_hot_side&quot;</span><span class="p">)</span>
+    <span class="n">dp_heater_c</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heater_discharge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pressure_drop_cold_side&quot;</span><span class="p">)</span>
+    <span class="n">dp_cooler_h</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;cooler_discharge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pressure_drop_hot_side&quot;</span><span class="p">)</span>
+    <span class="n">dp_cooler_c</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;cooler_discharge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pressure_drop_cold_side&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">recuperated</span><span class="p">:</span>
+        <span class="n">dp_recup_h</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;recuperator_discharge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pressure_drop_hot_side&quot;</span><span class="p">)</span>
+        <span class="n">dp_recup_c</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;recuperator_discharge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pressure_drop_cold_side&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dp_recup_c</span><span class="p">,</span> <span class="n">dp_recup_h</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span>
+
+    <span class="c1"># Extract design variables from dictionary (make sure all are used)</span>
+    <span class="n">expander_inlet_p</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;expander_inlet_pressure_discharge&quot;</span><span class="p">)</span>
+    <span class="n">expander_inlet_h</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;expander_inlet_enthalpy_discharge&quot;</span><span class="p">)</span>
+    <span class="n">compressor_inlet_p</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;compressor_inlet_pressure_discharge&quot;</span><span class="p">)</span>
+    <span class="n">compressor_inlet_h</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;compressor_inlet_enthalpy_discharge&quot;</span><span class="p">)</span>
+    <span class="c1"># heat_source_temperature_out = variables.pop(&quot;heat_source_exit_temperature_discharge&quot;)</span>
+    <span class="c1"># heat_sink_temperature_out = variables.pop(&quot;heat_sink_exit_temperature_discharge&quot;) #Add these ones as design variables again</span>
+    <span class="k">if</span> <span class="n">recuperated</span><span class="p">:</span>
+        <span class="n">recuperator_effectiveness</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;recuperator_effectiveness_discharge&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">recuperator_effectiveness</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="c1"># Evaluate  compressor</span>
+    <span class="n">dp</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">dp_heater_c</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">dp_recup_c</span><span class="p">)</span>
+    <span class="n">compressor_outlet_p</span> <span class="o">=</span> <span class="n">expander_inlet_p</span> <span class="o">/</span> <span class="n">dp</span>
+    <span class="n">compressor_eff</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;compressor_discharge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;efficiency&quot;</span><span class="p">)</span>
+    <span class="n">compressor_eff_type</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;compressor_discharge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;efficiency_type&quot;</span><span class="p">)</span>
+    <span class="n">compressor_discharge</span> <span class="o">=</span> <span class="n">compression_process</span><span class="p">(</span>
+        <span class="n">working_fluid</span><span class="p">,</span>
+        <span class="n">compressor_inlet_h</span><span class="p">,</span>
+        <span class="n">compressor_inlet_p</span><span class="p">,</span>
+        <span class="n">compressor_outlet_p</span><span class="p">,</span>
+        <span class="n">compressor_eff</span><span class="p">,</span>
+        <span class="n">compressor_eff_type</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Evaluate expander</span>
+    <span class="n">dp</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">dp_cooler_h</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">dp_recup_h</span><span class="p">)</span>
+    <span class="n">expander_outlet_p</span> <span class="o">=</span> <span class="n">compressor_inlet_p</span> <span class="o">/</span> <span class="n">dp</span>
+    <span class="n">expander_efficiency</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;expander_discharge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;efficiency&quot;</span><span class="p">)</span>
+    <span class="n">expander_efficiency_type</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;expander_discharge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;efficiency_type&quot;</span><span class="p">)</span>
+    <span class="n">expander_discharge</span> <span class="o">=</span> <span class="n">expansion_process</span><span class="p">(</span>
+        <span class="n">working_fluid</span><span class="p">,</span>
+        <span class="n">expander_inlet_h</span><span class="p">,</span>
+        <span class="n">expander_inlet_p</span><span class="p">,</span>
+        <span class="n">expander_outlet_p</span><span class="p">,</span>
+        <span class="n">expander_efficiency</span><span class="p">,</span>
+        <span class="n">expander_efficiency_type</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Evaluate recuperator</span>
+    <span class="n">eps</span> <span class="o">=</span> <span class="n">recuperator_effectiveness</span>
+    <span class="n">T_in_hot</span> <span class="o">=</span> <span class="n">expander_discharge</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">p_in_cold</span> <span class="o">=</span> <span class="n">compressor_discharge</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span>
+    <span class="n">h_in_cold</span> <span class="o">=</span> <span class="n">compressor_discharge</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span>
+    <span class="n">p_out_cold</span> <span class="o">=</span> <span class="n">p_in_cold</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">dp_recup_c</span><span class="p">)</span>
+    <span class="n">h_out_cold_ideal</span> <span class="o">=</span> <span class="n">working_fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p_out_cold</span><span class="p">,</span> <span class="n">T_in_hot</span><span class="p">)</span><span class="o">.</span><span class="n">h</span>
+    <span class="n">h_out_cold_ideal</span> <span class="o">=</span> <span class="n">working_fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p_out_cold</span><span class="p">,</span> <span class="n">T_in_hot</span><span class="p">)</span><span class="o">.</span><span class="n">h</span>
+    <span class="n">h_out_cold_actual</span> <span class="o">=</span> <span class="n">h_in_cold</span> <span class="o">+</span> <span class="n">eps</span> <span class="o">*</span> <span class="p">(</span><span class="n">h_out_cold_ideal</span> <span class="o">-</span> <span class="n">h_in_cold</span><span class="p">)</span>
+    <span class="n">p_in_hot</span> <span class="o">=</span> <span class="n">expander_discharge</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span>
+    <span class="n">h_in_hot</span> <span class="o">=</span> <span class="n">expander_discharge</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span>
+    <span class="n">p_out_hot</span> <span class="o">=</span> <span class="n">p_in_hot</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">dp_recup_h</span><span class="p">)</span>
+    <span class="n">h_out_hot</span> <span class="o">=</span> <span class="n">h_in_hot</span> <span class="o">-</span> <span class="p">(</span><span class="n">h_out_cold_actual</span> <span class="o">-</span> <span class="n">h_in_cold</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">recuperated</span><span class="p">:</span>
+        <span class="n">num_elements</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;recuperator_discharge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;num_elements&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">num_elements</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">recuperator_discharge</span> <span class="o">=</span> <span class="n">heat_exchanger</span><span class="p">(</span>
+        <span class="n">working_fluid</span><span class="p">,</span>
+        <span class="n">h_in_hot</span><span class="p">,</span>
+        <span class="n">h_out_hot</span><span class="p">,</span>
+        <span class="n">p_in_hot</span><span class="p">,</span>
+        <span class="n">p_out_hot</span><span class="p">,</span>
+        <span class="n">working_fluid</span><span class="p">,</span>
+        <span class="n">h_in_cold</span><span class="p">,</span>
+        <span class="n">h_out_cold_actual</span><span class="p">,</span>
+        <span class="n">p_in_cold</span><span class="p">,</span>
+        <span class="n">p_out_cold</span><span class="p">,</span>
+        <span class="n">counter_current</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">num_steps</span><span class="o">=</span><span class="n">num_elements</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Evaluate heater</span>
+    <span class="n">h_in_cold</span> <span class="o">=</span> <span class="n">recuperator_discharge</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span>
+    <span class="n">p_in_cold</span> <span class="o">=</span> <span class="n">recuperator_discharge</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span>
+    <span class="n">h_out_cold</span> <span class="o">=</span> <span class="n">expander_discharge</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span>
+    <span class="n">p_out_cold</span> <span class="o">=</span> <span class="n">expander_discharge</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span>
+    <span class="n">T_in_hot</span> <span class="o">=</span> <span class="n">T_source_in_discharge</span>   <span class="c1">#a change</span>
+    <span class="n">p_in_hot</span> <span class="o">=</span> <span class="n">p_source_in_discharge</span>   <span class="c1">#a change</span>
+    <span class="n">h_in_hot</span> <span class="o">=</span> <span class="n">heating_fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p_in_hot</span><span class="p">,</span> <span class="n">T_in_hot</span><span class="p">)</span><span class="o">.</span><span class="n">h</span>
+    <span class="n">T_out_hot</span> <span class="o">=</span> <span class="n">T_source_out_discharge</span>   <span class="c1">#a change</span>
+    <span class="n">p_out_hot</span> <span class="o">=</span> <span class="n">p_in_hot</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">dp_heater_h</span><span class="p">)</span>
+    <span class="n">h_out_hot</span> <span class="o">=</span> <span class="n">heating_fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p_out_hot</span><span class="p">,</span> <span class="n">T_out_hot</span><span class="p">)</span><span class="o">.</span><span class="n">h</span>
+    <span class="n">num_elements</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heater_discharge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;num_elements&quot;</span><span class="p">)</span>
+    <span class="n">heater_discharge</span> <span class="o">=</span> <span class="n">heat_exchanger</span><span class="p">(</span>
+        <span class="n">heating_fluid</span><span class="p">,</span>
+        <span class="n">h_in_hot</span><span class="p">,</span>
+        <span class="n">h_out_hot</span><span class="p">,</span>
+        <span class="n">p_in_hot</span><span class="p">,</span>
+        <span class="n">p_out_hot</span><span class="p">,</span>
+        <span class="n">working_fluid</span><span class="p">,</span>
+        <span class="n">h_in_cold</span><span class="p">,</span>
+        <span class="n">h_out_cold</span><span class="p">,</span>
+        <span class="n">p_in_cold</span><span class="p">,</span>
+        <span class="n">p_out_cold</span><span class="p">,</span>
+        <span class="n">counter_current</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">num_steps</span><span class="o">=</span><span class="n">num_elements</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Evaluate heat source pump</span>
+    <span class="c1"># h_in = heater[&quot;hot_side&quot;][&quot;state_out&quot;].h</span>
+    <span class="c1"># p_in = heater[&quot;hot_side&quot;][&quot;state_out&quot;].p</span>
+    <span class="c1"># p_out = p_source_out</span>
+    <span class="c1"># efficiency = parameters[&quot;heat_source_pump&quot;].pop(&quot;efficiency&quot;)</span>
+    <span class="c1"># efficiency_type = parameters[&quot;heat_source_pump&quot;].pop(&quot;efficiency_type&quot;)</span>
+    <span class="c1"># heat_source_pump_discharge = compression_process(</span>
+    <span class="c1">#     heating_fluid,</span>
+    <span class="c1">#     h_in,</span>
+    <span class="c1">#     p_in,</span>
+    <span class="c1">#     p_out,</span>
+    <span class="c1">#     efficiency,</span>
+    <span class="c1">#     efficiency_type,</span>
+    <span class="c1"># )</span>
+
+    <span class="c1"># Evaluate heat sink pump</span>
+    <span class="c1"># T_in = parameters[&quot;heat_sink&quot;].pop(&quot;inlet_temperature&quot;)</span>
+    <span class="c1"># p_in = parameters[&quot;heat_sink&quot;].pop(&quot;inlet_pressure&quot;)</span>
+    <span class="c1"># h_in = cooling_fluid.get_state(props.PT_INPUTS, p_in, T_in).h</span>
+    <span class="c1"># p_out = p_sink_out / (1 - dp_cooler_c)</span>
+    <span class="c1"># efficiency = parameters[&quot;heat_sink_pump&quot;].pop(&quot;efficiency&quot;)</span>
+    <span class="c1"># efficiency_type = parameters[&quot;heat_sink_pump&quot;].pop(&quot;efficiency_type&quot;)</span>
+    <span class="c1"># heat_sink_pump_discharge = compression_process(</span>
+    <span class="c1">#     cooling_fluid,</span>
+    <span class="c1">#     h_in,</span>
+    <span class="c1">#     p_in,</span>
+    <span class="c1">#     p_out,</span>
+    <span class="c1">#     efficiency,</span>
+    <span class="c1">#     efficiency_type,</span>
+    <span class="c1"># )</span>
+
+    <span class="c1"># Evaluate cooler</span>
+    <span class="n">T_in_cold</span> <span class="o">=</span> <span class="n">T_sink_in_discharge</span>   <span class="c1">#an addition</span>
+    <span class="n">p_in_cold</span> <span class="o">=</span> <span class="n">p_sink_in_discharge</span>   <span class="c1">#an addition</span>
+    <span class="n">h_in_cold</span> <span class="o">=</span> <span class="n">cooling_fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p_in_cold</span><span class="p">,</span> <span class="n">T_in_cold</span><span class="p">)</span><span class="o">.</span><span class="n">h</span> <span class="c1">#an addition</span>
+    <span class="c1"># p_in_cold = heat_sink_pump[&quot;state_out&quot;].p</span>
+    <span class="c1"># h_in_cold = heat_sink_pump[&quot;state_out&quot;].h</span>
+    <span class="n">p_out_cold</span> <span class="o">=</span> <span class="n">p_in_cold</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">dp_cooler_c</span><span class="p">)</span>
+    <span class="n">T_out_cold</span> <span class="o">=</span> <span class="n">T_sink_out_discharge</span>   <span class="c1">#a change</span>
+    <span class="n">h_out_cold</span> <span class="o">=</span> <span class="n">cooling_fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p_out_cold</span><span class="p">,</span> <span class="n">T_out_cold</span><span class="p">)</span><span class="o">.</span><span class="n">h</span>
+    <span class="n">h_in_hot</span> <span class="o">=</span> <span class="n">recuperator_discharge</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span>
+    <span class="n">p_in_hot</span> <span class="o">=</span> <span class="n">recuperator_discharge</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span>
+    <span class="n">h_out_hot</span> <span class="o">=</span> <span class="n">compressor_discharge</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span>
+    <span class="n">p_out_hot</span> <span class="o">=</span> <span class="n">compressor_discharge</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span>
+    <span class="n">num_elements</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;cooler_discharge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;num_elements&quot;</span><span class="p">)</span>
+    <span class="n">cooler_discharge</span> <span class="o">=</span> <span class="n">heat_exchanger</span><span class="p">(</span>
+        <span class="n">working_fluid</span><span class="p">,</span>
+        <span class="n">h_in_hot</span><span class="p">,</span>
+        <span class="n">h_out_hot</span><span class="p">,</span>
+        <span class="n">p_in_hot</span><span class="p">,</span>
+        <span class="n">p_out_hot</span><span class="p">,</span>
+        <span class="n">cooling_fluid</span><span class="p">,</span>
+        <span class="n">h_in_cold</span><span class="p">,</span>
+        <span class="n">h_out_cold</span><span class="p">,</span>
+        <span class="n">p_in_cold</span><span class="p">,</span>
+        <span class="n">p_out_cold</span><span class="p">,</span>
+        <span class="n">counter_current</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">num_steps</span><span class="o">=</span><span class="n">num_elements</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Compute mass flow rates</span>
+    <span class="c1"># W_net = parameters.pop(&quot;net_power&quot;)</span>
+    <span class="c1"># expander_work = expander[&quot;specific_work&quot;]</span>
+    <span class="c1"># compression_work = compressor[&quot;specific_work&quot;]</span>
+    <span class="c1"># m_total = W_net / (expander_work - compression_work)</span>
+    <span class="c1"># m_source = m_total * heater[&quot;mass_flow_ratio&quot;]</span>
+    <span class="c1"># m_sink = m_total / cooler[&quot;mass_flow_ratio&quot;]</span>
+    <span class="n">m_source_discharge</span> <span class="o">=</span> <span class="n">m_sink_charge</span> <span class="c1">#an addition</span>
+    <span class="n">m_total_discharge</span> <span class="o">=</span> <span class="n">m_source_discharge</span><span class="o">*</span><span class="n">heater_discharge</span><span class="p">[</span><span class="s2">&quot;q_hot_side&quot;</span><span class="p">]</span><span class="o">/</span><span class="n">heater_discharge</span><span class="p">[</span><span class="s2">&quot;q_cold_side&quot;</span><span class="p">]</span> <span class="c1">#an addition</span>
+    <span class="n">m_sink_discharge</span> <span class="o">=</span> <span class="n">m_total_discharge</span><span class="o">*</span><span class="p">(</span><span class="n">cooler_discharge</span><span class="p">[</span><span class="s2">&quot;q_hot_side&quot;</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">cooler_discharge</span><span class="p">[</span><span class="s2">&quot;q_cold_side&quot;</span><span class="p">])</span> <span class="c1">#an addition</span>
+    <span class="c1">#print(m_sink_discharge, m_source_charge)</span>
+    <span class="n">m_error</span> <span class="o">=</span> <span class="p">(</span><span class="n">m_sink_discharge</span> <span class="o">-</span> <span class="n">m_source_charge</span><span class="p">)</span><span class="o">/</span><span class="n">m_sink_discharge</span>
+
+    <span class="c1"># Add the mass flow to the components</span>
+    <span class="n">heater_discharge</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_source_discharge</span>
+    <span class="n">heater_discharge</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_total_discharge</span>
+    <span class="n">recuperator_discharge</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_total_discharge</span>
+    <span class="n">recuperator_discharge</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_total_discharge</span>
+    <span class="n">cooler_discharge</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_total_discharge</span>
+    <span class="n">cooler_discharge</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_sink_discharge</span>
+    <span class="n">expander_discharge</span><span class="p">[</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_total_discharge</span>
+    <span class="n">compressor_discharge</span><span class="p">[</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_total_discharge</span>
+    <span class="c1"># heat_source_pump_discharge[&quot;mass_flow&quot;] = m_source_discharge</span>
+    <span class="c1"># heat_sink_pump_discharge[&quot;mass_flow&quot;] = m_sink_discharge</span>
+
+    <span class="c1"># Summary of components</span>
+    <span class="n">components</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="o">**</span><span class="n">components</span><span class="p">,</span>
+        <span class="s2">&quot;expander_discharge&quot;</span><span class="p">:</span> <span class="n">expander_discharge</span><span class="p">,</span>
+        <span class="s2">&quot;compressor_discharge&quot;</span><span class="p">:</span> <span class="n">compressor_discharge</span><span class="p">,</span>
+        <span class="s2">&quot;recuperator_discharge&quot;</span><span class="p">:</span> <span class="n">recuperator_discharge</span><span class="p">,</span>
+        <span class="s2">&quot;heater_discharge&quot;</span><span class="p">:</span> <span class="n">heater_discharge</span><span class="p">,</span>
+        <span class="s2">&quot;cooler_discharge&quot;</span><span class="p">:</span> <span class="n">cooler_discharge</span><span class="p">,</span>
+        <span class="c1"># &quot;heat_source_pump_discharge&quot;: heat_source_pump,</span>
+        <span class="c1"># &quot;heat_sink_pump_discharge&quot;: heat_sink_pump,</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Compute energy balances</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;heat_exchanger&quot;</span><span class="p">:</span>
             <span class="n">hot</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">]</span>
             <span class="n">cold</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">]</span>
@@ -565,74 +945,65 @@ document.write(`
             <span class="n">component</span><span class="p">[</span><span class="s2">&quot;heat_flow_rate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.00</span>
 
     <span class="c1"># First-law analysis</span>
-    <span class="n">Q_in</span> <span class="o">=</span> <span class="n">heater</span><span class="p">[</span><span class="s2">&quot;heat_flow_rate&quot;</span><span class="p">]</span>
-    <span class="n">Q_out</span> <span class="o">=</span> <span class="n">cooler</span><span class="p">[</span><span class="s2">&quot;heat_flow_rate&quot;</span><span class="p">]</span>
-    <span class="n">W_out</span> <span class="o">=</span> <span class="n">expander</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span>
-    <span class="n">W_comp</span> <span class="o">=</span> <span class="n">compressor</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span>
-    <span class="n">W_aux</span> <span class="o">=</span> <span class="n">heat_source_pump</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">heat_sink_pump</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span>
+    <span class="n">Q_in</span> <span class="o">=</span> <span class="n">heater_discharge</span><span class="p">[</span><span class="s2">&quot;heat_flow_rate&quot;</span><span class="p">]</span>
+    <span class="n">Q_out</span> <span class="o">=</span> <span class="n">cooler_discharge</span><span class="p">[</span><span class="s2">&quot;heat_flow_rate&quot;</span><span class="p">]</span>
+    <span class="n">W_out</span> <span class="o">=</span> <span class="n">expander_discharge</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span>
+    <span class="n">W_comp</span> <span class="o">=</span> <span class="n">compressor_discharge</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span>
+    <span class="c1"># W_aux = heat_source_pump_discharge[&quot;power&quot;] + heat_sink_pump_discharge[&quot;power&quot;]</span>
     <span class="n">W_in</span> <span class="o">=</span> <span class="n">W_comp</span> <span class="o">+</span> <span class="n">W_aux</span>
-    <span class="c1"># W_net = W_out - W_in</span>
     <span class="c1"># Q_in_max = m_source * (heater[&quot;hot_side&quot;][&quot;state_in&quot;].h - source_out_min.h)</span>
-    <span class="n">COP_heat_pump</span> <span class="o">=</span> <span class="n">Q_out</span> <span class="o">/</span> <span class="p">(</span><span class="n">W_in</span> <span class="o">-</span> <span class="n">W_out</span><span class="p">)</span>
-    <span class="n">COP_refrigeration</span> <span class="o">=</span> <span class="n">Q_in</span> <span class="o">/</span> <span class="p">(</span><span class="n">W_in</span> <span class="o">-</span> <span class="n">W_out</span><span class="p">)</span>
+    <span class="n">cycle_efficiency</span> <span class="o">=</span> <span class="p">(</span><span class="n">W_out</span> <span class="o">-</span> <span class="n">W_in</span><span class="p">)</span> <span class="o">/</span> <span class="n">Q_in</span>
     <span class="c1"># system_efficiency = (W_out - W_in) / Q_in_max</span>
-    <span class="n">backwork_ratio</span> <span class="o">=</span> <span class="n">W_out</span> <span class="o">/</span> <span class="n">W_comp</span>
-    <span class="n">energy_balance</span> <span class="o">=</span> <span class="p">(</span><span class="n">Q_in</span> <span class="o">+</span> <span class="n">W_comp</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">W_out</span> <span class="o">+</span> <span class="n">Q_out</span><span class="p">)</span>  <span class="c1"># Ignore pumps</span>
+    <span class="n">backwork_ratio</span> <span class="o">=</span> <span class="n">W_comp</span> <span class="o">/</span> <span class="n">W_out</span>
+    <span class="n">energy_balance</span> <span class="o">=</span> <span class="p">(</span><span class="n">Q_in</span> <span class="o">+</span> <span class="n">W_comp</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">W_out</span> <span class="o">+</span> <span class="n">Q_out</span><span class="p">)</span>  <span class="c1"># Ignore pumps       #commented out for now</span>
+    <span class="n">W_net</span> <span class="o">=</span> <span class="n">expander_discharge</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">compressor_discharge</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span>
 
     <span class="c1"># Define dictionary with 1st Law analysis</span>
     <span class="n">energy_analysis</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;heater_heat_flow&quot;</span><span class="p">:</span> <span class="n">Q_in</span><span class="p">,</span>
-        <span class="c1"># &quot;heater_heat_flow_max&quot;: Q_in_max,</span>
-        <span class="s2">&quot;recuperator_heat_flow&quot;</span><span class="p">:</span> <span class="n">recuperator</span><span class="p">[</span><span class="s2">&quot;heat_flow_rate&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;cooler_heat_flow&quot;</span><span class="p">:</span> <span class="n">Q_out</span><span class="p">,</span>
-        <span class="s2">&quot;expander_power&quot;</span><span class="p">:</span> <span class="n">W_out</span><span class="p">,</span>
-        <span class="s2">&quot;compressor_power&quot;</span><span class="p">:</span> <span class="n">W_comp</span><span class="p">,</span>
-        <span class="s2">&quot;heat_source_pump_power&quot;</span><span class="p">:</span> <span class="n">heat_source_pump</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;heat_sink_pump_power&quot;</span><span class="p">:</span> <span class="n">heat_sink_pump</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">],</span>
-        <span class="c1"># &quot;net_cycle_power&quot;: W_net,</span>
-        <span class="c1"># &quot;net_system_power&quot;: W_out - W_in,</span>
-        <span class="s2">&quot;mass_flow_heating_fluid&quot;</span><span class="p">:</span> <span class="n">m_source</span><span class="p">,</span>
-        <span class="s2">&quot;mass_flow_working_fluid&quot;</span><span class="p">:</span> <span class="n">m_total</span><span class="p">,</span>
-        <span class="s2">&quot;mass_flow_cooling_fluid&quot;</span><span class="p">:</span> <span class="n">m_sink</span><span class="p">,</span>
-        <span class="s2">&quot;COP_heat_pump&quot;</span><span class="p">:</span> <span class="n">COP_heat_pump</span><span class="p">,</span>
-        <span class="s2">&quot;COP_refrigeration&quot;</span><span class="p">:</span> <span class="n">COP_refrigeration</span><span class="p">,</span>
-        <span class="s2">&quot;backwork_ratio&quot;</span><span class="p">:</span> <span class="n">backwork_ratio</span><span class="p">,</span>
-        <span class="s2">&quot;energy_balance&quot;</span><span class="p">:</span> <span class="n">energy_balance</span><span class="p">,</span>
-    <span class="p">}</span>
+        <span class="o">**</span><span class="n">energy_analysis</span><span class="p">,</span>
+        <span class="s2">&quot;heater_heat_flow_discharge&quot;</span><span class="p">:</span> <span class="n">Q_in</span><span class="p">,</span>
+        <span class="c1"># &quot;heater_heat_flow_max_discharge&quot;: Q_in_max,</span>
+        <span class="s2">&quot;recuperator_heat_flow_discharge&quot;</span><span class="p">:</span> <span class="n">recuperator_discharge</span><span class="p">[</span><span class="s2">&quot;heat_flow_rate&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;cooler_heat_flow_discharge&quot;</span><span class="p">:</span> <span class="n">Q_out</span><span class="p">,</span>
+        <span class="s2">&quot;expander_power_discharge&quot;</span><span class="p">:</span> <span class="n">W_out</span><span class="p">,</span>
+        <span class="s2">&quot;compressor_power_discharge&quot;</span><span class="p">:</span> <span class="n">W_comp</span><span class="p">,</span>
+        <span class="c1"># &quot;heat_source_pump_power_discharge&quot;: heat_source_pump_discharge[&quot;power&quot;],</span>
+        <span class="c1"># &quot;heat_sink_pump_power_discharge&quot;: heat_sink_pump_discharge[&quot;power&quot;],</span>
+        <span class="s2">&quot;net_cycle_power_discharge&quot;</span><span class="p">:</span> <span class="n">W_net</span><span class="p">,</span>
+        <span class="s2">&quot;net_system_power_discharge&quot;</span><span class="p">:</span> <span class="n">W_out</span> <span class="o">-</span> <span class="n">W_in</span><span class="p">,</span>
+        <span class="c1"># &quot;mass_flow_heating_fluid_discharge&quot;: m_source,</span>
+        <span class="c1"># &quot;mass_flow_working_fluid_discharge&quot;: m_total,</span>
+        <span class="s2">&quot;mass_flow_cooling_fluid_discharge&quot;</span><span class="p">:</span> <span class="n">m_sink_discharge</span><span class="p">,</span>
+        <span class="s2">&quot;cycle_efficiency_discharge&quot;</span><span class="p">:</span> <span class="n">cycle_efficiency</span><span class="p">,</span>
+        <span class="c1"># &quot;system_efficiency_discharge&quot;: system_efficiency,</span>
+        <span class="s2">&quot;backwork_ratio_discharge&quot;</span><span class="p">:</span> <span class="n">backwork_ratio</span><span class="p">,</span>
+        <span class="s2">&quot;energy_balance_discharge&quot;</span><span class="p">:</span> <span class="n">energy_balance</span><span class="p">,</span>
+    <span class="p">}</span>                                                                        <span class="c1">#commented out for now</span>
+
+    <span class="c1">#RTE = W_out / W_comp#1</span>
+    <span class="n">RTE</span> <span class="o">=</span> <span class="n">energy_analysis</span><span class="p">[</span><span class="s2">&quot;net_cycle_power_discharge&quot;</span><span class="p">]</span><span class="o">/</span><span class="n">energy_analysis</span><span class="p">[</span><span class="s2">&quot;net_cycle_power_charge&quot;</span><span class="p">]</span>
+    <span class="n">energy_analysis</span><span class="p">[</span><span class="s2">&quot;RTE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RTE</span>
+    <span class="c1">#print(energy_analysis[&quot;RTE&quot;])</span>
 
     <span class="c1"># Evaluate objective function and constraints</span>
-    <span class="c1"># output = {&quot;components&quot;: components}</span>
     <span class="n">output</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;components&quot;</span><span class="p">:</span> <span class="n">components</span><span class="p">,</span> <span class="s2">&quot;energy_analysis&quot;</span><span class="p">:</span> <span class="n">energy_analysis</span><span class="p">}</span>
     <span class="n">f</span> <span class="o">=</span> <span class="n">utilities</span><span class="o">.</span><span class="n">evaluate_objective_function</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">objective_function</span><span class="p">)</span>
     <span class="n">c_eq</span><span class="p">,</span> <span class="n">c_ineq</span><span class="p">,</span> <span class="n">constraint_report</span> <span class="o">=</span> <span class="n">utilities</span><span class="o">.</span><span class="n">evaluate_constraints</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
-    <span class="c1"># f = None</span>
-    <span class="c1"># c_eq = None</span>
-    <span class="c1"># c_ineq = None</span>
+    <span class="n">c_eq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m_error</span><span class="p">)</span>
 
     <span class="c1"># Set colors for plotting</span>
-    <span class="n">heater</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
-    <span class="n">heater</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">recuperator</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">recuperator</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">cooler</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">cooler</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">expander</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">compressor</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">heater_discharge</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+    <span class="n">heater_discharge</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">recuperator_discharge</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">recuperator_discharge</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">cooler_discharge</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">cooler_discharge</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">expander_discharge</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">compressor_discharge</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>              <span class="c1">#changed colours</span>
 
     <span class="c1"># Check if any fixed parameter or design variable was not used</span>
     <span class="n">utilities</span><span class="o">.</span><span class="n">check_for_unused_keys</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="s2">&quot;parameters&quot;</span><span class="p">,</span> <span class="n">raise_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">utilities</span><span class="o">.</span><span class="n">check_for_unused_keys</span><span class="p">(</span><span class="n">variables</span><span class="p">,</span> <span class="s2">&quot;variables&quot;</span><span class="p">,</span> <span class="n">raise_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="c1"># Summary of components</span>
-    <span class="n">components</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;expander&quot;</span><span class="p">:</span> <span class="n">expander</span><span class="p">,</span>
-        <span class="s2">&quot;compressor&quot;</span><span class="p">:</span> <span class="n">compressor</span><span class="p">,</span>
-        <span class="s2">&quot;recuperator&quot;</span><span class="p">:</span> <span class="n">recuperator</span><span class="p">,</span>
-        <span class="s2">&quot;heater&quot;</span><span class="p">:</span> <span class="n">heater</span><span class="p">,</span>
-        <span class="s2">&quot;cooler&quot;</span><span class="p">:</span> <span class="n">cooler</span><span class="p">,</span>
-        <span class="s2">&quot;heat_source_pump&quot;</span><span class="p">:</span> <span class="n">heat_source_pump</span><span class="p">,</span>
-        <span class="s2">&quot;heat_sink_pump&quot;</span><span class="p">:</span> <span class="n">heat_sink_pump</span><span class="p">,</span>
-    <span class="p">}</span>
 
     <span class="c1"># Cycle performance summary</span>
     <span class="n">output</span> <span class="o">=</span> <span class="p">{</span>
@@ -644,10 +1015,12 @@ document.write(`
         <span class="s2">&quot;objective_function&quot;</span><span class="p">:</span> <span class="n">f</span><span class="p">,</span>
         <span class="s2">&quot;equality_constraints&quot;</span><span class="p">:</span> <span class="n">c_eq</span><span class="p">,</span>
         <span class="s2">&quot;inequality_constraints&quot;</span><span class="p">:</span> <span class="n">c_ineq</span><span class="p">,</span>
-    <span class="s2">&quot;constraints_report&quot;</span><span class="p">:</span> <span class="n">constraint_report</span><span class="p">,</span>
+        <span class="s2">&quot;constraints_report&quot;</span><span class="p">:</span> <span class="n">constraint_report</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="n">output</span></div>
+
+
 
 </pre></div>
 
