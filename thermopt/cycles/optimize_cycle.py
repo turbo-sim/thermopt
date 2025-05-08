@@ -19,6 +19,7 @@ from . import cycle_power_recuperated
 from . import cycle_power_split_compression
 from . import cycle_refrigeration_simple
 from . import cycle_refrigeration_recuperated
+from . import cycle_PTES_recuperated
 
 
 COLORS_MATLAB = utils.COLORS_MATLAB
@@ -44,6 +45,7 @@ CYCLE_TOPOLOGIES = {
     "recompression": cycle_power_split_compression.evaluate_cycle,
     "refrigeration_simple": cycle_refrigeration_simple.evaluate_cycle,
     "refrigeration_recuperated": cycle_refrigeration_recuperated.evaluate_cycle,
+    "PTES_recuperated":cycle_PTES_recuperated.evaluate_cycle,
 }
 
 GRAPHICS_PLACEHOLDER = {
