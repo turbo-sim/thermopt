@@ -14,12 +14,21 @@ solver_options:
   max_iterations: 200
   # problem_scale: 1.0
   # extra_options: {"tau_min": 0.99, "mu_init": 0.1}
-  problem_scale: 10.0
-  extra_options: {"tau_min": 0.9, "mu_init": 0.1}
+  problem_scale: 10.
+  extra_options: {"tau_min": 0.9, "mu_init": 0.1,
+                  "tol": 1e-6,
+                  "limited_memory_max_history": 20,
+                  "limited_memory_max_skipping": 100,  # Very important for reliable convergence
+                  # "limited_memory_initialization": "constant",
+                  # "limited_memory_init_val": 0.5,
+                  }
+
+  # extra_options: {"tau_min": 0.99, "mu_init": 0.1}
+  # extra_options: {"tau_min": 0.5, "mu_init": 0.01}
   callbacks:
-    save_plot: True
+    save_plot: False
     save_config: False
-    save_report: True
+    save_report: False
     plot_cycle: False
     plot_convergence: True
 

@@ -717,7 +717,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         """
 
         # Retrieve component data
-        x_data, y_data, color = self._get_process_data(
+        x_data, y_data, plot_params = self._get_process_data(
             name, plot_settings["x_prop"], plot_settings["y_prop"]
         )
 
@@ -743,32 +743,31 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
                 self.graphics["process_lines"][ax_index][name].set_visible(True)
                 self.graphics["state_points"][ax_index][name].set_visible(True)
         elif x_data is not None and y_data is not None:
+
+            # Prepare kwargs for line and point separately
+            line_kwargs = {
+                "linestyle": plot_params["linestyle"],
+                "linewidth": plot_params["linewidth"],
+                "color": plot_params["color"],
+                "marker": "none",
+                "label": name,
+                "zorder": 1,
+            }
+
+            point_kwargs = {
+                "linestyle": "none",
+                "marker": plot_params["marker"],
+                "markersize": plot_params["markersize"],
+                "markeredgewidth": plot_params["markeredgewidth"],
+                "markerfacecolor": plot_params["markerfacecolor"],
+                "color": plot_params["color"],
+                "zorder": 2,
+            }
+
             # Create new plot elements if data is not None
-            (line,) = ax.plot(
-                x_data,
-                y_data,
-                linestyle="-",
-                linewidth=1.25,
-                marker="none",
-                markersize=4.0,
-                markeredgewidth=1.25,
-                markerfacecolor="w",
-                color=color,
-                label=name,
-                zorder=1,
-            )
-            (points,) = ax.plot(
-                [x_data[0], x_data[-1]],
-                [y_data[0], y_data[-1]],
-                linestyle="none",
-                linewidth=1.25,
-                marker="o",
-                markersize=4.0,
-                markeredgewidth=1.25,
-                markerfacecolor="w",
-                color=color,
-                zorder=2,
-            )
+            x_ends, y_ends = [x_data[0], x_data[-1]], [y_data[0], y_data[-1]]
+            (line,) = ax.plot(x_data, y_data, **line_kwargs)
+            (points,) = ax.plot(x_ends, y_ends, **point_kwargs)
 
             # Store the new plot elements
             if ax_index is not None:
@@ -828,9 +827,19 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             x_data = None
             y_data = None
 
-        color = data["color"]
+        # Define plotting specifications
+        default_params = {
+            "color": "k",                 # black
+            "linestyle": "-",            # solid line
+            "linewidth": 1.25,
+            "marker": "o",
+            "markersize": 4.5,
+            "markeredgewidth": 1.25,
+            "markerfacecolor": "w",      # white-filled marker
+        }
+        plot_params = {**default_params, **data.get("plot_params", {})}
 
-        return x_data, y_data, color
+        return x_data, y_data, plot_params
 
     def _plot_pinch_point_diagram(self, ax, ax_index):
         """

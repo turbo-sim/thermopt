@@ -15,7 +15,7 @@ solver_options:
     save_plot: False
     save_config: False
     save_report: False
-    plot_cycle: True
+    plot_cycle: False
     plot_convergence: False
 
     

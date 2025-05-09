@@ -18,8 +18,6 @@ def evaluate_cycle(
     variables = copy.deepcopy(variables)
     parameters = copy.deepcopy(parameters)
 
-    #print("hello")
-
     # Initialize fluid objects
     working_fluid = props.Fluid(
         **parameters.pop("working_fluid"), identifier="working_fluid"
@@ -30,19 +28,6 @@ def evaluate_cycle(
     cooling_fluid = props.Fluid(
         **parameters.pop("cooling_fluid"), identifier="cooling_fluid"
     )
-
-    # Extract heat source/sink parameters and give short names
-    # T_source_out_max = parameters["heat_source"].pop("exit_temperature_max")
-    # T_source_out_min = parameters["heat_source"].pop("exit_temperature_min")
-    # T_sink_out_max = parameters["heat_sink"].pop("exit_temperature_max")
-    # T_sink_out_min = parameters["heat_sink"].pop("exit_temperature_min")
-    p_source_out = parameters["heat_source"].pop("exit_pressure")
-    p_sink_out = parameters["heat_sink"].pop("exit_pressure")
-
-    # Compute coldest state at the heat source exit
-    # source_out_min = heating_fluid.get_state(
-    #     props.PT_INPUTS, p_source_out, T_source_out_min
-    # )
 
     # Extract pressure drops and give short names
     dp_heater_h = parameters["heater_charge"].pop("pressure_drop_hot_side")
@@ -80,7 +65,6 @@ def evaluate_cycle(
         compressor_eff,
         compressor_eff_type,
     )
-    # utilities.print_dict(compressor["state_out"])
 
     # Evaluate expander
     dp = (1.0 - dp_heater_c) * (1.0 - dp_recup_c)
@@ -133,11 +117,10 @@ def evaluate_cycle(
     h_out_cold = recuperator_charge["cold_side"]["state_in"].h
     p_out_cold = recuperator_charge["cold_side"]["state_in"].p
     T_in_hot = parameters["heat_source"].pop("inlet_temperature")
-    T_heat_sink_out_discharge = T_in_hot                           #an addition
     p_in_hot = parameters["heat_source"].pop("inlet_pressure")
     h_in_hot = heating_fluid.get_state(props.PT_INPUTS, p_in_hot, T_in_hot).h
     T_out_hot = heat_source_temperature_out
-    p_out_hot = p_in_hot * (1 - dp_heater_h)
+    p_out_hot = parameters["heat_source"].pop("exit_pressure")
     h_out_hot = heating_fluid.get_state(props.PT_INPUTS, p_out_hot, T_out_hot).h
     num_elements = parameters["heater_charge"].pop("num_elements")
     heater_charge = heat_exchanger(
@@ -155,44 +138,11 @@ def evaluate_cycle(
         num_steps=num_elements,
     )
 
-    # Evaluate heat source pump
-    # TODO place on other side?
-    h_in = heater_charge["hot_side"]["state_out"].h
-    p_in = heater_charge["hot_side"]["state_out"].p
-    p_out = p_source_out
-    efficiency = parameters["heat_source_pump_charge"].pop("efficiency")
-    efficiency_type = parameters["heat_source_pump_charge"].pop("efficiency_type")
-    heat_source_pump_charge = compression_process(
-        heating_fluid,
-        h_in,
-        p_in,
-        p_out,
-        efficiency,
-        efficiency_type,
-    )
-
-    # Evaluate heat sink pump
-    # TODO place on other side?
-    T_in = parameters["heat_sink"].pop("inlet_temperature")
-    T_heat_sink_in = T_in                                         #an addition
-    p_in = parameters["heat_sink"].pop("inlet_pressure")
-    h_in = cooling_fluid.get_state(props.PT_INPUTS, p_in, T_in).h
-    p_out = p_sink_out / (1 - dp_cooler_c)
-    efficiency = parameters["heat_sink_pump_charge"].pop("efficiency")
-    efficiency_type = parameters["heat_sink_pump_charge"].pop("efficiency_type")
-    heat_sink_pump_charge = compression_process(
-        cooling_fluid,
-        h_in,
-        p_in,
-        p_out,
-        efficiency,
-        efficiency_type,
-    )
-
     # Evaluate cooler
-    p_in_cold = heat_sink_pump_charge["state_out"].p
-    h_in_cold = heat_sink_pump_charge["state_out"].h
-    p_out_cold = p_in_cold * (1 - dp_cooler_c)
+    p_in_cold = parameters["heat_sink"].pop("inlet_pressure")
+    T_in_cold = parameters["heat_sink"].pop("inlet_temperature")
+    h_in_cold = cooling_fluid.get_state(props.PT_INPUTS, p_in_cold, T_in_cold).h
+    p_out_cold = parameters["heat_sink"].pop("exit_pressure")
     T_out_cold = heat_sink_temperature_out
     h_out_cold = cooling_fluid.get_state(props.PT_INPUTS, p_out_cold, T_out_cold).h
     h_in_hot = compressor_charge["state_out"].h
@@ -216,13 +166,8 @@ def evaluate_cycle(
     )
 
     # Compute mass flow rates
-    W_charge = parameters.pop("charging_power") #a change 219 to 222
-    m_total_charge = W_charge / (compressor_charge["specific_work"] - expander_charge["specific_work"])   #?m of working fluid?
-    m_sink_charge = 1   #delete
-    m_source_charge = 1   #delete
-    #m*(h2-h1)=m*(h2-h1)
-    #  dh_hot    dh_cold   from heat_exchanger(...)
-    #m_sink_charge*(cooler["q_cold_side"]) = m_total_charge*(cooler["q_hot_side"])
+    W_charge = parameters.pop("charging_power")
+    m_total_charge = W_charge / (compressor_charge["specific_work"] - expander_charge["specific_work"]) 
     m_sink_charge = m_total_charge*(cooler_charge["q_hot_side"])/(cooler_charge["q_cold_side"])
     m_source_charge = m_total_charge*(heater_charge["q_cold_side"])/(heater_charge["q_hot_side"])
     
@@ -235,142 +180,22 @@ def evaluate_cycle(
     cooler_charge["cold_side"]["mass_flow"] = m_sink_charge
     expander_charge["mass_flow"] = m_total_charge
     compressor_charge["mass_flow"] = m_total_charge
-    heat_source_pump_charge["mass_flow"] = m_source_charge
-    heat_sink_pump_charge["mass_flow"] = m_sink_charge
 
-    # Summary of components
-    components = {
-        "expander": expander_charge,
-        "compressor": compressor_charge,
-        "recuperator": recuperator_charge,
-        "heater": heater_charge,
-        "cooler": cooler_charge,
-        "heat_source_pump": heat_source_pump_charge,
-        "heat_sink_pump": heat_sink_pump_charge,
-    }
 
-    # Compute energy balances
-    for name, component in components.items():
 
-        if component["type"] == "heat_exchanger":
-            hot = component["hot_side"]
-            cold = component["cold_side"]
-            Q1 = hot["mass_flow"] * (hot["state_in"].h - hot["state_out"].h)
-            Q2 = cold["mass_flow"] * (cold["state_out"].h - cold["state_in"].h)
-            component["heat_flow_rate"] = Q1
-            component["heat_flow_rate_"] = Q2
-            component["heat_balance"] = Q1 - Q2
-            component["power"] = 0.0                                     #(want to delete)
+###########################################################################################################################
 
-        if component["type"] in ["compressor", "expander"]:
-            component["power"] = component["mass_flow"] * component["specific_work"]
-            component["heat_flow_rate"] = 0.00
 
-    # First-law analysis
-    Q_in = heater_charge["heat_flow_rate"]
-    Q_out = cooler_charge["heat_flow_rate"]
-    W_out = expander_charge["power"]
-    W_comp = compressor_charge["power"]
-    W_aux = heat_source_pump_charge["power"] + heat_sink_pump_charge["power"]
-    W_in = W_comp + W_aux
-    # W_net = W_out - W_in
-    # Q_in_max = m_source * (heater["hot_side"]["state_in"].h - source_out_min.h)
-    COP_heat_pump = Q_out / (W_in - W_out)
-    COP_refrigeration = Q_in / (W_in - W_out)
-    # system_efficiency = (W_out - W_in) / Q_in_max
-    backwork_ratio = W_out / W_comp
-    energy_balance = (Q_in + W_comp) - (W_out + Q_out)  # Ignore pumps
-    W_net = compressor_charge["power"] - expander_charge["power"]
+    #  Interface with the discharge cycle
+    T_heat_sink_out_discharge = heater_charge["hot_side"]["states"]["T"][-1]
+    T_source_out_discharge = cooler_charge["cold_side"]["states"]["T"][0]
 
-    # Define dictionary with 1st Law analysis
-    energy_analysis = {
-        "heater_heat_flow_charge": Q_in,
-        # "heater_heat_flow_max_charge": Q_in_max,
-        "recuperator_heat_flow_charge": recuperator_charge["heat_flow_rate"],
-        "cooler_heat_flow_charge": Q_out,
-        "expander_power_charge": W_out,
-        "compressor_power_charge": W_comp,
-        "heat_source_pump_power_charge": heat_source_pump_charge["power"],
-        "heat_sink_pump_power_charge": heat_sink_pump_charge["power"],
-        "net_cycle_power_charge": W_net,
-        # "net_system_power_charge": W_out - W_in,
-        "mass_flow_heating_fluid_charge": m_source_charge,
-        "mass_flow_working_fluid_charge": m_total_charge,
-        "mass_flow_cooling_fluid_charge": m_sink_charge,
-        "COP_heat_pump": COP_heat_pump,
-        "COP_refrigeration": COP_refrigeration,
-        "backwork_ratio_charge": backwork_ratio,
-        "energy_balance_charge": energy_balance,
-    }
 
-    # Evaluate objective function and constraints
-    # output = {"components": components}
-    # output = {"components": components, "energy_analysis": energy_analysis}
-    # f = utilities.evaluate_objective_function(output, objective_function)
-    # c_eq, c_ineq, constraint_report = utilities.evaluate_constraints(output, constraints) we have them three at the bottom
-    # f = None
-    # c_eq = None
-    # c_ineq = None
 
-    # Set colors for plotting
-    heater_charge["hot_side"]["color"] = COLORS_MATLAB[0]
-    heater_charge["cold_side"]["color"] = COLORS_MATLAB[1]
-    recuperator_charge["hot_side"]["color"] = COLORS_MATLAB[1]
-    recuperator_charge["cold_side"]["color"] = COLORS_MATLAB[1]
-    cooler_charge["hot_side"]["color"] = COLORS_MATLAB[1]
-    cooler_charge["cold_side"]["color"] = COLORS_MATLAB[6]
-    expander_charge["color"] = COLORS_MATLAB[1]
-    compressor_charge["color"] = COLORS_MATLAB[1]
-
-    # Check if any fixed parameter or design variable was not used
-    # utilities.check_for_unused_keys(parameters, "parameters", raise_error=True)
-    # utilities.check_for_unused_keys(variables, "variables", raise_error=True)
-
-    # Summary of components
-    components = {
-        "expander_charge": expander_charge,
-        "compressor_charge": compressor_charge,
-        "recuperator_charge": recuperator_charge,
-        "heater_charge": heater_charge,
-        "cooler_charge": cooler_charge,
-        "heat_source_pump_charge": heat_source_pump_charge,
-        "heat_sink_pump_charge": heat_sink_pump_charge,       #(want to delete)(add _charge name above before deleting)
-    }
-
-    # Cycle performance summary
-    # output = {
-    #     **output,
-    #     "working_fluid": working_fluid,
-    #     "heating_fluid": heating_fluid,
-    #     "cooling_fluid": cooling_fluid,
-    #     "components": components,
-    #     "objective_function": f,
-    #     "equality_constraints": c_eq,
-    #     "inequality_constraints": c_ineq,
-    # "constraints_report": constraint_report,
-    # }                                          #we have at the end
-
-    # return output   #(want to delete)
-
-    #Written be me:
-    #T_heat_source_charge = 1
-    #T_heat_sink_charge = 1
-    
-    # T_source_in_charge = 1
-    # T_source_out_charge = 1
-    # T_sink_in_charge = 1
-    # T_sink_out_charge = 1
-    
-    
-    #T_heat_source_discharge = 1
-    #T_heat_sink_discharge = 1
-    
     T_source_in_discharge = heat_sink_temperature_out
-    test = cooler_charge["cold_side"]["state_out"]["T"]
-    #print(T_source_in_discharge, test)
-    T_source_out_discharge = T_heat_sink_in
-    T_sink_in_discharge = heat_source_temperature_out
-    T_sink_out_discharge = T_heat_sink_out_discharge
+
+    T_heat_sink_in_discharge = heat_source_temperature_out
+    T_heat_sink_out_discharge = T_heat_sink_out_discharge
     
     p_source_in_discharge = cooler_charge["cold_side"]["state_out"]["p"]
     p_source_out_discharge = cooler_charge["cold_side"]["state_in"]["p"]
@@ -378,41 +203,7 @@ def evaluate_cycle(
     p_sink_out_discharge = heater_charge["hot_side"]["state_in"]["p"]     #make sure it makes sense
 
 ###########################################################################################################################
-#Copy and paste from cycle_power_recuperated:
-# def evaluate_cycle2(
-#     variables,
-#     parameters,
-#     constraints,
-#     objective_function,
-#     recuperated=True,
-# ):
-#     # Create copies to not change the originals
-#     variables = copy.deepcopy(variables)
-#     parameters = copy.deepcopy(parameters)
 
-#     # Initialize fluid objects
-#     working_fluid = props.Fluid(
-#         **parameters.pop("working_fluid"), identifier="working_fluid"
-#     )
-#     heating_fluid = props.Fluid(
-#         **parameters.pop("heating_fluid"), identifier="heating_fluid"
-#     )
-#     cooling_fluid = props.Fluid(
-#         **parameters.pop("cooling_fluid"), identifier="cooling_fluid"   #(want to delete)
-#     )
-
-    # Extract heat source/sink parameters and give short names
-    # T_source_out_max = parameters["heat_source"].pop("exit_temperature_max")
-    # T_source_out_min = parameters["heat_source"].pop("exit_temperature_min")
-    # T_sink_out_max = parameters["heat_sink"].pop("exit_temperature_max")
-    # T_sink_out_min = parameters["heat_sink"].pop("exit_temperature_min")
-    # p_source_out = parameters["heat_source"].pop("exit_pressure") #already defined
-    # p_sink_out = parameters["heat_sink"].pop("exit_pressure") #already defined
-
-    # Compute coldest state at the heat source exit
-    # source_out_min = heating_fluid.get_state(
-    #     props.PT_INPUTS, p_source_out, T_source_out_min
-    # )
 
     # Extract pressure drops and give short names
     dp_heater_h = parameters["heater_discharge"].pop("pressure_drop_hot_side")
@@ -524,45 +315,14 @@ def evaluate_cycle(
         num_steps=num_elements,
     )
 
-    # Evaluate heat source pump
-    # h_in = heater["hot_side"]["state_out"].h
-    # p_in = heater["hot_side"]["state_out"].p
-    # p_out = p_source_out
-    # efficiency = parameters["heat_source_pump"].pop("efficiency")
-    # efficiency_type = parameters["heat_source_pump"].pop("efficiency_type")
-    # heat_source_pump_discharge = compression_process(
-    #     heating_fluid,
-    #     h_in,
-    #     p_in,
-    #     p_out,
-    #     efficiency,
-    #     efficiency_type,
-    # )
-
-    # Evaluate heat sink pump
-    # T_in = parameters["heat_sink"].pop("inlet_temperature")
-    # p_in = parameters["heat_sink"].pop("inlet_pressure")
-    # h_in = cooling_fluid.get_state(props.PT_INPUTS, p_in, T_in).h
-    # p_out = p_sink_out / (1 - dp_cooler_c)
-    # efficiency = parameters["heat_sink_pump"].pop("efficiency")
-    # efficiency_type = parameters["heat_sink_pump"].pop("efficiency_type")
-    # heat_sink_pump_discharge = compression_process(
-    #     cooling_fluid,
-    #     h_in,
-    #     p_in,
-    #     p_out,
-    #     efficiency,
-    #     efficiency_type,
-    # )
-
     # Evaluate cooler
-    T_in_cold = T_sink_in_discharge   #an addition
+    T_in_cold = T_heat_sink_in_discharge   #an addition
     p_in_cold = p_sink_in_discharge   #an addition
     h_in_cold = cooling_fluid.get_state(props.PT_INPUTS, p_in_cold, T_in_cold).h #an addition
     # p_in_cold = heat_sink_pump["state_out"].p
     # h_in_cold = heat_sink_pump["state_out"].h
     p_out_cold = p_in_cold * (1 - dp_cooler_c)
-    T_out_cold = T_sink_out_discharge   #a change
+    T_out_cold = T_heat_sink_out_discharge   #a change
     h_out_cold = cooling_fluid.get_state(props.PT_INPUTS, p_out_cold, T_out_cold).h
     h_in_hot = recuperator_discharge["hot_side"]["state_out"].h
     p_in_hot = recuperator_discharge["hot_side"]["state_out"].p
@@ -609,16 +369,22 @@ def evaluate_cycle(
     # heat_source_pump_discharge["mass_flow"] = m_source_discharge
     # heat_sink_pump_discharge["mass_flow"] = m_sink_discharge
 
+
+###########################################################################################################################
+
+
     # Summary of components
     components = {
-        **components,
+        "expander_charge": expander_charge,
+        "compressor_charge": compressor_charge,
+        "recuperator_charge": recuperator_charge,
+        "heater_charge": heater_charge,
+        "cooler_charge": cooler_charge,
         "expander_discharge": expander_discharge,
         "compressor_discharge": compressor_discharge,
         "recuperator_discharge": recuperator_discharge,
         "heater_discharge": heater_discharge,
         "cooler_discharge": cooler_discharge,
-        # "heat_source_pump_discharge": heat_source_pump,
-        # "heat_sink_pump_discharge": heat_sink_pump,
     }
 
     # Compute energy balances
@@ -637,46 +403,53 @@ def evaluate_cycle(
             component["power"] = component["mass_flow"] * component["specific_work"]
             component["heat_flow_rate"] = 0.00
 
-    # First-law analysis
-    Q_in = heater_discharge["heat_flow_rate"]
-    Q_out = cooler_discharge["heat_flow_rate"]
-    W_out = expander_discharge["power"]
-    W_comp = compressor_discharge["power"]
-    # W_aux = heat_source_pump_discharge["power"] + heat_sink_pump_discharge["power"]
-    W_in = W_comp + W_aux
-    # Q_in_max = m_source * (heater["hot_side"]["state_in"].h - source_out_min.h)
-    cycle_efficiency = (W_out - W_in) / Q_in
-    # system_efficiency = (W_out - W_in) / Q_in_max
-    backwork_ratio = W_comp / W_out
-    energy_balance = (Q_in + W_comp) - (W_out + Q_out)  # Ignore pumps       #commented out for now
-    W_net = expander_discharge["power"] - compressor_discharge["power"]
-
-    # Define dictionary with 1st Law analysis
+    # First law analysis of energy flows
+    Q_in_charge = heater_charge["heat_flow_rate"]
+    Q_out_charge = cooler_charge["heat_flow_rate"]
+    W_out_charge = expander_charge["power"]
+    W_in_charge = compressor_charge["power"]
+    W_net_charge = W_out_charge - W_in_charge
+    COP_heat_pump = Q_out_charge / (W_in_charge - W_out_charge)
+    COP_refrigeration = Q_in_charge / (W_in_charge - W_out_charge)
+    backwork_ratio_charge = W_out_charge / W_in_charge
+    energy_balance_charge = (Q_in_charge + W_in_charge) - (W_out_charge + Q_out_charge)
+    Q_in_discharge = heater_discharge["heat_flow_rate"]
+    Q_out_discharge = cooler_discharge["heat_flow_rate"]
+    W_out_discharge = expander_discharge["power"]
+    W_in_discharge = compressor_discharge["power"]
+    W_net_discharge = W_out_discharge - W_in_discharge
+    cycle_efficiency_discharge = (W_out_discharge - W_in_discharge) / Q_in_discharge
+    backwork_ratio_discharge = W_in_discharge / W_out_discharge
+    energy_balance_discharge = (Q_in_discharge + W_in_discharge) - (W_out_discharge + Q_out_discharge)  # Add additional rejected heat in sink
+    roundtrip_efficiency = COP_heat_pump*cycle_efficiency_discharge
     energy_analysis = {
-        **energy_analysis,
-        "heater_heat_flow_discharge": Q_in,
-        # "heater_heat_flow_max_discharge": Q_in_max,
-        "recuperator_heat_flow_discharge": recuperator_discharge["heat_flow_rate"],
-        "cooler_heat_flow_discharge": Q_out,
-        "expander_power_discharge": W_out,
-        "compressor_power_discharge": W_comp,
-        # "heat_source_pump_power_discharge": heat_source_pump_discharge["power"],
-        # "heat_sink_pump_power_discharge": heat_sink_pump_discharge["power"],
-        "net_cycle_power_discharge": W_net,
-        "net_system_power_discharge": W_out - W_in,
-        # "mass_flow_heating_fluid_discharge": m_source,
-        # "mass_flow_working_fluid_discharge": m_total,
+        "mass_flow_heating_fluid_charge": m_source_charge,
+        "mass_flow_working_fluid_charge": m_total_charge,
+        "mass_flow_cooling_fluid_charge": m_sink_charge,
+        "mass_flow_heating_fluid_discharge": m_source_discharge,
+        "mass_flow_working_fluid_discharge": m_total_discharge,
         "mass_flow_cooling_fluid_discharge": m_sink_discharge,
-        "cycle_efficiency_discharge": cycle_efficiency,
-        # "system_efficiency_discharge": system_efficiency,
-        "backwork_ratio_discharge": backwork_ratio,
-        "energy_balance_discharge": energy_balance,
-    }                                                                        #commented out for now
-
-    #RTE = W_out / W_comp#1
-    RTE = energy_analysis["net_cycle_power_discharge"]/energy_analysis["net_cycle_power_charge"]
-    energy_analysis["RTE"] = RTE
-    #print(energy_analysis["RTE"])
+        "heater_heat_flow_charge": Q_in_charge,
+        "recuperator_heat_flow_charge": recuperator_charge["heat_flow_rate"],
+        "cooler_heat_flow_charge": Q_out_charge,
+        "expander_power_charge": W_out_charge,
+        "compressor_power_charge": W_in_charge,
+        "net_cycle_power_charge": W_net_charge,
+        "COP_heat_pump": COP_heat_pump,
+        "COP_refrigeration": COP_refrigeration,
+        "backwork_ratio_charge": backwork_ratio_charge,
+        "energy_balance_charge": energy_balance_charge,
+        "heater_heat_flow_discharge": Q_in_discharge,
+        "recuperator_heat_flow_discharge": recuperator_discharge["heat_flow_rate"],
+        "cooler_heat_flow_discharge": Q_out_discharge,
+        "expander_power_discharge": W_out_discharge,
+        "compressor_power_discharge": W_in_discharge,
+        "net_cycle_power_discharge": W_net_discharge,
+        "cycle_efficiency_discharge": cycle_efficiency_discharge,
+        "backwork_ratio_discharge": backwork_ratio_discharge,
+        "energy_balance_discharge": energy_balance_discharge,
+        "roundtrip_efficiency": roundtrip_efficiency,
+    } 
 
     # Evaluate objective function and constraints
     output = {"components": components, "energy_analysis": energy_analysis}
@@ -684,15 +457,26 @@ def evaluate_cycle(
     c_eq, c_ineq, constraint_report = utilities.evaluate_constraints(output, constraints)
     c_eq.append(m_error)
 
-    # Set colors for plotting
-    heater_discharge["hot_side"]["color"] = COLORS_MATLAB[5]
-    heater_discharge["cold_side"]["color"] = COLORS_MATLAB[3]
-    recuperator_discharge["hot_side"]["color"] = COLORS_MATLAB[3]
-    recuperator_discharge["cold_side"]["color"] = COLORS_MATLAB[3]
-    cooler_discharge["hot_side"]["color"] = COLORS_MATLAB[3]
-    cooler_discharge["cold_side"]["color"] = COLORS_MATLAB[2]
-    expander_discharge["color"] = COLORS_MATLAB[3]
-    compressor_discharge["color"] = COLORS_MATLAB[3]              #changed colours
+    # Set colors and linestyles for plotting
+    orange = COLORS_MATLAB[1]
+    blue = COLORS_MATLAB[0]
+    red = COLORS_MATLAB[6]
+    heater_charge["hot_side"]["plot_params"] = {"color": blue, "linestyle": "-"}
+    heater_charge["cold_side"]["plot_params"] = {"color": orange, "linestyle": "-"}
+    recuperator_charge["hot_side"]["plot_params"] = {"color": orange, "linestyle": "-"}
+    recuperator_charge["cold_side"]["plot_params"] = {"color": orange, "linestyle": "-"}
+    cooler_charge["hot_side"]["plot_params"] = {"color": orange, "linestyle": "-"}
+    cooler_charge["cold_side"]["plot_params"] = {"color": red, "linestyle": "-"}
+    expander_charge["plot_params"] = {"color": orange, "linestyle": "-"}
+    compressor_charge["plot_params"] = {"color": orange, "linestyle": "-"}
+    heater_discharge["hot_side"]["plot_params"] = {"color": red, "linestyle": "--"}
+    heater_discharge["cold_side"]["plot_params"] = {"color": orange, "linestyle": "--"}
+    recuperator_discharge["hot_side"]["plot_params"] = {"color": orange, "linestyle": "--"}
+    recuperator_discharge["cold_side"]["plot_params"] = {"color": orange, "linestyle": "--"}
+    cooler_discharge["hot_side"]["plot_params"] = {"color": orange, "linestyle": "--"}
+    cooler_discharge["cold_side"]["plot_params"] = {"color": blue, "linestyle": "--"}
+    expander_discharge["plot_params"] = {"color": orange, "linestyle": "--"}
+    compressor_discharge["plot_params"] = {"color": orange, "linestyle": "--"}
 
     # Check if any fixed parameter or design variable was not used
     utilities.check_for_unused_keys(parameters, "parameters", raise_error=True)
