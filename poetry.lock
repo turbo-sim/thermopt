@@ -2201,14 +2201,14 @@ diagrams = ["jinja2", "railroad-diagrams"]
 
 [[package]]
 name = "pysolver-view"
-version = "0.4.7"
+version = "0.4.8"
 description = "Visualization of solver convergence evolution"
 optional = false
 python-versions = "<3.14,>=3.10"
 groups = ["main"]
 files = [
-    {file = "pysolver_view-0.4.7-py3-none-any.whl", hash = "sha256:9361bcfeb50810c5df5ee35ac1061d5e75d8165b6d2207ef06c240d18ce1690c"},
-    {file = "pysolver_view-0.4.7.tar.gz", hash = "sha256:a49c68a0667d81f0a85d4396e071c9db8be48e4583e6f6242676d107858c56a7"},
+    {file = "pysolver_view-0.4.8-py3-none-any.whl", hash = "sha256:90378df172df5be0863261c5cad54e257574788adc18149854660ce29bba9760"},
+    {file = "pysolver_view-0.4.8.tar.gz", hash = "sha256:85ece9ff4e8ceb037e7f966edbc442ef545513f1c0d9828c8bd7ffad111e65e9"},
 ]
 
 [package.dependencies]
@@ -2675,7 +2675,6 @@ description = "Python documentation generator"
 optional = false
 python-versions = ">=3.9"
 groups = ["dev"]
-markers = "python_version <= \"3.12\""
 files = [
     {file = "sphinx-7.3.7-py3-none-any.whl", hash = "sha256:413f75440be4cacf328f580b4274ada4565fb2187d696a84970c23f77b64d8c3"},
     {file = "sphinx-7.3.7.tar.gz", hash = "sha256:a4a7db75ed37531c05002d56ed6948d4c42f473a36f46e1382b0bd76ca9627bc"},
@@ -2704,42 +2703,6 @@ tomli = {version = ">=2", markers = "python_version < \"3.11\""}
 docs = ["sphinxcontrib-websupport"]
 lint = ["flake8 (>=3.5.0)", "importlib_metadata", "mypy (==1.9.0)", "pytest (>=6.0)", "ruff (==0.3.7)", "sphinx-lint", "tomli", "types-docutils", "types-requests"]
 test = ["cython (>=3.0)", "defusedxml (>=0.7.1)", "pytest (>=6.0)", "setuptools (>=67.0)"]
-
-[[package]]
-name = "sphinx"
-version = "7.4.7"
-description = "Python documentation generator"
-optional = false
-python-versions = ">=3.9"
-groups = ["dev"]
-markers = "python_version == \"3.13\""
-files = [
-    {file = "sphinx-7.4.7-py3-none-any.whl", hash = "sha256:c2419e2135d11f1951cd994d6eb18a1835bd8fdd8429f9ca375dc1f3281bd239"},
-    {file = "sphinx-7.4.7.tar.gz", hash = "sha256:242f92a7ea7e6c5b406fdc2615413890ba9f699114a9c09192d7dfead2ee9cfe"},
-]
-
-[package.dependencies]
-alabaster = ">=0.7.14,<0.8.0"
-babel = ">=2.13"
-colorama = {version = ">=0.4.6", markers = "sys_platform == \"win32\""}
-docutils = ">=0.20,<0.22"
-imagesize = ">=1.3"
-Jinja2 = ">=3.1"
-packaging = ">=23.0"
-Pygments = ">=2.17"
-requests = ">=2.30.0"
-snowballstemmer = ">=2.2"
-sphinxcontrib-applehelp = "*"
-sphinxcontrib-devhelp = "*"
-sphinxcontrib-htmlhelp = ">=2.0.0"
-sphinxcontrib-jsmath = "*"
-sphinxcontrib-qthelp = "*"
-sphinxcontrib-serializinghtml = ">=1.1.9"
-
-[package.extras]
-docs = ["sphinxcontrib-websupport"]
-lint = ["flake8 (>=6.0)", "importlib-metadata (>=6.0)", "mypy (==1.10.1)", "pytest (>=6.0)", "ruff (==0.5.2)", "sphinx-lint (>=0.9)", "tomli (>=2)", "types-docutils (==0.21.0.20240711)", "types-requests (>=2.30.0)"]
-test = ["cython (>=3.0)", "defusedxml (>=0.7.1)", "pytest (>=8.0)", "setuptools (>=70.0)", "typing_extensions (>=4.9)"]
 
 [[package]]
 name = "sphinx-book-theme"
@@ -2857,7 +2820,6 @@ description = "An awesome theme for the Sphinx documentation generator"
 optional = false
 python-versions = "<4.0,>=3.8"
 groups = ["dev"]
-markers = "python_version <= \"3.12\""
 files = [
     {file = "sphinxawesome_theme-5.2.0-py3-none-any.whl", hash = "sha256:56f1462f4ec4a5d66017819de6b7965a394d4157117bf12f029e7818d6789525"},
     {file = "sphinxawesome_theme-5.2.0.tar.gz", hash = "sha256:c24f1e5c0b9e475380d16fc5f1f3bfd84955817da0905d95f7e20809d7cd3c5d"},
@@ -2866,22 +2828,6 @@ files = [
 [package.dependencies]
 beautifulsoup4 = ">=4.9.1,<5.0.0"
 sphinx = {version = ">=7.2,<7.4", markers = "python_version >= \"3.9\" and python_version < \"3.13\""}
-
-[[package]]
-name = "sphinxawesome-theme"
-version = "5.3.2"
-description = "An awesome theme for the Sphinx documentation generator"
-optional = false
-python-versions = "<4.0,>=3.8"
-groups = ["dev"]
-markers = "python_version == \"3.13\""
-files = [
-    {file = "sphinxawesome_theme-5.3.2-py3-none-any.whl", hash = "sha256:5f2bb6b6ab8fa11db1ded5590106eb557351d6a6c36adea7ebd4e0f4bc96945d"},
-    {file = "sphinxawesome_theme-5.3.2.tar.gz", hash = "sha256:0629d38b80aefc279b1186c53a7a6faf21e721b5b2ecda14f488ca1074e2631f"},
-]
-
-[package.dependencies]
-beautifulsoup4 = ">=4.9.1,<5.0.0"
 
 [[package]]
 name = "sphinxcontrib-applehelp"
