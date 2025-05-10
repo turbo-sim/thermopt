@@ -2,7 +2,7 @@ import copy
 from .. import utilities
 from .. import properties as props
 
-from .components import compression_process, expansion_process, heat_exchanger
+from .components import compression_process, expansion_process, heat_exchanger, compute_component_energy_flows
 
 COLORS_MATLAB = utilities.COLORS_MATLAB
 
@@ -29,10 +29,7 @@ def evaluate_cycle(
     )
 
     # Extract heat source/sink parameters and give short names
-    T_source_out_max = parameters["heat_source"].pop("exit_temperature_max")
-    T_source_out_min = parameters["heat_source"].pop("exit_temperature_min")
-    T_sink_out_max = parameters["heat_sink"].pop("exit_temperature_max")
-    T_sink_out_min = parameters["heat_sink"].pop("exit_temperature_min")
+    T_source_out_min = parameters["heat_source"].pop("minimum_temperature")
     p_source_out = parameters["heat_source"].pop("exit_pressure")
     p_sink_out = parameters["heat_sink"].pop("exit_pressure")
 
@@ -280,26 +277,11 @@ def evaluate_cycle(
         "heat_source_pump": heat_source_pump,
         "heat_sink_pump": heat_sink_pump,
     }
-
-    # Compute energy balances
-    for name, component in components.items():
-        if component["type"] == "heat_exchanger":
-            hot = component["hot_side"]
-            cold = component["cold_side"]
-            Q1 = hot["mass_flow"] * (hot["state_in"].h - hot["state_out"].h)
-            Q2 = cold["mass_flow"] * (cold["state_out"].h - cold["state_in"].h)
-            component["heat_flow_rate"] = Q1
-            component["heat_flow_rate_"] = Q2
-            component["heat_balance"] = Q1 - Q2
-            component["power"] = 0.0
-
-        if component["type"] in ["compressor", "expander"]:
-            component["power"] = component["mass_flow"] * component["specific_work"]
-            component["heat_flow_rate"] = 0.00
+    compute_component_energy_flows(components)
 
     # First-law analysis
-    Q_in = heater["heat_flow_rate"]
-    Q_out = cooler["heat_flow_rate"]
+    Q_in = heater["heat_flow"]
+    Q_out = cooler["heat_flow"]
     W_out = expander["power"]
     W_comp = main_compressor["power"] + split_compressor["power"]
     W_aux = heat_source_pump["power"] + heat_sink_pump["power"]
@@ -323,9 +305,9 @@ def evaluate_cycle(
 
     # Define dictionary with 1st Law analysis
     energy_analysis = {
-        "heater_heat_flow": heater["heat_flow_rate"],
+        "heater_heat_flow": heater["heat_flow"],
         "heater_heat_flow_max": Q_in_max,
-        "cooler_heat_flow": cooler["heat_flow_rate"],
+        "cooler_heat_flow": cooler["heat_flow"],
         "expander_power": expander["power"],
         "main_compressor_power": main_compressor["power"],
         "split_compressor_power": split_compressor["power"],
@@ -354,22 +336,23 @@ def evaluate_cycle(
     output = {"components": components, "energy_analysis": energy_analysis}
     f = utilities.evaluate_objective_function(output, objective_function)
     c_eq, c_ineq, constraint_report = utilities.evaluate_constraints(output, constraints)
-    # f = None
-    # c_eq = None
-    # c_ineq = None
+
 
     # Set colors for plotting
-    heater["hot_side"]["color"] = COLORS_MATLAB[6]
-    heater["cold_side"]["color"] = COLORS_MATLAB[1]
-    recuperator_lowT["hot_side"]["color"] = COLORS_MATLAB[1]
-    recuperator_lowT["cold_side"]["color"] = COLORS_MATLAB[1]
-    recuperator_highT["hot_side"]["color"] = COLORS_MATLAB[1]
-    recuperator_highT["cold_side"]["color"] = COLORS_MATLAB[1]
-    cooler["hot_side"]["color"] = COLORS_MATLAB[1]
-    cooler["cold_side"]["color"] = COLORS_MATLAB[0]
-    expander["color"] = COLORS_MATLAB[1]
-    main_compressor["color"] = COLORS_MATLAB[1]
-    split_compressor["color"] = COLORS_MATLAB[1]
+    orange = COLORS_MATLAB[1]
+    blue = COLORS_MATLAB[0]
+    red = COLORS_MATLAB[6]
+    heater["hot_side"]["plot_params"] = {"color": red, "linestyle": "-"}
+    heater["cold_side"]["plot_params"] = {"color": orange, "linestyle": "-"}
+    recuperator_lowT["hot_side"]["plot_params"] = {"color": orange, "linestyle": "-"}
+    recuperator_lowT["cold_side"]["plot_params"] = {"color": orange, "linestyle": "-"}
+    recuperator_highT["hot_side"]["plot_params"] = {"color": orange, "linestyle": "-"}
+    recuperator_highT["cold_side"]["plot_params"] = {"color": orange, "linestyle": "-"}
+    cooler["hot_side"]["plot_params"] = {"color": orange, "linestyle": "-"}
+    cooler["cold_side"]["plot_params"] = {"color": blue, "linestyle": "-"}
+    expander["plot_params"] = {"color": orange, "linestyle": "-"}
+    main_compressor["plot_params"] = {"color": orange, "linestyle": "-"}
+    split_compressor["plot_params"] = {"color": orange, "linestyle": "-"}
 
     # Check if any fixed parameter or design variable was not used
     utilities.check_for_unused_keys(parameters, "parameters", raise_error=True)

@@ -63,15 +63,12 @@ problem_formulation:
 
     heat_source:
       inlet_temperature: 140 + 273.15
-      exit_temperature_max: 125 + 273.15
-      exit_temperature_min: 20 + 273.15
+      minimum_temperature: 25 + 273.15
       inlet_pressure: 1*101325
       exit_pressure: 1*101325
 
     heat_sink:
       inlet_temperature: 20 + 273.15
-      exit_temperature_min: 25 + 273.15
-      exit_temperature_max: 30 + 273.15
       inlet_pressure: 101325
       exit_pressure: 101325
 
@@ -104,14 +101,14 @@ problem_formulation:
 
   design_variables:
     heat_source_exit_temperature:
-      min: $heat_source.exit_temperature_min
-      max: $heat_source.exit_temperature_max
-      value: $heat_source.exit_temperature_min + 0.90*($heat_source.exit_temperature_max - $heat_source.exit_temperature_min)
-    
+      min: 25 + 273.15
+      max: 140 + 273.15
+      value: 100 + 273.15
+
     heat_sink_exit_temperature:
-      min: $heat_sink.exit_temperature_min
-      max: $heat_sink.exit_temperature_max
-      value: $heat_sink.exit_temperature_max
+      min: 25 + 273.15
+      max: 30 + 273.15
+      value: 25 + 273.15
 
     compressor_inlet_pressure:
       min: 0.9*$working_fluid.liquid_at_heat_sink_temperature.p

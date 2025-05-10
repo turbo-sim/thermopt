@@ -9,7 +9,6 @@ th.print_package_info()
 # CONFIG_FILE = "./case_butane_PEORC.yaml"
 CONFIG_FILE = "./case_butane_transcritical.yaml"
 
-
 # Initialize Brayton cycle problem
 cycle = th.ThermodynamicCycleOptimization(CONFIG_FILE)
 cycle.problem.plot_cycle_realtime(CONFIG_FILE, update_interval=0.1)

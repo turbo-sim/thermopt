@@ -1,0 +1,162 @@
+solver_options: 
+  library: scipy
+  method: slsqp
+  derivative_method: 2-point 
+  derivative_abs_step: 1e-6
+  print_convergence: True 
+  plot_convergence: False
+  logger: None
+  update_on: gradient
+  tolerance: 1e-6 
+  max_iterations: 50
+  problem_scale: 10
+  callbacks:
+    save_plot: True
+    save_config: True
+    save_report: True
+    plot_cycle: True
+    plot_convergence: False
+
+  
+problem_formulation:
+
+  cycle_topology: refrigeration_recuperated
+
+  plot_settings:
+    pinch_point_diagram: True
+    fluid: 
+      plot_saturation_line: False
+      plot_critical_point: False
+      plot_quality_isolines: False
+      plot_pseudocritical_line: False
+      plot_triple_point_liquid: False
+      plot_triple_point_vapor: False
+    diagrams: 
+      - x_prop: s
+        y_prop: T
+        x_scale: linear
+        y_scale: linear
+      # - x_prop: h
+      #   y_prop: p
+      #   x_scale: linear
+      #   y_scale: log
+      
+
+  fixed_parameters:
+
+    working_fluid:
+      name: nitrogen
+      backend: HEOS
+      exceptions: True
+
+    heating_fluid:
+        name: nitrogen
+        backend: HEOS
+        exceptions: True
+
+    cooling_fluid:
+      name: nitrogen
+      backend: HEOS
+      exceptions: True
+
+    heat_duty: 1e6
+
+    # Second law analysis not implemented yet
+    # ambient_temperature: 300
+    # ambient_pressure: 101325
+
+    heat_source:
+      inlet_temperature: 200
+      inlet_pressure: 101325
+      exit_pressure: 101325
+
+    heat_sink:
+      inlet_temperature: 300
+      inlet_pressure: 101325
+      exit_pressure: 101325
+
+    heater:
+      pressure_drop_hot_side: 0.00
+      pressure_drop_cold_side: 0.00
+      num_elements: 25
+
+    recuperator:
+      pressure_drop_hot_side: 0.00
+      pressure_drop_cold_side: 0.00
+      num_elements: 25
+
+    cooler:
+      pressure_drop_hot_side: 0.00
+      pressure_drop_cold_side: 0.00
+      num_elements: 25
+
+    expander:
+      efficiency: 0.90
+      efficiency_type: "isentropic"
+
+    compressor:
+      efficiency: 0.90
+      efficiency_type: "isentropic"
+
+    heat_source_pump:
+      efficiency: 0.90
+      efficiency_type: "isentropic"
+
+    heat_sink_pump:
+      efficiency: 0.90
+      efficiency_type: "isentropic"
+
+  design_variables:
+    heat_source_exit_temperature:
+      min: 150
+      max: 250
+      value: 180
+
+    heat_sink_exit_temperature:
+      min: 301
+      max: 400
+      value: 350
+
+    compressor_inlet_pressure:
+      min: 0.5e5
+      max: 2.0e5
+      value: 1e5
+
+    compressor_inlet_enthalpy:
+      min: 1000*200
+      max: 1000*500
+      value: 1000*300
+
+    expander_inlet_pressure:
+      min: 1.0e5
+      max: 10.0e5
+      value: 3.0e5
+
+    expander_inlet_enthalpy:
+      min: 1000*200
+      max: 1000*300
+      value: 1000*220
+
+    recuperator_inlet_enthalpy_hot:
+      min: 1000*200
+      max: 1000*500
+      value: 1000*330
+
+  constraints:
+    - variable: $components.heater.temperature_difference
+      type: ">"
+      value: 5
+      normalize: True
+    - variable: $components.cooler.temperature_difference
+      type: ">"
+      value: 5
+      normalize: True
+    - variable: $components.recuperator.temperature_difference
+      type: ">"
+      value: 5
+      normalize: True
+
+  objective_function:
+    variable: $energy_analysis.COP_refrigeration
+    type: maximize
+

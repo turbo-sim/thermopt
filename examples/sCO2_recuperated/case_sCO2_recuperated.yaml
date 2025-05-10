@@ -40,8 +40,7 @@ problem_formulation:
       # - x_prop: h
       #   y_prop: p
       #   x_scale: linear
-      #   y_scale: log
-      
+      #   y_scale: log  
 
   fixed_parameters:
 
@@ -68,15 +67,12 @@ problem_formulation:
 
     heat_source:
       inlet_temperature: 550 + 273.15
-      exit_temperature_max: 540 + 273.15
-      exit_temperature_min: 200 + 273.15
+      minimum_temperature: 25 + 273.15
       inlet_pressure: 101325
       exit_pressure: 101325
 
     heat_sink:
-      inlet_temperature: 10 + 273.15
-      exit_temperature_min: 20 + 273.15
-      exit_temperature_max: 30 + 273.15
+      inlet_temperature: 20 + 273.15
       inlet_pressure: 101325
       exit_pressure: 101325
 
@@ -113,15 +109,15 @@ problem_formulation:
   
   design_variables:
     heat_source_exit_temperature:
-      min: $heat_source.exit_temperature_min
-      max: $heat_source.exit_temperature_max
-      value: 0.50*($heat_source.exit_temperature_max - $heat_source.exit_temperature_min) + $heat_source.exit_temperature_min
-    
+      min: 250 + 273.15
+      max: 540 + 273.15
+      value: 450 + 273.15
+
     heat_sink_exit_temperature:
-      min: $heat_sink.exit_temperature_min
-      max: $heat_sink.exit_temperature_max
-      value: 0.50*($heat_sink.exit_temperature_max - $heat_sink.exit_temperature_min) + $heat_sink.exit_temperature_min
-     
+      min: 25 + 273.15
+      max: 35 + 273.15
+      value: 30 + 273.15
+
     compressor_inlet_pressure:
       min: 1.1*$working_fluid.critical_point.p
       max: 5.00*$working_fluid.critical_point.p
