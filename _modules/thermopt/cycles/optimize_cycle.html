@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>thermopt.cycles.optimize_cycle &#8212; thermopt v0.0.9 documentation</title>
+    <title>thermopt.cycles.optimize_cycle &#8212; thermopt v0.1.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=4ce08678"></script>
+    <script src="../../../_static/documentation_options.js?v=d47532a6"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -140,7 +140,7 @@
   
   
   
-    <p class="title logo__title">thermopt v0.0.9 documentation</p>
+    <p class="title logo__title">thermopt v0.1.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -483,8 +483,8 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">callback_functions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">save_report_callback</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">callback_flags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;plot_convergence&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_plot_callback</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">initialize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">callback_functions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_plot_callback</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_plot_convergence_callback</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">initialize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">callback_functions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_plot_convergence_callback</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">x0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">x0</span><span class="p">)</span>
@@ -976,7 +976,7 @@ document.write(`
 
 <div class="viewcode-block" id="ThermodynamicCycleProblem.plot_cycle_realtime">
 <a class="viewcode-back" href="../../../source/api/thermopt.cycles.optimize_cycle.html#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.plot_cycle_realtime">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">plot_cycle_realtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configuration_file</span><span class="p">,</span> <span class="n">update_interval</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot_cycle_realtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configuration_file</span><span class="p">,</span> <span class="n">update_interval</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">write_report</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Perform interactive plotting, updating the plot based on the configuration file.</span>
 
@@ -1019,6 +1019,15 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Iterative thermodynamic cycle configuration&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.95</span>
             <span class="p">)</span>
+
+            <span class="c1"># Write optimization report to file</span>
+            <span class="k">if</span> <span class="n">write_report</span><span class="p">:</span>
+                <span class="n">report</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_optimization_report</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x0</span><span class="p">)</span>
+                <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;initial_guess_report.txt&quot;</span>
+                <span class="n">fullfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fullfile</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>
+                
 
             <span class="c1"># Wait for the specified interval before updating again</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">update_interval</span><span class="p">)</span>
@@ -1099,7 +1108,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Retrieve component data</span>
-        <span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_process_data</span><span class="p">(</span>
+        <span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">plot_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_process_data</span><span class="p">(</span>
             <span class="n">name</span><span class="p">,</span> <span class="n">plot_settings</span><span class="p">[</span><span class="s2">&quot;x_prop&quot;</span><span class="p">],</span> <span class="n">plot_settings</span><span class="p">[</span><span class="s2">&quot;y_prop&quot;</span><span class="p">]</span>
         <span class="p">)</span>
 
@@ -1125,32 +1134,31 @@ document.write(`
                 <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="p">[</span><span class="s2">&quot;process_lines&quot;</span><span class="p">][</span><span class="n">ax_index</span><span class="p">][</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="p">[</span><span class="s2">&quot;state_points&quot;</span><span class="p">][</span><span class="n">ax_index</span><span class="p">][</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">x_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">y_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># Prepare kwargs for line and point separately</span>
+            <span class="n">line_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="n">plot_params</span><span class="p">[</span><span class="s2">&quot;linestyle&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;linewidth&quot;</span><span class="p">:</span> <span class="n">plot_params</span><span class="p">[</span><span class="s2">&quot;linewidth&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">plot_params</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;marker&quot;</span><span class="p">:</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                <span class="s2">&quot;zorder&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="p">}</span>
+
+            <span class="n">point_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;marker&quot;</span><span class="p">:</span> <span class="n">plot_params</span><span class="p">[</span><span class="s2">&quot;marker&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;markersize&quot;</span><span class="p">:</span> <span class="n">plot_params</span><span class="p">[</span><span class="s2">&quot;markersize&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;markeredgewidth&quot;</span><span class="p">:</span> <span class="n">plot_params</span><span class="p">[</span><span class="s2">&quot;markeredgewidth&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;markerfacecolor&quot;</span><span class="p">:</span> <span class="n">plot_params</span><span class="p">[</span><span class="s2">&quot;markerfacecolor&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">plot_params</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;zorder&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="p">}</span>
+
             <span class="c1"># Create new plot elements if data is not None</span>
-            <span class="p">(</span><span class="n">line</span><span class="p">,)</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-                <span class="n">x_data</span><span class="p">,</span>
-                <span class="n">y_data</span><span class="p">,</span>
-                <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span>
-                <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.25</span><span class="p">,</span>
-                <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span>
-                <span class="n">markersize</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span>
-                <span class="n">markeredgewidth</span><span class="o">=</span><span class="mf">1.25</span><span class="p">,</span>
-                <span class="n">markerfacecolor</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span>
-                <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-                <span class="n">label</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-                <span class="n">zorder</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="p">(</span><span class="n">points</span><span class="p">,)</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">x_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x_data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
-                <span class="p">[</span><span class="n">y_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y_data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
-                <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span>
-                <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.25</span><span class="p">,</span>
-                <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span>
-                <span class="n">markersize</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span>
-                <span class="n">markeredgewidth</span><span class="o">=</span><span class="mf">1.25</span><span class="p">,</span>
-                <span class="n">markerfacecolor</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span>
-                <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-                <span class="n">zorder</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="n">x_ends</span><span class="p">,</span> <span class="n">y_ends</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x_data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="n">y_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y_data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="p">(</span><span class="n">line</span><span class="p">,)</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="o">**</span><span class="n">line_kwargs</span><span class="p">)</span>
+            <span class="p">(</span><span class="n">points</span><span class="p">,)</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_ends</span><span class="p">,</span> <span class="n">y_ends</span><span class="p">,</span> <span class="o">**</span><span class="n">point_kwargs</span><span class="p">)</span>
 
             <span class="c1"># Store the new plot elements</span>
             <span class="k">if</span> <span class="n">ax_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1197,22 +1205,38 @@ document.write(`
             <span class="n">is_heat_exchanger</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># Retrieve data</span>
-        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">][</span><span class="s2">&quot;identifier&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;working_fluid&quot;</span><span class="p">:</span>
-            <span class="c1"># Components of the cycle</span>
-            <span class="n">x_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">][</span><span class="n">prop_x</span><span class="p">]</span>
-            <span class="n">y_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">][</span><span class="n">prop_y</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">is_heat_exchanger</span> <span class="ow">and</span> <span class="n">prop_y</span> <span class="o">==</span> <span class="s2">&quot;T&quot;</span> <span class="ow">and</span> <span class="n">prop_x</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">]:</span>
-            <span class="c1"># Special case for heat exchangers</span>
+        <span class="n">is_working_fluid</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">][</span><span class="s2">&quot;identifier&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;working_fluid&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_working_fluid</span> <span class="ow">and</span> <span class="n">is_heat_exchanger</span> <span class="ow">and</span> <span class="n">prop_y</span> <span class="o">==</span> <span class="s2">&quot;T&quot;</span> <span class="ow">and</span> <span class="n">prop_x</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">]:</span>
+            <span class="c1"># Special case for heat exchangers in h-T or s-T diagrams</span>
             <span class="n">x_data</span> <span class="o">=</span> <span class="n">data_other_side</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">][</span><span class="n">prop_x</span><span class="p">]</span>
             <span class="n">y_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">][</span><span class="n">prop_y</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">is_heat_exchanger</span> <span class="ow">and</span> <span class="n">prop_y</span> <span class="o">==</span> <span class="s2">&quot;T&quot;</span> <span class="ow">and</span> <span class="n">prop_x</span> <span class="o">==</span> <span class="s2">&quot;heat_flow&quot;</span><span class="p">:</span>
+            <span class="c1"># Special case for pinch point diagram</span>
+            <span class="n">x_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;heat_flow&quot;</span><span class="p">]</span>
+            <span class="n">y_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">][</span><span class="n">prop_y</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">is_working_fluid</span><span class="p">:</span>
+            <span class="c1"># Baseline case for components of the cycle</span>
+            <span class="n">x_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">][</span><span class="n">prop_x</span><span class="p">]</span>
+            <span class="n">y_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">][</span><span class="n">prop_y</span><span class="p">]</span>
+
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Other cases</span>
             <span class="n">x_data</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">y_data</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="n">color</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]</span>
+        <span class="c1"># Define plotting specifications</span>
+        <span class="n">default_params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span>                 <span class="c1"># black</span>
+            <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span>            <span class="c1"># solid line</span>
+            <span class="s2">&quot;linewidth&quot;</span><span class="p">:</span> <span class="mf">1.25</span><span class="p">,</span>
+            <span class="s2">&quot;marker&quot;</span><span class="p">:</span> <span class="s2">&quot;o&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;markersize&quot;</span><span class="p">:</span> <span class="mf">4.5</span><span class="p">,</span>
+            <span class="s2">&quot;markeredgewidth&quot;</span><span class="p">:</span> <span class="mf">1.25</span><span class="p">,</span>
+            <span class="s2">&quot;markerfacecolor&quot;</span><span class="p">:</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span>      <span class="c1"># white-filled marker</span>
+        <span class="p">}</span>
+        <span class="n">plot_params</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">default_params</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;plot_params&quot;</span><span class="p">,</span> <span class="p">{})}</span>
 
-        <span class="k">return</span> <span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">color</span>
+        <span class="k">return</span> <span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">plot_params</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_plot_pinch_point_diagram</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">ax_index</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1237,8 +1261,6 @@ document.write(`
 <span class="sd">        It handles the creation of new plot elements (lines, endpoints, vertical lines) when first called</span>
 <span class="sd">        and updates these elements with new data from &#39;cycle_data&#39; during subsequent calls.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">LABEL_MAPPING</span><span class="p">[</span><span class="s2">&quot;heat&quot;</span><span class="p">])</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">LABEL_MAPPING</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">])</span>
 
         <span class="c1"># Initialize the graphic object dict for this axis index if it does not exist</span>
         <span class="k">if</span> <span class="n">ax_index</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="p">[</span><span class="s2">&quot;pinch_point_lines&quot;</span><span class="p">]:</span>
@@ -1258,23 +1280,32 @@ document.write(`
         <span class="c1"># Sort heat exchangers by minimum temperature on the cold side</span>
         <span class="n">sorted_heat_exchangers</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">heat_exchangers</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
+
         <span class="c1"># Loop over all heat exchangers</span>
         <span class="n">Q0</span> <span class="o">=</span> <span class="mf">0.00</span>
         <span class="k">for</span> <span class="n">HX_name</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">sorted_heat_exchangers</span><span class="p">:</span>
-            <span class="n">component</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cycle_data</span><span class="p">[</span><span class="s2">&quot;components&quot;</span><span class="p">][</span><span class="n">HX_name</span><span class="p">]</span>
-            <span class="c1"># Hot side</span>
-            <span class="n">c_hot</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span>
-            <span class="n">props_hot</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;states&quot;</span><span class="p">]</span>
-            <span class="n">mass_flow_hot</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span>
-            <span class="n">Q_hot</span> <span class="o">=</span> <span class="p">(</span><span class="n">props_hot</span><span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">props_hot</span><span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">mass_flow_hot</span>
-            <span class="n">T_hot</span> <span class="o">=</span> <span class="n">props_hot</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span>
 
-            <span class="c1"># Cold side</span>
-            <span class="n">c_cold</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span>
-            <span class="n">props_cold</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;states&quot;</span><span class="p">]</span>
-            <span class="n">mass_flow_cold</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span>
-            <span class="n">Q_cold</span> <span class="o">=</span> <span class="p">(</span><span class="n">props_cold</span><span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">props_cold</span><span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">mass_flow_cold</span>
-            <span class="n">T_cold</span> <span class="o">=</span> <span class="n">props_cold</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span>
+                <span class="c1"># Hot side</span>
+            <span class="n">Q_hot</span><span class="p">,</span> <span class="n">T_hot</span><span class="p">,</span> <span class="n">plot_params_hot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_process_data</span><span class="p">(</span><span class="n">HX_name</span> <span class="o">+</span> <span class="s2">&quot;_hot_side&quot;</span><span class="p">,</span> <span class="s2">&quot;heat_flow&quot;</span><span class="p">,</span> <span class="s2">&quot;T&quot;</span><span class="p">)</span>
+            <span class="n">Q_cold</span><span class="p">,</span> <span class="n">T_cold</span><span class="p">,</span> <span class="n">plot_params_cold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_process_data</span><span class="p">(</span><span class="n">HX_name</span> <span class="o">+</span> <span class="s2">&quot;_cold_side&quot;</span><span class="p">,</span> <span class="s2">&quot;heat_flow&quot;</span><span class="p">,</span> <span class="s2">&quot;T&quot;</span><span class="p">)</span>
+            <span class="n">Q_hot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">Q_hot</span><span class="p">)</span>
+
+
+            <span class="n">component</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cycle_data</span><span class="p">[</span><span class="s2">&quot;components&quot;</span><span class="p">][</span><span class="n">HX_name</span><span class="p">]</span>
+            <span class="c1"># params_hot = component[&quot;hot_side&quot;][&quot;plot_params&quot;]</span>
+            <span class="c1"># props_hot = component[&quot;hot_side&quot;][&quot;states&quot;]</span>
+            <span class="c1"># mass_flow_hot = component[&quot;hot_side&quot;][&quot;mass_flow&quot;]</span>
+            <span class="c1"># Q_hot = (props_hot[&quot;h&quot;] - props_hot[&quot;h&quot;][0]) * mass_flow_hot</span>
+            <span class="c1"># T_hot = props_hot[&quot;T&quot;]</span>
+            <span class="c1"># print(&quot;old&quot;, Q_hot, T_hot)</span>
+            <span class="c1"># z = zz</span>
+
+            <span class="c1"># # Cold side</span>
+            <span class="c1"># plot_params_cold = component[&quot;cold_side&quot;][&quot;plot_params&quot;]</span>
+            <span class="c1"># props_cold = component[&quot;cold_side&quot;][&quot;states&quot;]</span>
+            <span class="c1"># mass_flow_cold = component[&quot;cold_side&quot;][&quot;mass_flow&quot;]</span>
+            <span class="c1"># Q_cold = (props_cold[&quot;h&quot;] - props_cold[&quot;h&quot;][0]) * mass_flow_cold</span>
+            <span class="c1"># T_cold = props_cold[&quot;T&quot;]</span>
 
             <span class="c1"># Check if the plot elements for this component already exist</span>
             <span class="k">if</span> <span class="n">HX_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="p">[</span><span class="s2">&quot;pinch_point_lines&quot;</span><span class="p">][</span><span class="n">ax_index</span><span class="p">]:</span>
@@ -1292,17 +1323,54 @@ document.write(`
                 <span class="c1"># Update vertical lines</span>
                 <span class="n">plot_elements</span><span class="p">[</span><span class="s2">&quot;start_line&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_xdata</span><span class="p">([</span><span class="n">Q0</span><span class="p">,</span> <span class="n">Q0</span><span class="p">])</span>
                 <span class="n">plot_elements</span><span class="p">[</span><span class="s2">&quot;end_line&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_xdata</span><span class="p">([</span><span class="n">Q0</span> <span class="o">+</span> <span class="n">Q_hot</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">Q0</span> <span class="o">+</span> <span class="n">Q_hot</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
-            <span class="k">else</span><span class="p">:</span>
+            <span class="k">else</span><span class="p">:</span>  
+
+                <span class="c1"># Prepare kwargs for line and point separately</span>
+                <span class="n">line_params_hot</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="n">plot_params_hot</span><span class="p">[</span><span class="s2">&quot;linestyle&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;linewidth&quot;</span><span class="p">:</span> <span class="n">plot_params_hot</span><span class="p">[</span><span class="s2">&quot;linewidth&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">plot_params_hot</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;marker&quot;</span><span class="p">:</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;zorder&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="p">}</span>
+
+                <span class="n">point_params_hot</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;marker&quot;</span><span class="p">:</span> <span class="n">plot_params_hot</span><span class="p">[</span><span class="s2">&quot;marker&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;markersize&quot;</span><span class="p">:</span> <span class="n">plot_params_hot</span><span class="p">[</span><span class="s2">&quot;markersize&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;markeredgewidth&quot;</span><span class="p">:</span> <span class="n">plot_params_hot</span><span class="p">[</span><span class="s2">&quot;markeredgewidth&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;markerfacecolor&quot;</span><span class="p">:</span> <span class="n">plot_params_hot</span><span class="p">[</span><span class="s2">&quot;markerfacecolor&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">plot_params_hot</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;zorder&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="p">}</span>
+
+                <span class="n">line_params_cold</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="n">plot_params_cold</span><span class="p">[</span><span class="s2">&quot;linestyle&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;linewidth&quot;</span><span class="p">:</span> <span class="n">plot_params_cold</span><span class="p">[</span><span class="s2">&quot;linewidth&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">plot_params_cold</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;marker&quot;</span><span class="p">:</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;zorder&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="p">}</span>
+
+                <span class="n">point_params_cold</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;marker&quot;</span><span class="p">:</span> <span class="n">plot_params_cold</span><span class="p">[</span><span class="s2">&quot;marker&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;markersize&quot;</span><span class="p">:</span> <span class="n">plot_params_cold</span><span class="p">[</span><span class="s2">&quot;markersize&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;markeredgewidth&quot;</span><span class="p">:</span> <span class="n">plot_params_cold</span><span class="p">[</span><span class="s2">&quot;markeredgewidth&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;markerfacecolor&quot;</span><span class="p">:</span> <span class="n">plot_params_cold</span><span class="p">[</span><span class="s2">&quot;markerfacecolor&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">plot_params_cold</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;zorder&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="p">}</span>
+
                 <span class="c1"># Create new plot elements</span>
-                <span class="p">(</span><span class="n">hot_line</span><span class="p">,)</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Q0</span> <span class="o">+</span> <span class="n">Q_hot</span><span class="p">,</span> <span class="n">T_hot</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">c_hot</span><span class="p">)</span>
-                <span class="p">(</span><span class="n">cold_line</span><span class="p">,)</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Q0</span> <span class="o">+</span> <span class="n">Q_cold</span><span class="p">,</span> <span class="n">T_cold</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">c_cold</span><span class="p">)</span>
+                <span class="p">(</span><span class="n">hot_line</span><span class="p">,)</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Q0</span> <span class="o">+</span> <span class="n">Q_hot</span><span class="p">,</span> <span class="n">T_hot</span><span class="p">,</span> <span class="o">**</span><span class="n">line_params_hot</span><span class="p">)</span>
+                <span class="p">(</span><span class="n">cold_line</span><span class="p">,)</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Q0</span> <span class="o">+</span> <span class="n">Q_cold</span><span class="p">,</span> <span class="n">T_cold</span><span class="p">,</span> <span class="o">**</span><span class="n">line_params_cold</span><span class="p">)</span>
 
                 <span class="c1"># Create endpoints</span>
-                <span class="n">param</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;marker&quot;</span><span class="p">:</span> <span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="s2">&quot;markersize&quot;</span><span class="p">:</span> <span class="mf">4.0</span><span class="p">,</span> <span class="s2">&quot;markerfacecolor&quot;</span><span class="p">:</span> <span class="s2">&quot;white&quot;</span><span class="p">}</span>
-                <span class="p">(</span><span class="n">hot_1</span><span class="p">,)</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Q0</span> <span class="o">+</span> <span class="n">Q_hot</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">T_hot</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">c_hot</span><span class="p">,</span> <span class="o">**</span><span class="n">param</span><span class="p">)</span>
-                <span class="p">(</span><span class="n">hot_2</span><span class="p">,)</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Q0</span> <span class="o">+</span> <span class="n">Q_hot</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">T_hot</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">c_hot</span><span class="p">,</span> <span class="o">**</span><span class="n">param</span><span class="p">)</span>
-                <span class="p">(</span><span class="n">cold_1</span><span class="p">,)</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Q0</span> <span class="o">+</span> <span class="n">Q_cold</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">T_cold</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">c_cold</span><span class="p">,</span> <span class="o">**</span><span class="n">param</span><span class="p">)</span>
-                <span class="p">(</span><span class="n">cold_2</span><span class="p">,)</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Q0</span> <span class="o">+</span> <span class="n">Q_cold</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">T_cold</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">c_cold</span><span class="p">,</span> <span class="o">**</span><span class="n">param</span><span class="p">)</span>
+                <span class="p">(</span><span class="n">hot_1</span><span class="p">,)</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Q0</span> <span class="o">+</span> <span class="n">Q_hot</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">T_hot</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">point_params_hot</span><span class="p">)</span>
+                <span class="p">(</span><span class="n">hot_2</span><span class="p">,)</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Q0</span> <span class="o">+</span> <span class="n">Q_hot</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">T_hot</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">point_params_hot</span><span class="p">)</span>
+                <span class="p">(</span><span class="n">cold_1</span><span class="p">,)</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Q0</span> <span class="o">+</span> <span class="n">Q_cold</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">T_cold</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">point_params_cold</span><span class="p">)</span>
+                <span class="p">(</span><span class="n">cold_2</span><span class="p">,)</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Q0</span> <span class="o">+</span> <span class="n">Q_cold</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">T_cold</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">point_params_cold</span><span class="p">)</span>
 
                 <span class="c1"># Create vertical lines</span>
                 <span class="n">param</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;linewidth&quot;</span><span class="p">:</span> <span class="mf">0.75</span><span class="p">}</span>

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>thermopt.cycles.components module &#8212; thermopt v0.0.9 documentation</title>
+    <title>thermopt.cycles.components module &#8212; thermopt v0.1.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=4ce08678"></script>
+    <script src="../../_static/documentation_options.js?v=d47532a6"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -141,7 +141,7 @@
   
   
   
-    <p class="title logo__title">thermopt v0.0.9 documentation</p>
+    <p class="title logo__title">thermopt v0.1.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -350,6 +350,7 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.components.compression_process"><code class="docutils literal notranslate"><span class="pre">compression_process()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.components.compute_component_energy_flows"><code class="docutils literal notranslate"><span class="pre">compute_component_energy_flows()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.components.expansion_process"><code class="docutils literal notranslate"><span class="pre">expansion_process()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.components.heat_exchanger"><code class="docutils literal notranslate"><span class="pre">heat_exchanger()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.components.heat_transfer_process"><code class="docutils literal notranslate"><span class="pre">heat_transfer_process()</span></code></a></li>
@@ -407,6 +408,34 @@ document.write(`
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="thermopt.cycles.components.compute_component_energy_flows">
+<span class="sig-prename descclassname"><span class="pre">thermopt.cycles.components.</span></span><span class="sig-name descname"><span class="pre">compute_component_energy_flows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/cycles/components.html#compute_component_energy_flows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.cycles.components.compute_component_energy_flows" title="Link to this definition">#</a></dt>
+<dd><p>Compute power and heat flows for a set of components in a thermodynamic cycle.</p>
+<p>For heat exchangers, the function calculates local and total heat transfer on both hot and cold sides, 
+assuming precomputed enthalpy profiles. For turbomachinery (compressors or expanders), it evaluates 
+the mechanical power based on mass flow and specific work. The results are stored in-place in the 
+<cite>components</cite> dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>components</strong><span class="classifier">dict</span></dt><dd><p>Dictionary of components, each with a ‘type’ field and required properties such as mass flow, 
+enthalpy states, and specific work.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd><p>The function modifies the <cite>components</cite> dictionary in place, adding:
+- ‘power’ [W]
+- ‘heat_flow’ and ‘<a href="#id1"><span class="problematic" id="id2">heat_flow_</span></a>’ [W]
+- ‘heat_balance’ [W] for heat exchangers</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="thermopt.cycles.components.expansion_process">
 <span class="sig-prename descclassname"><span class="pre">thermopt.cycles.components.</span></span><span class="sig-name descname"><span class="pre">expansion_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fluid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">efficiency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">efficiency_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'isentropic'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/cycles/components.html#expansion_process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.cycles.components.expansion_process" title="Link to this definition">#</a></dt>
 <dd><p>Calculate properties along a compression process defined by a isentropic or polytropic efficiency</p>
@@ -447,22 +476,155 @@ document.write(`
 <dl class="py function">
 <dt class="sig sig-object py" id="thermopt.cycles.components.heat_exchanger">
 <span class="sig-prename descclassname"><span class="pre">thermopt.cycles.components.</span></span><span class="sig-name descname"><span class="pre">heat_exchanger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fluid_hot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_in_hot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_out_hot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_in_hot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_out_hot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fluid_cold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_in_cold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_out_cold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_in_cold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_out_cold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">counter_current</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/cycles/components.html#heat_exchanger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.cycles.components.heat_exchanger" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Simulate a counter-current or co-current heat exchanger using discretized enthalpy and pressure profiles.</p>
+<p>The heat exchange is discretized along both streams. Thermodynamic states are evaluated at linearly spaced 
+enthalpy and pressure points. The resulting states are ordered in the direction of increasing temperature. 
+For counter-current flow, the hot-side state array is flipped to enable element-wise temperature difference 
+computation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>fluid_hot</strong><span class="classifier">CoolProp.AbstractState</span></dt><dd><p>Fluid object for the hot side.</p>
+</dd>
+<dt><strong>h_in_hot</strong><span class="classifier">float</span></dt><dd><p>Inlet specific enthalpy [J/kg] of the hot fluid.</p>
+</dd>
+<dt><strong>h_out_hot</strong><span class="classifier">float</span></dt><dd><p>Outlet specific enthalpy [J/kg] of the hot fluid.</p>
+</dd>
+<dt><strong>p_in_hot</strong><span class="classifier">float</span></dt><dd><p>Inlet pressure [Pa] of the hot fluid.</p>
+</dd>
+<dt><strong>p_out_hot</strong><span class="classifier">float</span></dt><dd><p>Outlet pressure [Pa] of the hot fluid.</p>
+</dd>
+<dt><strong>fluid_cold</strong><span class="classifier">CoolProp.AbstractState</span></dt><dd><p>Fluid object for the cold side.</p>
+</dd>
+<dt><strong>h_in_cold</strong><span class="classifier">float</span></dt><dd><p>Inlet specific enthalpy [J/kg] of the cold fluid.</p>
+</dd>
+<dt><strong>h_out_cold</strong><span class="classifier">float</span></dt><dd><p>Outlet specific enthalpy [J/kg] of the cold fluid.</p>
+</dd>
+<dt><strong>p_in_cold</strong><span class="classifier">float</span></dt><dd><p>Inlet pressure [Pa] of the cold fluid.</p>
+</dd>
+<dt><strong>p_out_cold</strong><span class="classifier">float</span></dt><dd><p>Outlet pressure [Pa] of the cold fluid.</p>
+</dd>
+<dt><strong>num_steps</strong><span class="classifier">int, optional</span></dt><dd><p>Number of discretization steps (default is 50).</p>
+</dd>
+<dt><strong>counter_current</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, assumes counter-current flow and flips hot-side state arrays (default is True).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary containing:
+- ‘type’: str, component type
+- ‘hot_side’: dict, state and property arrays for the hot stream
+- ‘cold_side’: dict, state and property arrays for the cold stream
+- ‘q_hot_side’: float, specific enthalpy drop [J/kg] on the hot side
+- ‘q_cold_side’: float, specific enthalpy gain [J/kg] on the cold side
+- ‘temperature_hot_side’: ndarray, temperatures [K] for the hot side (ordered by increasing T)
+- ‘temperature_cold_side’: ndarray, temperatures [K] for the cold side
+- ‘temperature_difference’: ndarray, element-wise temperature difference [K]
+- ‘mass_flow_ratio’: float, ratio of cold-side to hot-side mass flow required for heat balance</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="thermopt.cycles.components.heat_transfer_process">
 <span class="sig-prename descclassname"><span class="pre">thermopt.cycles.components.</span></span><span class="sig-name descname"><span class="pre">heat_transfer_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fluid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/cycles/components.html#heat_transfer_process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.cycles.components.heat_transfer_process" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Compute a discretized heat transfer process by idiscretizing enthalpy and pressure between inlet and outlet.</p>
+<p>This function generates a sequence of thermodynamic states along a heat transfer path 
+by linearly spacing enthalpy and pressure between inlet and outlet values. 
+The resulting states are organized in the direction of increasing enthalpy, 
+which for sensible heating/cooling corresponds to increasing temperature.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>fluid</strong><span class="classifier">CoolProp.AbstractState</span></dt><dd><p>CoolProp fluid object used for property evaluation.</p>
+</dd>
+<dt><strong>h_1</strong><span class="classifier">float</span></dt><dd><p>Inlet specific enthalpy [J/kg].</p>
+</dd>
+<dt><strong>p_1</strong><span class="classifier">float</span></dt><dd><p>Inlet pressure [Pa].</p>
+</dd>
+<dt><strong>h_2</strong><span class="classifier">float</span></dt><dd><p>Outlet specific enthalpy [J/kg].</p>
+</dd>
+<dt><strong>p_2</strong><span class="classifier">float</span></dt><dd><p>Outlet pressure [Pa].</p>
+</dd>
+<dt><strong>num_steps</strong><span class="classifier">int, optional</span></dt><dd><p>Number of discretization steps (default is 25).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary containing:
+- ‘states’: dict of arrays with thermodynamic properties along the process
+- ‘fluid_name’: str, name of the fluid
+- ‘state_in’: CoolProp state object at the inlet
+- ‘state_out’: CoolProp state object at the outlet
+- ‘mass_flow’: float, set to NaN (to be populated externally)
+- ‘heat_flow’: float, set to NaN (to be populated externally)
+- ‘color’: str, set to ‘black’ (optional use for plotting)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="thermopt.cycles.components.isenthalpic_valve">
 <span class="sig-prename descclassname"><span class="pre">thermopt.cycles.components.</span></span><span class="sig-name descname"><span class="pre">isenthalpic_valve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fluid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/cycles/components.html#isenthalpic_valve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.cycles.components.isenthalpic_valve" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Simulate an isenthalpic throttling process across a valve.</p>
+<p>The enthalpy remains constant across the valve, and pressure is reduced from inlet to outlet.
+The function returns a list of thermodynamic states along the expansion</p>
+<p>This function will yield similar results as an expansion process with a polytropic/isentropic efficiency of 0 %.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>state_in</strong><span class="classifier">CoolProp.AbstractState</span></dt><dd><p>Inlet thermodynamic state.</p>
+</dd>
+<dt><strong>p_out</strong><span class="classifier">float</span></dt><dd><p>Outlet pressure [Pa].</p>
+</dd>
+<dt><strong>fluid</strong><span class="classifier">CoolProp.AbstractState</span></dt><dd><p>Fluid object for property evaluation.</p>
+</dd>
+<dt><strong>N</strong><span class="classifier">int, optional</span></dt><dd><p>Number of pressure steps between inlet and outlet (default is 50).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>list of CoolProp.AbstractState</dt><dd><p>List of thermodynamic states along the isenthalpic path.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="thermopt.cycles.components.postprocess_ode">
 <span class="sig-prename descclassname"><span class="pre">thermopt.cycles.components.</span></span><span class="sig-name descname"><span class="pre">postprocess_ode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ode_handle</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/cycles/components.html#postprocess_ode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.cycles.components.postprocess_ode" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Reconstruct thermodynamic states from ODE solution vectors.</p>
+<p>This function applies a user-defined ODE handle to each time step to extract 
+the corresponding thermodynamic state based on the integrated solution. 
+It is useful for evaluating additional fluid properties not stored in the raw <cite>y</cite> vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>t</strong><span class="classifier">ndarray</span></dt><dd><p>Time array [s].</p>
+</dd>
+<dt><strong>y</strong><span class="classifier">ndarray</span></dt><dd><p>Solution array of shape (n_states, n_time_steps).</p>
+</dd>
+<dt><strong>ode_handle</strong><span class="classifier">callable</span></dt><dd><p>Function that takes (t_i, y_i) and returns a tuple (_, state), 
+where <cite>state</cite> is a CoolProp.AbstractState or similar object.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>list</dt><dd><p>List of thermodynamic states reconstructed from the ODE trajectory.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 
@@ -512,6 +674,7 @@ document.write(`
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.components.compression_process"><code class="docutils literal notranslate"><span class="pre">compression_process()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.components.compute_component_energy_flows"><code class="docutils literal notranslate"><span class="pre">compute_component_energy_flows()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.components.expansion_process"><code class="docutils literal notranslate"><span class="pre">expansion_process()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.components.heat_exchanger"><code class="docutils literal notranslate"><span class="pre">heat_exchanger()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.components.heat_transfer_process"><code class="docutils literal notranslate"><span class="pre">heat_transfer_process()</span></code></a></li>

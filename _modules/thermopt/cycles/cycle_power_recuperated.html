@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>thermopt.cycles.cycle_power_recuperated &#8212; thermopt v0.0.9 documentation</title>
+    <title>thermopt.cycles.cycle_power_recuperated &#8212; thermopt v0.1.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=4ce08678"></script>
+    <script src="../../../_static/documentation_options.js?v=d47532a6"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -140,7 +140,7 @@
   
   
   
-    <p class="title logo__title">thermopt v0.0.9 documentation</p>
+    <p class="title logo__title">thermopt v0.1.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -307,7 +307,7 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">utilities</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">properties</span> <span class="k">as</span> <span class="n">props</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">compression_process</span><span class="p">,</span> <span class="n">expansion_process</span><span class="p">,</span> <span class="n">heat_exchanger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">compression_process</span><span class="p">,</span> <span class="n">expansion_process</span><span class="p">,</span> <span class="n">heat_exchanger</span><span class="p">,</span> <span class="n">compute_component_energy_flows</span>
 
 <span class="n">COLORS_MATLAB</span> <span class="o">=</span> <span class="n">utilities</span><span class="o">.</span><span class="n">COLORS_MATLAB</span>
 
@@ -337,10 +337,7 @@ document.write(`
     <span class="p">)</span>
 
     <span class="c1"># Extract heat source/sink parameters and give short names</span>
-    <span class="n">T_source_out_max</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exit_temperature_max&quot;</span><span class="p">)</span>
-    <span class="n">T_source_out_min</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exit_temperature_min&quot;</span><span class="p">)</span>
-    <span class="n">T_sink_out_max</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_sink&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exit_temperature_max&quot;</span><span class="p">)</span>
-    <span class="n">T_sink_out_min</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_sink&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exit_temperature_min&quot;</span><span class="p">)</span>
+    <span class="n">T_source_out_min</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;minimum_temperature&quot;</span><span class="p">)</span>
     <span class="n">p_source_out</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exit_pressure&quot;</span><span class="p">)</span>
     <span class="n">p_sink_out</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_sink&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exit_pressure&quot;</span><span class="p">)</span>
 
@@ -546,26 +543,11 @@ document.write(`
         <span class="s2">&quot;heat_source_pump&quot;</span><span class="p">:</span> <span class="n">heat_source_pump</span><span class="p">,</span>
         <span class="s2">&quot;heat_sink_pump&quot;</span><span class="p">:</span> <span class="n">heat_sink_pump</span><span class="p">,</span>
     <span class="p">}</span>
-
-    <span class="c1"># Compute energy balances</span>
-    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;heat_exchanger&quot;</span><span class="p">:</span>
-            <span class="n">hot</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">]</span>
-            <span class="n">cold</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">]</span>
-            <span class="n">Q1</span> <span class="o">=</span> <span class="n">hot</span><span class="p">[</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">hot</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span> <span class="o">-</span> <span class="n">hot</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
-            <span class="n">Q2</span> <span class="o">=</span> <span class="n">cold</span><span class="p">[</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">cold</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span> <span class="o">-</span> <span class="n">cold</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
-            <span class="n">component</span><span class="p">[</span><span class="s2">&quot;heat_flow_rate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q1</span>
-            <span class="n">component</span><span class="p">[</span><span class="s2">&quot;heat_flow_rate_&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q2</span>
-            <span class="n">component</span><span class="p">[</span><span class="s2">&quot;heat_balance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q1</span> <span class="o">-</span> <span class="n">Q2</span>
-            <span class="n">component</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-
-        <span class="k">if</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;compressor&quot;</span><span class="p">,</span> <span class="s2">&quot;expander&quot;</span><span class="p">]:</span>
-            <span class="n">component</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;specific_work&quot;</span><span class="p">]</span>
-            <span class="n">component</span><span class="p">[</span><span class="s2">&quot;heat_flow_rate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.00</span>
+    <span class="n">compute_component_energy_flows</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
 
     <span class="c1"># First-law analysis</span>
-    <span class="n">Q_in</span> <span class="o">=</span> <span class="n">heater</span><span class="p">[</span><span class="s2">&quot;heat_flow_rate&quot;</span><span class="p">]</span>
-    <span class="n">Q_out</span> <span class="o">=</span> <span class="n">cooler</span><span class="p">[</span><span class="s2">&quot;heat_flow_rate&quot;</span><span class="p">]</span>
+    <span class="n">Q_in</span> <span class="o">=</span> <span class="n">heater</span><span class="p">[</span><span class="s2">&quot;heat_flow&quot;</span><span class="p">]</span>
+    <span class="n">Q_out</span> <span class="o">=</span> <span class="n">cooler</span><span class="p">[</span><span class="s2">&quot;heat_flow&quot;</span><span class="p">]</span>
     <span class="n">W_out</span> <span class="o">=</span> <span class="n">expander</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span>
     <span class="n">W_comp</span> <span class="o">=</span> <span class="n">compressor</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span>
     <span class="n">W_aux</span> <span class="o">=</span> <span class="n">heat_source_pump</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">heat_sink_pump</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span>
@@ -580,7 +562,7 @@ document.write(`
     <span class="n">energy_analysis</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;heater_heat_flow&quot;</span><span class="p">:</span> <span class="n">Q_in</span><span class="p">,</span>
         <span class="s2">&quot;heater_heat_flow_max&quot;</span><span class="p">:</span> <span class="n">Q_in_max</span><span class="p">,</span>
-        <span class="s2">&quot;recuperator_heat_flow&quot;</span><span class="p">:</span> <span class="n">recuperator</span><span class="p">[</span><span class="s2">&quot;heat_flow_rate&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;recuperator_heat_flow&quot;</span><span class="p">:</span> <span class="n">recuperator</span><span class="p">[</span><span class="s2">&quot;heat_flow&quot;</span><span class="p">],</span>
         <span class="s2">&quot;cooler_heat_flow&quot;</span><span class="p">:</span> <span class="n">Q_out</span><span class="p">,</span>
         <span class="s2">&quot;expander_power&quot;</span><span class="p">:</span> <span class="n">W_out</span><span class="p">,</span>
         <span class="s2">&quot;compressor_power&quot;</span><span class="p">:</span> <span class="n">W_comp</span><span class="p">,</span>
@@ -603,14 +585,17 @@ document.write(`
     <span class="n">c_eq</span><span class="p">,</span> <span class="n">c_ineq</span><span class="p">,</span> <span class="n">constraint_report</span> <span class="o">=</span> <span class="n">utilities</span><span class="o">.</span><span class="n">evaluate_constraints</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
 
     <span class="c1"># Set colors for plotting</span>
-    <span class="n">heater</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
-    <span class="n">heater</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">recuperator</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">recuperator</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">cooler</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">cooler</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">expander</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">compressor</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">orange</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">blue</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">red</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+    <span class="n">heater</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;plot_params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">red</span><span class="p">,</span> <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">}</span>
+    <span class="n">heater</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;plot_params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">orange</span><span class="p">,</span> <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">}</span>
+    <span class="n">recuperator</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;plot_params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">orange</span><span class="p">,</span> <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">}</span>
+    <span class="n">recuperator</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;plot_params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">orange</span><span class="p">,</span> <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">}</span>
+    <span class="n">cooler</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;plot_params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">orange</span><span class="p">,</span> <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">}</span>
+    <span class="n">cooler</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;plot_params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">blue</span><span class="p">,</span> <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">}</span>
+    <span class="n">expander</span><span class="p">[</span><span class="s2">&quot;plot_params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">orange</span><span class="p">,</span> <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">}</span>
+    <span class="n">compressor</span><span class="p">[</span><span class="s2">&quot;plot_params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">orange</span><span class="p">,</span> <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">}</span>
 
     <span class="c1"># Check if any fixed parameter or design variable was not used</span>
     <span class="n">utilities</span><span class="o">.</span><span class="n">check_for_unused_keys</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="s2">&quot;parameters&quot;</span><span class="p">,</span> <span class="n">raise_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
