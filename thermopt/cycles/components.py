@@ -20,6 +20,56 @@ def heat_exchanger(
     num_steps=50,
     counter_current=True,
 ):
+    """
+    Simulate a counter-current or co-current heat exchanger using discretized enthalpy and pressure profiles.
+
+    The heat exchange is discretized along both streams. Thermodynamic states are evaluated at linearly spaced 
+    enthalpy and pressure points. The resulting states are ordered in the direction of increasing temperature. 
+    For counter-current flow, the hot-side state array is flipped to enable element-wise temperature difference 
+    computation.
+
+    Parameters
+    ----------
+    fluid_hot : CoolProp.AbstractState
+        Fluid object for the hot side.
+    h_in_hot : float
+        Inlet specific enthalpy [J/kg] of the hot fluid.
+    h_out_hot : float
+        Outlet specific enthalpy [J/kg] of the hot fluid.
+    p_in_hot : float
+        Inlet pressure [Pa] of the hot fluid.
+    p_out_hot : float
+        Outlet pressure [Pa] of the hot fluid.
+    fluid_cold : CoolProp.AbstractState
+        Fluid object for the cold side.
+    h_in_cold : float
+        Inlet specific enthalpy [J/kg] of the cold fluid.
+    h_out_cold : float
+        Outlet specific enthalpy [J/kg] of the cold fluid.
+    p_in_cold : float
+        Inlet pressure [Pa] of the cold fluid.
+    p_out_cold : float
+        Outlet pressure [Pa] of the cold fluid.
+    num_steps : int, optional
+        Number of discretization steps (default is 50).
+    counter_current : bool, optional
+        If True, assumes counter-current flow and flips hot-side state arrays (default is True).
+
+    Returns
+    -------
+    dict
+        Dictionary containing:
+        - 'type': str, component type
+        - 'hot_side': dict, state and property arrays for the hot stream
+        - 'cold_side': dict, state and property arrays for the cold stream
+        - 'q_hot_side': float, specific enthalpy drop [J/kg] on the hot side
+        - 'q_cold_side': float, specific enthalpy gain [J/kg] on the cold side
+        - 'temperature_hot_side': ndarray, temperatures [K] for the hot side (ordered by increasing T)
+        - 'temperature_cold_side': ndarray, temperatures [K] for the cold side
+        - 'temperature_difference': ndarray, element-wise temperature difference [K]
+        - 'mass_flow_ratio': float, ratio of cold-side to hot-side mass flow required for heat balance
+    """    
+    
     # Evaluate properties on the hot side
     hot_side = heat_transfer_process(
         fluid=fluid_hot,
@@ -71,6 +121,42 @@ def heat_exchanger(
 
 
 def heat_transfer_process(fluid, h_1, p_1, h_2, p_2, num_steps=25):
+    """
+    Compute a discretized heat transfer process by idiscretizing enthalpy and pressure between inlet and outlet.
+
+    This function generates a sequence of thermodynamic states along a heat transfer path 
+    by linearly spacing enthalpy and pressure between inlet and outlet values. 
+    The resulting states are organized in the direction of increasing enthalpy, 
+    which for sensible heating/cooling corresponds to increasing temperature.
+
+    Parameters
+    ----------
+    fluid : CoolProp.AbstractState
+        CoolProp fluid object used for property evaluation.
+    h_1 : float
+        Inlet specific enthalpy [J/kg].
+    p_1 : float
+        Inlet pressure [Pa].
+    h_2 : float
+        Outlet specific enthalpy [J/kg].
+    p_2 : float
+        Outlet pressure [Pa].
+    num_steps : int, optional
+        Number of discretization steps (default is 25).
+
+    Returns
+    -------
+    dict
+        Dictionary containing:
+        - 'states': dict of arrays with thermodynamic properties along the process
+        - 'fluid_name': str, name of the fluid
+        - 'state_in': CoolProp state object at the inlet
+        - 'state_out': CoolProp state object at the outlet
+        - 'mass_flow': float, set to NaN (to be populated externally)
+        - 'heat_flow': float, set to NaN (to be populated externally)
+        - 'color': str, set to 'black' (optional use for plotting)
+    """
+        
     # Generate linearly spaced arrays for pressure and enthalpy
     p_array = np.linspace(p_1, p_2, num_steps)
     h_array = np.linspace(h_1, h_2, num_steps)
@@ -93,6 +179,7 @@ def heat_transfer_process(fluid, h_1, p_1, h_2, p_2, num_steps=25):
         "state_in": state_in,
         "state_out": state_out,
         "mass_flow": np.nan,
+        "heat_flow": np.nan,
         "color": "black",
     }
 
@@ -289,6 +376,30 @@ def expansion_process(
 
 
 def isenthalpic_valve(state_in, p_out, fluid, N=50):
+    """
+    Simulate an isenthalpic throttling process across a valve.
+
+    The enthalpy remains constant across the valve, and pressure is reduced from inlet to outlet.
+    The function returns a list of thermodynamic states along the expansion
+
+    This function will yield similar results as an expansion process with a polytropic/isentropic efficiency of 0 %.
+
+    Parameters
+    ----------
+    state_in : CoolProp.AbstractState
+        Inlet thermodynamic state.
+    p_out : float
+        Outlet pressure [Pa].
+    fluid : CoolProp.AbstractState
+        Fluid object for property evaluation.
+    N : int, optional
+        Number of pressure steps between inlet and outlet (default is 50).
+
+    Returns
+    -------
+    list of CoolProp.AbstractState
+        List of thermodynamic states along the isenthalpic path.
+    """  
     p_array = np.linspace(state_in.p, p_out, N)
     h_array = state_in.h * p_array
     states = []
@@ -298,9 +409,74 @@ def isenthalpic_valve(state_in, p_out, fluid, N=50):
 
 
 def postprocess_ode(t, y, ode_handle):
+    """
+    Reconstruct thermodynamic states from ODE solution vectors.
+
+    This function applies a user-defined ODE handle to each time step to extract 
+    the corresponding thermodynamic state based on the integrated solution. 
+    It is useful for evaluating additional fluid properties not stored in the raw `y` vector.
+
+    Parameters
+    ----------
+    t : ndarray
+        Time array [s].
+    y : ndarray
+        Solution array of shape (n_states, n_time_steps).
+    ode_handle : callable
+        Function that takes (t_i, y_i) and returns a tuple (_, state), 
+        where `state` is a CoolProp.AbstractState or similar object.
+
+    Returns
+    -------
+    list
+        List of thermodynamic states reconstructed from the ODE trajectory.
+    """ 
     # Collect additional properties for each integration step
     ode_out = []
     for t_i, y_i in zip(t, y.T):
         _, state = ode_handle(t_i, y_i)
         ode_out.append(state)
     return ode_out
+
+
+def compute_component_energy_flows(components):
+    """
+    Compute power and heat flows for a set of components in a thermodynamic cycle.
+
+    For heat exchangers, the function calculates local and total heat transfer on both hot and cold sides, 
+    assuming precomputed enthalpy profiles. For turbomachinery (compressors or expanders), it evaluates 
+    the mechanical power based on mass flow and specific work. The results are stored in-place in the 
+    `components` dictionary.
+
+    Parameters
+    ----------
+    components : dict
+        Dictionary of components, each with a 'type' field and required properties such as mass flow, 
+        enthalpy states, and specific work.
+
+    Returns
+    -------
+    None
+        The function modifies the `components` dictionary in place, adding:
+        - 'power' [W]
+        - 'heat_flow' and 'heat_flow_' [W]
+        - 'heat_balance' [W] for heat exchangers
+    """
+    for name, component in components.items():
+        if component["type"] == "heat_exchanger":
+            hot = component["hot_side"]
+            cold = component["cold_side"]
+            Q_hot_array = hot["mass_flow"] * (hot["state_in"]["h"] - hot["states"]["h"])
+            Q_cold_array = cold["mass_flow"] * (cold["states"]["h"] - cold["state_in"]["h"])
+            component["hot_side"]["heat_flow"] = Q_hot_array
+            component["cold_side"]["heat_flow"] = Q_cold_array
+            # component["hot_side"]["states"]["heat_flow"] = Q_hot_array
+            # component["cold_side"]["states"]["heat_flow"] = Q_cold_array
+            component["heat_flow"] = Q_hot_array[0]
+            component["heat_flow_"] = Q_cold_array[-1]
+            component["heat_balance"] = Q_hot_array[0] - Q_cold_array[-1]
+            component["power"] = 0.0
+
+        elif component["type"] in ["compressor", "expander"]:
+            component["power"] = component["mass_flow"] * component["specific_work"]
+            component["heat_flow_rate"] = 0.0

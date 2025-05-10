@@ -595,7 +595,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         plt.draw()
         plt.pause(0.01)
 
-    def plot_cycle_realtime(self, configuration_file, update_interval=0.1):
+    def plot_cycle_realtime(self, configuration_file, update_interval=0.1, write_report=False):
         """
         Perform interactive plotting, updating the plot based on the configuration file.
 
@@ -638,6 +638,15 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             self.figure.suptitle(
                 f"Iterative thermodynamic cycle configuration", fontsize=14, y=0.95
             )
+
+            # Write optimization report to file
+            if write_report:
+                report = self.make_optimization_report(self.x0)
+                filename="initial_guess_report.txt"
+                fullfile = os.path.join(self.out_dir, filename)
+                with open(fullfile, "w") as f:
+                    f.write(report)
+                
 
             # Wait for the specified interval before updating again
             time.sleep(update_interval)
@@ -814,14 +823,20 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             is_heat_exchanger = False
 
         # Retrieve data
-        if data["states"]["identifier"][0] == "working_fluid":
-            # Components of the cycle
-            x_data = data["states"][prop_x]
-            y_data = data["states"][prop_y]
-        elif is_heat_exchanger and prop_y == "T" and prop_x in ["h", "s"]:
-            # Special case for heat exchangers
+        is_working_fluid = data["states"]["identifier"][0] == "working_fluid"
+        if not is_working_fluid and is_heat_exchanger and prop_y == "T" and prop_x in ["h", "s"]:
+            # Special case for heat exchangers in h-T or s-T diagrams
             x_data = data_other_side["states"][prop_x]
             y_data = data["states"][prop_y]
+        elif is_heat_exchanger and prop_y == "T" and prop_x == "heat_flow":
+            # Special case for pinch point diagram
+            x_data = data["heat_flow"]
+            y_data = data["states"][prop_y]
+        elif is_working_fluid:
+            # Baseline case for components of the cycle
+            x_data = data["states"][prop_x]
+            y_data = data["states"][prop_y]
+
         else:
             # Other cases
             x_data = None
@@ -864,8 +879,6 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         It handles the creation of new plot elements (lines, endpoints, vertical lines) when first called
         and updates these elements with new data from 'cycle_data' during subsequent calls.
         """
-        ax.set_xlabel(LABEL_MAPPING["heat"])
-        ax.set_ylabel(LABEL_MAPPING["T"])
 
         # Initialize the graphic object dict for this axis index if it does not exist
         if ax_index not in self.graphics["pinch_point_lines"]:
@@ -885,23 +898,32 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         # Sort heat exchangers by minimum temperature on the cold side
         sorted_heat_exchangers = sorted(heat_exchangers, key=lambda x: x[1])
 
+
         # Loop over all heat exchangers
         Q0 = 0.00
         for HX_name, _ in sorted_heat_exchangers:
-            component = self.cycle_data["components"][HX_name]
-            # Hot side
-            c_hot = component["hot_side"]["color"]
-            props_hot = component["hot_side"]["states"]
-            mass_flow_hot = component["hot_side"]["mass_flow"]
-            Q_hot = (props_hot["h"] - props_hot["h"][0]) * mass_flow_hot
-            T_hot = props_hot["T"]
 
-            # Cold side
-            c_cold = component["cold_side"]["color"]
-            props_cold = component["cold_side"]["states"]
-            mass_flow_cold = component["cold_side"]["mass_flow"]
-            Q_cold = (props_cold["h"] - props_cold["h"][0]) * mass_flow_cold
-            T_cold = props_cold["T"]
+                # Hot side
+            Q_hot, T_hot, plot_params_hot = self._get_process_data(HX_name + "_hot_side", "heat_flow", "T")
+            Q_cold, T_cold, plot_params_cold = self._get_process_data(HX_name + "_cold_side", "heat_flow", "T")
+            Q_hot = np.flip(Q_hot)
+
+
+            component = self.cycle_data["components"][HX_name]
+            # params_hot = component["hot_side"]["plot_params"]
+            # props_hot = component["hot_side"]["states"]
+            # mass_flow_hot = component["hot_side"]["mass_flow"]
+            # Q_hot = (props_hot["h"] - props_hot["h"][0]) * mass_flow_hot
+            # T_hot = props_hot["T"]
+            # print("old", Q_hot, T_hot)
+            # z = zz
+
+            # # Cold side
+            # plot_params_cold = component["cold_side"]["plot_params"]
+            # props_cold = component["cold_side"]["states"]
+            # mass_flow_cold = component["cold_side"]["mass_flow"]
+            # Q_cold = (props_cold["h"] - props_cold["h"][0]) * mass_flow_cold
+            # T_cold = props_cold["T"]
 
             # Check if the plot elements for this component already exist
             if HX_name in self.graphics["pinch_point_lines"][ax_index]:
@@ -919,17 +941,54 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
                 # Update vertical lines
                 plot_elements["start_line"].set_xdata([Q0, Q0])
                 plot_elements["end_line"].set_xdata([Q0 + Q_hot[-1], Q0 + Q_hot[-1]])
-            else:
+            else:  
+
+                # Prepare kwargs for line and point separately
+                line_params_hot = {
+                    "linestyle": plot_params_hot["linestyle"],
+                    "linewidth": plot_params_hot["linewidth"],
+                    "color": plot_params_hot["color"],
+                    "marker": "none",
+                    "zorder": 1,
+                }
+
+                point_params_hot = {
+                    "linestyle": "none",
+                    "marker": plot_params_hot["marker"],
+                    "markersize": plot_params_hot["markersize"],
+                    "markeredgewidth": plot_params_hot["markeredgewidth"],
+                    "markerfacecolor": plot_params_hot["markerfacecolor"],
+                    "color": plot_params_hot["color"],
+                    "zorder": 2,
+                }
+
+                line_params_cold = {
+                    "linestyle": plot_params_cold["linestyle"],
+                    "linewidth": plot_params_cold["linewidth"],
+                    "color": plot_params_cold["color"],
+                    "marker": "none",
+                    "zorder": 1,
+                }
+
+                point_params_cold = {
+                    "linestyle": "none",
+                    "marker": plot_params_cold["marker"],
+                    "markersize": plot_params_cold["markersize"],
+                    "markeredgewidth": plot_params_cold["markeredgewidth"],
+                    "markerfacecolor": plot_params_cold["markerfacecolor"],
+                    "color": plot_params_cold["color"],
+                    "zorder": 2,
+                }
+
                 # Create new plot elements
-                (hot_line,) = ax.plot(Q0 + Q_hot, T_hot, color=c_hot)
-                (cold_line,) = ax.plot(Q0 + Q_cold, T_cold, color=c_cold)
+                (hot_line,) = ax.plot(Q0 + Q_hot, T_hot, **line_params_hot)
+                (cold_line,) = ax.plot(Q0 + Q_cold, T_cold, **line_params_cold)
 
                 # Create endpoints
-                param = {"marker": "o", "markersize": 4.0, "markerfacecolor": "white"}
-                (hot_1,) = ax.plot(Q0 + Q_hot[0], T_hot[0], color=c_hot, **param)
-                (hot_2,) = ax.plot(Q0 + Q_hot[-1], T_hot[-1], color=c_hot, **param)
-                (cold_1,) = ax.plot(Q0 + Q_cold[0], T_cold[0], color=c_cold, **param)
-                (cold_2,) = ax.plot(Q0 + Q_cold[-1], T_cold[-1], color=c_cold, **param)
+                (hot_1,) = ax.plot(Q0 + Q_hot[0], T_hot[0], **point_params_hot)
+                (hot_2,) = ax.plot(Q0 + Q_hot[-1], T_hot[-1], **point_params_hot)
+                (cold_1,) = ax.plot(Q0 + Q_cold[0], T_cold[0], **point_params_cold)
+                (cold_2,) = ax.plot(Q0 + Q_cold[-1], T_cold[-1], **point_params_cold)
 
                 # Create vertical lines
                 param = {"color": "black", "linestyle": "-", "linewidth": 0.75}
