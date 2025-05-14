@@ -23,7 +23,7 @@ problem_formulation:
   cycle_topology: recompression
 
   plot_settings:
-    pinch_point_diagram: False
+    pinch_point_diagram: True
 
     fluid: 
       plot_saturation_line: True
@@ -46,9 +46,10 @@ problem_formulation:
   fixed_parameters:
     net_power: 1e6
 
-    # Second law analysis not implemented yet
-    # ambient_temperature: 300
-    # ambient_pressure: 101325
+    special_points:
+      ambient_pressure: 101325  
+      ambient_temperature: 20.0 + 273.15
+      maximum_temperature: 500.0 + 273.15
 
     working_fluid:
       name: CO2
@@ -139,9 +140,9 @@ problem_formulation:
       value: 1.25*$working_fluid.critical_point.p
 
     main_compressor_inlet_enthalpy:
-      min: 0.9*$working_fluid.liquid_at_heat_sink_temperature.h
-      max: 2.0*$working_fluid.liquid_at_heat_sink_temperature.h
-      value: 1.2*$working_fluid.liquid_at_heat_sink_temperature.h
+      min: 0.9*$working_fluid.liquid_at_ambient_temperature.h
+      max: 2.0*$working_fluid.liquid_at_ambient_temperature.h
+      value: 1.2*$working_fluid.liquid_at_ambient_temperature.h
 
     expander_inlet_pressure:
       min: 1.5*$working_fluid.critical_point.p
@@ -149,19 +150,19 @@ problem_formulation:
       value: 3.0*$working_fluid.critical_point.p
 
     expander_inlet_enthalpy:
-      min: 0.5*$working_fluid.gas_at_heat_source_temperature.h
-      max: 1.0*$working_fluid.gas_at_heat_source_temperature.h
-      value: 0.9*$working_fluid.gas_at_heat_source_temperature.h
+      min: 0.5*$working_fluid.gas_at_maximum_temperature.h
+      max: 1.0*$working_fluid.gas_at_maximum_temperature.h
+      value: 0.9*$working_fluid.gas_at_maximum_temperature.h
 
     split_compressor_inlet_enthalpy:
-      min: 1.0*$working_fluid.liquid_at_heat_sink_temperature.h
-      max: 1.0*$working_fluid.gas_at_heat_source_temperature.h
-      value: 0.30*($working_fluid.gas_at_heat_source_temperature.h - $working_fluid.liquid_at_heat_sink_temperature.h) + $working_fluid.liquid_at_heat_sink_temperature.h
+      min: 1.0*$working_fluid.liquid_at_ambient_temperature.h
+      max: 1.0*$working_fluid.gas_at_maximum_temperature.h
+      value: 0.30*($working_fluid.gas_at_maximum_temperature.h - $working_fluid.liquid_at_ambient_temperature.h) + $working_fluid.liquid_at_ambient_temperature.h
 
     recuperator_intermediate_enthalpy:
       min: 1.00*$working_fluid.critical_point.h
-      max: 1.00*$working_fluid.gas_at_heat_source_temperature.h
-      value: 0.5*($working_fluid.gas_at_heat_source_temperature.h - $working_fluid.critical_point.h) + $working_fluid.critical_point.h
+      max: 1.00*$working_fluid.gas_at_maximum_temperature.h
+      value: 0.5*($working_fluid.gas_at_maximum_temperature.h - $working_fluid.critical_point.h) + $working_fluid.critical_point.h
 
     mass_split_fraction:
       min: 0.00

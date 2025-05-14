@@ -8,7 +8,7 @@ solver_options:
   logger: None
   update_on: gradient
   tolerance: 1e-6 
-  max_iterations: 50
+  max_iterations: 200
   problem_scale: 10
   callbacks:
     save_plot: False
@@ -18,6 +18,31 @@ solver_options:
     plot_convergence: False
 
   
+# solver_options: 
+#   library: pygmo
+#   method: ipopt
+#   derivative_method: 2-point 
+#   derivative_abs_step: 1e-6
+#   print_convergence: True 
+#   plot_convergence: False
+#   logger: None
+#   update_on: function
+#   tolerance: 1e-6
+#   max_iterations: 200
+#   extra_options: {
+#     "tol": 1e-6,
+#     "limited_memory_max_history": 20,
+#     "limited_memory_max_skipping": 100
+#   }
+#   callbacks:
+#     save_plot: False
+#     save_config: False
+#     save_report: False
+#     plot_cycle: False
+#     plot_convergence: True
+
+
+
 problem_formulation:
 
   cycle_topology: PTES_recuperated
@@ -49,31 +74,28 @@ problem_formulation:
       backend: HEOS
       exceptions: True
 
-    heating_fluid:
+    hot_storage_fluid:
         name: nitrogen
         backend: HEOS
         exceptions: True
 
-    cooling_fluid:
+    cold_storage_fluid:
       name: nitrogen
       backend: HEOS
       exceptions: True
 
     charging_power: 1e6   #  W  #(doesn't change anything) #35e6
 
-    # Second law analysis not implemented yet
-    # ambient_temperature: 300
-    # ambient_pressure: 101325
+    special_points:
+      ambient_pressure: 101325  
+      ambient_temperature: 25.0 + 273.15
+      maximum_temperature: 600.0 + 273.15
 
-    heat_source: #(maybe Hot storage)
-      inlet_temperature: 75 + 273.15
-      inlet_pressure: 101325
-      exit_pressure: 101325
+    hot_storage:
+      pressure: 101325
 
-    heat_sink: #(maybe Cold storage)
-      inlet_temperature: 300 + 273.15 #200
-      inlet_pressure: 101325
-      exit_pressure: 101325
+    cold_storage:
+      pressure: 101325
 
     heater_charge:
       pressure_drop_hot_side: 0.00
@@ -123,83 +145,95 @@ problem_formulation:
 
   design_variables:
 
-    # Charge variables
-    heat_source_exit_temperature_charge:
+    # Energy storage variables
+    hot_storage_upper_temperature: 
+      min: 200 + 273.15
+      max: 700 + 273.15
+      value: 400 + 273.15
+
+    hot_storage_lower_temperature: 
+      min: 200 + 273.15
+      max: 600 + 273.15
+      value: 300 + 273.15
+
+    cold_storage_upper_temperature: 
       min: -50 + 273.15
-      max: 55 + 273.15
+      max: 150 + 273.15
+      value: 75 + 273.15
+
+    cold_storage_lower_temperature: 
+      min: -50 + 273.15
+      max: 150 + 273.15
       value: 50 + 273.15
 
-    heat_sink_exit_temperature_charge:
-      min: 301 + 273.15
-      max: 500 + 273.15 #(was 600)
-      value: 400 + 273.15 #550
+    cold_storage_upper_temperature_discharge: 
+      min: -50 + 273.15
+      max: 200 + 273.15
+      value: 100 + 273.15
 
+    # Charge cycle variables
     compressor_inlet_pressure_charge:
       min: 1.2*$working_fluid.critical_point.p
+      # min: 0.5*$working_fluid.critical_point.p
       max: 3.0*$working_fluid.critical_point.p
-      value: 1.2*$working_fluid.critical_point.p #optimal (as small as possible) #0.07
+      value: 1.3*$working_fluid.critical_point.p
 
     compressor_inlet_enthalpy_charge:
-      min: 0.70*$working_fluid.critical_point.h
-      max: 4.00*$working_fluid.critical_point.h
-      value: 2.5*$working_fluid.critical_point.h #optimal (just the right amount) (was 1.6) #2.5
+      min: 0.7*$working_fluid.critical_point.h
+      max: 4.0*$working_fluid.critical_point.h
+      value: 2.2*$working_fluid.critical_point.h
 
     expander_inlet_pressure_charge:
       min: 1.1*$working_fluid.triple_point_liquid.p
       max: 5.0*$working_fluid.critical_point.p
-      value: 4.5*$working_fluid.critical_point.p #optimal (as large as possible) #6
+      value: 4.5*$working_fluid.critical_point.p
 
     expander_inlet_enthalpy_charge:
       min: 0.6*$working_fluid.critical_point.h
-      max: 0.99*$working_fluid.triple_point_vapor.h
-      value: 0.95*$working_fluid.critical_point.h #optimal (needs to be small enough) (was 1.1)
+      max: 1.0*$working_fluid.triple_point_vapor.h
+      value: 0.8*$working_fluid.critical_point.h
 
     recuperator_inlet_enthalpy_hot_charge:
       min: 1.0*$working_fluid.critical_point.h
       max: 4.0*$working_fluid.critical_point.h
-      value: 2.5*$working_fluid.critical_point.h #optimal (needs to be small enough) (was 1.1)
+      value: 2.2*$working_fluid.critical_point.h
 
-
-  # Discharge variables
-
-    # heat_source_exit_temperature_discharge:
-    #   min: 500 + 273.15
-    #   max: 600 + 273.15
-    #   value: 650 + 273.15
-    
-    heat_sink_exit_temperature_discharge:
-      min: -40 + 273.15
-      max: 200 + 273.15
-      value: 55 + 273.15
-     
+    # Discharge cycle variables    
     compressor_inlet_pressure_discharge:
-      min: 1.1*$working_fluid.critical_point.p
-      max: 5.00*$working_fluid.critical_point.p
-      value: 1.1*$working_fluid.critical_point.p
+      min: 1.2*$working_fluid.critical_point.p
+      # min: 0.5*$working_fluid.critical_point.p
+      max: 3.0*$working_fluid.critical_point.p
+      value: 1.5*$working_fluid.critical_point.p
       
     compressor_inlet_enthalpy_discharge:
-      min: 1.1*$working_fluid.triple_point_liquid.h
-      max: 1*$working_fluid.critical_point.h
-      value: 0.5*$working_fluid.critical_point.h
+      min: 0.6*$working_fluid.critical_point.h
+      max: 2.0*$working_fluid.triple_point_vapor.h
+      value: 1.3*$working_fluid.critical_point.h
 
     expander_inlet_pressure_discharge:
       min: 1.1*$working_fluid.critical_point.p
-      max: 10*$working_fluid.critical_point.p
+      max: 5.0*$working_fluid.critical_point.p
       value: 4.0*$working_fluid.critical_point.p
 
     expander_inlet_enthalpy_discharge:
-      min: 1.10*$working_fluid.critical_point.h
-      max: 5*$working_fluid.critical_point.h
-      value: 3.2*$working_fluid.critical_point.h
+      min: 1.1*$working_fluid.critical_point.h
+      max: 5.0*$working_fluid.critical_point.h
+      value: 2.4*$working_fluid.critical_point.h
 
-    recuperator_effectiveness_discharge:
-      min: 0.0
-      max: 1.0
-      value: 0.7
+    recuperator_outlet_enthalpy_hot_discharge:
+      min: 1.0*$working_fluid.critical_point.h
+      max: 4.0*$working_fluid.critical_point.h
+      value: 2.0*$working_fluid.critical_point.h
+
+
+  objective_function:
+    variable: $energy_analysis.roundtrip_efficiency
+    type: maximize
+
 
   constraints:
 
-
+  # Charge cycle HX pinch points 
     - variable: $components.heater_charge.temperature_difference
       type: ">"
       value: 10
@@ -213,14 +247,7 @@ problem_formulation:
       value: 10
       normalize: True
 
-    # - variable: $components.compressor_charge.state_in.superheating
-    #   type: ">"
-    #   value: 1.00
-    # - variable: components.expander.state_in.T
-    #   type: "<"
-    #   value: 450 + 273.15
-
-
+  # Discharge cycle HX pinch points 
     - variable: $components.heater_discharge.temperature_difference
       type: ">"
       value: 10
@@ -233,17 +260,22 @@ problem_formulation:
       type: ">"
       value: 10
       normalize: True
+
+  # Consistency constraints:
+    - variable: $energy_analysis.mass_flow_mismatch
+      type: "="
+      value: 0.0
+      normalize: False
+
+    - variable: $energy_analysis.cold_storage_upper_temperature - $energy_analysis.cold_storage_lower_temperature 
+      type: ">"
+      value: 20.0
+      normalize: True
+
+    - variable: $energy_analysis.cold_storage_upper_temperature_discharge - $energy_analysis.cold_storage_upper_temperature
+      type: ">"
+      value: 0.0
+      normalize: False
   
-    # # - variable: $components.compressor_discharge.state_in.superheating
-    # #   type: ">"
-    # #   value: 1.00
-    # # - variable: components.expander.state_in.T
-    # #   type: "<"
-    # #   value: 450 + 273.15
 
-
-  objective_function:
-    variable: $energy_analysis.roundtrip_efficiency
-    # variable: $energy_analysis.COP_heat_pump
-    type: maximize
 

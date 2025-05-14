@@ -57,9 +57,10 @@ problem_formulation:
 
     net_power: 1e6
     
-    # Second law analysis not implemented yet
-    # ambient_temperature: 300
-    # ambient_pressure: 101325
+    special_points:
+      ambient_pressure: 101325  
+      ambient_temperature: 20.0 + 273.15
+      maximum_temperature: 140.0 + 273.15
 
     heat_source:
       inlet_temperature: 140 + 273.15
@@ -111,14 +112,14 @@ problem_formulation:
       value: 25 + 273.15
 
     compressor_inlet_pressure:
-      min: 0.9*$working_fluid.liquid_at_heat_sink_temperature.p
-      max: 3.0*$working_fluid.liquid_at_heat_sink_temperature.p
-      value: 2*$working_fluid.liquid_at_heat_sink_temperature.p
+      min: 0.9*$working_fluid.liquid_at_ambient_temperature.p
+      max: 3.0*$working_fluid.liquid_at_ambient_temperature.p
+      value: 2*$working_fluid.liquid_at_ambient_temperature.p
 
     compressor_inlet_enthalpy:
-      min: 0.0*($working_fluid.critical_point.h - $working_fluid.liquid_at_heat_sink_temperature.h) + $working_fluid.liquid_at_heat_sink_temperature.h
-      max:  0.5*($working_fluid.critical_point.h - $working_fluid.liquid_at_heat_sink_temperature.h) + $working_fluid.liquid_at_heat_sink_temperature.h
-      value: 0.1*($working_fluid.critical_point.h - $working_fluid.liquid_at_heat_sink_temperature.h) + $working_fluid.liquid_at_heat_sink_temperature.h
+      min: 0.0*($working_fluid.critical_point.h - $working_fluid.liquid_at_ambient_temperature.h) + $working_fluid.liquid_at_ambient_temperature.h
+      max:  0.5*($working_fluid.critical_point.h - $working_fluid.liquid_at_ambient_temperature.h) + $working_fluid.liquid_at_ambient_temperature.h
+      value: 0.1*($working_fluid.critical_point.h - $working_fluid.liquid_at_ambient_temperature.h) + $working_fluid.liquid_at_ambient_temperature.h
 
     expander_inlet_pressure:
       min: 0.1*$working_fluid.triple_point_vapor.p
@@ -126,9 +127,9 @@ problem_formulation:
       value: 0.5*$working_fluid.critical_point.p
 
     expander_inlet_enthalpy:
-      min: 0.20*$working_fluid.gas_at_heat_source_temperature.h
-      max: 1.00*$working_fluid.gas_at_heat_source_temperature.h
-      value: 0.90*$working_fluid.gas_at_heat_source_temperature.h
+      min: 0.20*$working_fluid.gas_at_maximum_temperature.h
+      max: 1.00*$working_fluid.gas_at_maximum_temperature.h
+      value: 0.90*$working_fluid.gas_at_maximum_temperature.h
 
 
 

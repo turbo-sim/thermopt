@@ -29,6 +29,9 @@ def evaluate_cycle(
         **parameters.pop("cooling_fluid"), identifier="cooling_fluid"
     )
 
+    # Extract special points
+    special_points = parameters.pop("special_points")
+
     # Extract pressure drops and give short names
     p_source_out = parameters["heat_source"].pop("exit_pressure")
     p_sink_out   = parameters["heat_sink"].pop("exit_pressure")

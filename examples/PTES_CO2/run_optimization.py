@@ -1,15 +1,11 @@
 import thermopt as th
 import matplotlib.pyplot as plt
 
-
 # Print package info
 th.print_package_info()
 
 # Read configuration file
-CONFIG_FILE = "./case_sCO2_PTES_roberto.yaml"
-# CONFIG_FILE = "./case_sCO2_heat_pump_charge.yaml"
-# CONFIG_FILE = "./case_sCO2_heat_pump_air.yaml"
-
+CONFIG_FILE = "./case_PTES_CO2.yaml"
 config = th.read_configuration_file(CONFIG_FILE)
 
 # Initialize cycle problem

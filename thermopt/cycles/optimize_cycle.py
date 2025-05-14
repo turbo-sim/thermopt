@@ -391,7 +391,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         """
         # Compute saturated liquid state at sink temperature
         # Use pseudocritical line if heat sink is above critical temperature
-        T_sink = self.fixed_parameters["heat_sink"]["inlet_temperature"]
+        T_sink = self.fixed_parameters["special_points"]["ambient_temperature"]
         crit = self.fluid.critical_point
         if T_sink < crit.T:
             state_sat = self.fluid.get_state(props.QT_INPUTS, 0.0, T_sink)
@@ -399,7 +399,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             state_sat = self.fluid.get_state(props.DmassT_INPUTS, crit.rho, T_sink)
 
         # Compute dilute gas state at heat source temperature
-        T_source = self.fixed_parameters["heat_source"]["inlet_temperature"]
+        T_source = self.fixed_parameters["special_points"]["maximum_temperature"]
         p_triple = 1.01 * self.fluid.triple_point_liquid.p
         state_dilute = self.fluid.get_state(props.PT_INPUTS, p_triple, T_source)
 
@@ -409,8 +409,8 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             "critical_point": self.fluid.critical_point.to_dict(),
             "triple_point_liquid": self.fluid.triple_point_liquid.to_dict(),
             "triple_point_vapor": self.fluid.triple_point_vapor.to_dict(),
-            "liquid_at_heat_sink_temperature": state_sat.to_dict(),
-            "gas_at_heat_source_temperature": state_dilute.to_dict(),
+            "liquid_at_ambient_temperature": state_sat.to_dict(),
+            "gas_at_maximum_temperature": state_dilute.to_dict(),
         }
 
     def fitness(self, x):

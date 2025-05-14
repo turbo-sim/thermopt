@@ -62,9 +62,10 @@ problem_formulation:
 
     heat_duty: 100e3
 
-    # Second law analysis not implemented yet
-    # ambient_temperature: 300
-    # ambient_pressure: 101325
+    special_points:
+      ambient_pressure: 101325  
+      ambient_temperature: 20.0 + 273.15
+      maximum_temperature: 20.0 + 273.15
 
     heat_source:
       inlet_temperature: -10 + 273.15
