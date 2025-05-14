@@ -336,6 +336,9 @@ document.write(`
         <span class="o">**</span><span class="n">parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;cooling_fluid&quot;</span><span class="p">),</span> <span class="n">identifier</span><span class="o">=</span><span class="s2">&quot;cooling_fluid&quot;</span>
     <span class="p">)</span>
 
+    <span class="c1"># Extract special points</span>
+    <span class="n">special_points</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;special_points&quot;</span><span class="p">)</span>
+
     <span class="c1"># Extract heat source/sink parameters and give short names</span>
     <span class="n">T_source_out_min</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;minimum_temperature&quot;</span><span class="p">)</span>
     <span class="n">p_source_out</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exit_pressure&quot;</span><span class="p">)</span>
