@@ -4,6 +4,9 @@ from scipy.integrate import solve_ivp
 
 # from .. import utilities
 from .. import properties as props
+from .NonDimensionalTurbo import RadialTurbine
+from .NonDimensionalTurbo import CentrifugalCompressor
+import CoolProp.CoolProp as cp
 
 
 def heat_exchanger(
@@ -187,7 +190,7 @@ def heat_transfer_process(fluid, h_1, p_1, h_2, p_2, num_steps=25):
 
 
 def compression_process(
-    fluid, h_in, p_in, p_out, efficiency, efficiency_type="isentropic", num_steps=10
+    fluid, h_in, p_in, p_out, efficiency=None, efficiency_type="isentropic", mass_flow=None, data_in={}, num_steps=10
 ):
     """
     Calculate properties along a compression process defined by a isentropic or polytropic efficiency
@@ -250,6 +253,35 @@ def compression_process(
         # Evaluate fluid properties at intermediate states
         states = postprocess_ode(sol.t, sol.y, odefun)
         state_in, state_out = states[0], states[-1]
+        
+    elif efficiency_type == "non-dimensional":
+        
+        efficiency #=Nan/None
+        
+        #fluidC=cp.AbstractState("HEOS","Air") #extract this from get_state for set_CoolProp_fluid()
+        # fluidC = props.Fluid(name = str(fluid))
+        fluidC=cp.AbstractState("HEOS",fluid.name)
+        
+        compr=CentrifugalCompressor()
+        compr.set_CoolProp_fluid(fluidC)
+        
+        compr.data_in = data_in #need to deal with assigning of compressor design parameters
+                                #probably will add the option to yaml file
+        
+        # mass_flow=.1 #maybe assigned in yaml file (says in paper, needs to be defined) #optimization variable
+        state_in = fluid.get_state(props.HmassP_INPUTS, h_in, p_in, supersaturation=True, generalize_quality=True)
+        T_in = state_in.T
+        # T_out_compressor = compr.CoolProp_solve_outlet_T(mass_flow,p_in,T_in,p_out)
+        # T_out_compressor = compr.CoolProp_solve_outlet_T(mass_flow,1e5,300,2e5)
+        compr.CoolProp_solve_outlet_fixed_P(mass_flow,p_in,T_in,p_out,iterate_on_enthalpy=True)
+        T_out_compressor = compr.outlet["T"]
+        state_out = fluid.get_state(props.PT_INPUTS, p_out, T_out_compressor, supersaturation=True, generalize_quality=True)
+        
+        dataT=compr.get_output_data()
+        print(dataT)
+        
+        states = [state_in, state_out]
+        print(states)
 
     else:
         raise ValueError("Invalid efficiency_type. Use 'isentropic' or 'polytropic'.")
@@ -278,7 +310,7 @@ def compression_process(
 
 
 def expansion_process(
-    fluid, h_in, p_in, p_out, efficiency, efficiency_type="isentropic", num_steps=50
+    fluid, h_in, p_in, p_out, efficiency=None, efficiency_type="isentropic", mass_flow=None, data_in={}, num_steps=50
 ):
     """
     Calculate properties along a compression process defined by a isentropic or polytropic efficiency
@@ -340,6 +372,38 @@ def expansion_process(
         # Evaluate fluid properties at intermediate states
         states = postprocess_ode(sol.t, sol.y, odefun)
         state_in, state_out = states[0], states[-1]
+        
+    elif efficiency_type == "non-dimensional":
+        #RadialTurbineClass
+        #State_in and state_out
+        #states = [state_in, state_out]
+        
+        efficiency #=Nan/None
+        
+        #fluidd=cp.AbstractState("HEOS","Air") #extract this from get_state for set_CoolProp_fluid()
+        # fluidT = props.Fluid(name = str(fluid))
+        fluidT=cp.AbstractState("HEOS",fluid.name)
+        
+        turb=RadialTurbine()
+        turb.set_CoolProp_fluid(fluidT)
+        
+        turb.data_in = data_in #need to deal with assigning of turbine design parameters
+                               #probably will add the option to yaml file
+        
+        # mass_flow=.1 #maybe assigned in yaml file (says in paper, needs to be defined) #optimization variable
+        state_in = fluid.get_state(props.HmassP_INPUTS, h_in, p_in, supersaturation=True, generalize_quality=True)
+        T_in = state_in.T
+        #print(mass_flow,p_in,T_in,p_out)
+        # T_out_expander = turb.CoolProp_solve_outlet_T(mass_flow,p_in,T_in,p_out)
+        turb.CoolProp_solve_outlet_fixed_P(mass_flow,p_in,T_in,p_out,iterate_on_enthalpy=True)
+        T_out_expander = turb.outlet["T"]
+        state_out = fluid.get_state(props.PT_INPUTS, p_out, T_out_expander, supersaturation=True, generalize_quality=True)
+        
+        dataT=turb.get_output_data()
+        print(dataT)
+        
+        states = [state_in, state_out]
+        print(states)
 
     else:
         raise ValueError("Invalid efficiency_type. Use 'isentropic' or 'polytropic'.")

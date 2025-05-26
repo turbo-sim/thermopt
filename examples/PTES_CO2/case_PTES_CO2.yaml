@@ -114,11 +114,27 @@ problem_formulation:
 
     expander_charge:
       efficiency: 0.8
-      efficiency_type: "isentropic"
+      efficiency_type: "non-dimensional"
+      data_in:
+          specific_speed: 0.6
+          is_scalloped: True
+          diffuser_loss_fraction: 0.35
+          clearance_height_ratio: 0.02
+          metal_density: 7800
+          d_eta_other: 0.0
 
     compressor_charge:
       efficiency: 0.85
       efficiency_type: "isentropic"
+      data_in: 
+          flow_coefficient: 0.07
+          backsweep: 30
+          is_shrouded: False
+          has_vaned: True
+          roughness: 3.6e-6
+          clearance_height_ratio: 0.02
+          metal_density: 7800
+          d_eta_other: 0.0
 
     heater_discharge:
       pressure_drop_hot_side: 0.00
@@ -138,10 +154,26 @@ problem_formulation:
     expander_discharge:
       efficiency: 0.8
       efficiency_type: "isentropic"
+      data_in:
+          specific_speed: 0.6
+          is_scalloped: True
+          diffuser_loss_fraction: 0.35
+          clearance_height_ratio: 0.02
+          metal_density: 7800
+          d_eta_other: 0.0
 
     compressor_discharge:
       efficiency: 0.85
       efficiency_type: "isentropic"
+      data_in: 
+          flow_coefficient: 0.07
+          backsweep: 30
+          is_shrouded: False
+          has_vaned: True
+          roughness: 3.6e-6
+          clearance_height_ratio: 0.02
+          metal_density: 7800
+          d_eta_other: 0.0
 
   design_variables:
 
@@ -224,6 +256,16 @@ problem_formulation:
       min: 1.0*$working_fluid.critical_point.h
       max: 4.0*$working_fluid.critical_point.h
       value: 2.0*$working_fluid.critical_point.h
+      
+    mass_flow_rate_charge:
+        min: 0
+        max: 100
+        value: 1 #random for now
+        
+    mass_flow_rate_discharge:
+        min: 0
+        max: 100
+        value: 1 #random for now
 
 
   objective_function:
@@ -276,6 +318,17 @@ problem_formulation:
       type: ">"
       value: 0.0
       normalize: False
+      
+    - variable: $energy_analysis.m_error_charge
+      type: "="
+      value: 0.0
+      normalize: False
+      
+    - variable: $energy_analysis.m_error_discharge
+      type: "="
+      value: 0.0
+      normalize: False
+
   
 
 
