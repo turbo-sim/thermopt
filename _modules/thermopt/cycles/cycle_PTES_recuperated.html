@@ -363,6 +363,14 @@ document.write(`
     <span class="n">compressor_inlet_p</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;compressor_inlet_pressure_charge&quot;</span><span class="p">)</span>
     <span class="n">compressor_inlet_h</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;compressor_inlet_enthalpy_charge&quot;</span><span class="p">)</span>
     <span class="n">recuperator_inlet_enthalpy_hot_charge</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;recuperator_inlet_enthalpy_hot_charge&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Turbomachinery</span>
+    <span class="n">mass_flow_rate_charge</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;mass_flow_rate_charge&quot;</span><span class="p">)</span>
+    <span class="n">mass_flow_rate_discharge</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;mass_flow_rate_discharge&quot;</span><span class="p">)</span>
+    <span class="n">compressor_data_in_charge</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;compressor_charge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;data_in&quot;</span><span class="p">)</span>
+    <span class="n">compressor_data_in_discharge</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;compressor_discharge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;data_in&quot;</span><span class="p">)</span>
+    <span class="n">expander_data_in_charge</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;expander_charge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;data_in&quot;</span><span class="p">)</span>
+    <span class="n">expander_data_in_discharge</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;expander_discharge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;data_in&quot;</span><span class="p">)</span>
 
     <span class="c1"># Evaluate compressor</span>
     <span class="n">dp</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">dp_cooler_h</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">dp_recup_h</span><span class="p">)</span>
@@ -376,6 +384,8 @@ document.write(`
         <span class="n">compressor_outlet_p</span><span class="p">,</span>
         <span class="n">compressor_eff</span><span class="p">,</span>
         <span class="n">compressor_eff_type</span><span class="p">,</span>
+        <span class="n">mass_flow_rate_charge</span><span class="p">,</span>
+        <span class="n">compressor_data_in_charge</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># Evaluate expander</span>
@@ -390,6 +400,8 @@ document.write(`
         <span class="n">expander_outlet_p</span><span class="p">,</span>
         <span class="n">expander_efficiency</span><span class="p">,</span>
         <span class="n">expander_efficiency_type</span><span class="p">,</span>
+        <span class="n">mass_flow_rate_charge</span><span class="p">,</span>
+        <span class="n">expander_data_in_charge</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># Evaluate recuperator</span>
@@ -476,6 +488,7 @@ document.write(`
     <span class="n">m_total_charge</span> <span class="o">=</span> <span class="n">W_charge</span> <span class="o">/</span> <span class="p">(</span><span class="n">compressor_charge</span><span class="p">[</span><span class="s2">&quot;specific_work&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">expander_charge</span><span class="p">[</span><span class="s2">&quot;specific_work&quot;</span><span class="p">])</span> 
     <span class="n">m_sink_charge</span> <span class="o">=</span> <span class="n">m_total_charge</span><span class="o">*</span><span class="p">(</span><span class="n">cooler_charge</span><span class="p">[</span><span class="s2">&quot;q_hot_side&quot;</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">cooler_charge</span><span class="p">[</span><span class="s2">&quot;q_cold_side&quot;</span><span class="p">])</span>
     <span class="n">m_source_charge</span> <span class="o">=</span> <span class="n">m_total_charge</span><span class="o">*</span><span class="p">(</span><span class="n">heater_charge</span><span class="p">[</span><span class="s2">&quot;q_cold_side&quot;</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">heater_charge</span><span class="p">[</span><span class="s2">&quot;q_hot_side&quot;</span><span class="p">])</span>
+    <span class="n">m_error_charge</span> <span class="o">=</span> <span class="p">(</span><span class="n">m_total_charge</span> <span class="o">-</span> <span class="n">mass_flow_rate_charge</span><span class="p">)</span> <span class="o">/</span> <span class="n">m_total_charge</span>
     
     <span class="c1"># Add the mass flow to the components</span>
     <span class="n">heater_charge</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_source_charge</span>
@@ -521,6 +534,8 @@ document.write(`
         <span class="n">compressor_outlet_p</span><span class="p">,</span>
         <span class="n">compressor_eff</span><span class="p">,</span>
         <span class="n">compressor_eff_type</span><span class="p">,</span>
+        <span class="n">mass_flow_rate_discharge</span><span class="p">,</span>
+        <span class="n">compressor_data_in_discharge</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># Evaluate expander</span>
@@ -535,6 +550,8 @@ document.write(`
         <span class="n">expander_outlet_p</span><span class="p">,</span>
         <span class="n">expander_efficiency</span><span class="p">,</span>
         <span class="n">expander_efficiency_type</span><span class="p">,</span>
+        <span class="n">mass_flow_rate_discharge</span><span class="p">,</span>
+        <span class="n">expander_data_in_discharge</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># Evaluate recuperator</span>
@@ -620,6 +637,7 @@ document.write(`
     <span class="n">m_source_discharge</span> <span class="o">=</span> <span class="n">m_sink_charge</span>
     <span class="n">m_total_discharge</span> <span class="o">=</span> <span class="n">m_source_discharge</span><span class="o">*</span><span class="n">heater_discharge</span><span class="p">[</span><span class="s2">&quot;q_hot_side&quot;</span><span class="p">]</span><span class="o">/</span><span class="n">heater_discharge</span><span class="p">[</span><span class="s2">&quot;q_cold_side&quot;</span><span class="p">]</span> <span class="c1">#an addition</span>
     <span class="n">m_sink_discharge</span> <span class="o">=</span> <span class="n">m_total_discharge</span><span class="o">*</span><span class="p">(</span><span class="n">cooler_discharge</span><span class="p">[</span><span class="s2">&quot;q_hot_side&quot;</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">cooler_discharge</span><span class="p">[</span><span class="s2">&quot;q_cold_side&quot;</span><span class="p">])</span> <span class="c1">#an addition</span>
+    <span class="n">m_error_discharge</span> <span class="o">=</span> <span class="p">(</span><span class="n">m_total_discharge</span> <span class="o">-</span> <span class="n">mass_flow_rate_discharge</span><span class="p">)</span> <span class="o">/</span> <span class="n">m_total_discharge</span>
     <span class="n">m_mismatch</span> <span class="o">=</span> <span class="p">(</span><span class="n">m_sink_discharge</span> <span class="o">-</span> <span class="n">m_source_charge</span><span class="p">)</span> <span class="o">/</span> <span class="n">m_sink_discharge</span>
 
     <span class="c1"># Add the mass flow to the components</span>
@@ -721,6 +739,8 @@ document.write(`
         <span class="s2">&quot;hot_storage_lower_temperature&quot;</span><span class="p">:</span> <span class="n">hot_storage_lower_temperature</span><span class="p">,</span>
         <span class="s2">&quot;hot_storage_upper_temperature&quot;</span><span class="p">:</span> <span class="n">hot_storage_upper_temperature</span><span class="p">,</span>
         <span class="s2">&quot;hot_storage_pressure&quot;</span><span class="p">:</span> <span class="n">hot_storage_pressure</span><span class="p">,</span>
+        <span class="s2">&quot;m_error_charge&quot;</span><span class="p">:</span> <span class="n">m_error_charge</span><span class="p">,</span>
+        <span class="s2">&quot;m_error_discharge&quot;</span><span class="p">:</span> <span class="n">m_error_discharge</span><span class="p">,</span>
     <span class="p">}</span> 
 
     <span class="c1"># Evaluate objective function and constraints</span>
