@@ -57,7 +57,7 @@ def evaluate_cycle(
     compressor_inlet_h = variables.pop("compressor_inlet_enthalpy_charge")
     recuperator_inlet_enthalpy_hot_charge = variables.pop("recuperator_inlet_enthalpy_hot_charge")
     
-    # Turbomachinery
+    # Extract variables for Non-dimensional turbomachinery models
     mass_flow_rate_charge = variables.pop("mass_flow_rate_charge")
     mass_flow_rate_discharge = variables.pop("mass_flow_rate_discharge")
     compressor_data_in_charge = parameters["compressor_charge"].pop("data_in")
