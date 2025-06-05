@@ -568,33 +568,23 @@ document.write(`
         <span class="n">state_in</span><span class="p">,</span> <span class="n">state_out</span> <span class="o">=</span> <span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         
     <span class="k">elif</span> <span class="n">efficiency_type</span> <span class="o">==</span> <span class="s2">&quot;non-dimensional&quot;</span><span class="p">:</span>
-        
-        <span class="n">efficiency</span> <span class="c1">#=Nan/None</span>
-        
-        <span class="c1">#fluidC=cp.AbstractState(&quot;HEOS&quot;,&quot;Air&quot;) #extract this from get_state for set_CoolProp_fluid()</span>
-        <span class="c1"># fluidC = props.Fluid(name = str(fluid))</span>
-        <span class="n">fluidC</span><span class="o">=</span><span class="n">cp</span><span class="o">.</span><span class="n">AbstractState</span><span class="p">(</span><span class="s2">&quot;HEOS&quot;</span><span class="p">,</span><span class="n">fluid</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        
-        <span class="n">compr</span><span class="o">=</span><span class="n">CentrifugalCompressor</span><span class="p">()</span>
+        <span class="n">fluidC</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">AbstractState</span><span class="p">(</span><span class="s2">&quot;HEOS&quot;</span><span class="p">,</span><span class="n">fluid</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">compr</span> <span class="o">=</span> <span class="n">CentrifugalCompressor</span><span class="p">()</span>
         <span class="n">compr</span><span class="o">.</span><span class="n">set_CoolProp_fluid</span><span class="p">(</span><span class="n">fluidC</span><span class="p">)</span>
+        <span class="c1">#efficiency: a value is not needed</span>
+        <span class="c1">#mass_flow: given a value and assigned as an optimization variable</span>
+        <span class="n">compr</span><span class="o">.</span><span class="n">data_in</span> <span class="o">=</span> <span class="n">data_in</span> <span class="c1">#assigned compressor design parameters</span>
         
-        <span class="n">compr</span><span class="o">.</span><span class="n">data_in</span> <span class="o">=</span> <span class="n">data_in</span> <span class="c1">#need to deal with assigning of compressor design parameters</span>
-                                <span class="c1">#probably will add the option to yaml file</span>
-        
-        <span class="c1"># mass_flow=.1 #maybe assigned in yaml file (says in paper, needs to be defined) #optimization variable</span>
         <span class="n">state_in</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h_in</span><span class="p">,</span> <span class="n">p_in</span><span class="p">,</span> <span class="n">supersaturation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">generalize_quality</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">T_in</span> <span class="o">=</span> <span class="n">state_in</span><span class="o">.</span><span class="n">T</span>
-        <span class="c1"># T_out_compressor = compr.CoolProp_solve_outlet_T(mass_flow,p_in,T_in,p_out)</span>
-        <span class="c1"># T_out_compressor = compr.CoolProp_solve_outlet_T(mass_flow,1e5,300,2e5)</span>
         <span class="n">compr</span><span class="o">.</span><span class="n">CoolProp_solve_outlet_fixed_P</span><span class="p">(</span><span class="n">mass_flow</span><span class="p">,</span><span class="n">p_in</span><span class="p">,</span><span class="n">T_in</span><span class="p">,</span><span class="n">p_out</span><span class="p">,</span><span class="n">iterate_on_enthalpy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">T_out_compressor</span> <span class="o">=</span> <span class="n">compr</span><span class="o">.</span><span class="n">outlet</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span>
         <span class="n">state_out</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p_out</span><span class="p">,</span> <span class="n">T_out_compressor</span><span class="p">,</span> <span class="n">supersaturation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">generalize_quality</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         
-        <span class="n">dataT</span><span class="o">=</span><span class="n">compr</span><span class="o">.</span><span class="n">get_output_data</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">dataT</span><span class="p">)</span>
-        
+        <span class="n">dataC</span> <span class="o">=</span> <span class="n">compr</span><span class="o">.</span><span class="n">get_output_data</span><span class="p">()</span>
+        <span class="c1"># print(dataC)</span>
         <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="n">state_in</span><span class="p">,</span> <span class="n">state_out</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">states</span><span class="p">)</span>
+        <span class="c1"># print(states)</span>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid efficiency_type. Use &#39;isentropic&#39; or &#39;polytropic&#39;.&quot;</span><span class="p">)</span>
@@ -690,36 +680,23 @@ document.write(`
         <span class="n">state_in</span><span class="p">,</span> <span class="n">state_out</span> <span class="o">=</span> <span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         
     <span class="k">elif</span> <span class="n">efficiency_type</span> <span class="o">==</span> <span class="s2">&quot;non-dimensional&quot;</span><span class="p">:</span>
-        <span class="c1">#RadialTurbineClass</span>
-        <span class="c1">#State_in and state_out</span>
-        <span class="c1">#states = [state_in, state_out]</span>
-        
-        <span class="n">efficiency</span> <span class="c1">#=Nan/None</span>
-        
-        <span class="c1">#fluidd=cp.AbstractState(&quot;HEOS&quot;,&quot;Air&quot;) #extract this from get_state for set_CoolProp_fluid()</span>
-        <span class="c1"># fluidT = props.Fluid(name = str(fluid))</span>
-        <span class="n">fluidT</span><span class="o">=</span><span class="n">cp</span><span class="o">.</span><span class="n">AbstractState</span><span class="p">(</span><span class="s2">&quot;HEOS&quot;</span><span class="p">,</span><span class="n">fluid</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        
-        <span class="n">turb</span><span class="o">=</span><span class="n">RadialTurbine</span><span class="p">()</span>
+        <span class="n">fluidT</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">AbstractState</span><span class="p">(</span><span class="s2">&quot;HEOS&quot;</span><span class="p">,</span><span class="n">fluid</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">turb</span> <span class="o">=</span> <span class="n">RadialTurbine</span><span class="p">()</span>
         <span class="n">turb</span><span class="o">.</span><span class="n">set_CoolProp_fluid</span><span class="p">(</span><span class="n">fluidT</span><span class="p">)</span>
+        <span class="c1">#efficiency: a value is not needed</span>
+        <span class="c1">#mass_flow: given a value and assigned as an optimization variable</span>
+        <span class="n">turb</span><span class="o">.</span><span class="n">data_in</span> <span class="o">=</span> <span class="n">data_in</span> <span class="c1">#assigned turbine design parameters</span>
         
-        <span class="n">turb</span><span class="o">.</span><span class="n">data_in</span> <span class="o">=</span> <span class="n">data_in</span> <span class="c1">#need to deal with assigning of turbine design parameters</span>
-                               <span class="c1">#probably will add the option to yaml file</span>
-        
-        <span class="c1"># mass_flow=.1 #maybe assigned in yaml file (says in paper, needs to be defined) #optimization variable</span>
         <span class="n">state_in</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h_in</span><span class="p">,</span> <span class="n">p_in</span><span class="p">,</span> <span class="n">supersaturation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">generalize_quality</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">T_in</span> <span class="o">=</span> <span class="n">state_in</span><span class="o">.</span><span class="n">T</span>
-        <span class="c1">#print(mass_flow,p_in,T_in,p_out)</span>
-        <span class="c1"># T_out_expander = turb.CoolProp_solve_outlet_T(mass_flow,p_in,T_in,p_out)</span>
         <span class="n">turb</span><span class="o">.</span><span class="n">CoolProp_solve_outlet_fixed_P</span><span class="p">(</span><span class="n">mass_flow</span><span class="p">,</span><span class="n">p_in</span><span class="p">,</span><span class="n">T_in</span><span class="p">,</span><span class="n">p_out</span><span class="p">,</span><span class="n">iterate_on_enthalpy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">T_out_expander</span> <span class="o">=</span> <span class="n">turb</span><span class="o">.</span><span class="n">outlet</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span>
         <span class="n">state_out</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p_out</span><span class="p">,</span> <span class="n">T_out_expander</span><span class="p">,</span> <span class="n">supersaturation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">generalize_quality</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         
-        <span class="n">dataT</span><span class="o">=</span><span class="n">turb</span><span class="o">.</span><span class="n">get_output_data</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">dataT</span><span class="p">)</span>
-        
+        <span class="n">dataT</span> <span class="o">=</span> <span class="n">turb</span><span class="o">.</span><span class="n">get_output_data</span><span class="p">()</span>
+        <span class="c1"># print(dataT)</span>
         <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="n">state_in</span><span class="p">,</span> <span class="n">state_out</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">states</span><span class="p">)</span>
+        <span class="c1"># print(states)</span>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid efficiency_type. Use &#39;isentropic&#39; or &#39;polytropic&#39;.&quot;</span><span class="p">)</span>
