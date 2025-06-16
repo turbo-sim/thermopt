@@ -650,6 +650,7 @@ document.write(`
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">om</span><span class="o">=</span><span class="kc">None</span>
     <span class="c1"># Compute inlet state</span>
     <span class="n">state_in</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h_in</span><span class="p">,</span> <span class="n">p_in</span><span class="p">,</span> <span class="n">supersaturation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">generalize_quality</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">state_out_is</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">PSmass_INPUTS</span><span class="p">,</span> <span class="n">p_out</span><span class="p">,</span> <span class="n">state_in</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">supersaturation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">generalize_quality</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -697,6 +698,8 @@ document.write(`
         <span class="c1"># print(dataT)</span>
         <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="n">state_in</span><span class="p">,</span> <span class="n">state_out</span><span class="p">]</span>
         <span class="c1"># print(states)</span>
+        
+        <span class="n">om</span> <span class="o">=</span> <span class="n">turb</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;angular_speed&quot;</span><span class="p">]</span>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid efficiency_type. Use &#39;isentropic&#39; or &#39;polytropic&#39;.&quot;</span><span class="p">)</span>
@@ -727,6 +730,7 @@ document.write(`
         <span class="s2">&quot;pressure_ratio&quot;</span><span class="p">:</span> <span class="n">state_in</span><span class="o">.</span><span class="n">p</span> <span class="o">/</span> <span class="n">state_out</span><span class="o">.</span><span class="n">p</span><span class="p">,</span>
         <span class="s2">&quot;mass_flow&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;angular_speed&quot;</span>         <span class="p">:</span><span class="n">om</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="n">result</span></div>
