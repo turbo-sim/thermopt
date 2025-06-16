@@ -334,6 +334,7 @@ def expansion_process(
 
     """
 
+    om=None
     # Compute inlet state
     state_in = fluid.get_state(props.HmassP_INPUTS, h_in, p_in, supersaturation=True, generalize_quality=True)
     state_out_is = fluid.get_state(props.PSmass_INPUTS, p_out, state_in.s, supersaturation=True, generalize_quality=True)
@@ -381,6 +382,8 @@ def expansion_process(
         # print(dataT)
         states = [state_in, state_out]
         # print(states)
+        
+        om = turb._data["angular_speed"]
 
     else:
         raise ValueError("Invalid efficiency_type. Use 'isentropic' or 'polytropic'.")
@@ -411,6 +414,7 @@ def expansion_process(
         "pressure_ratio": state_in.p / state_out.p,
         "mass_flow": np.nan,
         "color": "black",
+        "angular_speed"         :om,
     }
 
     return result

@@ -64,6 +64,8 @@ def evaluate_cycle(
     compressor_data_in_discharge = parameters["compressor_discharge"].pop("data_in")
     expander_data_in_charge = parameters["expander_charge"].pop("data_in")
     expander_data_in_discharge = parameters["expander_discharge"].pop("data_in")
+    expander_specific_speed_charge = variables.pop("expander_specific_speed_charge")
+    expander_data_in_charge["specific_speed"] = expander_specific_speed_charge
 
     # Evaluate compressor
     dp = (1.0 - dp_cooler_h) * (1.0 - dp_recup_h)

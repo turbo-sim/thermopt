@@ -70,53 +70,53 @@ problem_formulation:
   fixed_parameters:
 
     working_fluid:
-      name: CO2
+      name: CO2 #don't change
       backend: HEOS
       exceptions: True
 
     hot_storage_fluid:
-        name: nitrogen
+        name: nitrogen #don't change, not important
         backend: HEOS
         exceptions: True
 
     cold_storage_fluid:
-      name: nitrogen
+      name: nitrogen #don't change, not important
       backend: HEOS
       exceptions: True
 
-    charging_power: 1e6   #  W  #(doesn't change anything) #35e6
+    charging_power: 100e6   #MW  #(doesn't change anything) #35e6  #add to table
 
     special_points:
-      ambient_pressure: 101325  
-      ambient_temperature: 25.0 + 273.15
-      maximum_temperature: 600.0 + 273.15
+      ambient_pressure: 101325 #unrelevant for PTES
+      ambient_temperature: 25.0 + 273.15 #unrelevant for PTES
+      maximum_temperature: 600.0 + 273.15 #unrelevant for PTES
 
     hot_storage:
-      pressure: 101325
+      pressure: 101325 #add to table
 
     cold_storage:
-      pressure: 101325
+      pressure: 101325 #add to table
 
     heater_charge:
-      pressure_drop_hot_side: 0.00
-      pressure_drop_cold_side: 0.00
-      num_elements: 30
+      pressure_drop_hot_side: 0.00 #don't include in table     but explain once
+      pressure_drop_cold_side: 0.00 #don't include in table
+      num_elements: 30 #explain once
 
     recuperator_charge:
-      pressure_drop_hot_side: 0.00
-      pressure_drop_cold_side: 0.00
+      pressure_drop_hot_side: 0.00 #don't include in table
+      pressure_drop_cold_side: 0.00 #don't include in table
       num_elements: 30
 
     cooler_charge:
-      pressure_drop_hot_side: 0.00
-      pressure_drop_cold_side: 0.00
+      pressure_drop_hot_side: 0.00 #don't include in table
+      pressure_drop_cold_side: 0.00 #don't include in table
       num_elements: 30
 
     expander_charge:
-      efficiency: 0.8
-      efficiency_type: "non-dimensional"
+      efficiency: 0.9 #decided
+      efficiency_type: "isentropic"
       data_in:
-          specific_speed: 0.6
+          # specific_speed: 0.6
           is_scalloped: True
           diffuser_loss_fraction: 0.35
           clearance_height_ratio: 0.02
@@ -124,7 +124,7 @@ problem_formulation:
           d_eta_other: 0.0
 
     compressor_charge:
-      efficiency: 0.85
+      efficiency: 0.9 #decided
       efficiency_type: "isentropic"
       data_in: 
           flow_coefficient: 0.07
@@ -138,7 +138,7 @@ problem_formulation:
 
     heater_discharge:
       pressure_drop_hot_side: 0.00
-      pressure_drop_cold_side: 0.01
+      pressure_drop_cold_side: 0.00
       num_elements: 30
 
     recuperator_discharge:
@@ -147,12 +147,12 @@ problem_formulation:
       num_elements: 30
 
     cooler_discharge:
-      pressure_drop_hot_side: 0.01
+      pressure_drop_hot_side: 0.00
       pressure_drop_cold_side: 0.00
       num_elements: 30
 
     expander_discharge:
-      efficiency: 0.8
+      efficiency: 0.9  #decided
       efficiency_type: "isentropic"
       data_in:
           specific_speed: 0.6
@@ -163,7 +163,7 @@ problem_formulation:
           d_eta_other: 0.0
 
     compressor_discharge:
-      efficiency: 0.85
+      efficiency: 0.9  #decided
       efficiency_type: "isentropic"
       data_in: 
           flow_coefficient: 0.07
@@ -180,16 +180,16 @@ problem_formulation:
     # Energy storage variables
     hot_storage_upper_temperature: 
       min: 200 + 273.15
-      max: 700 + 273.15
+      max: 800 + 273.15
       value: 400 + 273.15
 
     hot_storage_lower_temperature: 
-      min: 200 + 273.15
+      min: 0 + 273.15
       max: 600 + 273.15
-      value: 300 + 273.15
+      value: 100 + 273.15
 
     cold_storage_upper_temperature: 
-      min: -50 + 273.15
+      min: -50 + 273.15 #critical temp of CO2: 30 deg 
       max: 150 + 273.15
       value: 75 + 273.15
 
@@ -200,17 +200,17 @@ problem_formulation:
 
     cold_storage_upper_temperature_discharge: 
       min: -50 + 273.15
-      max: 200 + 273.15
+      max: 800 + 273.15
       value: 100 + 273.15
 
     # Charge cycle variables
-    compressor_inlet_pressure_charge:
+    compressor_inlet_pressure_charge: #reduced pressure at compressor inlet (state the factors only e.g 1.2)
       min: 1.2*$working_fluid.critical_point.p
       # min: 0.5*$working_fluid.critical_point.p
       max: 3.0*$working_fluid.critical_point.p
       value: 1.3*$working_fluid.critical_point.p
 
-    compressor_inlet_enthalpy_charge:
+    compressor_inlet_enthalpy_charge: #reduced enthalpy
       min: 0.7*$working_fluid.critical_point.h
       max: 4.0*$working_fluid.critical_point.h
       value: 2.2*$working_fluid.critical_point.h
@@ -224,10 +224,15 @@ problem_formulation:
       min: 0.6*$working_fluid.critical_point.h
       max: 1.0*$working_fluid.triple_point_vapor.h
       value: 0.8*$working_fluid.critical_point.h
+      
+    expander_specific_speed_charge:
+      min: 0.4
+      max: 1.2
+      value: 0.6
 
     recuperator_inlet_enthalpy_hot_charge:
       min: 1.0*$working_fluid.critical_point.h
-      max: 4.0*$working_fluid.critical_point.h
+      max: 6.0*$working_fluid.critical_point.h
       value: 2.2*$working_fluid.critical_point.h
 
     # Discharge cycle variables    
@@ -257,14 +262,14 @@ problem_formulation:
       max: 4.0*$working_fluid.critical_point.h
       value: 2.0*$working_fluid.critical_point.h
       
-    mass_flow_rate_charge:
+    mass_flow_rate_charge: #don't include in first table
         min: 0
-        max: 100
+        max: 10000
         value: 1 #random for now
         
-    mass_flow_rate_discharge:
+    mass_flow_rate_discharge: #don't include in first table
         min: 0
-        max: 100
+        max: 10000
         value: 1 #random for now
 
 
@@ -278,7 +283,7 @@ problem_formulation:
   # Charge cycle HX pinch points 
     - variable: $components.heater_charge.temperature_difference
       type: ">"
-      value: 10
+      value: 10 #parametric analysis 0 and 20
       normalize: True
     - variable: $components.cooler_charge.temperature_difference
       type: ">"
@@ -308,6 +313,11 @@ problem_formulation:
       type: "="
       value: 0.0
       normalize: False
+      
+    - variable: $energy_analysis.hot_storage_upper_temperature - $energy_analysis.hot_storage_lower_temperature 
+      type: ">"
+      value: 20.0
+      normalize: True
 
     - variable: $energy_analysis.cold_storage_upper_temperature - $energy_analysis.cold_storage_lower_temperature 
       type: ">"
@@ -317,7 +327,7 @@ problem_formulation:
     - variable: $energy_analysis.cold_storage_upper_temperature_discharge - $energy_analysis.cold_storage_upper_temperature
       type: ">"
       value: 0.0
-      normalize: False
+      normalize: False #redundant constraint
       
     - variable: $energy_analysis.m_error_charge
       type: "="
