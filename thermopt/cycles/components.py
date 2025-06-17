@@ -4,6 +4,9 @@ from scipy.integrate import solve_ivp
 
 # from .. import utilities
 from .. import properties as props
+from .NonDimensionalTurbo import RadialTurbine
+from .NonDimensionalTurbo import CentrifugalCompressor
+import CoolProp.CoolProp as cp
 
 
 def heat_exchanger(
@@ -187,7 +190,7 @@ def heat_transfer_process(fluid, h_1, p_1, h_2, p_2, num_steps=25):
 
 
 def compression_process(
-    fluid, h_in, p_in, p_out, efficiency, efficiency_type="isentropic", num_steps=10
+    fluid, h_in, p_in, p_out, efficiency=None, efficiency_type="isentropic", mass_flow=None, data_in={}, num_steps=10
 ):
     """
     Calculate properties along a compression process defined by a isentropic or polytropic efficiency
@@ -250,6 +253,25 @@ def compression_process(
         # Evaluate fluid properties at intermediate states
         states = postprocess_ode(sol.t, sol.y, odefun)
         state_in, state_out = states[0], states[-1]
+        
+    elif efficiency_type == "non-dimensional":
+        fluidC = cp.AbstractState("HEOS",fluid.name)
+        compr = CentrifugalCompressor()
+        compr.set_CoolProp_fluid(fluidC)
+        #efficiency: a value is not needed
+        #mass_flow: given a value and assigned as an optimization variable
+        compr.data_in = data_in #assigned compressor design parameters
+        
+        state_in = fluid.get_state(props.HmassP_INPUTS, h_in, p_in, supersaturation=True, generalize_quality=True)
+        T_in = state_in.T
+        compr.CoolProp_solve_outlet_fixed_P(mass_flow,p_in,T_in,p_out,iterate_on_enthalpy=True)
+        T_out_compressor = compr.outlet["T"]
+        state_out = fluid.get_state(props.PT_INPUTS, p_out, T_out_compressor, supersaturation=True, generalize_quality=True)
+        
+        dataC = compr.get_output_data()
+        # print(dataC)
+        states = [state_in, state_out]
+        # print(states)
 
     else:
         raise ValueError("Invalid efficiency_type. Use 'isentropic' or 'polytropic'.")
@@ -278,7 +300,7 @@ def compression_process(
 
 
 def expansion_process(
-    fluid, h_in, p_in, p_out, efficiency, efficiency_type="isentropic", num_steps=50
+    fluid, h_in, p_in, p_out, efficiency=None, efficiency_type="isentropic", mass_flow=None, data_in={}, num_steps=50
 ):
     """
     Calculate properties along a compression process defined by a isentropic or polytropic efficiency
@@ -312,6 +334,7 @@ def expansion_process(
 
     """
 
+    om=None
     # Compute inlet state
     state_in = fluid.get_state(props.HmassP_INPUTS, h_in, p_in, supersaturation=True, generalize_quality=True)
     state_out_is = fluid.get_state(props.PSmass_INPUTS, p_out, state_in.s, supersaturation=True, generalize_quality=True)
@@ -340,6 +363,27 @@ def expansion_process(
         # Evaluate fluid properties at intermediate states
         states = postprocess_ode(sol.t, sol.y, odefun)
         state_in, state_out = states[0], states[-1]
+        
+    elif efficiency_type == "non-dimensional":
+        fluidT = cp.AbstractState("HEOS",fluid.name)
+        turb = RadialTurbine()
+        turb.set_CoolProp_fluid(fluidT)
+        #efficiency: a value is not needed
+        #mass_flow: given a value and assigned as an optimization variable
+        turb.data_in = data_in #assigned turbine design parameters
+        
+        state_in = fluid.get_state(props.HmassP_INPUTS, h_in, p_in, supersaturation=True, generalize_quality=True)
+        T_in = state_in.T
+        turb.CoolProp_solve_outlet_fixed_P(mass_flow,p_in,T_in,p_out,iterate_on_enthalpy=True)
+        T_out_expander = turb.outlet["T"]
+        state_out = fluid.get_state(props.PT_INPUTS, p_out, T_out_expander, supersaturation=True, generalize_quality=True)
+        
+        dataT = turb.get_output_data()
+        # print(dataT)
+        states = [state_in, state_out]
+        # print(states)
+        
+        om = turb._data["angular_speed"]
 
     else:
         raise ValueError("Invalid efficiency_type. Use 'isentropic' or 'polytropic'.")
@@ -370,6 +414,7 @@ def expansion_process(
         "pressure_ratio": state_in.p / state_out.p,
         "mass_flow": np.nan,
         "color": "black",
+        "angular_speed"         :om,
     }
 
     return result
