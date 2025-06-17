@@ -26,9 +26,10 @@ solver_options:
 #   print_convergence: True 
 #   plot_convergence: False
 #   logger: None
-#   update_on: function
-#   tolerance: 1e-6
+#   update_on: gradient
+#   tolerance: 1e-6 
 #   max_iterations: 200
+#   problem_scale: 100
 #   extra_options: {
 #     "tol": 1e-6,
 #     "limited_memory_max_history": 20,
@@ -37,9 +38,9 @@ solver_options:
 #   callbacks:
 #     save_plot: False
 #     save_config: False
-#     save_report: False
-#     plot_cycle: False
-#     plot_convergence: True
+#     save_report: True
+#     plot_cycle: True
+#     plot_convergence: False
 
 
 
@@ -75,12 +76,12 @@ problem_formulation:
       exceptions: True
 
     hot_storage_fluid:
-        name: nitrogen
+        name: helium
         backend: HEOS
         exceptions: True
 
     cold_storage_fluid:
-      name: nitrogen
+      name: helium
       backend: HEOS
       exceptions: True
 
@@ -136,7 +137,7 @@ problem_formulation:
       num_elements: 30
 
     expander_discharge:
-      efficiency: 0.8
+      efficiency: 0.9
       efficiency_type: "isentropic"
 
     compressor_discharge:
@@ -152,6 +153,9 @@ problem_formulation:
       value: 400 + 273.15
 
     hot_storage_lower_temperature: 
+    # 2 families of salts are considered
+    # nitrate salts start at 250 degC and max temp 560 degC
+    # chloride salts start at 400 degC and max temp 750 degC
       min: 200 + 273.15
       max: 600 + 273.15
       value: 300 + 273.15

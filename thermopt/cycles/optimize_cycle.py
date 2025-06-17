@@ -447,7 +447,8 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         self.f = self.cycle_data["objective_function"]
         self.c_eq = self.cycle_data["equality_constraints"]
         self.c_ineq = self.cycle_data["inequality_constraints"]
-        self.constraint_data = self.cycle_data["constraints_report"]
+        # self.constraint_data = self.cycle_data["constraints_report"]
+        self.constraint_data_ = self.cycle_data["constraints_report"]
 
         # Combine objective function and constraints
         out = psv.combine_objective_and_constraints(self.f, self.c_eq, self.c_ineq)
@@ -525,6 +526,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         self.plot_cycle()
         self.figure.suptitle(f"Optimization iteration: {iter:03d}", fontsize=14, y=0.95)
         self.figure.tight_layout(pad=1)
+        
 
     def save_plot_callback(self, x, iter):
         """
