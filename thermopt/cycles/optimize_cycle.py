@@ -2,6 +2,7 @@ import os
 import time
 import yaml
 import copy
+import pickle
 import datetime
 import threading
 import numpy as np
@@ -45,7 +46,7 @@ CYCLE_TOPOLOGIES = {
     "recompression": cycle_power_split_compression.evaluate_cycle,
     "refrigeration_simple": cycle_refrigeration_simple.evaluate_cycle,
     "refrigeration_recuperated": cycle_refrigeration_recuperated.evaluate_cycle,
-    "PTES_recuperated":cycle_PTES_recuperated.evaluate_cycle,
+    "PTES_recuperated": cycle_PTES_recuperated.evaluate_cycle,
 }
 
 GRAPHICS_PLACEHOLDER = {
@@ -70,7 +71,8 @@ class ThermodynamicCycleOptimization:
         else:
             self.out_dir = out_dir
 
-        os.makedirs(self.out_dir, exist_ok=True)
+        self.optimization_dir = os.path.join(self.out_dir, "optimization")
+        os.makedirs(self.optimization_dir, exist_ok=True)
 
         # Read configuration file
         self.config = self.read_config(config_file)
@@ -116,6 +118,7 @@ class ThermodynamicCycleOptimization:
             self.problem,
             **solver_options,  # Pass all options except "callbacks"
             callback_functions=None,
+            plot_scale_constraints="log",
         )
         return self.solver
 
@@ -140,28 +143,23 @@ class ThermodynamicCycleOptimization:
         """
         Executes the optimization process.
         """
-        # Extract callback flags safely
         callback_flags = self.config["solver_options"].get("callbacks", {})
-
-        # Assign callback functions
         self.solver.callback_functions = []
 
-        if callback_flags.get("plot_cycle", False):
-            self.solver.callback_functions.append(self.problem.plot_cycle_callback)
+        callback_registry = {
+            "plot_cycle": self.plot_cycle_callback,
+            "save_plot": self.save_plot_callback,
+            "save_config": self.save_config_callback,
+            "save_report": self.save_report_callback,
+            "plot_convergence": self._init_convergence_callback,
+        }
 
-        if callback_flags.get("save_plot", False):
-            self.solver.callback_functions.append(self.problem.save_plot_callback)
+        # Plot convergence callback is treated as a special case
+        for key, func in callback_registry.items():
+            if callback_flags.get(key, False):
+                func() if key == "plot_convergence" else self.solver.callback_functions.append(func)
 
-        if callback_flags.get("save_config", False):
-            self.solver.callback_functions.append(self.problem.save_config_callback)
-
-        if callback_flags.get("save_report", False):
-            self.solver.callback_functions.append(self.problem.save_report_callback)
-
-        if callback_flags.get("plot_convergence", False):
-            self.solver._plot_convergence_callback([], [], initialize=True)
-            self.solver.callback_functions.append(self.solver._plot_convergence_callback)
-
+        # Run the optimization for the specified or default initial guess
         if x0 is None:
             self.solver.solve(self.problem.x0)
         else:
@@ -177,6 +175,13 @@ class ThermodynamicCycleOptimization:
         self.print_convergence_history(savefile=True)
         self.print_optimization_report(savefile=True)
         self.plot_convergence_history(savefile=True, showfig=False)
+
+    def save_solver(self):
+        filename = "optimization_solver.pkl"
+        path = os.path.join(self.out_dir, filename)
+        with open(path, "wb") as f:
+            # use highest protocol for efficiency
+            pickle.dump(self.solver, f, protocol=pickle.HIGHEST_PROTOCOL)
 
     def plot_convergence_history(self, savefile=False, showfig=True):
         filename = "convergence_history"
@@ -196,7 +201,10 @@ class ThermodynamicCycleOptimization:
     def print_optimization_report(self, savefile=False):
         filename = "optimization_report.txt"
         self.solver.print_optimization_report(
-            savefile=savefile, filename=filename, output_dir=self.out_dir
+            savefile=savefile, filename=filename, output_dir=self.out_dir,
+            include_design_variables=True,
+            include_constraints=True,
+            include_kkt_conditions=True,
         )
 
     def create_animation(self, format="both", fps=1):
@@ -230,6 +238,66 @@ class ThermodynamicCycleOptimization:
         if format in ["mp4", "both"]:
             utils.create_mp4(image_folder, mp4_file, fps=1)
             print(f"MP4 saved at {mp4_file}")
+
+    # ------------------------------------------------------------------------- #
+    # -------------------------- Callback functions --------------------------- #
+    # ------------------------------------------------------------------------- #
+    def save_config_callback(self, x, iter):
+        """
+        A callback function to save the current configuration during optimization iterations.
+
+        Parameters:
+        - x : The current solution vector from the optimizer.
+        - iter : The current optimization iteration count.
+
+        This function acts as a bridge between the optimizer callback requirements and the
+        existing `save_current_configuration` function.
+        """
+        # Call the existing function to save the configuration
+        filename = os.path.join(self.optimization_dir, f"iteration_{iter:03d}.yaml")
+        self.problem.save_current_configuration(filename)
+
+    def save_report_callback(self, x, iter):
+        """
+        A callback function to save the current configuration during optimization iterations.
+
+        Parameters:
+        - x : The current solution vector from the optimizer.
+        - iter : The current optimization iteration count.
+
+        This function acts as a bridge between the optimizer callback requirements and the
+        existing `save_current_configuration` function.
+        """
+        self.solver.print_optimization_report(
+            self.problem.scale_normalized_to_physical(x),
+            include_kkt_conditions=True,
+            savefile=True,
+            filename=f"iteration_{iter:03d}.txt",
+            output_dir=self.optimization_dir,
+            to_console=False
+        )
+
+    def plot_cycle_callback(self, x, iter):
+        """
+        Plot the thermodynamic cycle during optimization.
+        """
+        self.problem.plot_cycle()
+        self.problem.figure.suptitle(
+            f"Optimization iteration: {iter:03d}", fontsize=14, y=0.95
+        )
+        self.problem.figure.tight_layout(pad=1)
+
+    def save_plot_callback(self, x, iter):
+        """
+        Save the thermodynamic cycle figure during optimization.
+        """
+        filename = os.path.join(self.optimization_dir, f"iteration_{iter:03d}.png")
+        self.problem.figure.savefig(filename, dpi=500)
+
+    def _init_convergence_callback(self):
+        self.solver._plot_convergence_callback([], [], initialize=True)
+        self.solver.callback_functions.append(self.solver._plot_convergence_callback)
+
 
 
 class ThermodynamicCycleProblem(psv.OptimizationProblem):
@@ -353,7 +421,6 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             self.x0.append(utils.render_and_evaluate(self.x0_dict[k], self.params))
         self.x0 = np.array(self.x0)
 
-
     def _calculate_special_points(self):
         """
         Calculates and stores key thermodynamic states for the fluid used in the cycle.
@@ -447,8 +514,8 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         self.f = self.cycle_data["objective_function"]
         self.c_eq = self.cycle_data["equality_constraints"]
         self.c_ineq = self.cycle_data["inequality_constraints"]
-        # self.constraint_data = self.cycle_data["constraints_report"]
-        self.constraint_data_ = self.cycle_data["constraints_report"]
+        self.constraint_data = self.cycle_data["constraints_report"]
+        # self.constraint_data_ = self.cycle_data["constraints_report"]
 
         # Combine objective function and constraints
         out = psv.combine_objective_and_constraints(self.f, self.c_eq, self.c_ineq)
@@ -470,75 +537,6 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         config_data = utils.convert_numpy_to_python(config_data, precision=12)
         with open(filename, "w") as file:
             yaml.dump(config_data, file, default_flow_style=False, sort_keys=False)
-
-    # TODO: should I move callbacks and plotting to a separate class?
-    def save_config_callback(self, x, iter):
-        """
-        A callback function to save the current configuration during optimization iterations.
-
-        Parameters:
-        - x : The current solution vector from the optimizer.
-        - iter : The current optimization iteration count.
-
-        This function acts as a bridge between the optimizer callback requirements and the
-        existing `save_current_configuration` function.
-        """
-
-        # Create a 'results' directory if it doesn't exist
-        self.optimization_dir = os.path.join(self.out_dir, "optimization")
-        os.makedirs(self.optimization_dir, exist_ok=True)
-
-        # Define the filename using the solver's iteration number
-        filename = os.path.join(self.optimization_dir, f"iteration_{iter:03d}.yaml")
-
-        # Call the existing function to save the configuration
-        self.save_current_configuration(filename)
-
-    def save_report_callback(self, x, iter):
-        """
-        A callback function to save the current configuration during optimization iterations.
-
-        Parameters:
-        - x : The current solution vector from the optimizer.
-        - iter : The current optimization iteration count.
-
-        This function acts as a bridge between the optimizer callback requirements and the
-        existing `save_current_configuration` function.
-        """
-
-        # Create a 'results' directory if it doesn't exist
-        self.optimization_dir = os.path.join(self.out_dir, "optimization")
-        os.makedirs(self.optimization_dir, exist_ok=True)
-
-        # Define the filename using the solver's iteration number
-        filename = os.path.join(self.optimization_dir, f"iteration_{iter:03d}.txt")
-
-        # Call the existing function to save the configuration
-        report = self.make_optimization_report(self.scale_normalized_to_physical(x))
-        with open(filename, "w") as f:
-            f.write(report)
-
-
-    def plot_cycle_callback(self, x, iter):
-        """
-        Plot the thermodynamic cycle during optimization.
-        """
-        self.plot_cycle()
-        self.figure.suptitle(f"Optimization iteration: {iter:03d}", fontsize=14, y=0.95)
-        self.figure.tight_layout(pad=1)
-        
-
-    def save_plot_callback(self, x, iter):
-        """
-        Save the thermodynamic cycle figure during optimization.
-        """
-        # Ensure the directory exists
-        self.optimization_dir = os.path.join(self.out_dir, "optimization")
-        os.makedirs(self.optimization_dir, exist_ok=True)
-
-        # Save the plot
-        filename = os.path.join(self.optimization_dir, f"iteration_{iter:03d}.png")
-        self.figure.savefig(filename, dpi=500)
 
     def plot_cycle(self):
         """
@@ -597,7 +595,9 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         plt.draw()
         plt.pause(0.01)
 
-    def plot_cycle_realtime(self, configuration_file, update_interval=0.1, write_report=False):
+    def plot_cycle_realtime(
+        self, configuration_file, update_interval=0.1, write_report=False
+    ):
         """
         Perform interactive plotting, updating the plot based on the configuration file.
 
@@ -641,14 +641,13 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
                 f"Iterative thermodynamic cycle configuration", fontsize=14, y=0.95
             )
 
-            # Write optimization report to file
-            if write_report:
-                report = self.make_optimization_report(self.x0)
-                filename="initial_guess_report.txt"
-                fullfile = os.path.join(self.out_dir, filename)
-                with open(fullfile, "w") as f:
-                    f.write(report)
-                
+            # # Write optimization report to file
+            # if write_report:
+            #     report = self.make_optimization_report(self.x0)
+            #     filename="initial_guess_report.txt"
+            #     fullfile = os.path.join(self.out_dir, filename)
+            #     with open(fullfile, "w") as f:
+            #         f.write(report)
 
             # Wait for the specified interval before updating again
             time.sleep(update_interval)
@@ -826,7 +825,12 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
 
         # Retrieve data
         is_working_fluid = data["states"]["identifier"][0] == "working_fluid"
-        if not is_working_fluid and is_heat_exchanger and prop_y == "T" and prop_x in ["h", "s"]:
+        if (
+            not is_working_fluid
+            and is_heat_exchanger
+            and prop_y == "T"
+            and prop_x in ["h", "s"]
+        ):
             # Special case for heat exchangers in h-T or s-T diagrams
             x_data = data_other_side["states"][prop_x]
             y_data = data["states"][prop_y]
@@ -846,13 +850,13 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
 
         # Define plotting specifications
         default_params = {
-            "color": "k",                 # black
-            "linestyle": "-",            # solid line
+            "color": "k",  # black
+            "linestyle": "-",  # solid line
             "linewidth": 1.25,
             "marker": "o",
             "markersize": 4.5,
             "markeredgewidth": 1.25,
-            "markerfacecolor": "w",      # white-filled marker
+            "markerfacecolor": "w",  # white-filled marker
         }
         plot_params = {**default_params, **data.get("plot_params", {})}
 
@@ -900,16 +904,18 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         # Sort heat exchangers by minimum temperature on the cold side
         sorted_heat_exchangers = sorted(heat_exchangers, key=lambda x: x[1])
 
-
         # Loop over all heat exchangers
         Q0 = 0.00
         for HX_name, _ in sorted_heat_exchangers:
 
-                # Hot side
-            Q_hot, T_hot, plot_params_hot = self._get_process_data(HX_name + "_hot_side", "heat_flow", "T")
-            Q_cold, T_cold, plot_params_cold = self._get_process_data(HX_name + "_cold_side", "heat_flow", "T")
+            # Hot side
+            Q_hot, T_hot, plot_params_hot = self._get_process_data(
+                HX_name + "_hot_side", "heat_flow", "T"
+            )
+            Q_cold, T_cold, plot_params_cold = self._get_process_data(
+                HX_name + "_cold_side", "heat_flow", "T"
+            )
             Q_hot = np.flip(Q_hot)
-
 
             component = self.cycle_data["components"][HX_name]
             # params_hot = component["hot_side"]["plot_params"]
@@ -943,7 +949,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
                 # Update vertical lines
                 plot_elements["start_line"].set_xdata([Q0, Q0])
                 plot_elements["end_line"].set_xdata([Q0 + Q_hot[-1], Q0 + Q_hot[-1]])
-            else:  
+            else:
 
                 # Prepare kwargs for line and point separately
                 line_params_hot = {

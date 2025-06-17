@@ -57,6 +57,16 @@ def evaluate_cycle(
     compressor_inlet_h = variables.pop("compressor_inlet_enthalpy_charge")
     recuperator_inlet_enthalpy_hot_charge = variables.pop("recuperator_inlet_enthalpy_hot_charge")
     
+    # Extract variables for Non-dimensional turbomachinery models
+    mass_flow_rate_charge = variables.pop("mass_flow_rate_charge")
+    mass_flow_rate_discharge = variables.pop("mass_flow_rate_discharge")
+    compressor_data_in_charge = parameters["compressor_charge"].pop("data_in")
+    compressor_data_in_discharge = parameters["compressor_discharge"].pop("data_in")
+    expander_data_in_charge = parameters["expander_charge"].pop("data_in")
+    expander_data_in_discharge = parameters["expander_discharge"].pop("data_in")
+    expander_specific_speed_charge = variables.pop("expander_specific_speed_charge")
+    expander_data_in_charge["specific_speed"] = expander_specific_speed_charge
+
     # Evaluate compressor
     dp = (1.0 - dp_cooler_h) * (1.0 - dp_recup_h)
     compressor_outlet_p = expander_inlet_p / dp
@@ -69,6 +79,8 @@ def evaluate_cycle(
         compressor_outlet_p,
         compressor_eff,
         compressor_eff_type,
+        mass_flow_rate_charge,
+        compressor_data_in_charge,
     )
 
     # Evaluate expander
@@ -83,6 +95,8 @@ def evaluate_cycle(
         expander_outlet_p,
         expander_efficiency,
         expander_efficiency_type,
+        mass_flow_rate_charge,
+        expander_data_in_charge,
     )
 
     # Evaluate recuperator
@@ -169,7 +183,8 @@ def evaluate_cycle(
     m_total_charge = W_charge / (compressor_charge["specific_work"] - expander_charge["specific_work"]) 
     m_sink_charge = m_total_charge*(cooler_charge["q_hot_side"])/(cooler_charge["q_cold_side"])
     m_source_charge = m_total_charge*(heater_charge["q_cold_side"])/(heater_charge["q_hot_side"])
-
+    m_error_charge = (m_total_charge - mass_flow_rate_charge) / m_total_charge
+    
     # Add the mass flow to the components
     heater_charge["hot_side"]["mass_flow"] = m_source_charge
     heater_charge["cold_side"]["mass_flow"] = m_total_charge
@@ -201,6 +216,7 @@ def evaluate_cycle(
     compressor_inlet_h = variables.pop("compressor_inlet_enthalpy_discharge")
     recuperator_outlet_enthalpy_hot_discharge = variables.pop("recuperator_outlet_enthalpy_hot_discharge")
 
+
     # Evaluate  compressor
     dp = (1.0 - dp_heater_c) * (1.0 - dp_recup_c)
     compressor_outlet_p = expander_inlet_p / dp
@@ -213,6 +229,8 @@ def evaluate_cycle(
         compressor_outlet_p,
         compressor_eff,
         compressor_eff_type,
+        mass_flow_rate_discharge,
+        compressor_data_in_discharge,
     )
 
     # Evaluate expander
@@ -227,6 +245,8 @@ def evaluate_cycle(
         expander_outlet_p,
         expander_efficiency,
         expander_efficiency_type,
+        mass_flow_rate_discharge,
+        expander_data_in_discharge,
     )
 
     # Evaluate recuperator
@@ -312,6 +332,7 @@ def evaluate_cycle(
     m_source_discharge = m_sink_charge
     m_total_discharge = m_source_discharge*heater_discharge["q_hot_side"]/heater_discharge["q_cold_side"] #an addition
     m_sink_discharge = m_total_discharge*(cooler_discharge["q_hot_side"])/(cooler_discharge["q_cold_side"]) #an addition
+    m_error_discharge = (m_total_discharge - mass_flow_rate_discharge) / m_total_discharge
     m_mismatch = (m_sink_discharge - m_source_charge) / m_sink_discharge
 
     # Add the mass flow to the components
@@ -413,6 +434,8 @@ def evaluate_cycle(
         "hot_storage_lower_temperature": hot_storage_lower_temperature,
         "hot_storage_upper_temperature": hot_storage_upper_temperature,
         "hot_storage_pressure": hot_storage_pressure,
+        "m_error_charge": m_error_charge,
+        "m_error_discharge": m_error_discharge,
     } 
 
     # Evaluate objective function and constraints
