@@ -233,6 +233,7 @@ def compression_process(
         h_out = state_in.h + (state_out_is.h - state_in.h) / efficiency
         state_out = fluid.get_state(props.HmassP_INPUTS, h_out, p_out, supersaturation=True)
         states = [state_in, state_out]
+        data_out = {"isentropic_efficiency": efficiency}
 
     elif efficiency_type == "polytropic":
         # Differential equation defining the polytropic compression
@@ -253,6 +254,7 @@ def compression_process(
         # Evaluate fluid properties at intermediate states
         states = postprocess_ode(sol.t, sol.y, odefun)
         state_in, state_out = states[0], states[-1]
+        data_out = {"polytropic_efficiency": efficiency}
         
     elif efficiency_type == "non-dimensional":
         fluidC = cp.AbstractState("HEOS",fluid.name)
@@ -261,17 +263,13 @@ def compression_process(
         #efficiency: a value is not needed
         #mass_flow: given a value and assigned as an optimization variable
         compr.data_in = data_in #assigned compressor design parameters
-        
         state_in = fluid.get_state(props.HmassP_INPUTS, h_in, p_in, supersaturation=True, generalize_quality=True)
         T_in = state_in.T
         compr.CoolProp_solve_outlet_fixed_P(mass_flow,p_in,T_in,p_out,iterate_on_enthalpy=True)
         T_out_compressor = compr.outlet["T"]
         state_out = fluid.get_state(props.PT_INPUTS, p_out, T_out_compressor, supersaturation=True, generalize_quality=True)
-        
-        dataC = compr.get_output_data()
-        # print(dataC)
         states = [state_in, state_out]
-        # print(states)
+        data_out = compr.get_output_data()
 
     else:
         raise ValueError("Invalid efficiency_type. Use 'isentropic' or 'polytropic'.")
@@ -294,6 +292,8 @@ def compression_process(
         "pressure_ratio": state_out.p / state_in.p,
         "mass_flow": np.nan,
         "color": "black",
+        "data_in": data_in,
+        "data_out": data_in | data_out
     }
 
     return result
@@ -333,8 +333,6 @@ def expansion_process(
         If an invalid 'efficiency_type' is provided.
 
     """
-
-    om=None
     # Compute inlet state
     state_in = fluid.get_state(props.HmassP_INPUTS, h_in, p_in, supersaturation=True, generalize_quality=True)
     state_out_is = fluid.get_state(props.PSmass_INPUTS, p_out, state_in.s, supersaturation=True, generalize_quality=True)
@@ -343,7 +341,8 @@ def expansion_process(
         h_out = state_in.h - efficiency * (state_in.h - state_out_is.h)
         state_out = fluid.get_state(props.HmassP_INPUTS, h_out, p_out, supersaturation=True, generalize_quality=True)
         states = [state_in, state_out]
-
+        data_out = {"isentropic_efficiency": efficiency}
+        
     elif efficiency_type == "polytropic":
         # Differential equation defining the polytropic expansion
         def odefun(p, h):
@@ -363,6 +362,7 @@ def expansion_process(
         # Evaluate fluid properties at intermediate states
         states = postprocess_ode(sol.t, sol.y, odefun)
         state_in, state_out = states[0], states[-1]
+        data_out = {"polytropic_efficiency": efficiency}
         
     elif efficiency_type == "non-dimensional":
         fluidT = cp.AbstractState("HEOS",fluid.name)
@@ -371,20 +371,14 @@ def expansion_process(
         #efficiency: a value is not needed
         #mass_flow: given a value and assigned as an optimization variable
         turb.data_in = data_in #assigned turbine design parameters
-        
         state_in = fluid.get_state(props.HmassP_INPUTS, h_in, p_in, supersaturation=True, generalize_quality=True)
         T_in = state_in.T
         turb.CoolProp_solve_outlet_fixed_P(mass_flow,p_in,T_in,p_out,iterate_on_enthalpy=True)
         T_out_expander = turb.outlet["T"]
-        state_out = fluid.get_state(props.PT_INPUTS, p_out, T_out_expander, supersaturation=True, generalize_quality=True)
-        
-        dataT = turb.get_output_data()
-        # print(dataT)
+        state_out = fluid.get_state(props.PT_INPUTS, p_out, T_out_expander, supersaturation=True, generalize_quality=True)        
         states = [state_in, state_out]
-        # print(states)
+        data_out = turb.get_output_data()
         
-        om = turb._data["angular_speed"]
-
     else:
         raise ValueError("Invalid efficiency_type. Use 'isentropic' or 'polytropic'.")
 
@@ -414,7 +408,8 @@ def expansion_process(
         "pressure_ratio": state_in.p / state_out.p,
         "mass_flow": np.nan,
         "color": "black",
-        "angular_speed"         :om,
+        "data_in": data_in,
+        "data_out": data_in | data_out
     }
 
     return result

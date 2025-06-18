@@ -14,39 +14,14 @@ solver_options:
     save_plot: False
     save_config: False
     save_report: True
-    plot_cycle: True
+    plot_cycle: False
     plot_convergence: False
-
-  
-# solver_options: 
-#   library: pygmo
-#   method: ipopt
-#   derivative_method: 2-point 
-#   derivative_abs_step: 1e-6
-#   print_convergence: True 
-#   plot_convergence: False
-#   logger: None
-#   update_on: gradient
-#   tolerance: 1e-6 
-#   max_iterations: 200
-#   problem_scale: 100
-#   extra_options: {
-#     "tol": 1e-6,
-#     "limited_memory_max_history": 20,
-#     "limited_memory_max_skipping": 100
-#   }
-#   callbacks:
-#     save_plot: False
-#     save_config: False
-#     save_report: True
-#     plot_cycle: True
-#     plot_convergence: False
 
 
 
 problem_formulation:
 
-  cycle_topology: PTES_recuperated
+  cycle_topology: PTES_recuperated_turbo
 
   plot_settings:
     pinch_point_diagram: False
@@ -101,21 +76,21 @@ problem_formulation:
     heater_charge:
       pressure_drop_hot_side: 0.00 #don't include in table     but explain once
       pressure_drop_cold_side: 0.00 #don't include in table
-      num_elements: 30 #explain once
+      num_elements: 20 #explain once
 
     recuperator_charge:
       pressure_drop_hot_side: 0.00 #don't include in table
       pressure_drop_cold_side: 0.00 #don't include in table
-      num_elements: 30
+      num_elements: 20
 
     cooler_charge:
       pressure_drop_hot_side: 0.00 #don't include in table
       pressure_drop_cold_side: 0.00 #don't include in table
-      num_elements: 30
+      num_elements: 20
 
     expander_charge:
       efficiency: 0.9 #decided
-      efficiency_type: "isentropic"
+      efficiency_type: "non-dimensional"
       data_in:
           # specific_speed: 0.6
           is_scalloped: True
@@ -126,10 +101,10 @@ problem_formulation:
 
     compressor_charge:
       efficiency: 0.9 #decided
-      efficiency_type: "isentropic"
+      efficiency_type: "non-dimensional"
       data_in: 
-          flow_coefficient: 0.07
-          backsweep: 30
+          # flow_coefficient: 0.07
+          # backsweep: 30
           is_shrouded: False
           has_vaned: True
           roughness: 3.6e-6
@@ -140,23 +115,23 @@ problem_formulation:
     heater_discharge:
       pressure_drop_hot_side: 0.00
       pressure_drop_cold_side: 0.00
-      num_elements: 30
+      num_elements: 20
 
     recuperator_discharge:
       pressure_drop_hot_side: 0.00
       pressure_drop_cold_side: 0.00
-      num_elements: 30
+      num_elements: 20
 
     cooler_discharge:
       pressure_drop_hot_side: 0.00
       pressure_drop_cold_side: 0.00
-      num_elements: 30
+      num_elements: 20
 
     expander_discharge:
       efficiency: 0.9  #decided
-      efficiency_type: "isentropic"
+      efficiency_type: "non-dimensional"
       data_in:
-          specific_speed: 0.6
+          # specific_speed: 0.6
           is_scalloped: True
           diffuser_loss_fraction: 0.35
           clearance_height_ratio: 0.02
@@ -165,10 +140,10 @@ problem_formulation:
 
     compressor_discharge:
       efficiency: 0.9  #decided
-      efficiency_type: "isentropic"
+      efficiency_type: "non-dimensional"
       data_in: 
-          flow_coefficient: 0.07
-          backsweep: 30
+          # flow_coefficient: 0.07
+          # backsweep: 30
           is_shrouded: False
           has_vaned: True
           roughness: 3.6e-6
@@ -181,13 +156,13 @@ problem_formulation:
     # Energy storage variables
     hot_storage_upper_temperature: 
       min: 200 + 273.15
-      max: 800 + 273.15
-      value: 400 + 273.15
+      max: 600 + 273.15
+      value: 600 + 273.15
 
     hot_storage_lower_temperature: 
       min: 0 + 273.15
       max: 600 + 273.15
-      value: 100 + 273.15
+      value: 400 + 273.15
 
     cold_storage_upper_temperature: 
       min: -50 + 273.15 #critical temp of CO2: 30 deg 
@@ -197,11 +172,11 @@ problem_formulation:
     cold_storage_lower_temperature: 
       min: -50 + 273.15
       max: 150 + 273.15
-      value: 50 + 273.15
+      value: 25 + 273.15
 
     cold_storage_upper_temperature_discharge: 
       min: -50 + 273.15
-      max: 800 + 273.15
+      max: 600 + 273.15
       value: 100 + 273.15
 
     # Charge cycle variables
@@ -212,18 +187,28 @@ problem_formulation:
       value: 1.3*$working_fluid.critical_point.p
 
     compressor_inlet_enthalpy_charge: #reduced enthalpy
-      min: 0.7*$working_fluid.critical_point.h
-      max: 4.0*$working_fluid.critical_point.h
-      value: 2.2*$working_fluid.critical_point.h
+      min: 2.0*$working_fluid.critical_point.h
+      max: 6.0*$working_fluid.critical_point.h
+      value: 3.0*$working_fluid.critical_point.h
+
+    compressor_flow_coefficient_charge:
+      min: 0.01
+      max: 0.15
+      value: 0.07
+
+    compressor_backsweep_charge:
+      min: 0.0
+      max: 40.0
+      value: 30.0
 
     expander_inlet_pressure_charge:
       min: 1.1*$working_fluid.triple_point_liquid.p
-      max: 5.0*$working_fluid.critical_point.p
-      value: 4.5*$working_fluid.critical_point.p
+      max: 300e5  # 300 bar maximum pressure
+      value: 3.5*$working_fluid.critical_point.p
 
     expander_inlet_enthalpy_charge:
-      min: 0.6*$working_fluid.critical_point.h
-      max: 1.0*$working_fluid.triple_point_vapor.h
+      min: 0.5*$working_fluid.critical_point.h
+      max: 2.5*$working_fluid.critical_point.h
       value: 0.8*$working_fluid.critical_point.h
       
     expander_specific_speed_charge:
@@ -234,7 +219,7 @@ problem_formulation:
     recuperator_inlet_enthalpy_hot_charge:
       min: 1.0*$working_fluid.critical_point.h
       max: 6.0*$working_fluid.critical_point.h
-      value: 2.2*$working_fluid.critical_point.h
+      value: 2.7*$working_fluid.critical_point.h
 
     # Discharge cycle variables    
     compressor_inlet_pressure_discharge:
@@ -248,30 +233,47 @@ problem_formulation:
       max: 2.0*$working_fluid.triple_point_vapor.h
       value: 1.3*$working_fluid.critical_point.h
 
+    compressor_flow_coefficient_discharge:
+      min: 0.01
+      max: 0.15
+      value: 0.07
+
+    compressor_backsweep_discharge:
+      min: 0.0
+      max: 40.0
+      value: 30.0
+
     expander_inlet_pressure_discharge:
       min: 1.1*$working_fluid.critical_point.p
-      max: 5.0*$working_fluid.critical_point.p
+      max: 300e5  # 300 bar maximum pressure
       value: 4.0*$working_fluid.critical_point.p
 
     expander_inlet_enthalpy_discharge:
       min: 1.1*$working_fluid.critical_point.h
-      max: 5.0*$working_fluid.critical_point.h
-      value: 2.4*$working_fluid.critical_point.h
+      max: 6.0*$working_fluid.critical_point.h
+      value: 3.2*$working_fluid.critical_point.h
 
     recuperator_outlet_enthalpy_hot_discharge:
       min: 1.0*$working_fluid.critical_point.h
       max: 4.0*$working_fluid.critical_point.h
-      value: 2.0*$working_fluid.critical_point.h
-      
+      value: 2.4*$working_fluid.critical_point.h
+
+    expander_specific_speed_discharge:
+      min: 0.3
+      max: 0.9
+      value: 0.6
+
+
+    # Mass flow rates for turbomachinery models
     mass_flow_rate_charge: #don't include in first table
-        min: 0
-        max: 10000
-        value: 1 #random for now
-        
+        min: 1
+        max: 1e6
+        value: 1000 #random is fine
+
     mass_flow_rate_discharge: #don't include in first table
-        min: 0
-        max: 10000
-        value: 1 #random for now
+        min: 1
+        max: 1e6
+        value: 1000 #random is fine
 
 
   objective_function:

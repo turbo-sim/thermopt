@@ -21,7 +21,7 @@ from . import cycle_power_split_compression
 from . import cycle_refrigeration_simple
 from . import cycle_refrigeration_recuperated
 from . import cycle_PTES_recuperated
-
+from . import cycle_PTES_recuperated_turbo
 
 COLORS_MATLAB = utils.COLORS_MATLAB
 LABEL_MAPPING = {
@@ -47,6 +47,7 @@ CYCLE_TOPOLOGIES = {
     "refrigeration_simple": cycle_refrigeration_simple.evaluate_cycle,
     "refrigeration_recuperated": cycle_refrigeration_recuperated.evaluate_cycle,
     "PTES_recuperated": cycle_PTES_recuperated.evaluate_cycle,
+    "PTES_recuperated_turbo": cycle_PTES_recuperated_turbo.evaluate_cycle,
 }
 
 GRAPHICS_PLACEHOLDER = {
@@ -139,6 +140,45 @@ class ThermodynamicCycleOptimization:
         # Reinitialize problem and solver
         self.load_config(self.config)
 
+    def set_constraint(self, variable, type=None, value=None, normalize=None):
+        """
+        Adds or updates a constraint for the given variable name.
+
+        Parameters:
+            variable (str): Full variable path, e.g., "$components.cooler_charge.temperature_difference"
+            type (str, optional): Constraint type, e.g., ">", "<", "="
+            value (float, optional): Target value
+            normalize (bool or float, optional): Normalization value or flag
+        """
+        constraints = self.config["problem_formulation"].get("constraints", [])
+        if not isinstance(constraints, list):
+            constraints = list(constraints)
+        
+        # Find existing constraint
+        for c in constraints:
+            if c.get("variable") == variable:
+                if type is not None:
+                    c["type"] = type
+                if value is not None:
+                    c["value"] = value
+                if normalize is not None:
+                    c["normalize"] = normalize
+                break
+        else:
+            # Add new constraint
+            new_constraint = {"variable": variable}
+            if type is not None:
+                new_constraint["type"] = type
+            if value is not None:
+                new_constraint["value"] = value
+            if normalize is not None:
+                new_constraint["normalize"] = normalize
+            constraints.append(new_constraint)
+
+        self.config["problem_formulation"]["constraints"] = constraints
+        self.load_config(self.config)
+
+
     def run_optimization(self, x0=None):
         """
         Executes the optimization process.
@@ -176,12 +216,24 @@ class ThermodynamicCycleOptimization:
         self.print_optimization_report(savefile=True)
         self.plot_convergence_history(savefile=True, showfig=False)
 
-    def save_solver(self):
-        filename = "optimization_solver.pkl"
-        path = os.path.join(self.out_dir, filename)
-        with open(path, "wb") as f:
-            # use highest protocol for efficiency
-            pickle.dump(self.solver, f, protocol=pickle.HIGHEST_PROTOCOL)
+        # Plot final solution
+        self.problem.plot_cycle()
+        self.problem.figure.tight_layout(pad=1)
+        self.problem.figure.suptitle(None)
+        filename = os.path.join(self.out_dir, "optimal_solution.png")
+        self.problem.figure.savefig(filename, dpi=500)
+        plt.close(self.problem.figure)
+        # self.save_solver_pickle()
+
+
+    def save_solver_pickle(self):
+        """
+        Sanitize solver (including deeply nested problem) and save it to a pickle file.
+        """
+        filename = "optimization_solver"
+        # utils.dump_object_structure(self.solver, log_file="testing.txt")
+        utils.save_to_pickle(self.solver, filename=filename, out_dir=self.out_dir, timestamp=False)
+
 
     def plot_convergence_history(self, savefile=False, showfig=True):
         filename = "convergence_history"
@@ -195,7 +247,7 @@ class ThermodynamicCycleOptimization:
     def print_convergence_history(self, savefile=False):
         filename = "convergence_history.txt"
         self.solver.print_convergence_history(
-            savefile=savefile, filename=filename, output_dir=self.out_dir
+            savefile=savefile, filename=filename, output_dir=self.out_dir, to_console=False
         )
 
     def print_optimization_report(self, savefile=False):
@@ -205,6 +257,7 @@ class ThermodynamicCycleOptimization:
             include_design_variables=True,
             include_constraints=True,
             include_kkt_conditions=True,
+            to_console=False,
         )
 
     def create_animation(self, format="both", fps=1):

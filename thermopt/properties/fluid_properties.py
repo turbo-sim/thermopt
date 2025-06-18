@@ -218,6 +218,16 @@ class Fluid:
     >>> fluid.triple_point_vapor.s  # Retrieves vapor entropy at the triple point
 
     """
+    def __getstate__(self):
+        """Strip CoolProp AbstractState to make the object pickleable."""
+        state = self.__dict__.copy()
+        state["_AS"] = None  # Drop the unpickleable CoolProp object
+        return state
+
+    def __setstate__(self, state):
+        """Restore Fluid without AbstractState (can be rebuilt later)."""
+        self.__dict__.update(state)
+        self._AS = None  # Leave it unset or rebuild later
 
     def __init__(
         self,
@@ -231,7 +241,6 @@ class Fluid:
         self.name = name
         self.backend = backend
         self._AS = CP.AbstractState(backend, name)
-        self.abstract_state = self._AS
         self.exceptions = exceptions
         self.converged_flag = False
         self._properties = {}
@@ -693,7 +702,7 @@ class Fluid:
         else:
             self._set_visibility(axes, "triple_point_vapor", False)
 
-        return axes
+        return axes.figure, axes
 
     def _get_label(self, label, show_in_legend):
         """Returns the appropriate label value based on whether it should be shown in the legend."""
@@ -792,6 +801,7 @@ class FluidState:
 
     __slots__ = ("_properties", "fluid_name")  # Define allowed attributes
 
+
     def __init__(self, properties, fluid_name):
         # Convert keys to strings and store properties in an internal attribute
         # Ensure the properties dictionary is immutable (e.g., by using a frozendict if modifications are a concern)
@@ -803,14 +813,16 @@ class FluidState:
     def __getattr__(self, name):
         # Allows attribute-style access to the fluid properties. If the property does not exist, raises AttributeError.
         try:
-            return self._properties[name]
+            props = object.__getattribute__(self, "_properties")
+            return props[name]
         except KeyError:
             raise AttributeError(f"'{name}' not found in FluidState properties")
 
     def __getitem__(self, key):
         # Allows dictionary-style access to the fluid properties. If the key does not exist, raises KeyError.
         try:
-            return self._properties[str(key)]
+            props = object.__getattribute__(self, "_properties")
+            return props[str(key)]
         except KeyError:
             raise KeyError(f"'{key}' not found in FluidState properties")
 
@@ -860,6 +872,18 @@ class FluidState:
 
     def get(self, key, default=None):
         return self._properties.get(key, default)
+
+    def __getstate__(self):
+        """Enable pickling by returning internal state without violating immutability."""
+        return {
+            "_properties": self._properties,
+            "fluid_name": self.fluid_name,
+        }
+
+    def __setstate__(self, state):
+        """Restore internal state during unpickling while bypassing immutability guard."""
+        object.__setattr__(self, "_properties", state["_properties"])
+        object.__setattr__(self, "fluid_name", state["fluid_name"])
 
 
 def states_to_dict(states):

@@ -11,36 +11,11 @@ solver_options:
   max_iterations: 200
   problem_scale: 10
   callbacks:
-    save_plot: True
-    save_config: True
+    save_plot: False
+    save_config: False
     save_report: True
-    plot_cycle: True
-    plot_convergence: True
-
-  
-# solver_options: 
-#   library: pygmo
-#   method: ipopt
-#   derivative_method: 2-point 
-#   derivative_abs_step: 1e-6
-#   print_convergence: True 
-#   plot_convergence: False
-#   logger: None
-#   update_on: gradient
-#   tolerance: 1e-6 
-#   max_iterations: 200
-#   problem_scale: 100
-#   extra_options: {
-#     "tol": 1e-6,
-#     "limited_memory_max_history": 20,
-#     "limited_memory_max_skipping": 100
-#   }
-#   callbacks:
-#     save_plot: False
-#     save_config: False
-#     save_report: True
-#     plot_cycle: True
-#     plot_convergence: False
+    plot_cycle: False
+    plot_convergence: False
 
 
 
@@ -149,7 +124,7 @@ problem_formulation:
     # Energy storage variables
     hot_storage_upper_temperature: 
       min: 200 + 273.15
-      max: 800 + 273.15
+      max: 600 + 273.15
       value: 600 + 273.15
 
     hot_storage_lower_temperature: 
@@ -169,7 +144,7 @@ problem_formulation:
 
     cold_storage_upper_temperature_discharge: 
       min: -50 + 273.15
-      max: 800 + 273.15
+      max: 600 + 273.15
       value: 100 + 273.15
 
     # Charge cycle variables
@@ -180,18 +155,18 @@ problem_formulation:
       value: 1.3*$working_fluid.critical_point.p
 
     compressor_inlet_enthalpy_charge: #reduced enthalpy
-      min: 0.7*$working_fluid.critical_point.h
+      min: 2.0*$working_fluid.critical_point.h
       max: 6.0*$working_fluid.critical_point.h
       value: 3.0*$working_fluid.critical_point.h
 
     expander_inlet_pressure_charge:
       min: 1.1*$working_fluid.triple_point_liquid.p
-      max: 5.0*$working_fluid.critical_point.p
+      max: 300e5  # 300 bar maximum pressure
       value: 3.5*$working_fluid.critical_point.p
 
     expander_inlet_enthalpy_charge:
-      min: 0.6*$working_fluid.critical_point.h
-      max: 1.0*$working_fluid.triple_point_vapor.h
+      min: 0.5*$working_fluid.critical_point.h
+      max: 2.5*$working_fluid.critical_point.h
       value: 0.8*$working_fluid.critical_point.h
 
     recuperator_inlet_enthalpy_hot_charge:
@@ -213,7 +188,7 @@ problem_formulation:
 
     expander_inlet_pressure_discharge:
       min: 1.1*$working_fluid.critical_point.p
-      max: 5.0*$working_fluid.critical_point.p
+      max: 300e5  # 300 bar maximum pressure
       value: 4.0*$working_fluid.critical_point.p
 
     expander_inlet_enthalpy_discharge:

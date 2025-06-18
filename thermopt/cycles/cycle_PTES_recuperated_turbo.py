@@ -57,15 +57,23 @@ def evaluate_cycle(
     compressor_inlet_h = variables.pop("compressor_inlet_enthalpy_charge")
     recuperator_inlet_enthalpy_hot_charge = variables.pop("recuperator_inlet_enthalpy_hot_charge")
     
-    # Extract variables for Non-dimensional turbomachinery models
+    # Extract variables for non-dimensional turbomachinery models
     mass_flow_rate_charge = variables.pop("mass_flow_rate_charge")
     mass_flow_rate_discharge = variables.pop("mass_flow_rate_discharge")
-    compressor_data_in_charge = parameters["compressor_charge"].pop("data_in")
-    compressor_data_in_discharge = parameters["compressor_discharge"].pop("data_in")
-    expander_data_in_charge = parameters["expander_charge"].pop("data_in")
-    expander_data_in_discharge = parameters["expander_discharge"].pop("data_in")
-    expander_specific_speed_charge = variables.pop("expander_specific_speed_charge")
-    expander_data_in_charge["specific_speed"] = expander_specific_speed_charge
+
+    expander_charge_data = parameters["expander_charge"].pop("data_in")
+    expander_charge_data["specific_speed"] = variables.pop("expander_specific_speed_charge")
+
+    expander_discharge_data = parameters["expander_discharge"].pop("data_in")
+    expander_discharge_data["specific_speed"] = variables.pop("expander_specific_speed_discharge")
+
+    compressor_charge_data = parameters["compressor_charge"].pop("data_in")
+    compressor_charge_data["backsweep"] = variables.pop("compressor_backsweep_charge")
+    compressor_charge_data["flow_coefficient"] = variables.pop("compressor_flow_coefficient_charge")
+
+    compressor_discharge_data = parameters["compressor_discharge"].pop("data_in")
+    compressor_discharge_data["backsweep"] = variables.pop("compressor_backsweep_discharge")
+    compressor_discharge_data["flow_coefficient"] = variables.pop("compressor_flow_coefficient_discharge")
 
     # Evaluate compressor
     dp = (1.0 - dp_cooler_h) * (1.0 - dp_recup_h)
@@ -80,7 +88,7 @@ def evaluate_cycle(
         compressor_eff,
         compressor_eff_type,
         mass_flow_rate_charge,
-        compressor_data_in_charge,
+        compressor_charge_data,
     )
 
     # Evaluate expander
@@ -96,7 +104,7 @@ def evaluate_cycle(
         expander_efficiency,
         expander_efficiency_type,
         mass_flow_rate_charge,
-        expander_data_in_charge,
+        expander_charge_data,
     )
 
     # Evaluate recuperator
@@ -216,7 +224,6 @@ def evaluate_cycle(
     compressor_inlet_h = variables.pop("compressor_inlet_enthalpy_discharge")
     recuperator_outlet_enthalpy_hot_discharge = variables.pop("recuperator_outlet_enthalpy_hot_discharge")
 
-
     # Evaluate  compressor
     dp = (1.0 - dp_heater_c) * (1.0 - dp_recup_c)
     compressor_outlet_p = expander_inlet_p / dp
@@ -230,7 +237,7 @@ def evaluate_cycle(
         compressor_eff,
         compressor_eff_type,
         mass_flow_rate_discharge,
-        compressor_data_in_discharge,
+        compressor_discharge_data,
     )
 
     # Evaluate expander
@@ -246,7 +253,7 @@ def evaluate_cycle(
         expander_efficiency,
         expander_efficiency_type,
         mass_flow_rate_discharge,
-        expander_data_in_discharge,
+        expander_discharge_data,
     )
 
     # Evaluate recuperator
@@ -467,6 +474,16 @@ def evaluate_cycle(
     # Check if any fixed parameter or design variable was not used
     utilities.check_for_unused_keys(parameters, "parameters", raise_error=True)
     utilities.check_for_unused_keys(variables, "variables", raise_error=True)
+
+    # print("Efficiency summary")
+    # print(components["expander_charge"]["data_out"]["isentropic_efficiency"])
+    # print(components["expander_discharge"]["data_out"]["isentropic_efficiency"])
+    # print(components["compressor_charge"]["data_out"]["isentropic_efficiency"])
+    # print(components["compressor_discharge"]["data_out"]["isentropic_efficiency"])
+    # print()
+
+
+
 
     # Cycle performance summary
     output = {

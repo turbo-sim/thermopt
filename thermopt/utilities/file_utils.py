@@ -1,5 +1,6 @@
 import os
 import re
+import copy
 import yaml
 import time
 import logging
@@ -443,28 +444,116 @@ class DictionaryValidationError(Exception):
             return f"{self.message} Key: '{self.key}', Value: {self.value}"
         return self.message
     
-def save_to_pickle(obj, filename = "pickle_file", out_dir = "output"):
+
+
+from pathlib import Path
+
+def save_to_pickle(obj, filepath, timestamp=True):
     """
     Save a Python object to a pickle file.
 
-    :param obj: The Python object to be saved.
-    :param filename: The name of the file where the object will be saved (with .pkl extension).
+    Parameters
+    ----------
+    obj : Any
+        The Python object to be saved.
+    timestamp : bool, optional
+        Whether to append a timestamp before the extension. Default is True.
+
+    Returns
+    -------
+    str
+        The full path to the saved pickle file.
     """
+    filepath = Path(filepath)
+    filepath.parent.mkdir(parents=True, exist_ok=True)
 
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    filename = os.path.join(out_dir, f"{filename}_{timestamp}.pkl")
-    with open(filename, 'wb') as file:
+    stem = filepath.stem
+    suffix = filepath.suffix if filepath.suffix == ".pkl" else ".pkl"
+    if timestamp:
+        stem = f"{stem}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
+    full_path = filepath.with_name(f"{stem}{suffix}")
+
+    with open(full_path, 'wb') as file:
         pickle.dump(obj, file)
-    print(f"Object successfully saved to {filename}")
 
-def load_from_pickle(filename):
+    print(f"Object successfully saved to {full_path}")
+    return str(full_path)
+
+
+def load_from_pickle(filepath):
     """
     Load a Python object from a pickle file.
 
-    :param filename: The name of the pickle file to be loaded (with .pkl extension).
-    :return: The Python object that was stored in the pickle file.
+    Parameters
+    ----------
+    filepath : str or Path
+        Full path to the pickle file.
+
+    Returns
+    -------
+    Any
+        The Python object stored in the pickle file.
     """
-    with open(filename, 'rb') as file:
+    filepath = Path(filepath)
+    with open(filepath, 'rb') as file:
         obj = pickle.load(file)
-    print(f"Object successfully loaded from {filename}")
+
+    print(f"Object successfully loaded from {filepath}")
     return obj
+
+
+def dump_object_structure(obj, log_file, max_depth=5, _seen=None, _path="root", _depth=0):
+    """
+    Recursively print the structure, types, and values of an object into a log file.
+
+    Parameters
+    ----------
+    obj : any
+        The object to inspect.
+    log_file : str
+        Path to the output log file.
+    max_depth : int
+        Maximum recursion depth to avoid excessive nesting.
+    """
+    if _seen is None:
+        _seen = set()
+
+    try:
+        obj_id = id(obj)
+        if obj_id in _seen:
+            return
+        _seen.add(obj_id)
+
+        with open(log_file, "a", encoding="utf-8") as f:
+            type_str = str(type(obj))
+            try:
+                val_str = str(obj)
+                if len(val_str) > 200:
+                    val_str = val_str[:200] + "..."
+            except Exception:
+                val_str = "<unprintable>"
+            f.write(f"{'  ' * _depth}{_path}: {type_str} = {val_str}\n")
+
+    except Exception as e:
+        with open(log_file, "a", encoding="utf-8") as f:
+            f.write(f"{'  ' * _depth}{_path}: ERROR reading object: {e}\n")
+        return
+
+    if _depth >= max_depth:
+        return
+
+    # Recurse into dictionaries
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            key_str = repr(k)
+            dump_object_structure(v, log_file, max_depth, _seen, f"{_path}[{key_str}]", _depth + 1)
+
+    # Recurse into sequences
+    elif isinstance(obj, (list, tuple, set)):
+        for i, item in enumerate(obj):
+            dump_object_structure(item, log_file, max_depth, _seen, f"{_path}[{i}]", _depth + 1)
+
+    # Recurse into objects with attributes
+    elif hasattr(obj, "__dict__"):
+        for attr, val in vars(obj).items():
+            dump_object_structure(val, log_file, max_depth, _seen, f"{_path}.{attr}", _depth + 1)
