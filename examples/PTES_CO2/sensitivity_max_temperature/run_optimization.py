@@ -44,6 +44,12 @@ if not os.path.exists(DATA_FULLPATH):
             # cycle.set_config_value("solver_options.callbacks.plot_cycle", True)
             # cycle.set_config_value("solver_options.tolerance", 1e-5)
 
+            # Extend the bounds to enable a feasible solution
+            var_temp = "problem_formulation.design_variables.hot_storage_upper_temperature"
+            cycle.set_config_value(f"{var_temp}.max", T_hot+100)
+            var_temp = "problem_formulation.design_variables.hot_storage_lower_temperature"
+            cycle.set_config_value(f"{var_temp}.max", T_hot+100)
+
             # Set temperature and pressure constraints
             cycle.set_constraint(
                 variable="$components.cooler_charge.cold_side.state_out.T",
@@ -63,20 +69,6 @@ if not os.path.exists(DATA_FULLPATH):
                 value=p_max,
                 normalize=True,
             )
-
-            # # Set temperature and pressure constraints (unreliable convergence?)
-            # var_temp = "problem_formulation.design_variables.hot_storage_upper_temperature"
-            # cycle.set_config_value(f"{var_temp}.min", T_hot)
-            # cycle.set_config_value(f"{var_temp}.max", T_hot)
-            # cycle.set_config_value(f"{var_temp}.value", T_hot)
-
-            # for var in [
-            #     "problem_formulation.design_variables.expander_inlet_pressure_charge.max",
-            #     "problem_formulation.design_variables.expander_inlet_pressure_discharge.max",
-            #     "problem_formulation.design_variables.expander_inlet_pressure_charge.min",
-            #     "problem_formulation.design_variables.expander_inlet_pressure_discharge.min",
-            # ]:
-            #     cycle.set_config_value(var, p_max)
 
             # Run and save
             cycle.run_optimization(x0=x0)

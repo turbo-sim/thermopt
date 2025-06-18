@@ -43,14 +43,14 @@ for var in hx_constraints:
 cycle.set_constraint(
     variable="$energy_analysis.hot_storage_upper_temperature - $energy_analysis.hot_storage_lower_temperature",
     type=">",
-    value=0.0,
+    value=1.0,
     normalize=False,
 )
 
 cycle.set_constraint(
     variable="$energy_analysis.cold_storage_upper_temperature - $energy_analysis.cold_storage_lower_temperature",
     type=">",
-    value=0.0,
+    value=1.0,
     normalize=False,
 )
 

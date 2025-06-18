@@ -12,7 +12,7 @@ OUT_DIR_BASE = "results"
 DATA_FILE = "simulation_data.pkl"
 DATA_FULLPATH = os.path.join(OUT_DIR_BASE, DATA_FILE)
 
-turb_eff_range = np.linspace(1.00, 0.70, 7)
+turb_eff_range = np.linspace(1.00, 0.70, 13)
 comp_eff_values = np.linspace(1.00, 0.70, 4)
 
 # --------------------------------------------------------------------- #

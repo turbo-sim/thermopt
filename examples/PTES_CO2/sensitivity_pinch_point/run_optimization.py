@@ -14,20 +14,21 @@ DATA_FILE = "simulation_data.pkl"
 DATA_FULLPATH = os.path.join(OUT_DIR_BASE, DATA_FILE)
 
 # Parameter ranges
-pinch_deltas = np.linspace(0, 20, 21)  # K
-efficiencies = np.array([1.00, 0.90, 0.80, 0.70])  # Fraction
+pinch_deltas = np.linspace(20, 0, 21)  # K
+efficiencies = np.array([0.70, 0.80, 0.90, 0.99])  # Fraction
 
 # --------------------------------------------------------------------- #
 # Step 1: Run simulations if data file does not exist
 # --------------------------------------------------------------------- #
 if not os.path.exists(DATA_FULLPATH):
     solvers = []
-    x0 = None
+    x0_eta_start = None  # Global x0 passed between efficiency levels
 
     for eta in efficiencies:
         eta_solvers = []
+        x0 = x0_eta_start  # Use starting guess for this eta loop
 
-        for pinch in pinch_deltas:
+        for i, pinch in enumerate(pinch_deltas):
             print()
             print("-" * 80)
             print(f"Turbomachinery efficiency: {eta*100:.1f} %, Pinch point: {pinch:.1f} K")
@@ -40,7 +41,7 @@ if not os.path.exists(DATA_FULLPATH):
 
             # Set up cycle
             cycle = th.ThermodynamicCycleOptimization(CONFIG_FILE, out_dir=out_dir)
-            cycle.set_config_value("solver_options.max_iterations", 5)
+            cycle.set_config_value("solver_options.max_iterations", 200)
 
             # Set all turbomachinery efficiencies
             for machine in ["expander", "compressor"]:
@@ -53,12 +54,18 @@ if not os.path.exists(DATA_FULLPATH):
                 for side in ["charge", "discharge"]:
                     var = f"$components.{hx}_{side}.temperature_difference"
                     cycle.set_constraint(variable=var, type=">", value=pinch, normalize=10.0)
-                    
+
             # Run and save
             cycle.run_optimization(x0=x0)
             cycle.save_results()
             eta_solvers.append(cycle.solver)
+
+            # Use current x_final as next initial guess
             x0 = cycle.solver.x_final
+
+            # Store the first x_final (at max pinch) for next efficiency loop
+            if i == 0:
+                x0_eta_start = x0
 
         solvers.append(eta_solvers)
 
@@ -90,7 +97,7 @@ for i, eta in enumerate(efficiencies):
     )
 
 ax.set_ylim([0, 110])
-ax.set_xlabel("Pinch point temperature difference (K)")
+ax.set_xlabel("Pinch point temperature differences (K)")
 ax.set_ylabel("Round-trip efficiency (%)")
 ax.grid(True)
 ax.legend(fontsize=13, loc="upper right")

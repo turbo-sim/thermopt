@@ -155,7 +155,7 @@ problem_formulation:
       value: 1.3*$working_fluid.critical_point.p
 
     compressor_inlet_enthalpy_charge: #reduced enthalpy
-      min: 2.0*$working_fluid.critical_point.h
+      min: 1.5*$working_fluid.critical_point.h
       max: 6.0*$working_fluid.critical_point.h
       value: 3.0*$working_fluid.critical_point.h
 
@@ -166,7 +166,7 @@ problem_formulation:
 
     expander_inlet_enthalpy_charge:
       min: 0.5*$working_fluid.critical_point.h
-      max: 2.5*$working_fluid.critical_point.h
+      max: 1.5*$working_fluid.critical_point.h
       value: 0.8*$working_fluid.critical_point.h
 
     recuperator_inlet_enthalpy_hot_charge:
@@ -182,8 +182,8 @@ problem_formulation:
       value: 1.5*$working_fluid.critical_point.p
       
     compressor_inlet_enthalpy_discharge:
-      min: 0.6*$working_fluid.critical_point.h
-      max: 2.0*$working_fluid.triple_point_vapor.h
+      min: 0.5*$working_fluid.critical_point.h
+      max: 1.5*$working_fluid.triple_point_vapor.h
       value: 1.3*$working_fluid.critical_point.h
 
     expander_inlet_pressure_discharge:
@@ -198,7 +198,7 @@ problem_formulation:
 
     recuperator_outlet_enthalpy_hot_discharge:
       min: 1.0*$working_fluid.critical_point.h
-      max: 4.0*$working_fluid.critical_point.h
+      max: 6.0*$working_fluid.critical_point.h
       value: 2.4*$working_fluid.critical_point.h
 
   objective_function:

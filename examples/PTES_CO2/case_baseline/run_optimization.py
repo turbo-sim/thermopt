@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 th.print_package_info()
 
 # Initialize cycle problem
-CONFIG_FILE = "./case_PTES_CO2.yaml"
+CONFIG_FILE = "../case_PTES_CO2.yaml"
 # CONFIG_FILE = "./case_PTES_CO2_turbo.yaml"
 cycle = th.ThermodynamicCycleOptimization(CONFIG_FILE, out_dir="results_baseline")
 cycle.problem.plot_cycle_realtime(CONFIG_FILE, update_interval=0.1, write_report=True)

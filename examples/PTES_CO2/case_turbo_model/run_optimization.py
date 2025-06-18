@@ -4,7 +4,7 @@ import thermopt as th
 
 CONFIG_FILE_TURBO = "../case_PTES_CO2_turbo.yaml"
 CONFIG_FILE_FIXED = "../case_PTES_CO2.yaml"
-OUT_DIR_BASE = "results_turbo_vs_fixed"
+OUT_DIR_BASE = "results"
 os.makedirs(OUT_DIR_BASE, exist_ok=True)
 DATA_FILE = "simulation_data.pkl"
 DATA_FULLPATH = os.path.join(OUT_DIR_BASE, DATA_FILE)

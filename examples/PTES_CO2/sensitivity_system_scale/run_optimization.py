@@ -2,6 +2,7 @@ import os
 import pathlib
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 import thermopt as th
 
 th.set_plot_options(fontsize=16)
@@ -69,15 +70,10 @@ else:
     solvers = th.load_from_pickle(DATA_FULLPATH)
 
 
-# --------------------------------------------------------------------- #
-# Step 2: Plotting round-trip efficiency vs. system scale
-# --------------------------------------------------------------------- #
 
 # --------------------------------------------------------------------- #
 # Step 2: Plotting round-trip and isentropic efficiencies (2 subplots)
 # --------------------------------------------------------------------- #
-import matplotlib.pyplot as plt
-import numpy as np
 
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(6.0, 6.5), sharex=True)
 
@@ -108,7 +104,7 @@ def make_eta_label(key):
 labels = [make_eta_label(k) for k in keys]
 
 markers = ["s", "o", "^", "v"]
-colors = plt.get_cmap("magma")(np.linspace(0.25, 0.85, len(keys)))
+colors = plt.get_cmap("magma")(np.linspace(0.20, 0.80, len(keys)))
 
 for i, (key, label) in enumerate(zip(keys, labels)):
     eta_vals = [
@@ -121,7 +117,7 @@ for i, (key, label) in enumerate(zip(keys, labels)):
 ax2.set_xscale("log")
 ax2.set_xlabel("Charging power (MW)")
 ax2.set_ylabel("Isentropic efficiency (%)")
-ax2.grid(True, which="both", ls=":")
+ax2.grid(True)
 # Better legend positioning in lower subplot
 ax2.legend(
     fontsize=13,
@@ -133,10 +129,67 @@ ax2.legend(
     columnspacing=0.8  # <-- reduce horizontal gap between columns
 )
 
-fig.tight_layout(pad=0.7)  # Reduce vertical padding
+fig.tight_layout(pad=1)  # Reduce vertical padding
 # fig.tight_layout(pad=1.5)
 
 
-filename = f"{pathlib.Path(__file__).parent.name}_power_sweep_2subplots"
+filename = f"{pathlib.Path(__file__).parent.name}_power_sweep_efficiency"
 th.savefig_in_formats(fig, os.path.join(OUT_DIR_BASE, filename))
+
+
+# --------------------------------------------------------------------- #
+# New figure: Rotational speed (compressor charge/discharge) vs. power
+# --------------------------------------------------------------------- #
+fig, ax = plt.subplots(figsize=(6.0, 4.0))
+
+x_vals = power_values / 1e6  # Charging power in MW
+
+# Components to plot
+keys = ["compressor_charge", "compressor_discharge"]
+
+# LaTeX-style labels
+def make_speed_label(key):
+    machine, direction = key.split("_")
+    return rf"{direction.capitalize()} system"
+
+labels = [make_speed_label(k) for k in keys]
+markers = ["s", "o"]
+colors = plt.get_cmap("magma")(np.linspace(0.3, 0.7, len(keys)))
+
+# Plot loop
+for i, (key, label) in enumerate(zip(keys, labels)):
+    rpm_vals = [
+        solver.problem.cycle_data["components"][key]["data_out"]["angular_speed"] * 60 / (2 * np.pi)
+        for solver in solvers
+    ]
+    ax.plot(
+        x_vals,
+        rpm_vals,
+        label=label,
+        color=colors[i],
+        marker=markers[i],
+        linestyle="-",
+    )
+
+# Axis formatting
+ax.set_xscale("log")
+ax.set_yscale("log")
+ax.set_xlabel("Charging power (MW)")
+ax.set_ylabel("Rotational speed (RPM)")
+ax.set_ylim(1e3, 5e5)
+ax.grid(True)
+
+# Format axes with plain integers
+ax.xaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f"{int(x)}"))
+ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda y, _: f"{int(y):,}"))
+
+ax.legend(fontsize=12, loc="best")
+fig.tight_layout(pad=0.6)
+
+# Save
+filename = f"{pathlib.Path(__file__).parent.name}_power_sweep_rpm_charge"
+th.savefig_in_formats(fig, os.path.join(OUT_DIR_BASE, filename))
+plt.show()
+
+# Show figure
 plt.show()
