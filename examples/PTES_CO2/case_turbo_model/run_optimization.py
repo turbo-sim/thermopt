@@ -80,15 +80,15 @@ def fmt(x):
 # Define column widths
 col1_width = 30
 col2_width = 10
-col3_width = 15
-col4_width = 15
-col5_width = 15
+col3_width = 20
+col4_width = 20
+col5_width = 20
 
 # Header
 print("-" * (col1_width + col2_width + col3_width + col4_width + col5_width))
 print("Summary table for pressures, temperatures, and efficiencies:")
 print("-" * (col1_width + col2_width + col3_width + col4_width + col5_width))
-print(f"{'Variable':{col1_width}s}{'Unit':>{col2_width}s}{'Turbo':>{col3_width}s}{'Fixed':>{col4_width}s}{'Deviation [%]':>{col5_width}s}")
+print(f"{'Variable':{col1_width}s}{'Unit':>{col2_width}s}{'Modeled efficiency':>{col3_width}s}{'Fixed efficiency':>{col4_width}s}{'Deviation [%]':>{col5_width}s}")
 print("-" * (col1_width + col2_width + col3_width + col4_width + col5_width))
 
 # Loop through components
@@ -102,7 +102,7 @@ for comp in components:
     fixed_data_out = cycles["fixed"].problem.cycle_data["components"][comp]["data_out"]
 
     # Print header row for this component
-    print(f"\n{comp.replace('_', ' ').capitalize()}")
+    print(f"{comp.replace('_', ' ').capitalize()}")
 
     # Pressure and temperature at inlet/outlet
     for var_key, (label, unit, convert) in STATE_VARS.items():
@@ -124,4 +124,6 @@ for comp in components:
     delta_eff = 100 * (fixed_eff - turbo_eff) / turbo_eff if turbo_eff else np.nan
     label = f"   {EFFICIENCY_VAR[1]}"
     print(f"{label:{col1_width}s}{EFFICIENCY_VAR[2]:>{col2_width}s}{fmt(turbo_eff):>{col3_width}s}{fmt(fixed_eff):>{col4_width}s}{fmt(delta_eff):>{col5_width}s}")
+    print("-" * (col1_width + col2_width + col3_width + col4_width + col5_width))
+
 

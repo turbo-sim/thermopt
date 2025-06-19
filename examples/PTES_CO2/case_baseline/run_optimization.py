@@ -19,6 +19,10 @@ cycle.set_config_value("solver_options.callbacks.save_plot", True)
 cycle.run_optimization()
 cycle.save_results()
 
+# Save solver object
+th.save_to_pickle(cycle.solver, "results_baseline/solver.pkl", timestamp=False)
+
+
 # Create an animation of the optimization progress
 cycle.create_animation(format="mp4", fps=1)
 

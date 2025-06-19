@@ -1,0 +1,36 @@
+---------------------------------------------------------------------------------------------
+Variable                             Pressure (bar)      Temperature (C)      Density (kg/m3)
+---------------------------------------------------------------------------------------------
+Expander charge in                          300.000               41.995              902.123
+Expander charge out                          88.528               22.529              819.742
+Compressor charge in                         88.528              428.631               66.687
+Compressor charge out                       300.000              610.000              168.811
+Recuperator charge hot side in              300.000              438.631              215.059
+Recuperator charge hot side out             300.000               41.995              902.123
+Recuperator charge cold side in              88.528               31.995              709.992
+Recuperator charge cold side out             88.528              428.631               66.687
+Heater charge hot side in                     1.013               52.529                1.048
+Heater charge hot side out                    1.013               32.529                1.117
+Heater charge cold side in                   88.528               22.529              819.742
+Heater charge cold side out                  88.528               31.995              709.992
+Cooler charge hot side in                   300.000              610.000              168.811
+Cooler charge hot side out                  300.000              438.631              215.059
+Cooler charge cold side in                    1.013              419.059                0.493
+Cooler charge cold side out                   1.013              600.000                0.391
+Expander discharge in                       300.000              590.000              173.022
+Expander discharge out                       88.528              440.937               65.438
+Compressor discharge in                      88.528               47.584              291.865
+Compressor discharge out                    300.000              136.404              530.818
+Recuperator discharge hot side in            88.528              440.937               65.438
+Recuperator discharge hot side out           88.528              146.404              128.446
+Recuperator discharge cold side in          300.000              136.404              530.818
+Recuperator discharge cold side out         300.000              372.372              242.482
+Heater discharge hot side in                  1.013              600.000                0.391
+Heater discharge hot side out                 1.013              419.059                0.493
+Heater discharge cold side in               300.000              372.372              242.482
+Heater discharge cold side out              300.000              590.000              173.022
+Cooler discharge hot side in                 88.528              146.404              128.446
+Cooler discharge hot side out                88.528               47.584              291.865
+Cooler discharge cold side in                 1.013               32.529                1.117
+Cooler discharge cold side out                1.013              110.277                0.890
+---------------------------------------------------------------------------------------------
