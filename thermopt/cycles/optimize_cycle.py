@@ -120,6 +120,7 @@ class ThermodynamicCycleOptimization:
             **solver_options,  # Pass all options except "callbacks"
             callback_functions=None,
             plot_scale_constraints="log",
+            tolerance_check_cache=1e-10
         )
         return self.solver
 
