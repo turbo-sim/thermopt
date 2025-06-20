@@ -307,6 +307,7 @@ document.write(`
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -325,7 +326,7 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">cycle_refrigeration_simple</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">cycle_refrigeration_recuperated</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">cycle_PTES_recuperated</span>
-
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">cycle_PTES_recuperated_turbo</span>
 
 <span class="n">COLORS_MATLAB</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">COLORS_MATLAB</span>
 <span class="n">LABEL_MAPPING</span> <span class="o">=</span> <span class="p">{</span>
@@ -350,7 +351,8 @@ document.write(`
     <span class="s2">&quot;recompression&quot;</span><span class="p">:</span> <span class="n">cycle_power_split_compression</span><span class="o">.</span><span class="n">evaluate_cycle</span><span class="p">,</span>
     <span class="s2">&quot;refrigeration_simple&quot;</span><span class="p">:</span> <span class="n">cycle_refrigeration_simple</span><span class="o">.</span><span class="n">evaluate_cycle</span><span class="p">,</span>
     <span class="s2">&quot;refrigeration_recuperated&quot;</span><span class="p">:</span> <span class="n">cycle_refrigeration_recuperated</span><span class="o">.</span><span class="n">evaluate_cycle</span><span class="p">,</span>
-    <span class="s2">&quot;PTES_recuperated&quot;</span><span class="p">:</span><span class="n">cycle_PTES_recuperated</span><span class="o">.</span><span class="n">evaluate_cycle</span><span class="p">,</span>
+    <span class="s2">&quot;PTES_recuperated&quot;</span><span class="p">:</span> <span class="n">cycle_PTES_recuperated</span><span class="o">.</span><span class="n">evaluate_cycle</span><span class="p">,</span>
+    <span class="s2">&quot;PTES_recuperated_turbo&quot;</span><span class="p">:</span> <span class="n">cycle_PTES_recuperated_turbo</span><span class="o">.</span><span class="n">evaluate_cycle</span><span class="p">,</span>
 <span class="p">}</span>
 
 <span class="n">GRAPHICS_PLACEHOLDER</span> <span class="o">=</span> <span class="p">{</span>
@@ -377,7 +379,8 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span> <span class="o">=</span> <span class="n">out_dir</span>
 
-        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimization_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="p">,</span> <span class="s2">&quot;optimization&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimization_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Read configuration file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_config</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
@@ -434,6 +437,8 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="p">,</span>
             <span class="o">**</span><span class="n">solver_options</span><span class="p">,</span>  <span class="c1"># Pass all options except &quot;callbacks&quot;</span>
             <span class="n">callback_functions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">plot_scale_constraints</span><span class="o">=</span><span class="s2">&quot;log&quot;</span><span class="p">,</span>
+            <span class="n">tolerance_check_cache</span><span class="o">=</span><span class="mf">1e-10</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span></div>
 
@@ -458,34 +463,71 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="ThermodynamicCycleOptimization.set_constraint">
+<a class="viewcode-back" href="../../../source/api/thermopt.cycles.optimize_cycle.html#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.set_constraint">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_constraint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds or updates a constraint for the given variable name.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            variable (str): Full variable path, e.g., &quot;$components.cooler_charge.temperature_difference&quot;</span>
+<span class="sd">            type (str, optional): Constraint type, e.g., &quot;&gt;&quot;, &quot;&lt;&quot;, &quot;=&quot;</span>
+<span class="sd">            value (float, optional): Target value</span>
+<span class="sd">            normalize (bool or float, optional): Normalization value or flag</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">constraints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;problem_formulation&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;constraints&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">constraints</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">constraints</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span>
+        
+        <span class="c1"># Find existing constraint</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">constraints</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;variable&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">variable</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">c</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">type</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">c</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="k">if</span> <span class="n">normalize</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">c</span><span class="p">[</span><span class="s2">&quot;normalize&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">normalize</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Add new constraint</span>
+            <span class="n">new_constraint</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;variable&quot;</span><span class="p">:</span> <span class="n">variable</span><span class="p">}</span>
+            <span class="k">if</span> <span class="nb">type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">new_constraint</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">type</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">new_constraint</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">if</span> <span class="n">normalize</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">new_constraint</span><span class="p">[</span><span class="s2">&quot;normalize&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">normalize</span>
+            <span class="n">constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_constraint</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;problem_formulation&quot;</span><span class="p">][</span><span class="s2">&quot;constraints&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">constraints</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span></div>
+
+
+
 <div class="viewcode-block" id="ThermodynamicCycleOptimization.run_optimization">
 <a class="viewcode-back" href="../../../source/api/thermopt.cycles.optimize_cycle.html#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.run_optimization">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">run_optimization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Executes the optimization process.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Extract callback flags safely</span>
         <span class="n">callback_flags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;solver_options&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;callbacks&quot;</span><span class="p">,</span> <span class="p">{})</span>
-
-        <span class="c1"># Assign callback functions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">callback_functions</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">if</span> <span class="n">callback_flags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;plot_cycle&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">callback_functions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">plot_cycle_callback</span><span class="p">)</span>
+        <span class="n">callback_registry</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;plot_cycle&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_cycle_callback</span><span class="p">,</span>
+            <span class="s2">&quot;save_plot&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_plot_callback</span><span class="p">,</span>
+            <span class="s2">&quot;save_config&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_config_callback</span><span class="p">,</span>
+            <span class="s2">&quot;save_report&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_report_callback</span><span class="p">,</span>
+            <span class="s2">&quot;plot_convergence&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_convergence_callback</span><span class="p">,</span>
+        <span class="p">}</span>
 
-        <span class="k">if</span> <span class="n">callback_flags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;save_plot&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">callback_functions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">save_plot_callback</span><span class="p">)</span>
+        <span class="c1"># Plot convergence callback is treated as a special case</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="n">callback_registry</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">callback_flags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="n">func</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;plot_convergence&quot;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">callback_functions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">callback_flags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;save_config&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">callback_functions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">save_config_callback</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">callback_flags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;save_report&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">callback_functions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">save_report_callback</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">callback_flags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;plot_convergence&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_plot_convergence_callback</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">initialize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">callback_functions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_plot_convergence_callback</span><span class="p">)</span>
-
+        <span class="c1"># Run the optimization for the specified or default initial guess</span>
         <span class="k">if</span> <span class="n">x0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">x0</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -503,7 +545,29 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">save_current_configuration</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot;.yaml&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">print_convergence_history</span><span class="p">(</span><span class="n">savefile</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">print_optimization_report</span><span class="p">(</span><span class="n">savefile</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plot_convergence_history</span><span class="p">(</span><span class="n">savefile</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">showfig</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_convergence_history</span><span class="p">(</span><span class="n">savefile</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">showfig</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Plot final solution</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">plot_cycle</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="n">pad</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="p">,</span> <span class="s2">&quot;optimal_solution.png&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">figure</span><span class="p">)</span></div>
+
+        <span class="c1"># self.save_solver_pickle()</span>
+
+
+<div class="viewcode-block" id="ThermodynamicCycleOptimization.save_solver_pickle">
+<a class="viewcode-back" href="../../../source/api/thermopt.cycles.optimize_cycle.html#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_solver_pickle">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_solver_pickle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sanitize solver (including deeply nested problem) and save it to a pickle file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;optimization_solver&quot;</span>
+        <span class="c1"># utils.dump_object_structure(self.solver, log_file=&quot;testing.txt&quot;)</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">save_to_pickle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="ThermodynamicCycleOptimization.plot_convergence_history">
@@ -523,7 +587,7 @@ document.write(`
     <span class="k">def</span><span class="w"> </span><span class="nf">print_convergence_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">savefile</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;convergence_history.txt&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">print_convergence_history</span><span class="p">(</span>
-            <span class="n">savefile</span><span class="o">=</span><span class="n">savefile</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span>
+            <span class="n">savefile</span><span class="o">=</span><span class="n">savefile</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">to_console</span><span class="o">=</span><span class="kc">False</span>
         <span class="p">)</span></div>
 
 
@@ -532,7 +596,11 @@ document.write(`
     <span class="k">def</span><span class="w"> </span><span class="nf">print_optimization_report</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">savefile</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;optimization_report.txt&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">print_optimization_report</span><span class="p">(</span>
-            <span class="n">savefile</span><span class="o">=</span><span class="n">savefile</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span>
+            <span class="n">savefile</span><span class="o">=</span><span class="n">savefile</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="p">,</span>
+            <span class="n">include_design_variables</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">include_constraints</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">include_kkt_conditions</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">to_console</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -569,7 +637,79 @@ document.write(`
         <span class="k">if</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;mp4&quot;</span><span class="p">,</span> <span class="s2">&quot;both&quot;</span><span class="p">]:</span>
             <span class="n">utils</span><span class="o">.</span><span class="n">create_mp4</span><span class="p">(</span><span class="n">image_folder</span><span class="p">,</span> <span class="n">mp4_file</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MP4 saved at </span><span class="si">{</span><span class="n">mp4_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
-</div>
+
+
+    <span class="c1"># ------------------------------------------------------------------------- #</span>
+    <span class="c1"># -------------------------- Callback functions --------------------------- #</span>
+    <span class="c1"># ------------------------------------------------------------------------- #</span>
+<div class="viewcode-block" id="ThermodynamicCycleOptimization.save_config_callback">
+<a class="viewcode-back" href="../../../source/api/thermopt.cycles.optimize_cycle.html#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_config_callback">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_config_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="nb">iter</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A callback function to save the current configuration during optimization iterations.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        - x : The current solution vector from the optimizer.</span>
+<span class="sd">        - iter : The current optimization iteration count.</span>
+
+<span class="sd">        This function acts as a bridge between the optimizer callback requirements and the</span>
+<span class="sd">        existing `save_current_configuration` function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Call the existing function to save the configuration</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimization_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;iteration_</span><span class="si">{</span><span class="nb">iter</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">.yaml&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">save_current_configuration</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ThermodynamicCycleOptimization.save_report_callback">
+<a class="viewcode-back" href="../../../source/api/thermopt.cycles.optimize_cycle.html#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_report_callback">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_report_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="nb">iter</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A callback function to save the current configuration during optimization iterations.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        - x : The current solution vector from the optimizer.</span>
+<span class="sd">        - iter : The current optimization iteration count.</span>
+
+<span class="sd">        This function acts as a bridge between the optimizer callback requirements and the</span>
+<span class="sd">        existing `save_current_configuration` function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">print_optimization_report</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">scale_normalized_to_physical</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
+            <span class="n">include_kkt_conditions</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">savefile</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">filename</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;iteration_</span><span class="si">{</span><span class="nb">iter</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">.txt&quot;</span><span class="p">,</span>
+            <span class="n">output_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optimization_dir</span><span class="p">,</span>
+            <span class="n">to_console</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ThermodynamicCycleOptimization.plot_cycle_callback">
+<a class="viewcode-back" href="../../../source/api/thermopt.cycles.optimize_cycle.html#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.plot_cycle_callback">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot_cycle_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="nb">iter</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot the thermodynamic cycle during optimization.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">plot_cycle</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Optimization iteration: </span><span class="si">{</span><span class="nb">iter</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.95</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="n">pad</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ThermodynamicCycleOptimization.save_plot_callback">
+<a class="viewcode-back" href="../../../source/api/thermopt.cycles.optimize_cycle.html#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_plot_callback">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_plot_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="nb">iter</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the thermodynamic cycle figure during optimization.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimization_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;iteration_</span><span class="si">{</span><span class="nb">iter</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">.png&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_init_convergence_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_plot_convergence_callback</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">initialize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">callback_functions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_plot_convergence_callback</span><span class="p">)</span></div>
+
 
 
 
@@ -702,7 +842,6 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x0</span><span class="p">)</span></div>
 
 
-
     <span class="k">def</span><span class="w"> </span><span class="nf">_calculate_special_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculates and stores key thermodynamic states for the fluid used in the cycle.</span>
@@ -799,6 +938,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">c_eq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cycle_data</span><span class="p">[</span><span class="s2">&quot;equality_constraints&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">c_ineq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cycle_data</span><span class="p">[</span><span class="s2">&quot;inequality_constraints&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">constraint_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cycle_data</span><span class="p">[</span><span class="s2">&quot;constraints_report&quot;</span><span class="p">]</span>
+        <span class="c1"># self.constraint_data_ = self.cycle_data[&quot;constraints_report&quot;]</span>
 
         <span class="c1"># Combine objective function and constraints</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">psv</span><span class="o">.</span><span class="n">combine_objective_and_constraints</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_eq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_ineq</span><span class="p">)</span>
@@ -832,86 +972,6 @@ document.write(`
         <span class="n">config_data</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">convert_numpy_to_python</span><span class="p">(</span><span class="n">config_data</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">config_data</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">default_flow_style</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
-
-
-    <span class="c1"># TODO: should I move callbacks and plotting to a separate class?</span>
-<div class="viewcode-block" id="ThermodynamicCycleProblem.save_config_callback">
-<a class="viewcode-back" href="../../../source/api/thermopt.cycles.optimize_cycle.html#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.save_config_callback">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">save_config_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="nb">iter</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        A callback function to save the current configuration during optimization iterations.</span>
-
-<span class="sd">        Parameters:</span>
-<span class="sd">        - x : The current solution vector from the optimizer.</span>
-<span class="sd">        - iter : The current optimization iteration count.</span>
-
-<span class="sd">        This function acts as a bridge between the optimizer callback requirements and the</span>
-<span class="sd">        existing `save_current_configuration` function.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c1"># Create a &#39;results&#39; directory if it doesn&#39;t exist</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">optimization_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="p">,</span> <span class="s2">&quot;optimization&quot;</span><span class="p">)</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimization_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-        <span class="c1"># Define the filename using the solver&#39;s iteration number</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimization_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;iteration_</span><span class="si">{</span><span class="nb">iter</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">.yaml&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Call the existing function to save the configuration</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_current_configuration</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="ThermodynamicCycleProblem.save_report_callback">
-<a class="viewcode-back" href="../../../source/api/thermopt.cycles.optimize_cycle.html#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.save_report_callback">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">save_report_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="nb">iter</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        A callback function to save the current configuration during optimization iterations.</span>
-
-<span class="sd">        Parameters:</span>
-<span class="sd">        - x : The current solution vector from the optimizer.</span>
-<span class="sd">        - iter : The current optimization iteration count.</span>
-
-<span class="sd">        This function acts as a bridge between the optimizer callback requirements and the</span>
-<span class="sd">        existing `save_current_configuration` function.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c1"># Create a &#39;results&#39; directory if it doesn&#39;t exist</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">optimization_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="p">,</span> <span class="s2">&quot;optimization&quot;</span><span class="p">)</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimization_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-        <span class="c1"># Define the filename using the solver&#39;s iteration number</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimization_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;iteration_</span><span class="si">{</span><span class="nb">iter</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">.txt&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Call the existing function to save the configuration</span>
-        <span class="n">report</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_optimization_report</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scale_normalized_to_physical</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">report</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="ThermodynamicCycleProblem.plot_cycle_callback">
-<a class="viewcode-back" href="../../../source/api/thermopt.cycles.optimize_cycle.html#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.plot_cycle_callback">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">plot_cycle_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="nb">iter</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Plot the thermodynamic cycle during optimization.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plot_cycle</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Optimization iteration: </span><span class="si">{</span><span class="nb">iter</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.95</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="n">pad</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="ThermodynamicCycleProblem.save_plot_callback">
-<a class="viewcode-back" href="../../../source/api/thermopt.cycles.optimize_cycle.html#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.save_plot_callback">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">save_plot_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="nb">iter</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Save the thermodynamic cycle figure during optimization.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Ensure the directory exists</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">optimization_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="p">,</span> <span class="s2">&quot;optimization&quot;</span><span class="p">)</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimization_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-        <span class="c1"># Save the plot</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimization_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;iteration_</span><span class="si">{</span><span class="nb">iter</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">.png&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ThermodynamicCycleProblem.plot_cycle">
@@ -976,7 +1036,9 @@ document.write(`
 
 <div class="viewcode-block" id="ThermodynamicCycleProblem.plot_cycle_realtime">
 <a class="viewcode-back" href="../../../source/api/thermopt.cycles.optimize_cycle.html#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.plot_cycle_realtime">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">plot_cycle_realtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configuration_file</span><span class="p">,</span> <span class="n">update_interval</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">write_report</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot_cycle_realtime</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">configuration_file</span><span class="p">,</span> <span class="n">update_interval</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">write_report</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Perform interactive plotting, updating the plot based on the configuration file.</span>
 
@@ -1020,14 +1082,13 @@ document.write(`
                 <span class="sa">f</span><span class="s2">&quot;Iterative thermodynamic cycle configuration&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.95</span>
             <span class="p">)</span>
 
-            <span class="c1"># Write optimization report to file</span>
-            <span class="k">if</span> <span class="n">write_report</span><span class="p">:</span>
-                <span class="n">report</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_optimization_report</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x0</span><span class="p">)</span>
-                <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;initial_guess_report.txt&quot;</span>
-                <span class="n">fullfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fullfile</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>
-                
+            <span class="c1"># # Write optimization report to file</span>
+            <span class="c1"># if write_report:</span>
+            <span class="c1">#     report = self.make_optimization_report(self.x0)</span>
+            <span class="c1">#     filename=&quot;initial_guess_report.txt&quot;</span>
+            <span class="c1">#     fullfile = os.path.join(self.out_dir, filename)</span>
+            <span class="c1">#     with open(fullfile, &quot;w&quot;) as f:</span>
+            <span class="c1">#         f.write(report)</span>
 
             <span class="c1"># Wait for the specified interval before updating again</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">update_interval</span><span class="p">)</span>
@@ -1206,7 +1267,12 @@ document.write(`
 
         <span class="c1"># Retrieve data</span>
         <span class="n">is_working_fluid</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">][</span><span class="s2">&quot;identifier&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;working_fluid&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_working_fluid</span> <span class="ow">and</span> <span class="n">is_heat_exchanger</span> <span class="ow">and</span> <span class="n">prop_y</span> <span class="o">==</span> <span class="s2">&quot;T&quot;</span> <span class="ow">and</span> <span class="n">prop_x</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="n">is_working_fluid</span>
+            <span class="ow">and</span> <span class="n">is_heat_exchanger</span>
+            <span class="ow">and</span> <span class="n">prop_y</span> <span class="o">==</span> <span class="s2">&quot;T&quot;</span>
+            <span class="ow">and</span> <span class="n">prop_x</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">]</span>
+        <span class="p">):</span>
             <span class="c1"># Special case for heat exchangers in h-T or s-T diagrams</span>
             <span class="n">x_data</span> <span class="o">=</span> <span class="n">data_other_side</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">][</span><span class="n">prop_x</span><span class="p">]</span>
             <span class="n">y_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">][</span><span class="n">prop_y</span><span class="p">]</span>
@@ -1226,13 +1292,13 @@ document.write(`
 
         <span class="c1"># Define plotting specifications</span>
         <span class="n">default_params</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span>                 <span class="c1"># black</span>
-            <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span>            <span class="c1"># solid line</span>
+            <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span>  <span class="c1"># black</span>
+            <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span>  <span class="c1"># solid line</span>
             <span class="s2">&quot;linewidth&quot;</span><span class="p">:</span> <span class="mf">1.25</span><span class="p">,</span>
             <span class="s2">&quot;marker&quot;</span><span class="p">:</span> <span class="s2">&quot;o&quot;</span><span class="p">,</span>
             <span class="s2">&quot;markersize&quot;</span><span class="p">:</span> <span class="mf">4.5</span><span class="p">,</span>
             <span class="s2">&quot;markeredgewidth&quot;</span><span class="p">:</span> <span class="mf">1.25</span><span class="p">,</span>
-            <span class="s2">&quot;markerfacecolor&quot;</span><span class="p">:</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span>      <span class="c1"># white-filled marker</span>
+            <span class="s2">&quot;markerfacecolor&quot;</span><span class="p">:</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span>  <span class="c1"># white-filled marker</span>
         <span class="p">}</span>
         <span class="n">plot_params</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">default_params</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;plot_params&quot;</span><span class="p">,</span> <span class="p">{})}</span>
 
@@ -1280,16 +1346,18 @@ document.write(`
         <span class="c1"># Sort heat exchangers by minimum temperature on the cold side</span>
         <span class="n">sorted_heat_exchangers</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">heat_exchangers</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
-
         <span class="c1"># Loop over all heat exchangers</span>
         <span class="n">Q0</span> <span class="o">=</span> <span class="mf">0.00</span>
         <span class="k">for</span> <span class="n">HX_name</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">sorted_heat_exchangers</span><span class="p">:</span>
 
-                <span class="c1"># Hot side</span>
-            <span class="n">Q_hot</span><span class="p">,</span> <span class="n">T_hot</span><span class="p">,</span> <span class="n">plot_params_hot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_process_data</span><span class="p">(</span><span class="n">HX_name</span> <span class="o">+</span> <span class="s2">&quot;_hot_side&quot;</span><span class="p">,</span> <span class="s2">&quot;heat_flow&quot;</span><span class="p">,</span> <span class="s2">&quot;T&quot;</span><span class="p">)</span>
-            <span class="n">Q_cold</span><span class="p">,</span> <span class="n">T_cold</span><span class="p">,</span> <span class="n">plot_params_cold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_process_data</span><span class="p">(</span><span class="n">HX_name</span> <span class="o">+</span> <span class="s2">&quot;_cold_side&quot;</span><span class="p">,</span> <span class="s2">&quot;heat_flow&quot;</span><span class="p">,</span> <span class="s2">&quot;T&quot;</span><span class="p">)</span>
+            <span class="c1"># Hot side</span>
+            <span class="n">Q_hot</span><span class="p">,</span> <span class="n">T_hot</span><span class="p">,</span> <span class="n">plot_params_hot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_process_data</span><span class="p">(</span>
+                <span class="n">HX_name</span> <span class="o">+</span> <span class="s2">&quot;_hot_side&quot;</span><span class="p">,</span> <span class="s2">&quot;heat_flow&quot;</span><span class="p">,</span> <span class="s2">&quot;T&quot;</span>
+            <span class="p">)</span>
+            <span class="n">Q_cold</span><span class="p">,</span> <span class="n">T_cold</span><span class="p">,</span> <span class="n">plot_params_cold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_process_data</span><span class="p">(</span>
+                <span class="n">HX_name</span> <span class="o">+</span> <span class="s2">&quot;_cold_side&quot;</span><span class="p">,</span> <span class="s2">&quot;heat_flow&quot;</span><span class="p">,</span> <span class="s2">&quot;T&quot;</span>
+            <span class="p">)</span>
             <span class="n">Q_hot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">Q_hot</span><span class="p">)</span>
-
 
             <span class="n">component</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cycle_data</span><span class="p">[</span><span class="s2">&quot;components&quot;</span><span class="p">][</span><span class="n">HX_name</span><span class="p">]</span>
             <span class="c1"># params_hot = component[&quot;hot_side&quot;][&quot;plot_params&quot;]</span>
@@ -1323,7 +1391,7 @@ document.write(`
                 <span class="c1"># Update vertical lines</span>
                 <span class="n">plot_elements</span><span class="p">[</span><span class="s2">&quot;start_line&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_xdata</span><span class="p">([</span><span class="n">Q0</span><span class="p">,</span> <span class="n">Q0</span><span class="p">])</span>
                 <span class="n">plot_elements</span><span class="p">[</span><span class="s2">&quot;end_line&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_xdata</span><span class="p">([</span><span class="n">Q0</span> <span class="o">+</span> <span class="n">Q_hot</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">Q0</span> <span class="o">+</span> <span class="n">Q_hot</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
-            <span class="k">else</span><span class="p">:</span>  
+            <span class="k">else</span><span class="p">:</span>
 
                 <span class="c1"># Prepare kwargs for line and point separately</span>
                 <span class="n">line_params_hot</span> <span class="o">=</span> <span class="p">{</span>

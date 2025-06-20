@@ -353,12 +353,18 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.create_animation"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.create_animation()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.load_config"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.load_config()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.plot_convergence_history"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.plot_convergence_history()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.plot_cycle_callback"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.plot_cycle_callback()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.print_convergence_history"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.print_convergence_history()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.print_optimization_report"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.print_optimization_report()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.read_config"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.read_config()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.run_optimization"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.run_optimization()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_config_callback"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.save_config_callback()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_plot_callback"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.save_plot_callback()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_report_callback"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.save_report_callback()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_results"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.save_results()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_solver_pickle"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.save_solver_pickle()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.set_config_value"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.set_config_value()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.set_constraint"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.set_constraint()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.setup_problem"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.setup_problem()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.setup_solver"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.setup_solver()</span></code></a></li>
 </ul>
@@ -370,13 +376,9 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.get_nic"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleProblem.get_nic()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.load_configuration_file"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleProblem.load_configuration_file()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.plot_cycle"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleProblem.plot_cycle()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.plot_cycle_callback"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleProblem.plot_cycle_callback()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.plot_cycle_realtime"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleProblem.plot_cycle_realtime()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.save_config_callback"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleProblem.save_config_callback()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.save_current_configuration"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleProblem.save_current_configuration()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.save_data_to_excel"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleProblem.save_data_to_excel()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.save_plot_callback"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleProblem.save_plot_callback()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.save_report_callback"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleProblem.save_report_callback()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.update_problem"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleProblem.update_problem()</span></code></a></li>
 </ul>
 </li>
@@ -406,17 +408,35 @@ document.write(`
 <tr class="row-even"><td><p><a class="reference internal" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.load_config" title="thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.load_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_config</span></code></a>(config_dict)</p></td>
 <td><p>Load a new configuration and update the problem and solver objects.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.read_config" title="thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.read_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_config</span></code></a>(config_file)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.plot_cycle_callback" title="thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.plot_cycle_callback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_cycle_callback</span></code></a>(x, iter)</p></td>
+<td><p>Plot the thermodynamic cycle during optimization.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.read_config" title="thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.read_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_config</span></code></a>(config_file)</p></td>
 <td><p>Loads configuration from a YAML file.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.run_optimization" title="thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.run_optimization"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_optimization</span></code></a>([x0])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.run_optimization" title="thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.run_optimization"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_optimization</span></code></a>([x0])</p></td>
 <td><p>Executes the optimization process.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_config_callback" title="thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_config_callback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_config_callback</span></code></a>(x, iter)</p></td>
+<td><p>A callback function to save the current configuration during optimization iterations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_plot_callback" title="thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_plot_callback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_plot_callback</span></code></a>(x, iter)</p></td>
+<td><p>Save the thermodynamic cycle figure during optimization.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_report_callback" title="thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_report_callback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_report_callback</span></code></a>(x, iter)</p></td>
+<td><p>A callback function to save the current configuration during optimization iterations.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_results" title="thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_results</span></code></a>()</p></td>
 <td><p>Saves the results of the optimization, including configurations and output files.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.set_config_value" title="thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.set_config_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_config_value</span></code></a>(path, value)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_solver_pickle" title="thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_solver_pickle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_solver_pickle</span></code></a>()</p></td>
+<td><p>Sanitize solver (including deeply nested problem) and save it to a pickle file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.set_config_value" title="thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.set_config_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_config_value</span></code></a>(path, value)</p></td>
 <td><p>Updates a value in the nested config dictionary using a dot-separated path and refreshes problem and solver.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.set_constraint" title="thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.set_constraint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_constraint</span></code></a>(variable[, type, value, ...])</p></td>
+<td><p>Adds or updates a constraint for the given variable name.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.setup_problem" title="thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.setup_problem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup_problem</span></code></a>()</p></td>
 <td><p>Sets up the ThermodynamicCycleProblem based on the loaded configuration.</p></td>
@@ -475,6 +495,12 @@ document.write(`
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.plot_cycle_callback">
+<span class="sig-name descname"><span class="pre">plot_cycle_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/cycles/optimize_cycle.html#ThermodynamicCycleOptimization.plot_cycle_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.plot_cycle_callback" title="Link to this definition">#</a></dt>
+<dd><p>Plot the thermodynamic cycle during optimization.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.print_convergence_history">
 <span class="sig-name descname"><span class="pre">print_convergence_history</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">savefile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/cycles/optimize_cycle.html#ThermodynamicCycleOptimization.print_convergence_history"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.print_convergence_history" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -497,9 +523,43 @@ document.write(`
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_config_callback">
+<span class="sig-name descname"><span class="pre">save_config_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/cycles/optimize_cycle.html#ThermodynamicCycleOptimization.save_config_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_config_callback" title="Link to this definition">#</a></dt>
+<dd><p>A callback function to save the current configuration during optimization iterations.</p>
+<p>Parameters:
+- x : The current solution vector from the optimizer.
+- iter : The current optimization iteration count.</p>
+<p>This function acts as a bridge between the optimizer callback requirements and the
+existing <cite>save_current_configuration</cite> function.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_plot_callback">
+<span class="sig-name descname"><span class="pre">save_plot_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/cycles/optimize_cycle.html#ThermodynamicCycleOptimization.save_plot_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_plot_callback" title="Link to this definition">#</a></dt>
+<dd><p>Save the thermodynamic cycle figure during optimization.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_report_callback">
+<span class="sig-name descname"><span class="pre">save_report_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/cycles/optimize_cycle.html#ThermodynamicCycleOptimization.save_report_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_report_callback" title="Link to this definition">#</a></dt>
+<dd><p>A callback function to save the current configuration during optimization iterations.</p>
+<p>Parameters:
+- x : The current solution vector from the optimizer.
+- iter : The current optimization iteration count.</p>
+<p>This function acts as a bridge between the optimizer callback requirements and the
+existing <cite>save_current_configuration</cite> function.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_results">
 <span class="sig-name descname"><span class="pre">save_results</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/cycles/optimize_cycle.html#ThermodynamicCycleOptimization.save_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_results" title="Link to this definition">#</a></dt>
 <dd><p>Saves the results of the optimization, including configurations and output files.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_solver_pickle">
+<span class="sig-name descname"><span class="pre">save_solver_pickle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/cycles/optimize_cycle.html#ThermodynamicCycleOptimization.save_solver_pickle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_solver_pickle" title="Link to this definition">#</a></dt>
+<dd><p>Sanitize solver (including deeply nested problem) and save it to a pickle file.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -509,6 +569,19 @@ document.write(`
 and refreshes problem and solver.</p>
 <dl class="simple">
 <dt>Example:</dt><dd><p>set_config_value(“problem_formulation.fixed_parameters.expander.efficiency”, 0.8)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.set_constraint">
+<span class="sig-name descname"><span class="pre">set_constraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/cycles/optimize_cycle.html#ThermodynamicCycleOptimization.set_constraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.set_constraint" title="Link to this definition">#</a></dt>
+<dd><p>Adds or updates a constraint for the given variable name.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>variable (str): Full variable path, e.g., “$components.cooler_charge.temperature_difference”
+type (str, optional): Constraint type, e.g., “&gt;”, “&lt;”, “=”
+value (float, optional): Target value
+normalize (bool or float, optional): Normalization value or flag</p>
 </dd>
 </dl>
 </dd></dl>
@@ -663,12 +736,6 @@ a figure would be too time consuming and not practical for the real-time updatin
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.plot_cycle_callback">
-<span class="sig-name descname"><span class="pre">plot_cycle_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/cycles/optimize_cycle.html#ThermodynamicCycleProblem.plot_cycle_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.plot_cycle_callback" title="Link to this definition">#</a></dt>
-<dd><p>Plot the thermodynamic cycle during optimization.</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.plot_cycle_realtime">
 <span class="sig-name descname"><span class="pre">plot_cycle_realtime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configuration_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_report</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/cycles/optimize_cycle.html#ThermodynamicCycleProblem.plot_cycle_realtime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.plot_cycle_realtime" title="Link to this definition">#</a></dt>
 <dd><p>Perform interactive plotting, updating the plot based on the configuration file.</p>
@@ -685,17 +752,6 @@ a figure would be too time consuming and not practical for the real-time updatin
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.save_config_callback">
-<span class="sig-name descname"><span class="pre">save_config_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/cycles/optimize_cycle.html#ThermodynamicCycleProblem.save_config_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.save_config_callback" title="Link to this definition">#</a></dt>
-<dd><p>A callback function to save the current configuration during optimization iterations.</p>
-<p>Parameters:
-- x : The current solution vector from the optimizer.
-- iter : The current optimization iteration count.</p>
-<p>This function acts as a bridge between the optimizer callback requirements and the
-existing <cite>save_current_configuration</cite> function.</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.save_current_configuration">
 <span class="sig-name descname"><span class="pre">save_current_configuration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/cycles/optimize_cycle.html#ThermodynamicCycleProblem.save_current_configuration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.save_current_configuration" title="Link to this definition">#</a></dt>
 <dd><p>Save the current configuration to a YAML file.</p>
@@ -705,23 +761,6 @@ existing <cite>save_current_configuration</cite> function.</p>
 <dt class="sig sig-object py" id="thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.save_data_to_excel">
 <span class="sig-name descname"><span class="pre">save_data_to_excel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'performance.xlsx'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/cycles/optimize_cycle.html#ThermodynamicCycleProblem.save_data_to_excel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.save_data_to_excel" title="Link to this definition">#</a></dt>
 <dd><p>Exports the cycle performance data to Excel file</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.save_plot_callback">
-<span class="sig-name descname"><span class="pre">save_plot_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/cycles/optimize_cycle.html#ThermodynamicCycleProblem.save_plot_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.save_plot_callback" title="Link to this definition">#</a></dt>
-<dd><p>Save the thermodynamic cycle figure during optimization.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.save_report_callback">
-<span class="sig-name descname"><span class="pre">save_report_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/cycles/optimize_cycle.html#ThermodynamicCycleProblem.save_report_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.save_report_callback" title="Link to this definition">#</a></dt>
-<dd><p>A callback function to save the current configuration during optimization iterations.</p>
-<p>Parameters:
-- x : The current solution vector from the optimizer.
-- iter : The current optimization iteration count.</p>
-<p>This function acts as a bridge between the optimizer callback requirements and the
-existing <cite>save_current_configuration</cite> function.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -791,12 +830,18 @@ existing <cite>save_current_configuration</cite> function.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.create_animation"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.create_animation()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.load_config"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.load_config()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.plot_convergence_history"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.plot_convergence_history()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.plot_cycle_callback"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.plot_cycle_callback()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.print_convergence_history"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.print_convergence_history()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.print_optimization_report"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.print_optimization_report()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.read_config"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.read_config()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.run_optimization"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.run_optimization()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_config_callback"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.save_config_callback()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_plot_callback"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.save_plot_callback()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_report_callback"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.save_report_callback()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_results"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.save_results()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.save_solver_pickle"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.save_solver_pickle()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.set_config_value"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.set_config_value()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.set_constraint"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.set_constraint()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.setup_problem"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.setup_problem()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization.setup_solver"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization.setup_solver()</span></code></a></li>
 </ul>
@@ -808,13 +853,9 @@ existing <cite>save_current_configuration</cite> function.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.get_nic"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleProblem.get_nic()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.load_configuration_file"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleProblem.load_configuration_file()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.plot_cycle"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleProblem.plot_cycle()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.plot_cycle_callback"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleProblem.plot_cycle_callback()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.plot_cycle_realtime"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleProblem.plot_cycle_realtime()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.save_config_callback"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleProblem.save_config_callback()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.save_current_configuration"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleProblem.save_current_configuration()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.save_data_to_excel"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleProblem.save_data_to_excel()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.save_plot_callback"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleProblem.save_plot_callback()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.save_report_callback"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleProblem.save_report_callback()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem.update_problem"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleProblem.update_problem()</span></code></a></li>
 </ul>
 </li>

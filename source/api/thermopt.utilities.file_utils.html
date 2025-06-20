@@ -355,6 +355,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.utilities.file_utils.compare_contents_or_files"><code class="docutils literal notranslate"><span class="pre">compare_contents_or_files()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.utilities.file_utils.convert_numpy_to_python"><code class="docutils literal notranslate"><span class="pre">convert_numpy_to_python()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.utilities.file_utils.create_logger"><code class="docutils literal notranslate"><span class="pre">create_logger()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.utilities.file_utils.dump_object_structure"><code class="docutils literal notranslate"><span class="pre">dump_object_structure()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.utilities.file_utils.find_latest_results_file"><code class="docutils literal notranslate"><span class="pre">find_latest_results_file()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.utilities.file_utils.is_dict_empty"><code class="docutils literal notranslate"><span class="pre">is_dict_empty()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.utilities.file_utils.load_from_pickle"><code class="docutils literal notranslate"><span class="pre">load_from_pickle()</span></code></a></li>
@@ -515,6 +516,24 @@ handles concurrency in multi-instance environments.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="thermopt.utilities.file_utils.dump_object_structure">
+<span class="sig-prename descclassname"><span class="pre">thermopt.utilities.file_utils.</span></span><span class="sig-name descname"><span class="pre">dump_object_structure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_seen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'root'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/utilities/file_utils.html#dump_object_structure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.utilities.file_utils.dump_object_structure" title="Link to this definition">#</a></dt>
+<dd><p>Recursively print the structure, types, and values of an object into a log file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>obj</strong><span class="classifier">any</span></dt><dd><p>The object to inspect.</p>
+</dd>
+<dt><strong>log_file</strong><span class="classifier">str</span></dt><dd><p>Path to the output log file.</p>
+</dd>
+<dt><strong>max_depth</strong><span class="classifier">int</span></dt><dd><p>Maximum recursion depth to avoid excessive nesting.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="thermopt.utilities.file_utils.find_latest_results_file">
 <span class="sig-prename descclassname"><span class="pre">thermopt.utilities.file_utils.</span></span><span class="sig-name descname"><span class="pre">find_latest_results_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'performance_analysis_'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/utilities/file_utils.html#find_latest_results_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.utilities.file_utils.find_latest_results_file" title="Link to this definition">#</a></dt>
 <dd><p>Retrieve all files that match the given prefix and extension .xlsx</p>
@@ -542,14 +561,20 @@ handles concurrency in multi-instance environments.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="thermopt.utilities.file_utils.load_from_pickle">
-<span class="sig-prename descclassname"><span class="pre">thermopt.utilities.file_utils.</span></span><span class="sig-name descname"><span class="pre">load_from_pickle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/utilities/file_utils.html#load_from_pickle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.utilities.file_utils.load_from_pickle" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">thermopt.utilities.file_utils.</span></span><span class="sig-name descname"><span class="pre">load_from_pickle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/utilities/file_utils.html#load_from_pickle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.utilities.file_utils.load_from_pickle" title="Link to this definition">#</a></dt>
 <dd><p>Load a Python object from a pickle file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> – The name of the pickle file to be loaded (with .pkl extension).</p>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filepath</strong><span class="classifier">str or Path</span></dt><dd><p>Full path to the pickle file.</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The Python object that was stored in the pickle file.</p>
+<dd class="field-even"><dl class="simple">
+<dt>Any</dt><dd><p>The Python object stored in the pickle file.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
@@ -604,14 +629,22 @@ handles concurrency in multi-instance environments.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="thermopt.utilities.file_utils.save_to_pickle">
-<span class="sig-prename descclassname"><span class="pre">thermopt.utilities.file_utils.</span></span><span class="sig-name descname"><span class="pre">save_to_pickle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pickle_file'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'output'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/utilities/file_utils.html#save_to_pickle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.utilities.file_utils.save_to_pickle" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">thermopt.utilities.file_utils.</span></span><span class="sig-name descname"><span class="pre">save_to_pickle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/utilities/file_utils.html#save_to_pickle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.utilities.file_utils.save_to_pickle" title="Link to this definition">#</a></dt>
 <dd><p>Save a Python object to a pickle file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>obj</strong> – The Python object to be saved.</p></li>
-<li><p><strong>filename</strong> – The name of the file where the object will be saved (with .pkl extension).</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>obj</strong><span class="classifier">Any</span></dt><dd><p>The Python object to be saved.</p>
+</dd>
+<dt><strong>timestamp</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to append a timestamp before the extension. Default is True.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd><p>The full path to the saved pickle file.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
@@ -721,6 +754,7 @@ Give only required keys to allow all extra additional key</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.utilities.file_utils.compare_contents_or_files"><code class="docutils literal notranslate"><span class="pre">compare_contents_or_files()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.utilities.file_utils.convert_numpy_to_python"><code class="docutils literal notranslate"><span class="pre">convert_numpy_to_python()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.utilities.file_utils.create_logger"><code class="docutils literal notranslate"><span class="pre">create_logger()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.utilities.file_utils.dump_object_structure"><code class="docutils literal notranslate"><span class="pre">dump_object_structure()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.utilities.file_utils.find_latest_results_file"><code class="docutils literal notranslate"><span class="pre">find_latest_results_file()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.utilities.file_utils.is_dict_empty"><code class="docutils literal notranslate"><span class="pre">is_dict_empty()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.utilities.file_utils.load_from_pickle"><code class="docutils literal notranslate"><span class="pre">load_from_pickle()</span></code></a></li>
