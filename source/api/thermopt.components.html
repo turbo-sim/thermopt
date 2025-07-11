@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>thermopt.cycles.cycle_refrigeration_recuperated module &#8212; thermopt v0.2.1 documentation</title>
+    <title>thermopt.components package &#8212; thermopt v0.2.1 documentation</title>
   
   
   
@@ -49,11 +49,11 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'source/api/thermopt.cycles.cycle_refrigeration_recuperated';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'source/api/thermopt.components';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="thermopt.cycles.cycle_refrigeration_simple module" href="thermopt.cycles.cycle_refrigeration_simple.html" />
-    <link rel="prev" title="thermopt.cycles.cycle_power_split_compression module" href="thermopt.cycles.cycle_power_split_compression.html" />
+    <link rel="next" title="thermopt.components.basic_components module" href="thermopt.components.basic_components.html" />
+    <link rel="prev" title="thermopt.cycles.cycle_refrigeration_simple module" href="thermopt.cycles.cycle_refrigeration_simple.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -168,17 +168,17 @@
 <li class="toctree-l2"><a class="reference internal" href="thermopt.optimize_cycle.html">thermopt.optimize_cycle module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="thermopt.config.html">thermopt.config module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="thermopt.math.html">thermopt.math module</a></li>
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="thermopt.cycles.html">thermopt.cycles package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="thermopt.cycles.html">thermopt.cycles package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_PTES_recuperated.html">thermopt.cycles.cycle_PTES_recuperated module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_PTES_recuperated_turbo.html">thermopt.cycles.cycle_PTES_recuperated_turbo module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_power_recuperated.html">thermopt.cycles.cycle_power_recuperated module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_power_simple.html">thermopt.cycles.cycle_power_simple module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_power_split_compression.html">thermopt.cycles.cycle_power_split_compression module</a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">thermopt.cycles.cycle_refrigeration_recuperated module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_refrigeration_recuperated.html">thermopt.cycles.cycle_refrigeration_recuperated module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_refrigeration_simple.html">thermopt.cycles.cycle_refrigeration_simple module</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="thermopt.components.html">thermopt.components package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">thermopt.components package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="thermopt.components.basic_components.html">thermopt.components.basic_components module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="thermopt.components.heat_exchanger_plates.html">thermopt.components.heat_exchanger_plates module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="thermopt.components.turbomachinery_nondimensional.html">thermopt.components.turbomachinery_nondimensional module</a></li>
@@ -247,7 +247,7 @@
       
       
       
-      <li><a href="../../_sources/source/api/thermopt.cycles.cycle_refrigeration_recuperated.rst" target="_blank"
+      <li><a href="../../_sources/source/api/thermopt.components.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -331,7 +331,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>thermopt.cycles.cycle_refrigeration_recuperated module</h1>
+    <h1>thermopt.components package</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -341,7 +341,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.cycle_refrigeration_recuperated.evaluate_cycle"><code class="docutils literal notranslate"><span class="pre">evaluate_cycle()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 </ul>
             </nav>
         </div>
@@ -353,13 +353,39 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-thermopt.cycles.cycle_refrigeration_recuperated">
-<span id="thermopt-cycles-cycle-refrigeration-recuperated-module"></span><h1>thermopt.cycles.cycle_refrigeration_recuperated module<a class="headerlink" href="#module-thermopt.cycles.cycle_refrigeration_recuperated" title="Link to this heading">#</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="thermopt.cycles.cycle_refrigeration_recuperated.evaluate_cycle">
-<span class="sig-prename descclassname"><span class="pre">thermopt.cycles.cycle_refrigeration_recuperated.</span></span><span class="sig-name descname"><span class="pre">evaluate_cycle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objective_function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recuperated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/cycles/cycle_refrigeration_recuperated.html#evaluate_cycle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.cycles.cycle_refrigeration_recuperated.evaluate_cycle" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
+  <section id="module-thermopt.components">
+<span id="thermopt-components-package"></span><h1>thermopt.components package<a class="headerlink" href="#module-thermopt.components" title="Link to this heading">#</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="thermopt.components.basic_components.html">thermopt.components.basic_components module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="thermopt.components.basic_components.html#thermopt.components.basic_components.compression_process"><code class="docutils literal notranslate"><span class="pre">compression_process()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermopt.components.basic_components.html#thermopt.components.basic_components.compute_component_energy_flows"><code class="docutils literal notranslate"><span class="pre">compute_component_energy_flows()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermopt.components.basic_components.html#thermopt.components.basic_components.expansion_process"><code class="docutils literal notranslate"><span class="pre">expansion_process()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermopt.components.basic_components.html#thermopt.components.basic_components.heat_exchanger"><code class="docutils literal notranslate"><span class="pre">heat_exchanger()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermopt.components.basic_components.html#thermopt.components.basic_components.heat_transfer_process"><code class="docutils literal notranslate"><span class="pre">heat_transfer_process()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermopt.components.basic_components.html#thermopt.components.basic_components.isenthalpic_valve"><code class="docutils literal notranslate"><span class="pre">isenthalpic_valve()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermopt.components.basic_components.html#thermopt.components.basic_components.postprocess_ode"><code class="docutils literal notranslate"><span class="pre">postprocess_ode()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="thermopt.components.heat_exchanger_plates.html">thermopt.components.heat_exchanger_plates module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="thermopt.components.turbomachinery_nondimensional.html">thermopt.components.turbomachinery_nondimensional module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="thermopt.components.turbomachinery_nondimensional.html#thermopt.components.turbomachinery_nondimensional.CentrifugalCompressor"><code class="docutils literal notranslate"><span class="pre">CentrifugalCompressor</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.components.turbomachinery_nondimensional.html#thermopt.components.turbomachinery_nondimensional.CentrifugalCompressor.residual"><code class="docutils literal notranslate"><span class="pre">CentrifugalCompressor.residual()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="thermopt.components.turbomachinery_nondimensional.html#thermopt.components.turbomachinery_nondimensional.RadialTurbine"><code class="docutils literal notranslate"><span class="pre">RadialTurbine</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.components.turbomachinery_nondimensional.html#thermopt.components.turbomachinery_nondimensional.RadialTurbine.compute_rotor_outlet_static"><code class="docutils literal notranslate"><span class="pre">RadialTurbine.compute_rotor_outlet_static()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.components.turbomachinery_nondimensional.html#thermopt.components.turbomachinery_nondimensional.RadialTurbine.residual"><code class="docutils literal notranslate"><span class="pre">RadialTurbine.residual()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="thermopt.components.turbomachinery_nondimensional.html#thermopt.components.turbomachinery_nondimensional.friction_factor"><code class="docutils literal notranslate"><span class="pre">friction_factor()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
 </section>
 
 
@@ -374,20 +400,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="thermopt.cycles.cycle_power_split_compression.html"
+       href="thermopt.cycles.cycle_refrigeration_simple.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">thermopt.cycles.cycle_power_split_compression module</p>
+        <p class="prev-next-title">thermopt.cycles.cycle_refrigeration_simple module</p>
       </div>
     </a>
     <a class="right-next"
-       href="thermopt.cycles.cycle_refrigeration_simple.html"
+       href="thermopt.components.basic_components.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">thermopt.cycles.cycle_refrigeration_simple module</p>
+        <p class="prev-next-title">thermopt.components.basic_components module</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -407,7 +433,7 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.cycles.cycle_refrigeration_recuperated.evaluate_cycle"><code class="docutils literal notranslate"><span class="pre">evaluate_cycle()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 </ul>
   </nav></div>
 

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>thermopt.config module &#8212; thermopt v0.1.0 documentation</title>
+    <title>thermopt.config module &#8212; thermopt v0.2.1 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=d47532a6"></script>
+    <script src="../../_static/documentation_options.js?v=b196e8ce"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -53,7 +53,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="thermopt.math module" href="thermopt.math.html" />
-    <link rel="prev" title="thermopt.utilities.optimization_utils module" href="thermopt.utilities.optimization_utils.html" />
+    <link rel="prev" title="thermopt.optimize_cycle module" href="thermopt.optimize_cycle.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -141,7 +141,7 @@
   
   
   
-    <p class="title logo__title">thermopt v0.1.0 documentation</p>
+    <p class="title logo__title">thermopt v0.2.1 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -165,29 +165,23 @@
 <li class="toctree-l1"><a class="reference internal" href="../developer_guide.html">Developer guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="thermopt.html">API Reference</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="thermopt.optimize_cycle.html">thermopt.optimize_cycle module</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">thermopt.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermopt.math.html">thermopt.math module</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="thermopt.cycles.html">thermopt.cycles package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.components.html">thermopt.cycles.components module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_PTES_recuperated.html">thermopt.cycles.cycle_PTES_recuperated module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_PTES_recuperated_turbo.html">thermopt.cycles.cycle_PTES_recuperated_turbo module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_power_recuperated.html">thermopt.cycles.cycle_power_recuperated module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_power_simple.html">thermopt.cycles.cycle_power_simple module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_power_split_compression.html">thermopt.cycles.cycle_power_split_compression module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_refrigeration_recuperated.html">thermopt.cycles.cycle_refrigeration_recuperated module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_refrigeration_simple.html">thermopt.cycles.cycle_refrigeration_simple module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.optimize_cycle.html">thermopt.cycles.optimize_cycle module</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="thermopt.properties.html">thermopt.properties package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.properties.core_calculations.html">thermopt.properties.core_calculations module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.properties.fluid_properties.html">thermopt.properties.fluid_properties module</a></li>
-</ul>
-</details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="thermopt.pysolver_view.html">thermopt.pysolver_view package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.nonlinear_system.html">thermopt.pysolver_view.nonlinear_system module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.nonlinear_system_problems.html">thermopt.pysolver_view.nonlinear_system_problems module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.numerical_differentiation.html">thermopt.pysolver_view.numerical_differentiation module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.optimization.html">thermopt.pysolver_view.optimization module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.optimization_problems.html">thermopt.pysolver_view.optimization_problems module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.optimization_wrappers.html">thermopt.pysolver_view.optimization_wrappers module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.pysolver_utilities.html">thermopt.pysolver_view.pysolver_utilities module</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="thermopt.components.html">thermopt.components package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.components.basic_components.html">thermopt.components.basic_components module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.components.heat_exchanger_plates.html">thermopt.components.heat_exchanger_plates module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.components.turbomachinery_nondimensional.html">thermopt.components.turbomachinery_nondimensional module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="thermopt.utilities.html">thermopt.utilities package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -197,8 +191,6 @@
 <li class="toctree-l3"><a class="reference internal" href="thermopt.utilities.optimization_utils.html">thermopt.utilities.optimization_utils module</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">thermopt.config module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.math.html">thermopt.math module</a></li>
 </ul>
 </details></li>
 </ul>
@@ -460,12 +452,12 @@ are recursively converted.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="thermopt.utilities.optimization_utils.html"
+       href="thermopt.optimize_cycle.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">thermopt.utilities.optimization_utils module</p>
+        <p class="prev-next-title">thermopt.optimize_cycle module</p>
       </div>
     </a>
     <a class="right-next"

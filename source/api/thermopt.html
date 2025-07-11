@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>API Reference &#8212; thermopt v0.1.0 documentation</title>
+    <title>API Reference &#8212; thermopt v0.2.1 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=d47532a6"></script>
+    <script src="../../_static/documentation_options.js?v=b196e8ce"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -53,7 +53,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'source/api/thermopt';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="thermopt.cycles package" href="thermopt.cycles.html" />
+    <link rel="next" title="thermopt.optimize_cycle module" href="thermopt.optimize_cycle.html" />
     <link rel="prev" title="Bibliography" href="../bibliography.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -142,7 +142,7 @@
   
   
   
-    <p class="title logo__title">thermopt v0.1.0 documentation</p>
+    <p class="title logo__title">thermopt v0.2.1 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -166,29 +166,23 @@
 <li class="toctree-l1"><a class="reference internal" href="../developer_guide.html">Developer guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">API Reference</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="thermopt.optimize_cycle.html">thermopt.optimize_cycle module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermopt.config.html">thermopt.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermopt.math.html">thermopt.math module</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="thermopt.cycles.html">thermopt.cycles package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.components.html">thermopt.cycles.components module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_PTES_recuperated.html">thermopt.cycles.cycle_PTES_recuperated module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_PTES_recuperated_turbo.html">thermopt.cycles.cycle_PTES_recuperated_turbo module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_power_recuperated.html">thermopt.cycles.cycle_power_recuperated module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_power_simple.html">thermopt.cycles.cycle_power_simple module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_power_split_compression.html">thermopt.cycles.cycle_power_split_compression module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_refrigeration_recuperated.html">thermopt.cycles.cycle_refrigeration_recuperated module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_refrigeration_simple.html">thermopt.cycles.cycle_refrigeration_simple module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.optimize_cycle.html">thermopt.cycles.optimize_cycle module</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="thermopt.properties.html">thermopt.properties package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.properties.core_calculations.html">thermopt.properties.core_calculations module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.properties.fluid_properties.html">thermopt.properties.fluid_properties module</a></li>
-</ul>
-</details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="thermopt.pysolver_view.html">thermopt.pysolver_view package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.nonlinear_system.html">thermopt.pysolver_view.nonlinear_system module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.nonlinear_system_problems.html">thermopt.pysolver_view.nonlinear_system_problems module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.numerical_differentiation.html">thermopt.pysolver_view.numerical_differentiation module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.optimization.html">thermopt.pysolver_view.optimization module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.optimization_problems.html">thermopt.pysolver_view.optimization_problems module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.optimization_wrappers.html">thermopt.pysolver_view.optimization_wrappers module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.pysolver_utilities.html">thermopt.pysolver_view.pysolver_utilities module</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="thermopt.components.html">thermopt.components package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.components.basic_components.html">thermopt.components.basic_components module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.components.heat_exchanger_plates.html">thermopt.components.heat_exchanger_plates module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermopt.components.turbomachinery_nondimensional.html">thermopt.components.turbomachinery_nondimensional module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="thermopt.utilities.html">thermopt.utilities package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -198,8 +192,6 @@
 <li class="toctree-l3"><a class="reference internal" href="thermopt.utilities.optimization_utils.html">thermopt.utilities.optimization_utils module</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.config.html">thermopt.config module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.math.html">thermopt.math module</a></li>
 </ul>
 </details></li>
 </ul>
@@ -352,8 +344,8 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.print_banner"><code class="docutils literal notranslate"><span class="pre">print_banner()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.print_package_info"><code class="docutils literal notranslate"><span class="pre">print_package_info()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
 </ul>
             </nav>
         </div>
@@ -379,186 +371,23 @@ document.write(`
 <dd><p>Prints package information with predefined values.</p>
 </dd></dl>
 
-<section id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">#</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="thermopt.cycles.html">thermopt.cycles package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.cycles.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.components.html">thermopt.cycles.components module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.cycles.components.html#thermopt.cycles.components.compression_process"><code class="docutils literal notranslate"><span class="pre">compression_process()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.cycles.components.html#thermopt.cycles.components.compute_component_energy_flows"><code class="docutils literal notranslate"><span class="pre">compute_component_energy_flows()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.cycles.components.html#thermopt.cycles.components.expansion_process"><code class="docutils literal notranslate"><span class="pre">expansion_process()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.cycles.components.html#thermopt.cycles.components.heat_exchanger"><code class="docutils literal notranslate"><span class="pre">heat_exchanger()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.cycles.components.html#thermopt.cycles.components.heat_transfer_process"><code class="docutils literal notranslate"><span class="pre">heat_transfer_process()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.cycles.components.html#thermopt.cycles.components.isenthalpic_valve"><code class="docutils literal notranslate"><span class="pre">isenthalpic_valve()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.cycles.components.html#thermopt.cycles.components.postprocess_ode"><code class="docutils literal notranslate"><span class="pre">postprocess_ode()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_power_recuperated.html">thermopt.cycles.cycle_power_recuperated module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.cycles.cycle_power_recuperated.html#thermopt.cycles.cycle_power_recuperated.evaluate_cycle"><code class="docutils literal notranslate"><span class="pre">evaluate_cycle()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_power_simple.html">thermopt.cycles.cycle_power_simple module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.cycles.cycle_power_simple.html#thermopt.cycles.cycle_power_simple.evaluate_cycle"><code class="docutils literal notranslate"><span class="pre">evaluate_cycle()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_power_split_compression.html">thermopt.cycles.cycle_power_split_compression module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.cycles.cycle_power_split_compression.html#thermopt.cycles.cycle_power_split_compression.evaluate_cycle"><code class="docutils literal notranslate"><span class="pre">evaluate_cycle()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_refrigeration_recuperated.html">thermopt.cycles.cycle_refrigeration_recuperated module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.cycles.cycle_refrigeration_recuperated.html#thermopt.cycles.cycle_refrigeration_recuperated.evaluate_cycle"><code class="docutils literal notranslate"><span class="pre">evaluate_cycle()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.cycle_refrigeration_simple.html">thermopt.cycles.cycle_refrigeration_simple module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.cycles.cycle_refrigeration_simple.html#thermopt.cycles.cycle_refrigeration_simple.evaluate_cycle"><code class="docutils literal notranslate"><span class="pre">evaluate_cycle()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.cycles.optimize_cycle.html">thermopt.cycles.optimize_cycle module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.cycles.optimize_cycle.html#thermopt.cycles.optimize_cycle.ThermodynamicCycleOptimization"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleOptimization</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.cycles.optimize_cycle.html#thermopt.cycles.optimize_cycle.ThermodynamicCycleProblem"><code class="docutils literal notranslate"><span class="pre">ThermodynamicCycleProblem</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="thermopt.properties.html">thermopt.properties package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.properties.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.properties.core_calculations.html">thermopt.properties.core_calculations module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.core_calculations.html#thermopt.properties.core_calculations.blend_properties"><code class="docutils literal notranslate"><span class="pre">blend_properties()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.core_calculations.html#thermopt.properties.core_calculations.calculate_generalized_quality"><code class="docutils literal notranslate"><span class="pre">calculate_generalized_quality()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.core_calculations.html#thermopt.properties.core_calculations.calculate_mixture_properties"><code class="docutils literal notranslate"><span class="pre">calculate_mixture_properties()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.core_calculations.html#thermopt.properties.core_calculations.calculate_subcooling"><code class="docutils literal notranslate"><span class="pre">calculate_subcooling()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.core_calculations.html#thermopt.properties.core_calculations.calculate_superheating"><code class="docutils literal notranslate"><span class="pre">calculate_superheating()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.core_calculations.html#thermopt.properties.core_calculations.calculate_supersaturation"><code class="docutils literal notranslate"><span class="pre">calculate_supersaturation()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.core_calculations.html#thermopt.properties.core_calculations.compute_properties"><code class="docutils literal notranslate"><span class="pre">compute_properties()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.core_calculations.html#thermopt.properties.core_calculations.compute_properties_1phase"><code class="docutils literal notranslate"><span class="pre">compute_properties_1phase()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.core_calculations.html#thermopt.properties.core_calculations.compute_properties_2phase"><code class="docutils literal notranslate"><span class="pre">compute_properties_2phase()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.core_calculations.html#thermopt.properties.core_calculations.compute_properties_coolprop"><code class="docutils literal notranslate"><span class="pre">compute_properties_coolprop()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.core_calculations.html#thermopt.properties.core_calculations.compute_properties_metastable_rhoT"><code class="docutils literal notranslate"><span class="pre">compute_properties_metastable_rhoT()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.properties.fluid_properties.html">thermopt.properties.fluid_properties module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.fluid_properties.html#thermopt.properties.fluid_properties.Fluid"><code class="docutils literal notranslate"><span class="pre">Fluid</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.fluid_properties.html#thermopt.properties.fluid_properties.FluidState"><code class="docutils literal notranslate"><span class="pre">FluidState</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.fluid_properties.html#thermopt.properties.fluid_properties.compute_property_grid"><code class="docutils literal notranslate"><span class="pre">compute_property_grid()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.fluid_properties.html#thermopt.properties.fluid_properties.compute_property_grid_rhoT"><code class="docutils literal notranslate"><span class="pre">compute_property_grid_rhoT()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.fluid_properties.html#thermopt.properties.fluid_properties.compute_pseudocritical_line"><code class="docutils literal notranslate"><span class="pre">compute_pseudocritical_line()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.fluid_properties.html#thermopt.properties.fluid_properties.compute_quality_grid"><code class="docutils literal notranslate"><span class="pre">compute_quality_grid()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.fluid_properties.html#thermopt.properties.fluid_properties.compute_saturation_line"><code class="docutils literal notranslate"><span class="pre">compute_saturation_line()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.fluid_properties.html#thermopt.properties.fluid_properties.compute_spinodal_line"><code class="docutils literal notranslate"><span class="pre">compute_spinodal_line()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.fluid_properties.html#thermopt.properties.fluid_properties.compute_spinodal_point"><code class="docutils literal notranslate"><span class="pre">compute_spinodal_point()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.fluid_properties.html#thermopt.properties.fluid_properties.compute_spinodal_point_general"><code class="docutils literal notranslate"><span class="pre">compute_spinodal_point_general()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.fluid_properties.html#thermopt.properties.fluid_properties.extract_vars"><code class="docutils literal notranslate"><span class="pre">extract_vars()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.fluid_properties.html#thermopt.properties.fluid_properties.states_to_dict"><code class="docutils literal notranslate"><span class="pre">states_to_dict()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.properties.fluid_properties.html#thermopt.properties.fluid_properties.states_to_dict_2d"><code class="docutils literal notranslate"><span class="pre">states_to_dict_2d()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="thermopt.pysolver_view.html">thermopt.pysolver_view package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.pysolver_view.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.nonlinear_system.html">thermopt.pysolver_view.nonlinear_system module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.nonlinear_system_problems.html">thermopt.pysolver_view.nonlinear_system_problems module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.numerical_differentiation.html">thermopt.pysolver_view.numerical_differentiation module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.optimization.html">thermopt.pysolver_view.optimization module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.optimization_problems.html">thermopt.pysolver_view.optimization_problems module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.optimization_wrappers.html">thermopt.pysolver_view.optimization_wrappers module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.pysolver_view.pysolver_utilities.html">thermopt.pysolver_view.pysolver_utilities module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="thermopt.utilities.html">thermopt.utilities package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.utilities.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.utilities.file_utils.html">thermopt.utilities.file_utils module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.file_utils.html#thermopt.utilities.file_utils.DictionaryValidationError"><code class="docutils literal notranslate"><span class="pre">DictionaryValidationError</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.file_utils.html#thermopt.utilities.file_utils.add_string_to_keys"><code class="docutils literal notranslate"><span class="pre">add_string_to_keys()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.file_utils.html#thermopt.utilities.file_utils.check_for_unused_keys"><code class="docutils literal notranslate"><span class="pre">check_for_unused_keys()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.file_utils.html#thermopt.utilities.file_utils.compare_contents_or_files"><code class="docutils literal notranslate"><span class="pre">compare_contents_or_files()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.file_utils.html#thermopt.utilities.file_utils.convert_numpy_to_python"><code class="docutils literal notranslate"><span class="pre">convert_numpy_to_python()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.file_utils.html#thermopt.utilities.file_utils.create_logger"><code class="docutils literal notranslate"><span class="pre">create_logger()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.file_utils.html#thermopt.utilities.file_utils.dump_object_structure"><code class="docutils literal notranslate"><span class="pre">dump_object_structure()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.file_utils.html#thermopt.utilities.file_utils.find_latest_results_file"><code class="docutils literal notranslate"><span class="pre">find_latest_results_file()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.file_utils.html#thermopt.utilities.file_utils.is_dict_empty"><code class="docutils literal notranslate"><span class="pre">is_dict_empty()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.file_utils.html#thermopt.utilities.file_utils.load_from_pickle"><code class="docutils literal notranslate"><span class="pre">load_from_pickle()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.file_utils.html#thermopt.utilities.file_utils.print_dict"><code class="docutils literal notranslate"><span class="pre">print_dict()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.file_utils.html#thermopt.utilities.file_utils.print_object"><code class="docutils literal notranslate"><span class="pre">print_object()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.file_utils.html#thermopt.utilities.file_utils.save_to_pickle"><code class="docutils literal notranslate"><span class="pre">save_to_pickle()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.file_utils.html#thermopt.utilities.file_utils.validate_keys"><code class="docutils literal notranslate"><span class="pre">validate_keys()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.file_utils.html#thermopt.utilities.file_utils.wait_for_file"><code class="docutils literal notranslate"><span class="pre">wait_for_file()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.utilities.graphics.html">thermopt.utilities.graphics module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.graphics.html#thermopt.utilities.graphics.create_gif"><code class="docutils literal notranslate"><span class="pre">create_gif()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.graphics.html#thermopt.utilities.graphics.create_mp4"><code class="docutils literal notranslate"><span class="pre">create_mp4()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.graphics.html#thermopt.utilities.graphics.print_installed_fonts"><code class="docutils literal notranslate"><span class="pre">print_installed_fonts()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.graphics.html#thermopt.utilities.graphics.print_rc_parameters"><code class="docutils literal notranslate"><span class="pre">print_rc_parameters()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.graphics.html#thermopt.utilities.graphics.savefig_in_formats"><code class="docutils literal notranslate"><span class="pre">savefig_in_formats()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.graphics.html#thermopt.utilities.graphics.scale_graphics_x"><code class="docutils literal notranslate"><span class="pre">scale_graphics_x()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.graphics.html#thermopt.utilities.graphics.scale_graphics_y"><code class="docutils literal notranslate"><span class="pre">scale_graphics_y()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.graphics.html#thermopt.utilities.graphics.set_plot_options"><code class="docutils literal notranslate"><span class="pre">set_plot_options()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.utilities.numerics.html">thermopt.utilities.numerics module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.numerics.html#thermopt.utilities.numerics.check_lists_match"><code class="docutils literal notranslate"><span class="pre">check_lists_match()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.numerics.html#thermopt.utilities.numerics.ensure_iterable"><code class="docutils literal notranslate"><span class="pre">ensure_iterable()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.numerics.html#thermopt.utilities.numerics.extract_timestamp"><code class="docutils literal notranslate"><span class="pre">extract_timestamp()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.numerics.html#thermopt.utilities.numerics.fill_array_with_increment"><code class="docutils literal notranslate"><span class="pre">fill_array_with_increment()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.numerics.html#thermopt.utilities.numerics.flatten_dataframe"><code class="docutils literal notranslate"><span class="pre">flatten_dataframe()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.numerics.html#thermopt.utilities.numerics.is_float"><code class="docutils literal notranslate"><span class="pre">is_float()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.numerics.html#thermopt.utilities.numerics.is_numeric"><code class="docutils literal notranslate"><span class="pre">is_numeric()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.numerics.html#thermopt.utilities.numerics.isclose_significant_digits"><code class="docutils literal notranslate"><span class="pre">isclose_significant_digits()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="thermopt.utilities.optimization_utils.html">thermopt.utilities.optimization_utils module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.optimization_utils.html#thermopt.utilities.optimization_utils.evaluate_constraints"><code class="docutils literal notranslate"><span class="pre">evaluate_constraints()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.optimization_utils.html#thermopt.utilities.optimization_utils.evaluate_objective_function"><code class="docutils literal notranslate"><span class="pre">evaluate_objective_function()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.optimization_utils.html#thermopt.utilities.optimization_utils.render_and_evaluate"><code class="docutils literal notranslate"><span class="pre">render_and_evaluate()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="thermopt.utilities.optimization_utils.html#thermopt.utilities.optimization_utils.render_nested_value"><code class="docutils literal notranslate"><span class="pre">render_nested_value()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</div>
-</section>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="thermopt.config.html">thermopt.config module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.config.html#thermopt.config.convert_configuration_options"><code class="docutils literal notranslate"><span class="pre">convert_configuration_options()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.config.html#thermopt.config.object_to_dict"><code class="docutils literal notranslate"><span class="pre">object_to_dict()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.config.html#thermopt.config.read_configuration_file"><code class="docutils literal notranslate"><span class="pre">read_configuration_file()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="thermopt.optimize_cycle.html">thermopt.optimize_cycle module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="thermopt.config.html">thermopt.config module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="thermopt.math.html">thermopt.math module</a></li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="thermopt.math.html">thermopt.math module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.math.html#thermopt.math.all_non_negative"><code class="docutils literal notranslate"><span class="pre">all_non_negative()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.math.html#thermopt.math.all_numeric"><code class="docutils literal notranslate"><span class="pre">all_numeric()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.math.html#thermopt.math.arccosd"><code class="docutils literal notranslate"><span class="pre">arccosd()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.math.html#thermopt.math.arcsind"><code class="docutils literal notranslate"><span class="pre">arcsind()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.math.html#thermopt.math.arctand"><code class="docutils literal notranslate"><span class="pre">arctand()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.math.html#thermopt.math.cosd"><code class="docutils literal notranslate"><span class="pre">cosd()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.math.html#thermopt.math.is_even"><code class="docutils literal notranslate"><span class="pre">is_even()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.math.html#thermopt.math.is_odd"><code class="docutils literal notranslate"><span class="pre">is_odd()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.math.html#thermopt.math.sigmoid_hyperbolic"><code class="docutils literal notranslate"><span class="pre">sigmoid_hyperbolic()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.math.html#thermopt.math.sigmoid_rational"><code class="docutils literal notranslate"><span class="pre">sigmoid_rational()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.math.html#thermopt.math.sigmoid_smootherstep"><code class="docutils literal notranslate"><span class="pre">sigmoid_smootherstep()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.math.html#thermopt.math.sigmoid_smoothstep"><code class="docutils literal notranslate"><span class="pre">sigmoid_smoothstep()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.math.html#thermopt.math.sind"><code class="docutils literal notranslate"><span class="pre">sind()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.math.html#thermopt.math.smooth_abs"><code class="docutils literal notranslate"><span class="pre">smooth_abs()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.math.html#thermopt.math.smooth_maximum"><code class="docutils literal notranslate"><span class="pre">smooth_maximum()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.math.html#thermopt.math.smooth_minimum"><code class="docutils literal notranslate"><span class="pre">smooth_minimum()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermopt.math.html#thermopt.math.tand"><code class="docutils literal notranslate"><span class="pre">tand()</span></code></a></li>
-</ul>
-</li>
+</div>
+</section>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="thermopt.cycles.html">thermopt.cycles package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="thermopt.components.html">thermopt.components package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="thermopt.utilities.html">thermopt.utilities package</a></li>
 </ul>
 </div>
 </section>
@@ -585,11 +414,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="thermopt.cycles.html"
+       href="thermopt.optimize_cycle.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">thermopt.cycles package</p>
+        <p class="prev-next-title">thermopt.optimize_cycle module</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -611,8 +440,8 @@ document.write(`
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.print_banner"><code class="docutils literal notranslate"><span class="pre">print_banner()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thermopt.print_package_info"><code class="docutils literal notranslate"><span class="pre">print_package_info()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
 </ul>
   </nav></div>
 

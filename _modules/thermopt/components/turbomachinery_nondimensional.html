@@ -1,0 +1,852 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>thermopt.components.turbomachinery_nondimensional &#8212; thermopt v0.2.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../_static/documentation_options.js?v=b196e8ce"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/thermopt/components/turbomachinery_nondimensional';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">thermopt v0.2.1 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/cycle_optimization.html">Cycle optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/developer_guide.html">Developer guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/bibliography.html">Bibliography</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../source/api/thermopt.html">API Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/thermopt.optimize_cycle.html">thermopt.optimize_cycle module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/thermopt.config.html">thermopt.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/thermopt.math.html">thermopt.math module</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/api/thermopt.cycles.html">thermopt.cycles package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.cycles.cycle_PTES_recuperated.html">thermopt.cycles.cycle_PTES_recuperated module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.cycles.cycle_PTES_recuperated_turbo.html">thermopt.cycles.cycle_PTES_recuperated_turbo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.cycles.cycle_power_recuperated.html">thermopt.cycles.cycle_power_recuperated module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.cycles.cycle_power_simple.html">thermopt.cycles.cycle_power_simple module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.cycles.cycle_power_split_compression.html">thermopt.cycles.cycle_power_split_compression module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.cycles.cycle_refrigeration_recuperated.html">thermopt.cycles.cycle_refrigeration_recuperated module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.cycles.cycle_refrigeration_simple.html">thermopt.cycles.cycle_refrigeration_simple module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/api/thermopt.components.html">thermopt.components package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.components.basic_components.html">thermopt.components.basic_components module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.components.heat_exchanger_plates.html">thermopt.components.heat_exchanger_plates module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.components.turbomachinery_nondimensional.html">thermopt.components.turbomachinery_nondimensional module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/api/thermopt.utilities.html">thermopt.utilities package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.utilities.file_utils.html">thermopt.utilities.file_utils module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.utilities.graphics.html">thermopt.utilities.graphics module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.utilities.numerics.html">thermopt.utilities.numerics module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.utilities.optimization_utils.html">thermopt.utilities.optimization_utils module</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for thermopt.components.turbomachinery_nondimensional</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">@author: sipar</span>
+<span class="sd">NondimensionalRadial</span>
+<span class="sd">A python module to estimate the efficiency of turbomachinery.</span>
+<span class="sd">Based on the work presented in the paper:</span>
+
+<span class="sd">Advancing non-dimensional moºdels for radial turbomachinery applied to pumped thermal energy storage</span>
+
+<span class="sd">Simone Parisi, Roberto Agromayor, Angelo La Seta,</span>
+<span class="sd">Kenny Krogh Nielsen, Fredrik Haglind</span>
+<span class="sd">In preparation (2025)</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">nan</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">log10</span><span class="p">,</span> <span class="n">sqrt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">CoolProp.CoolProp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cp</span>
+
+<span class="n">NaN</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;NaN&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="friction_factor">
+<a class="viewcode-back" href="../../../source/api/thermopt.components.turbomachinery_nondimensional.html#thermopt.components.turbomachinery_nondimensional.friction_factor">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">friction_factor</span><span class="p">(</span><span class="n">Re</span><span class="p">,</span> <span class="n">ksc</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+    <span class="c1"># Laminar friction factor component</span>
+    <span class="n">cfl</span> <span class="o">=</span> <span class="mf">2.656</span> <span class="o">/</span> <span class="n">Re</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="c1"># Turbulent friction factor component</span>
+    <span class="n">cft</span> <span class="o">=</span> <span class="mf">0.136</span> <span class="o">/</span> <span class="p">(</span><span class="o">-</span><span class="n">log10</span><span class="p">(</span><span class="mf">0.2</span> <span class="o">*</span> <span class="n">ksc</span> <span class="o">+</span> <span class="mf">12.5</span> <span class="o">/</span> <span class="n">Re</span><span class="p">))</span> <span class="o">**</span> <span class="mf">2.15</span>
+    <span class="c1"># Transition function</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="p">(</span><span class="n">cfl</span> <span class="o">/</span> <span class="n">cft</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">t</span><span class="p">))</span>
+    <span class="n">cf</span> <span class="o">=</span> <span class="n">P</span> <span class="o">*</span> <span class="n">cfl</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">P</span><span class="p">)</span> <span class="o">*</span> <span class="n">cft</span>
+    <span class="c1"># Darcy friction factor</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">cf</span>
+    <span class="k">return</span> <span class="n">f</span></div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_Machine</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for turbomachinery models.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_CoolProp_fluid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fluid</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the CoolProp fluid object for thermodynamic property calculations.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span> <span class="o">=</span> <span class="n">fluid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_iterate_on_enthalpy</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_CoolProp_iterate_outlet_fixed_P</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_out</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Internal function called by the solver to iterate on outlet conditions.</span>
+<span class="sd">        It calculates the residual between model-predicted efficiency and</span>
+<span class="sd">        efficiency derived from thermodynamic states.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Update outlet state based on current guess of x_out and known p_out</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate_on_enthalpy</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">x_out</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outlet_isentropic</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outlet_isentropic</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">],</span> <span class="n">x_out</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outlet</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;T&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">T</span><span class="p">(),</span>
+            <span class="s2">&quot;p&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">p</span><span class="p">(),</span>
+            <span class="s2">&quot;hmass&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">hmass</span><span class="p">(),</span>
+            <span class="s2">&quot;smass&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">smass</span><span class="p">(),</span>
+            <span class="s2">&quot;rhomass&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">rhomass</span><span class="p">(),</span>
+            <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">viscosity</span><span class="p">(),</span>
+            <span class="s2">&quot;speed_sound&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">speed_sound</span><span class="p">(),</span>
+        <span class="p">}</span>
+        <span class="c1"># Calculate and return the residual based on the machine&#39;s specific model</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">CoolProp_solve_outlet_fixed_P</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">mass_flow</span><span class="p">,</span> <span class="n">p_in</span><span class="p">,</span> <span class="n">T_in</span><span class="p">,</span> <span class="n">p_out</span><span class="p">,</span> <span class="n">iterate_on_enthalpy</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Solves for the outlet state given inlet conditions, outlet pressure,</span>
+<span class="sd">        and mass flow rate using CoolProp for fluid properties.</span>
+<span class="sd">        This method implements the numerical solution procedure described in</span>
+<span class="sd">        Section 4 of Parisi et al.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            mass_flow (float): Mass flow rate (kg/s).</span>
+<span class="sd">            p_in (float): Inlet total pressure (Pa).</span>
+<span class="sd">            T_in (float): Inlet total temperature (K).</span>
+<span class="sd">            p_out (float): Outlet total pressure (Pa).</span>
+<span class="sd">            iterate_on_enthalpy (bool): Use outlet enthalpy to compute state. If False, use temperature instead.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_iterate_on_enthalpy</span> <span class="o">=</span> <span class="n">iterate_on_enthalpy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass_flow</span> <span class="o">=</span> <span class="n">mass_flow</span>
+        <span class="c1"># Set inlet conditions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p_in</span><span class="p">,</span> <span class="n">T_in</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inlet</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;T&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">T</span><span class="p">(),</span>
+            <span class="s2">&quot;p&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">p</span><span class="p">(),</span>
+            <span class="s2">&quot;hmass&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">hmass</span><span class="p">(),</span>
+            <span class="s2">&quot;smass&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">smass</span><span class="p">(),</span>
+            <span class="s2">&quot;rhomass&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">rhomass</span><span class="p">(),</span>
+            <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">viscosity</span><span class="p">(),</span>
+            <span class="s2">&quot;speed_sound&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">speed_sound</span><span class="p">(),</span>
+        <span class="p">}</span>
+        <span class="c1"># Calculate isentropic outlet conditions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">PSmass_INPUTS</span><span class="p">,</span> <span class="n">p_out</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inlet</span><span class="p">[</span><span class="s2">&quot;smass&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outlet_isentropic</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;T&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">T</span><span class="p">(),</span>
+            <span class="s2">&quot;p&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">p</span><span class="p">(),</span>
+            <span class="s2">&quot;hmass&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">hmass</span><span class="p">(),</span>
+            <span class="s2">&quot;smass&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">smass</span><span class="p">(),</span>
+            <span class="s2">&quot;rhomass&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">rhomass</span><span class="p">(),</span>
+            <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">viscosity</span><span class="p">(),</span>
+            <span class="s2">&quot;speed_sound&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">speed_sound</span><span class="p">(),</span>
+        <span class="p">}</span>
+        <span class="c1"># Set bounds for Brent&#39;s method</span>
+        <span class="k">if</span> <span class="n">iterate_on_enthalpy</span><span class="p">:</span>
+            <span class="n">x_low</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outlet_isentropic</span><span class="p">[</span><span class="s2">&quot;hmass&quot;</span><span class="p">]</span>
+            <span class="n">x_in</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inlet</span><span class="p">[</span><span class="s2">&quot;hmass&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x_low</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outlet_isentropic</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span>
+            <span class="n">x_in</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inlet</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span>
+        <span class="c1"># Determine  bounds for iteration based on machine type</span>
+        <span class="k">if</span> <span class="n">p_out</span> <span class="o">&lt;</span> <span class="n">p_in</span><span class="p">:</span>  <span class="c1"># turbine -&gt; real hmass or T is between inlet and isentropic</span>
+            <span class="n">x_high</span> <span class="o">=</span> <span class="n">x_in</span> <span class="o">+</span> <span class="p">(</span><span class="n">x_low</span> <span class="o">-</span> <span class="n">x_in</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;K_loweff&quot;</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># compressor -&gt; real hmass or T goes to inf as efficiency goes to 0</span>
+            <span class="n">x_high</span> <span class="o">=</span> <span class="n">x_in</span> <span class="o">+</span> <span class="p">(</span><span class="n">x_low</span> <span class="o">-</span> <span class="n">x_in</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">[</span><span class="s2">&quot;K_loweff&quot;</span><span class="p">]</span>
+
+        <span class="n">x_out_solution</span><span class="p">,</span> <span class="n">result</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">brentq</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_CoolProp_iterate_outlet_fixed_P</span><span class="p">,</span> <span class="n">x_low</span><span class="p">,</span> <span class="n">x_high</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">residual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_CoolProp_iterate_outlet_fixed_P</span><span class="p">(</span><span class="n">x_out_solution</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">converged</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;The root finding algorithm failed to find an outlet state that satisfies the efficiency correlation. Final resiudal: </span><span class="si">{residual:.2e}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_output_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a copy of the calculated performance data.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="CentrifugalCompressor">
+<a class="viewcode-back" href="../../../source/api/thermopt.components.turbomachinery_nondimensional.html#thermopt.components.turbomachinery_nondimensional.CentrifugalCompressor">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CentrifugalCompressor</span><span class="p">(</span><span class="n">_Machine</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Non-dimensional model for centrifugal compressors.</span>
+<span class="sd">    Based on Section 3.2 of Parisi et al.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_in</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;flow_coefficient&quot;</span><span class="p">:</span> <span class="mf">0.07</span><span class="p">,</span>  <span class="c1"># phi</span>
+            <span class="s2">&quot;backsweep&quot;</span><span class="p">:</span> <span class="mf">40.0</span><span class="p">,</span>  <span class="c1"># theta (degrees)</span>
+            <span class="s2">&quot;is_shrouded&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">&quot;has_vaned&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;roughness&quot;</span><span class="p">:</span> <span class="mf">3.6e-6</span><span class="p">,</span>  <span class="c1"># R_a (m)</span>
+            <span class="s2">&quot;clearance_height_ratio&quot;</span><span class="p">:</span> <span class="mf">0.02</span><span class="p">,</span>  <span class="c1"># (epsilon/b_2)</span>
+            <span class="s2">&quot;metal_density&quot;</span><span class="p">:</span> <span class="mi">7800</span><span class="p">,</span>  <span class="c1"># rho_metal (kg/m^3)</span>
+            <span class="s2">&quot;d_eta_other&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;diameter&quot;</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">,</span>  <span class="c1"># D_ref (m)</span>
+            <span class="s2">&quot;peripheral_speed&quot;</span><span class="p">:</span> <span class="mi">277</span><span class="p">,</span>  <span class="c1"># U_ref (m/s)</span>
+            <span class="s2">&quot;roughness&quot;</span><span class="p">:</span> <span class="mf">3.6e-6</span><span class="p">,</span>  <span class="c1"># R_a_ref (m)</span>
+            <span class="s2">&quot;clearance_height_ratio&quot;</span><span class="p">:</span> <span class="mf">0.02</span><span class="p">,</span>  <span class="c1"># (epsilon/b_2)</span>
+            <span class="s2">&quot;kinematic_viscosity&quot;</span><span class="p">:</span> <span class="mf">15.7e-6</span><span class="p">,</span>  <span class="c1"># nu_ref (m^2/s)</span>
+            <span class="s2">&quot;K_loweff&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+            <span class="s2">&quot;K_stress_unshrouded&quot;</span><span class="p">:</span> <span class="mf">0.41</span><span class="p">,</span>
+            <span class="s2">&quot;K_stress_shrouded_1&quot;</span><span class="p">:</span> <span class="mf">0.67</span><span class="p">,</span>
+            <span class="s2">&quot;K_stress_shrouded_2&quot;</span><span class="p">:</span> <span class="mf">0.75</span><span class="p">,</span>
+            <span class="s2">&quot;phi_stress_shrouded_1&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span>
+            <span class="s2">&quot;phi_stress_shrouded_2&quot;</span><span class="p">:</span> <span class="mf">0.12</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass_flow</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inlet</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;T&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;p&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;hmass&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;smass&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;rhomass&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;speed_sound&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outlet</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;T&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;p&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;hmass&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;smass&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;rhomass&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;speed_sound&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="CentrifugalCompressor.residual">
+<a class="viewcode-back" href="../../../source/api/thermopt.components.turbomachinery_nondimensional.html#thermopt.components.turbomachinery_nondimensional.CentrifugalCompressor.residual">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">residual</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inlet</span>
+        <span class="n">o</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outlet</span>
+        <span class="c1"># compute polytropic head and efficiency</span>
+        <span class="n">dh</span> <span class="o">=</span> <span class="n">o</span><span class="p">[</span><span class="s2">&quot;hmass&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;hmass&quot;</span><span class="p">]</span>
+        <span class="n">dh_is</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outlet_isentropic</span><span class="p">[</span><span class="s2">&quot;hmass&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;hmass&quot;</span><span class="p">]</span>
+        <span class="n">dh_p</span> <span class="o">=</span> <span class="n">dh</span> <span class="o">-</span> <span class="p">(</span><span class="n">o</span><span class="p">[</span><span class="s2">&quot;smass&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;smass&quot;</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">o</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="n">log</span><span class="p">(</span><span class="n">o</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">])</span>
+        <span class="n">eta_therm</span> <span class="o">=</span> <span class="n">dh_p</span> <span class="o">/</span> <span class="n">dh</span>
+        <span class="n">eta_is</span> <span class="o">=</span> <span class="n">dh_is</span> <span class="o">/</span> <span class="n">dh</span>
+        <span class="c1"># import primary parameters</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_in</span><span class="p">[</span><span class="s2">&quot;flow_coefficient&quot;</span><span class="p">]</span>  <span class="c1"># flow coefficient</span>
+        <span class="n">th</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_in</span><span class="p">[</span><span class="s2">&quot;backsweep&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">phi</span> <span class="o">&lt;</span> <span class="mf">1e-4</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The selected value for the flow coefficient is &lt;1e-4, this is outside the correlation range and will cause errors in the code&quot;</span>
+            <span class="p">)</span>
+        <span class="c1"># baseline correlation</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_in</span><span class="p">[</span><span class="s2">&quot;is_shrouded&quot;</span><span class="p">]:</span>
+            <span class="n">k1</span> <span class="o">=</span> <span class="o">+</span><span class="mf">0.62</span>
+            <span class="n">k2</span> <span class="o">=</span> <span class="o">-</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">*</span> <span class="mf">0.4</span>
+            <span class="n">k3</span> <span class="o">=</span> <span class="o">+</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">*</span> <span class="mf">0.0014</span>
+            <span class="n">k4</span> <span class="o">=</span> <span class="o">+</span><span class="mf">0.51</span>
+            <span class="n">k5</span> <span class="o">=</span> <span class="o">+</span><span class="mi">4</span> <span class="o">/</span> <span class="n">pi</span> <span class="o">*</span> <span class="mf">1.0</span>
+            <span class="n">k6</span> <span class="o">=</span> <span class="o">-</span><span class="p">((</span><span class="mi">4</span> <span class="o">/</span> <span class="n">pi</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mf">7.6</span>
+            <span class="n">k7</span> <span class="o">=</span> <span class="o">-</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">*</span> <span class="mf">0.00025</span>
+            <span class="n">phi_clipped</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">[</span><span class="s2">&quot;K_stress_shrouded_phi1&quot;</span><span class="p">],</span>
+                <span class="nb">min</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">[</span><span class="s2">&quot;K_stress_shrouded_phi2&quot;</span><span class="p">]),</span>
+            <span class="p">)</span>
+            <span class="n">Kstress</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">[</span><span class="s2">&quot;K_stress_shrouded_1&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">[</span><span class="s2">&quot;K_stress_shrouded_2&quot;</span><span class="p">]</span>
+                <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">[</span><span class="s2">&quot;K_stress_shrouded_1&quot;</span><span class="p">]</span>
+            <span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">phi_clipped</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">[</span><span class="s2">&quot;phi_stress_shrouded_1&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">[</span><span class="s2">&quot;phi_stress_shrouded_2&quot;</span><span class="p">]</span>
+                <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">[</span><span class="s2">&quot;phi_stress_shrouded_1&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># unshrouded</span>
+            <span class="n">k1</span> <span class="o">=</span> <span class="o">+</span><span class="mf">0.68</span>
+            <span class="n">k2</span> <span class="o">=</span> <span class="o">-</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">*</span> <span class="mf">0.37</span>
+            <span class="n">k3</span> <span class="o">=</span> <span class="o">+</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">*</span> <span class="mf">0.002</span>
+            <span class="n">k4</span> <span class="o">=</span> <span class="o">+</span><span class="mf">0.59</span>
+            <span class="n">k5</span> <span class="o">=</span> <span class="o">+</span><span class="mi">4</span> <span class="o">/</span> <span class="n">pi</span> <span class="o">*</span> <span class="mf">0.7</span>
+            <span class="n">k6</span> <span class="o">=</span> <span class="o">-</span><span class="p">((</span><span class="mi">4</span> <span class="o">/</span> <span class="n">pi</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mf">7.5</span>
+            <span class="n">k7</span> <span class="o">=</span> <span class="o">-</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">*</span> <span class="mf">0.00025</span>
+            <span class="n">Kstress</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">[</span><span class="s2">&quot;K_stress_unshrouded&quot;</span><span class="p">]</span>
+        <span class="n">I_ref</span> <span class="o">=</span> <span class="n">k1</span> <span class="o">+</span> <span class="p">(</span><span class="n">phi</span> <span class="o">/</span> <span class="n">k2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">+</span> <span class="n">k3</span> <span class="o">/</span> <span class="n">phi</span>
+        <span class="n">Ip_vaned</span> <span class="o">=</span> <span class="n">k4</span> <span class="o">+</span> <span class="n">k5</span> <span class="o">*</span> <span class="n">phi</span> <span class="o">+</span> <span class="n">k6</span> <span class="o">*</span> <span class="n">phi</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">k7</span> <span class="o">/</span> <span class="n">phi</span>
+        <span class="n">eta_vaned</span> <span class="o">=</span> <span class="n">Ip_vaned</span> <span class="o">/</span> <span class="n">I_ref</span>
+        <span class="c1"># vaneless correction</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_in</span><span class="p">[</span><span class="s2">&quot;has_vaned&quot;</span><span class="p">]:</span>
+            <span class="n">eta_base</span> <span class="o">=</span> <span class="n">eta_vaned</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">eta_base</span> <span class="o">=</span> <span class="n">eta_vaned</span> <span class="o">-</span> <span class="mf">0.017</span> <span class="o">/</span> <span class="p">(</span><span class="mf">0.04</span> <span class="o">+</span> <span class="p">(</span><span class="mi">20</span> <span class="o">/</span> <span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">phi</span> <span class="o">+</span> <span class="n">eta_vaned</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>
+        <span class="c1"># work coefficient corrrection</span>
+        <span class="n">th_limited</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">th</span><span class="p">,</span> <span class="mf">40.0</span><span class="p">)</span>
+        <span class="n">d_eta_th</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.0006</span> <span class="o">*</span> <span class="p">(</span><span class="mf">40.0</span> <span class="o">-</span> <span class="n">th_limited</span><span class="p">)</span>
+        <span class="n">I</span> <span class="o">=</span> <span class="n">I_ref</span> <span class="o">+</span> <span class="p">(</span><span class="mf">0.004</span> <span class="o">+</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="n">phi</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">40.0</span> <span class="o">-</span> <span class="n">th_limited</span><span class="p">)</span>
+
+        <span class="c1"># Peripheral speed, Diameter, Mach</span>
+        <span class="n">U</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">dh</span> <span class="o">/</span> <span class="n">I</span><span class="p">)</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mass_flow</span> <span class="o">/</span> <span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s2">&quot;rhomass&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">phi</span> <span class="o">*</span> <span class="n">U</span><span class="p">))</span>
+        <span class="n">Ma_u</span> <span class="o">=</span> <span class="n">U</span> <span class="o">/</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;speed_sound&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Mach correction</span>
+        <span class="n">P_Ma</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">phi</span> <span class="o">*</span> <span class="p">(</span><span class="n">Ma_u</span> <span class="o">-</span> <span class="mf">0.8</span><span class="p">))</span>
+        <span class="n">d_eta_Ma</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="mf">0.05</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">P_Ma</span><span class="p">)</span> <span class="o">*</span> <span class="n">P_Ma</span>
+
+        <span class="c1"># Reynolds number correction calculations</span>
+        <span class="c1"># Relative velocity w/U</span>
+        <span class="n">w_over_U</span> <span class="o">=</span> <span class="mf">0.42</span> <span class="o">+</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">phi</span> <span class="o">-</span> <span class="mi">14</span> <span class="o">*</span> <span class="n">phi</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">w_over_U</span> <span class="o">*</span> <span class="n">U</span>
+        <span class="c1"># Diameter-to-chord ratio D/c</span>
+        <span class="n">Dc_ref</span> <span class="o">=</span> <span class="mf">1.1</span> <span class="o">+</span> <span class="mi">22</span> <span class="o">*</span> <span class="n">phi</span>
+        <span class="k">if</span> <span class="n">th</span> <span class="o">&lt;</span> <span class="mf">40.0</span><span class="p">:</span>
+            <span class="n">Dc</span> <span class="o">=</span> <span class="n">Dc_ref</span> <span class="o">+</span> <span class="mf">0.01</span> <span class="o">*</span> <span class="p">(</span><span class="mf">40.0</span> <span class="o">-</span> <span class="n">th</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Dc</span> <span class="o">=</span> <span class="n">Dc_ref</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">D</span> <span class="o">/</span> <span class="n">Dc</span>
+        <span class="n">ksc</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_in</span><span class="p">[</span><span class="s2">&quot;roughness&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="n">c</span>
+        <span class="n">c_ref</span> <span class="o">=</span> <span class="n">c</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">[</span><span class="s2">&quot;diameter&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">D</span><span class="p">)</span>
+        <span class="c1"># Relative roughness k_s/c</span>
+        <span class="n">ksc_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">[</span><span class="s2">&quot;roughness&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">c_ref</span>
+
+        <span class="c1"># Reynolds number and friction factor</span>
+        <span class="n">kinematic_viscosity</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;viscosity&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;rhomass&quot;</span><span class="p">]</span>
+        <span class="n">Re</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">c</span> <span class="o">/</span> <span class="n">kinematic_viscosity</span>
+        <span class="c1"># The reference Reynolds number is indirectly a function of phi,</span>
+        <span class="c1"># because it depends on U, therefore it is calculated by scaling</span>
+        <span class="c1"># with the length and peripeheral speed in the machine</span>
+        <span class="n">Re_ref</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Re</span>
+            <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">[</span><span class="s2">&quot;diameter&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">D</span><span class="p">)</span>
+            <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">[</span><span class="s2">&quot;peripheral_speed&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">U</span><span class="p">)</span>
+            <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">[</span><span class="s2">&quot;kinematic_viscosity&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">kinematic_viscosity</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">f</span> <span class="o">=</span> <span class="n">friction_factor</span><span class="p">(</span><span class="n">Re</span><span class="p">,</span> <span class="n">ksc</span><span class="p">)</span>
+        <span class="n">f_ref</span> <span class="o">=</span> <span class="n">friction_factor</span><span class="p">(</span><span class="n">Re_ref</span><span class="p">,</span> <span class="n">ksc_ref</span><span class="p">)</span>
+        <span class="c1"># Reynolds number correction</span>
+        <span class="n">d_eta_Re</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="mf">0.05</span> <span class="o">+</span> <span class="mf">0.002</span> <span class="o">/</span> <span class="p">(</span><span class="n">phi</span> <span class="o">+</span> <span class="mf">0.0025</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">f</span> <span class="o">-</span> <span class="n">f_ref</span><span class="p">)</span> <span class="o">/</span> <span class="n">f_ref</span>
+
+        <span class="c1"># Clearance correction</span>
+        <span class="n">d_eta_cl</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_in</span><span class="p">[</span><span class="s2">&quot;clearance_height_ratio&quot;</span><span class="p">]</span>
+            <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">[</span><span class="s2">&quot;clearance_height_ratio&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">eta_corr</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">eta_base</span>
+            <span class="o">+</span> <span class="n">d_eta_th</span>
+            <span class="o">+</span> <span class="n">d_eta_Ma</span>
+            <span class="o">+</span> <span class="n">d_eta_Re</span>
+            <span class="o">+</span> <span class="n">d_eta_cl</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_in</span><span class="p">[</span><span class="s2">&quot;d_eta_other&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">residual</span> <span class="o">=</span> <span class="n">eta_corr</span> <span class="o">-</span> <span class="n">eta_therm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;correlation_efficiency&quot;</span><span class="p">:</span> <span class="n">eta_corr</span><span class="p">,</span>
+            <span class="s2">&quot;polytropic_efficiency&quot;</span><span class="p">:</span> <span class="n">eta_therm</span><span class="p">,</span>
+            <span class="s2">&quot;isentropic_efficiency&quot;</span><span class="p">:</span> <span class="n">eta_is</span><span class="p">,</span>
+            <span class="s2">&quot;power&quot;</span><span class="p">:</span> <span class="n">dh</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_flow</span><span class="p">,</span>
+            <span class="s2">&quot;diameter&quot;</span><span class="p">:</span> <span class="n">D</span><span class="p">,</span>
+            <span class="s2">&quot;peripheral_speed&quot;</span><span class="p">:</span> <span class="n">U</span><span class="p">,</span>
+            <span class="s2">&quot;angular_speed&quot;</span><span class="p">:</span> <span class="n">U</span> <span class="o">/</span> <span class="p">(</span><span class="n">D</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="s2">&quot;mechanical_stress&quot;</span><span class="p">:</span> <span class="n">Kstress</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_in</span><span class="p">[</span><span class="s2">&quot;metal_density&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">U</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">residual</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="RadialTurbine">
+<a class="viewcode-back" href="../../../source/api/thermopt.components.turbomachinery_nondimensional.html#thermopt.components.turbomachinery_nondimensional.RadialTurbine">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RadialTurbine</span><span class="p">(</span><span class="n">_Machine</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Non-dimensional model for radial inflow turbines.</span>
+<span class="sd">    Based on Section 3.3 of Parisi et al.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_in</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;specific_speed&quot;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span>  <span class="c1"># oms</span>
+            <span class="s2">&quot;is_scalloped&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1">#</span>
+            <span class="s2">&quot;diffuser_loss_fraction&quot;</span><span class="p">:</span> <span class="mf">0.35</span><span class="p">,</span>  <span class="c1"># chi</span>
+            <span class="s2">&quot;clearance_height_ratio&quot;</span><span class="p">:</span> <span class="mf">0.02</span><span class="p">,</span>  <span class="c1"># epsilon/b</span>
+            <span class="s2">&quot;metal_density&quot;</span><span class="p">:</span> <span class="mi">7800</span><span class="p">,</span>  <span class="c1"># rho_metal (kg/m^3)</span>
+            <span class="s2">&quot;d_eta_other&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;clearance_height_ratio&quot;</span><span class="p">:</span> <span class="mf">0.02</span><span class="p">,</span>  <span class="c1"># epsilon/b</span>
+            <span class="s2">&quot;Reynolds&quot;</span><span class="p">:</span> <span class="mf">352000.0</span><span class="p">,</span>  <span class="c1"># Re_ref</span>
+            <span class="s2">&quot;K_loweff&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+            <span class="s2">&quot;K_stress_unshrouded&quot;</span><span class="p">:</span> <span class="mf">0.35</span><span class="p">,</span>
+            <span class="s2">&quot;K_stress_scalloped&quot;</span><span class="p">:</span> <span class="mf">0.15</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass_flow</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inlet</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;T&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;p&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;hmass&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;smass&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;rhomass&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;speed_sound&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outlet</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;T&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;p&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;hmass&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;smass&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;rhomass&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;speed_sound&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outlet_isentropic</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;T&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;p&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;hmass&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;smass&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;rhomass&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;speed_sound&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rotor_outlet_static</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;T&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;p&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;hmass&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;smass&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;rhomass&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;speed_sound&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="RadialTurbine.compute_rotor_outlet_static">
+<a class="viewcode-back" href="../../../source/api/thermopt.components.turbomachinery_nondimensional.html#thermopt.components.turbomachinery_nondimensional.RadialTurbine.compute_rotor_outlet_static">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_rotor_outlet_static</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hmass</span><span class="p">,</span> <span class="n">smass</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper function to compute and store rotor outlet static conditions.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">HmassSmass_INPUTS</span><span class="p">,</span> <span class="n">hmass</span><span class="p">,</span> <span class="n">smass</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rotor_outlet_static</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;T&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">T</span><span class="p">(),</span>
+            <span class="s2">&quot;p&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">p</span><span class="p">(),</span>
+            <span class="s2">&quot;hmass&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">hmass</span><span class="p">(),</span>
+            <span class="s2">&quot;smass&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">smass</span><span class="p">(),</span>
+            <span class="s2">&quot;rhomass&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">rhomass</span><span class="p">(),</span>
+            <span class="s2">&quot;viscosity&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">viscosity</span><span class="p">(),</span>
+            <span class="s2">&quot;speed_sound&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluid</span><span class="o">.</span><span class="n">speed_sound</span><span class="p">(),</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="RadialTurbine.residual">
+<a class="viewcode-back" href="../../../source/api/thermopt.components.turbomachinery_nondimensional.html#thermopt.components.turbomachinery_nondimensional.RadialTurbine.residual">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">residual</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inlet</span>
+        <span class="n">o</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outlet</span>
+        <span class="c1"># compute polytropic head and efficiency</span>
+        <span class="n">dh</span> <span class="o">=</span> <span class="n">o</span><span class="p">[</span><span class="s2">&quot;hmass&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;hmass&quot;</span><span class="p">]</span>
+        <span class="n">dh_is</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outlet_isentropic</span><span class="p">[</span><span class="s2">&quot;hmass&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;hmass&quot;</span><span class="p">]</span>
+        <span class="n">dh_p</span> <span class="o">=</span> <span class="n">dh</span> <span class="o">-</span> <span class="p">(</span><span class="n">o</span><span class="p">[</span><span class="s2">&quot;smass&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;smass&quot;</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">o</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="n">log</span><span class="p">(</span><span class="n">o</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">])</span>
+        <span class="n">eta_therm</span> <span class="o">=</span> <span class="n">dh</span> <span class="o">/</span> <span class="n">dh_is</span>
+        <span class="n">eta_p</span> <span class="o">=</span> <span class="n">dh</span> <span class="o">/</span> <span class="n">dh_p</span>
+        <span class="c1"># import primary parameters</span>
+        <span class="n">oms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_in</span><span class="p">[</span><span class="s2">&quot;specific_speed&quot;</span><span class="p">]</span>
+        <span class="c1"># baseline correlation</span>
+        <span class="n">eta_base</span> <span class="o">=</span> <span class="mf">0.93</span> <span class="o">-</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="p">(</span><span class="n">oms</span> <span class="o">-</span> <span class="mf">0.6</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">oms</span> <span class="o">-</span> <span class="mf">0.6</span><span class="p">)</span> <span class="o">**</span> <span class="mi">3</span>
+        <span class="k">if</span> <span class="n">oms</span> <span class="o">&lt;</span> <span class="mf">0.45</span><span class="p">:</span>
+            <span class="n">eta_base</span> <span class="o">-=</span> <span class="mf">4.2</span> <span class="o">*</span> <span class="p">(</span><span class="n">oms</span> <span class="o">-</span> <span class="mf">0.45</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">kappa_rot</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.02</span> <span class="o">+</span> <span class="mf">0.08</span> <span class="o">*</span> <span class="n">oms</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="n">oms</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span>
+        <span class="c1"># Clearance correction</span>
+        <span class="n">d_eta_cl</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="o">-</span><span class="mf">1.15</span>
+            <span class="o">*</span> <span class="n">eta_base</span>
+            <span class="o">*</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data_in</span><span class="p">[</span><span class="s2">&quot;clearance_height_ratio&quot;</span><span class="p">]</span>
+                <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">[</span><span class="s2">&quot;clearance_height_ratio&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="c1"># Scallop correction</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_in</span><span class="p">[</span><span class="s2">&quot;is_scalloped&quot;</span><span class="p">]:</span>
+            <span class="n">d_eta_scal</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.03</span>
+            <span class="n">Kstress</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">[</span><span class="s2">&quot;K_stress_scalloped&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">d_eta_scal</span> <span class="o">=</span> <span class="mf">0.00</span>
+            <span class="n">Kstress</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">[</span><span class="s2">&quot;K_stress_unshrouded&quot;</span><span class="p">]</span>
+
+        <span class="c1"># overall efficiency</span>
+        <span class="n">eta_rot</span> <span class="o">=</span> <span class="n">eta_base</span> <span class="o">+</span> <span class="n">d_eta_cl</span> <span class="o">+</span> <span class="n">d_eta_scal</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_in</span><span class="p">[</span><span class="s2">&quot;d_eta_other&quot;</span><span class="p">]</span>
+        <span class="n">eta_overall</span> <span class="o">=</span> <span class="n">eta_rot</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_in</span><span class="p">[</span><span class="s2">&quot;diffuser_loss_fraction&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">kappa_rot</span><span class="p">)</span>
+        <span class="c1"># Peripheral speed, Diameter, Mach</span>
+        <span class="n">nu</span> <span class="o">=</span> <span class="mf">0.7</span>
+        <span class="n">dh_rot_is</span> <span class="o">=</span> <span class="n">dh_is</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_in</span><span class="p">[</span><span class="s2">&quot;diffuser_loss_fraction&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">kappa_rot</span><span class="p">)</span>
+        <span class="n">s_rot</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;smass&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">o</span><span class="p">[</span><span class="s2">&quot;smass&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;smass&quot;</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">eta_rot</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
+            <span class="mi">1</span> <span class="o">/</span> <span class="n">eta_overall</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="p">)</span>
+        <span class="n">h_rot_static</span> <span class="o">=</span> <span class="n">o</span><span class="p">[</span><span class="s2">&quot;hmass&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">kappa_rot</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dh_rot_is</span><span class="p">)</span>
+        <span class="n">s_rot_static</span> <span class="o">=</span> <span class="n">s_rot</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compute_rotor_outlet_static</span><span class="p">(</span><span class="n">h_rot_static</span><span class="p">,</span> <span class="n">s_rot</span><span class="p">)</span>
+        <span class="n">U</span> <span class="o">=</span> <span class="n">nu</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="n">dh_rot_is</span><span class="p">))</span>
+        <span class="n">om</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">oms</span>
+            <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="n">dh_rot_is</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.75</span>
+            <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mass_flow</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotor_outlet_static</span><span class="p">[</span><span class="s2">&quot;rhomass&quot;</span><span class="p">])</span> <span class="o">**</span> <span class="mf">0.5</span>
+        <span class="p">)</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">U</span> <span class="o">/</span> <span class="n">om</span>
+        <span class="n">Re</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_flow</span> <span class="o">/</span> <span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s2">&quot;viscosity&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">D</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># Re correction</span>
+        <span class="n">eta_corr</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">eta_overall</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="mf">0.3</span> <span class="o">+</span> <span class="mf">0.7</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Re</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">[</span><span class="s2">&quot;Reynolds&quot;</span><span class="p">])</span> <span class="o">**</span> <span class="o">-</span><span class="mf">0.2</span>
+        <span class="p">)</span>
+
+        <span class="n">residual</span> <span class="o">=</span> <span class="n">eta_corr</span> <span class="o">-</span> <span class="n">eta_therm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;correlation_efficiency&quot;</span><span class="p">:</span> <span class="n">eta_corr</span><span class="p">,</span>
+            <span class="s2">&quot;polytropic_efficiency&quot;</span><span class="p">:</span> <span class="n">eta_p</span><span class="p">,</span>
+            <span class="s2">&quot;isentropic_efficiency&quot;</span><span class="p">:</span> <span class="n">eta_therm</span><span class="p">,</span>
+            <span class="s2">&quot;power&quot;</span><span class="p">:</span> <span class="o">-</span><span class="n">dh</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_flow</span><span class="p">,</span>
+            <span class="s2">&quot;diameter&quot;</span><span class="p">:</span> <span class="n">D</span><span class="p">,</span>
+            <span class="s2">&quot;peripheral_speed&quot;</span><span class="p">:</span> <span class="n">U</span><span class="p">,</span>
+            <span class="s2">&quot;angular_speed&quot;</span><span class="p">:</span> <span class="n">om</span><span class="p">,</span>
+            <span class="s2">&quot;mechanical_stress&quot;</span><span class="p">:</span> <span class="n">Kstress</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_in</span><span class="p">[</span><span class="s2">&quot;metal_density&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">U</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">residual</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Roberto Agromayor
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Sustainable Thermal Power DTU.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

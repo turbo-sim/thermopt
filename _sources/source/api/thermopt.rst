@@ -6,22 +6,24 @@ API Reference
    :undoc-members:
    :show-inheritance:
 
-Subpackages
------------
-
-.. toctree::
-   :maxdepth: 4
-
-   thermopt.cycles
-   thermopt.properties
-   thermopt.pysolver_view
-   thermopt.utilities
-
 Submodules
 ----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
+   thermopt.optimize_cycle
    thermopt.config
    thermopt.math
+
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 1
+
+   thermopt.cycles
+   thermopt.components
+   thermopt.utilities
+

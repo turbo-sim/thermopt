@@ -2,9 +2,6 @@
 Welcome to thermopt's documentation!
 =====================================
 
-.. module:: thermopt
-   :synopsis: A Python package for the modeling and optimization of thermodynamic cycles.
-
 ``ThermoOpt`` is a Python package for the modeling and optimization of thermodynamic cycles.
 
 Thermodynamic properties are computed using the CoolProp library.
