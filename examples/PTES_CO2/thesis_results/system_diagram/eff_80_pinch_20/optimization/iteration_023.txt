@@ -1,0 +1,185 @@
+
+--------------------------------------------------------------------------------
+ Karush-Kuhn-Tucker (KKT) conditions            Value          Target       Ok?
+--------------------------------------------------------------------------------
+ First order optimality                    +2.165e-01    < +5.000e-06        no
+ Equality feasibility                      +8.750e-04    < +5.000e-06        no
+ Inequality feasibility                    +9.626e-03    < +5.000e-06        no
+ Dual feasibility                          -4.157e-02    > -5.000e-06        no
+ Complementary slackness                   +4.962e-15    < +5.000e-06       yes
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+ Optimization variables report (normalized values)                              
+--------------------------------------------------------------------------------
+ Variable name                                  Lower        Value        Upper
+--------------------------------------------------------------------------------
+ hot_storage_upper_temperature                 0.0000       9.8208      10.0000
+ hot_storage_lower_temperature                 0.0000       6.9248      10.0000
+ cold_storage_upper_temperature                0.0000       6.5830      10.0000
+ cold_storage_lower_temperature                0.0000       5.5830      10.0000
+ ...storage_upper_temperature_discharge        0.0000       3.4054      10.0000
+ compressor_inlet_pressure_charge              0.0000       0.0000      10.0000
+ compressor_inlet_enthalpy_charge              0.0000       2.5812      10.0000
+ expander_inlet_pressure_charge                0.0000      10.0000      10.0000
+ expander_inlet_enthalpy_charge                0.0000       7.1927      10.0000
+ recuperator_inlet_enthalpy_hot_charge         0.0000       3.3229      10.0000
+ compressor_inlet_pressure_discharge           0.0000       0.5756      10.0000
+ compressor_inlet_enthalpy_discharge           0.0000       6.5251      10.0000
+ expander_inlet_pressure_discharge             0.0000       9.9858      10.0000
+ expander_inlet_enthalpy_discharge             0.0000       4.2527      10.0000
+ ...rator_outlet_enthalpy_hot_discharge        0.0000       1.9106      10.0000
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+ Optimization variables report (physical values)                                
+--------------------------------------------------------------------------------
+ Variable name                                  Lower        Value        Upper
+--------------------------------------------------------------------------------
+ hot_storage_upper_temperature              4.731e+02    8.660e+02    8.731e+02
+ hot_storage_lower_temperature              2.731e+02    6.886e+02    8.731e+02
+ cold_storage_upper_temperature             2.231e+02    3.548e+02    4.231e+02
+ cold_storage_lower_temperature             2.231e+02    3.348e+02    4.231e+02
+ ...storage_upper_temperature_discharge     2.231e+02    4.445e+02    8.731e+02
+ compressor_inlet_pressure_charge           8.853e+06    8.853e+06    2.213e+07
+ compressor_inlet_enthalpy_charge           4.984e+05    8.843e+05    1.993e+06
+ expander_inlet_pressure_charge             5.698e+05    3.000e+07    3.000e+07
+ expander_inlet_enthalpy_charge             1.661e+05    4.051e+05    4.984e+05
+ recuperator_inlet_enthalpy_hot_charge      3.322e+05    8.843e+05    1.993e+06
+ compressor_inlet_pressure_discharge        8.853e+06    9.617e+06    2.213e+07
+ compressor_inlet_enthalpy_discharge        1.661e+05    4.790e+05    6.456e+05
+ expander_inlet_pressure_discharge          8.115e+06    2.997e+07    3.000e+07
+ expander_inlet_enthalpy_discharge          3.655e+05    1.058e+06    1.993e+06
+ ...rator_outlet_enthalpy_hot_discharge     3.322e+05    6.496e+05    1.993e+06
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+ Optimization constraints report                                                
+--------------------------------------------------------------------------------
+ Constraint name                                       Value       Target   Ok?
+--------------------------------------------------------------------------------
+ ...nents.heater_charge.temperature_difference[0]  +1.99e+01  > +2.00e+01    no
+ ...nents.heater_charge.temperature_difference[1]  +2.08e+01  > +2.00e+01   yes
+ ...nents.heater_charge.temperature_difference[2]  +2.16e+01  > +2.00e+01   yes
+ ...nents.heater_charge.temperature_difference[3]  +2.25e+01  > +2.00e+01   yes
+ ...nents.heater_charge.temperature_difference[4]  +2.33e+01  > +2.00e+01   yes
+ ...nents.heater_charge.temperature_difference[5]  +2.42e+01  > +2.00e+01   yes
+ ...nents.heater_charge.temperature_difference[6]  +2.50e+01  > +2.00e+01   yes
+ ...nents.heater_charge.temperature_difference[7]  +2.58e+01  > +2.00e+01   yes
+ ...nents.heater_charge.temperature_difference[8]  +2.66e+01  > +2.00e+01   yes
+ ...nents.heater_charge.temperature_difference[9]  +2.74e+01  > +2.00e+01   yes
+ ...ents.heater_charge.temperature_difference[10]  +2.82e+01  > +2.00e+01   yes
+ ...ents.heater_charge.temperature_difference[11]  +2.90e+01  > +2.00e+01   yes
+ ...ents.heater_charge.temperature_difference[12]  +2.98e+01  > +2.00e+01   yes
+ ...ents.heater_charge.temperature_difference[13]  +3.05e+01  > +2.00e+01   yes
+ ...ents.heater_charge.temperature_difference[14]  +3.13e+01  > +2.00e+01   yes
+ ...ents.heater_charge.temperature_difference[15]  +3.20e+01  > +2.00e+01   yes
+ ...ents.heater_charge.temperature_difference[16]  +3.28e+01  > +2.00e+01   yes
+ ...ents.heater_charge.temperature_difference[17]  +3.35e+01  > +2.00e+01   yes
+ ...ents.heater_charge.temperature_difference[18]  +3.42e+01  > +2.00e+01   yes
+ ...ents.heater_charge.temperature_difference[19]  +3.48e+01  > +2.00e+01   yes
+ ...nents.cooler_charge.temperature_difference[0]  +2.01e+01  > +2.00e+01   yes
+ ...nents.cooler_charge.temperature_difference[1]  +2.01e+01  > +2.00e+01   yes
+ ...nents.cooler_charge.temperature_difference[2]  +2.00e+01  > +2.00e+01   yes
+ ...nents.cooler_charge.temperature_difference[3]  +2.00e+01  > +2.00e+01   yes
+ ...nents.cooler_charge.temperature_difference[4]  +2.00e+01  > +2.00e+01   yes
+ ...nents.cooler_charge.temperature_difference[5]  +2.00e+01  > +2.00e+01   yes
+ ...nents.cooler_charge.temperature_difference[6]  +2.01e+01  > +2.00e+01   yes
+ ...nents.cooler_charge.temperature_difference[7]  +2.01e+01  > +2.00e+01   yes
+ ...nents.cooler_charge.temperature_difference[8]  +2.02e+01  > +2.00e+01   yes
+ ...nents.cooler_charge.temperature_difference[9]  +2.03e+01  > +2.00e+01   yes
+ ...ents.cooler_charge.temperature_difference[10]  +2.04e+01  > +2.00e+01   yes
+ ...ents.cooler_charge.temperature_difference[11]  +2.05e+01  > +2.00e+01   yes
+ ...ents.cooler_charge.temperature_difference[12]  +2.06e+01  > +2.00e+01   yes
+ ...ents.cooler_charge.temperature_difference[13]  +2.08e+01  > +2.00e+01   yes
+ ...ents.cooler_charge.temperature_difference[14]  +2.09e+01  > +2.00e+01   yes
+ ...ents.cooler_charge.temperature_difference[15]  +2.11e+01  > +2.00e+01   yes
+ ...ents.cooler_charge.temperature_difference[16]  +2.13e+01  > +2.00e+01   yes
+ ...ents.cooler_charge.temperature_difference[17]  +2.14e+01  > +2.00e+01   yes
+ ...ents.cooler_charge.temperature_difference[18]  +2.16e+01  > +2.00e+01   yes
+ ...ents.cooler_charge.temperature_difference[19]  +2.18e+01  > +2.00e+01   yes
+ ....recuperator_charge.temperature_difference[0]  +5.97e+01  > +2.00e+01   yes
+ ....recuperator_charge.temperature_difference[1]  +6.51e+01  > +2.00e+01   yes
+ ....recuperator_charge.temperature_difference[2]  +6.75e+01  > +2.00e+01   yes
+ ....recuperator_charge.temperature_difference[3]  +6.73e+01  > +2.00e+01   yes
+ ....recuperator_charge.temperature_difference[4]  +6.53e+01  > +2.00e+01   yes
+ ....recuperator_charge.temperature_difference[5]  +6.22e+01  > +2.00e+01   yes
+ ....recuperator_charge.temperature_difference[6]  +5.84e+01  > +2.00e+01   yes
+ ....recuperator_charge.temperature_difference[7]  +5.43e+01  > +2.00e+01   yes
+ ....recuperator_charge.temperature_difference[8]  +5.02e+01  > +2.00e+01   yes
+ ....recuperator_charge.temperature_difference[9]  +4.63e+01  > +2.00e+01   yes
+ ...recuperator_charge.temperature_difference[10]  +4.25e+01  > +2.00e+01   yes
+ ...recuperator_charge.temperature_difference[11]  +3.91e+01  > +2.00e+01   yes
+ ...recuperator_charge.temperature_difference[12]  +3.59e+01  > +2.00e+01   yes
+ ...recuperator_charge.temperature_difference[13]  +3.30e+01  > +2.00e+01   yes
+ ...recuperator_charge.temperature_difference[14]  +3.03e+01  > +2.00e+01   yes
+ ...recuperator_charge.temperature_difference[15]  +2.79e+01  > +2.00e+01   yes
+ ...recuperator_charge.temperature_difference[16]  +2.56e+01  > +2.00e+01   yes
+ ...recuperator_charge.temperature_difference[17]  +2.36e+01  > +2.00e+01   yes
+ ...recuperator_charge.temperature_difference[18]  +2.17e+01  > +2.00e+01   yes
+ ...recuperator_charge.temperature_difference[19]  +2.00e+01  > +2.00e+01   yes
+ ...ts.heater_discharge.temperature_difference[0]  +2.00e+01  > +2.00e+01    no
+ ...ts.heater_discharge.temperature_difference[1]  +2.02e+01  > +2.00e+01   yes
+ ...ts.heater_discharge.temperature_difference[2]  +2.04e+01  > +2.00e+01   yes
+ ...ts.heater_discharge.temperature_difference[3]  +2.05e+01  > +2.00e+01   yes
+ ...ts.heater_discharge.temperature_difference[4]  +2.06e+01  > +2.00e+01   yes
+ ...ts.heater_discharge.temperature_difference[5]  +2.07e+01  > +2.00e+01   yes
+ ...ts.heater_discharge.temperature_difference[6]  +2.08e+01  > +2.00e+01   yes
+ ...ts.heater_discharge.temperature_difference[7]  +2.08e+01  > +2.00e+01   yes
+ ...ts.heater_discharge.temperature_difference[8]  +2.08e+01  > +2.00e+01   yes
+ ...ts.heater_discharge.temperature_difference[9]  +2.08e+01  > +2.00e+01   yes
+ ...s.heater_discharge.temperature_difference[10]  +2.08e+01  > +2.00e+01   yes
+ ...s.heater_discharge.temperature_difference[11]  +2.08e+01  > +2.00e+01   yes
+ ...s.heater_discharge.temperature_difference[12]  +2.07e+01  > +2.00e+01   yes
+ ...s.heater_discharge.temperature_difference[13]  +2.07e+01  > +2.00e+01   yes
+ ...s.heater_discharge.temperature_difference[14]  +2.06e+01  > +2.00e+01   yes
+ ...s.heater_discharge.temperature_difference[15]  +2.05e+01  > +2.00e+01   yes
+ ...s.heater_discharge.temperature_difference[16]  +2.04e+01  > +2.00e+01   yes
+ ...s.heater_discharge.temperature_difference[17]  +2.03e+01  > +2.00e+01   yes
+ ...s.heater_discharge.temperature_difference[18]  +2.01e+01  > +2.00e+01   yes
+ ...s.heater_discharge.temperature_difference[19]  +2.00e+01  > +2.00e+01   yes
+ ...ts.cooler_discharge.temperature_difference[0]  +2.06e+01  > +2.00e+01   yes
+ ...ts.cooler_discharge.temperature_difference[1]  +2.02e+01  > +2.00e+01   yes
+ ...ts.cooler_discharge.temperature_difference[2]  +2.00e+01  > +2.00e+01    no
+ ...ts.cooler_discharge.temperature_difference[3]  +2.01e+01  > +2.00e+01   yes
+ ...ts.cooler_discharge.temperature_difference[4]  +2.05e+01  > +2.00e+01   yes
+ ...ts.cooler_discharge.temperature_difference[5]  +2.10e+01  > +2.00e+01   yes
+ ...ts.cooler_discharge.temperature_difference[6]  +2.18e+01  > +2.00e+01   yes
+ ...ts.cooler_discharge.temperature_difference[7]  +2.27e+01  > +2.00e+01   yes
+ ...ts.cooler_discharge.temperature_difference[8]  +2.38e+01  > +2.00e+01   yes
+ ...ts.cooler_discharge.temperature_difference[9]  +2.51e+01  > +2.00e+01   yes
+ ...s.cooler_discharge.temperature_difference[10]  +2.64e+01  > +2.00e+01   yes
+ ...s.cooler_discharge.temperature_difference[11]  +2.79e+01  > +2.00e+01   yes
+ ...s.cooler_discharge.temperature_difference[12]  +2.95e+01  > +2.00e+01   yes
+ ...s.cooler_discharge.temperature_difference[13]  +3.11e+01  > +2.00e+01   yes
+ ...s.cooler_discharge.temperature_difference[14]  +3.28e+01  > +2.00e+01   yes
+ ...s.cooler_discharge.temperature_difference[15]  +3.46e+01  > +2.00e+01   yes
+ ...s.cooler_discharge.temperature_difference[16]  +3.65e+01  > +2.00e+01   yes
+ ...s.cooler_discharge.temperature_difference[17]  +3.84e+01  > +2.00e+01   yes
+ ...s.cooler_discharge.temperature_difference[18]  +4.03e+01  > +2.00e+01   yes
+ ...s.cooler_discharge.temperature_difference[19]  +4.22e+01  > +2.00e+01   yes
+ ...cuperator_discharge.temperature_difference[0]  +2.00e+01  > +2.00e+01    no
+ ...cuperator_discharge.temperature_difference[1]  +2.30e+01  > +2.00e+01   yes
+ ...cuperator_discharge.temperature_difference[2]  +2.59e+01  > +2.00e+01   yes
+ ...cuperator_discharge.temperature_difference[3]  +2.86e+01  > +2.00e+01   yes
+ ...cuperator_discharge.temperature_difference[4]  +3.11e+01  > +2.00e+01   yes
+ ...cuperator_discharge.temperature_difference[5]  +3.34e+01  > +2.00e+01   yes
+ ...cuperator_discharge.temperature_difference[6]  +3.56e+01  > +2.00e+01   yes
+ ...cuperator_discharge.temperature_difference[7]  +3.77e+01  > +2.00e+01   yes
+ ...cuperator_discharge.temperature_difference[8]  +3.96e+01  > +2.00e+01   yes
+ ...cuperator_discharge.temperature_difference[9]  +4.14e+01  > +2.00e+01   yes
+ ...uperator_discharge.temperature_difference[10]  +4.30e+01  > +2.00e+01   yes
+ ...uperator_discharge.temperature_difference[11]  +4.46e+01  > +2.00e+01   yes
+ ...uperator_discharge.temperature_difference[12]  +4.60e+01  > +2.00e+01   yes
+ ...uperator_discharge.temperature_difference[13]  +4.73e+01  > +2.00e+01   yes
+ ...uperator_discharge.temperature_difference[14]  +4.86e+01  > +2.00e+01   yes
+ ...uperator_discharge.temperature_difference[15]  +4.97e+01  > +2.00e+01   yes
+ ...uperator_discharge.temperature_difference[16]  +5.08e+01  > +2.00e+01   yes
+ ...uperator_discharge.temperature_difference[17]  +5.18e+01  > +2.00e+01   yes
+ ...uperator_discharge.temperature_difference[18]  +5.27e+01  > +2.00e+01   yes
+ ...uperator_discharge.temperature_difference[19]  +5.36e+01  > +2.00e+01   yes
+ $energy_analysis.mass_flow_mismatch               -8.75e-04  = +0.00e+00    no
+ ...energy_analysis.hot_storage_lower_temperature  +1.77e+02  > +2.00e+01   yes
+ ...nergy_analysis.cold_storage_lower_temperature  +2.00e+01  > +2.00e+01   yes
+ ...nergy_analysis.cold_storage_upper_temperature  +8.97e+01  > +0.00e+00   yes
+--------------------------------------------------------------------------------

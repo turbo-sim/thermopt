@@ -1,8 +1,9 @@
 import copy
-from .. import utilities
-from .. import properties as props
+import coolpropx as cpx
 
-from .components import compression_process, expansion_process, heat_exchanger, compute_component_energy_flows
+from .. import utilities
+
+from ..components import compression_process, expansion_process, heat_exchanger, compute_component_energy_flows
 
 COLORS_MATLAB = utilities.COLORS_MATLAB
 
@@ -18,13 +19,13 @@ def evaluate_cycle(
     parameters = copy.deepcopy(parameters)
 
     # Initialize fluid objects
-    working_fluid = props.Fluid(
+    working_fluid = cpx.Fluid(
         **parameters.pop("working_fluid"), identifier="working_fluid"
     )
-    heating_fluid = props.Fluid(
+    heating_fluid = cpx.Fluid(
         **parameters.pop("heating_fluid"), identifier="heating_fluid"
     )
-    cooling_fluid = props.Fluid(
+    cooling_fluid = cpx.Fluid(
         **parameters.pop("cooling_fluid"), identifier="cooling_fluid"
     )
 
@@ -38,7 +39,7 @@ def evaluate_cycle(
 
     # Compute coldest state at the heat source exit
     source_out_min = heating_fluid.get_state(
-        props.PT_INPUTS, p_source_out, T_source_out_min
+        cpx.PT_INPUTS, p_source_out, T_source_out_min
     )
 
     # Extract pressure drops and give short names
@@ -165,10 +166,10 @@ def evaluate_cycle(
     p_out_cold = expander["state_in"].p
     T_in_hot = parameters["heat_source"].pop("inlet_temperature")
     p_in_hot = parameters["heat_source"].pop("inlet_pressure")
-    h_in_hot = heating_fluid.get_state(props.PT_INPUTS, p_in_hot, T_in_hot).h
+    h_in_hot = heating_fluid.get_state(cpx.PT_INPUTS, p_in_hot, T_in_hot).h
     T_out_hot = heat_source_temperature_out
     p_out_hot = p_in_hot * (1 - dp_heater_h)
-    h_out_hot = heating_fluid.get_state(props.PT_INPUTS, p_out_hot, T_out_hot).h
+    h_out_hot = heating_fluid.get_state(cpx.PT_INPUTS, p_out_hot, T_out_hot).h
     num_elements = parameters["heater"].pop("num_elements")
     heater = heat_exchanger(
         heating_fluid,
@@ -203,7 +204,7 @@ def evaluate_cycle(
     # Evaluate heat sink pump
     T_in = parameters["heat_sink"].pop("inlet_temperature")
     p_in = parameters["heat_sink"].pop("inlet_pressure")
-    h_in = cooling_fluid.get_state(props.PT_INPUTS, p_in, T_in).h
+    h_in = cooling_fluid.get_state(cpx.PT_INPUTS, p_in, T_in).h
     p_out = p_sink_out / (1 - dp_cooler_c)
     efficiency = parameters["heat_sink_pump"].pop("efficiency")
     efficiency_type = parameters["heat_sink_pump"].pop("efficiency_type")
@@ -221,7 +222,7 @@ def evaluate_cycle(
     h_in_cold = heat_sink_pump["state_out"].h
     p_out_cold = p_in_cold * (1 - dp_cooler_c)
     T_out_cold = heat_sink_temperature_out
-    h_out_cold = cooling_fluid.get_state(props.PT_INPUTS, p_out_cold, T_out_cold).h
+    h_out_cold = cooling_fluid.get_state(cpx.PT_INPUTS, p_out_cold, T_out_cold).h
     h_in_hot = recuperator_lowT["hot_side"]["state_out"].h
     p_in_hot = recuperator_lowT["hot_side"]["state_out"].p
     h_out_hot = main_compressor["state_in"].h

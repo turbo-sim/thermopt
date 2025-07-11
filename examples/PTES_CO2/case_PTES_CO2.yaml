@@ -183,7 +183,7 @@ problem_formulation:
       
     compressor_inlet_enthalpy_discharge:
       min: 0.5*$working_fluid.critical_point.h
-      max: 1.5*$working_fluid.triple_point_vapor.h
+      max: 3.0*$working_fluid.critical_point.h
       value: 1.3*$working_fluid.critical_point.h
 
     expander_inlet_pressure_discharge:

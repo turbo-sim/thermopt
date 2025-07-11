@@ -291,10 +291,3 @@ def read_configuration_file(filename):
 
     return config
 
-
-# Example usage
-if __name__ == "__main__":
-    config_file_path = "config.yaml"  # Path to your YAML configuration file
-    config = load_config(config_file_path, mode="optimization")
-    if config:
-        print("Configuration loaded successfully")

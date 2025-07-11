@@ -1,0 +1,178 @@
+cycle_topology: PTES_recuperated
+plot_settings:
+  pinch_point_diagram: false
+  fluid:
+    plot_saturation_line: true
+    plot_critical_point: true
+    plot_quality_isolines: false
+    plot_pseudocritical_line: false
+    plot_triple_point_liquid: false
+    plot_triple_point_vapor: false
+  diagrams:
+  - x_prop: s
+    y_prop: T
+    x_scale: linear
+    y_scale: linear
+fixed_parameters:
+  working_fluid:
+    name: CO2
+    backend: HEOS
+    exceptions: true
+  hot_storage_fluid:
+    name: nitrogen
+    backend: HEOS
+    exceptions: true
+  cold_storage_fluid:
+    name: nitrogen
+    backend: HEOS
+    exceptions: true
+  charging_power: 100000000.0
+  special_points:
+    ambient_pressure: 101325
+    ambient_temperature: 298.15
+    maximum_temperature: 873.15
+  hot_storage:
+    pressure: 101325
+  cold_storage:
+    pressure: 101325
+  heater_charge:
+    pressure_drop_hot_side: 0.0
+    pressure_drop_cold_side: 0.0
+    num_elements: 20
+  recuperator_charge:
+    pressure_drop_hot_side: 0.0
+    pressure_drop_cold_side: 0.0
+    num_elements: 20
+  cooler_charge:
+    pressure_drop_hot_side: 0.0
+    pressure_drop_cold_side: 0.0
+    num_elements: 20
+  expander_charge:
+    efficiency: 0.8
+    efficiency_type: isentropic
+  compressor_charge:
+    efficiency: 0.8
+    efficiency_type: isentropic
+  heater_discharge:
+    pressure_drop_hot_side: 0.0
+    pressure_drop_cold_side: 0.0
+    num_elements: 20
+  recuperator_discharge:
+    pressure_drop_hot_side: 0.0
+    pressure_drop_cold_side: 0.0
+    num_elements: 20
+  cooler_discharge:
+    pressure_drop_hot_side: 0.0
+    pressure_drop_cold_side: 0.0
+    num_elements: 20
+  expander_discharge:
+    efficiency: 0.8
+    efficiency_type: isentropic
+  compressor_discharge:
+    efficiency: 0.8
+    efficiency_type: isentropic
+design_variables:
+  hot_storage_upper_temperature:
+    min: 473.15
+    max: 873.15
+    value: 873.15
+  hot_storage_lower_temperature:
+    min: 273.15
+    max: 873.15
+    value: 714.53232914113
+  cold_storage_upper_temperature:
+    min: 223.15
+    max: 423.15
+    value: 362.458212057704
+  cold_storage_lower_temperature:
+    min: 223.15
+    max: 423.15
+    value: 342.458212057609
+  cold_storage_upper_temperature_discharge:
+    min: 223.15
+    max: 873.15
+    value: 438.384392908215
+  compressor_inlet_pressure_charge:
+    min: 1.2*$working_fluid.critical_point.p
+    max: 3.0*$working_fluid.critical_point.p
+    value: 8852758.047526386
+  compressor_inlet_enthalpy_charge:
+    min: 1.5*$working_fluid.critical_point.h
+    max: 6.0*$working_fluid.critical_point.h
+    value: 914489.0190522515
+  expander_inlet_pressure_charge:
+    min: 1.1*$working_fluid.triple_point_liquid.p
+    max: 30000000.0
+    value: 30000000.0
+  expander_inlet_enthalpy_charge:
+    min: 0.5*$working_fluid.critical_point.h
+    max: 1.5*$working_fluid.critical_point.h
+    value: 453978.2038717854
+  recuperator_inlet_enthalpy_hot_charge:
+    min: 1.0*$working_fluid.critical_point.h
+    max: 6.0*$working_fluid.critical_point.h
+    value: 916821.2606109682
+  compressor_inlet_pressure_discharge:
+    min: 1.2*$working_fluid.critical_point.p
+    max: 3.0*$working_fluid.critical_point.p
+    value: 11917088.00386638
+  compressor_inlet_enthalpy_discharge:
+    min: 0.5*$working_fluid.critical_point.h
+    max: 1.5*$working_fluid.triple_point_vapor.h
+    value: 472256.30800437264
+  expander_inlet_pressure_discharge:
+    min: 1.1*$working_fluid.critical_point.p
+    max: 30000000.0
+    value: 29999999.999964267
+  expander_inlet_enthalpy_discharge:
+    min: 1.1*$working_fluid.critical_point.h
+    max: 6.0*$working_fluid.critical_point.h
+    value: 1066901.1749846642
+  recuperator_outlet_enthalpy_hot_discharge:
+    min: 1.0*$working_fluid.critical_point.h
+    max: 6.0*$working_fluid.critical_point.h
+    value: 623374.6827542996
+objective_function:
+  variable: $energy_analysis.roundtrip_efficiency
+  type: maximize
+constraints:
+- variable: $components.heater_charge.temperature_difference
+  type: '>'
+  value: 20
+  normalize: 10.0
+- variable: $components.cooler_charge.temperature_difference
+  type: '>'
+  value: 20
+  normalize: 10.0
+- variable: $components.recuperator_charge.temperature_difference
+  type: '>'
+  value: 20
+  normalize: 10.0
+- variable: $components.heater_discharge.temperature_difference
+  type: '>'
+  value: 20
+  normalize: 10.0
+- variable: $components.cooler_discharge.temperature_difference
+  type: '>'
+  value: 20
+  normalize: 10.0
+- variable: $components.recuperator_discharge.temperature_difference
+  type: '>'
+  value: 20
+  normalize: 10.0
+- variable: $energy_analysis.mass_flow_mismatch
+  type: '='
+  value: 0.0
+  normalize: false
+- variable: $energy_analysis.hot_storage_upper_temperature - $energy_analysis.hot_storage_lower_temperature
+  type: '>'
+  value: 20.0
+  normalize: true
+- variable: $energy_analysis.cold_storage_upper_temperature - $energy_analysis.cold_storage_lower_temperature
+  type: '>'
+  value: 20.0
+  normalize: true
+- variable: $energy_analysis.cold_storage_upper_temperature_discharge - $energy_analysis.cold_storage_upper_temperature
+  type: '>'
+  value: 0.0
+  normalize: false

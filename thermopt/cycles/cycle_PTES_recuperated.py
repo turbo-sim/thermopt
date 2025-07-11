@@ -1,8 +1,9 @@
 import copy
-from .. import utilities
-from .. import properties as props
+import coolpropx as cpx
 
-from .components import compression_process, expansion_process, heat_exchanger
+from .. import utilities
+
+from ..components import compression_process, expansion_process, heat_exchanger
 
 COLORS_MATLAB = utilities.COLORS_MATLAB
 
@@ -23,13 +24,13 @@ def evaluate_cycle(
     parameters = copy.deepcopy(parameters)
 
     # Initialize fluid objects
-    working_fluid = props.Fluid(
+    working_fluid = cpx.Fluid(
         **parameters.pop("working_fluid"), identifier="working_fluid"
     )
-    heating_fluid = props.Fluid(
+    heating_fluid = cpx.Fluid(
         **parameters.pop("hot_storage_fluid"), identifier="hot_storage_fluid"
     )
-    cooling_fluid = props.Fluid(
+    cooling_fluid = cpx.Fluid(
         **parameters.pop("cold_storage_fluid"), identifier="cold_storage_fluid"
     )
 
@@ -117,10 +118,10 @@ def evaluate_cycle(
     p_out_cold = recuperator_charge["cold_side"]["state_in"].p
     T_in_hot = cold_storage_upper_temperature
     p_in_hot = cold_storage_pressure
-    h_in_hot = heating_fluid.get_state(props.PT_INPUTS, p_in_hot, T_in_hot).h
+    h_in_hot = heating_fluid.get_state(cpx.PT_INPUTS, p_in_hot, T_in_hot).h
     T_out_hot = cold_storage_lower_temperature
     p_out_hot = cold_storage_pressure
-    h_out_hot = heating_fluid.get_state(props.PT_INPUTS, p_out_hot, T_out_hot).h
+    h_out_hot = heating_fluid.get_state(cpx.PT_INPUTS, p_out_hot, T_out_hot).h
     num_elements = parameters["heater_charge"].pop("num_elements")
     heater_charge = heat_exchanger(
         heating_fluid,
@@ -140,10 +141,10 @@ def evaluate_cycle(
     # Evaluate cooler
     T_in_cold = hot_storage_lower_temperature
     p_in_cold = hot_storage_pressure
-    h_in_cold = cooling_fluid.get_state(props.PT_INPUTS, p_in_cold, T_in_cold).h
+    h_in_cold = cooling_fluid.get_state(cpx.PT_INPUTS, p_in_cold, T_in_cold).h
     T_out_cold = hot_storage_upper_temperature
     p_out_cold = hot_storage_pressure
-    h_out_cold = cooling_fluid.get_state(props.PT_INPUTS, p_out_cold, T_out_cold).h
+    h_out_cold = cooling_fluid.get_state(cpx.PT_INPUTS, p_out_cold, T_out_cold).h
     h_in_hot = compressor_charge["state_out"].h
     p_in_hot = compressor_charge["state_out"].p
     h_out_hot = recuperator_charge["hot_side"]["state_in"].h
@@ -261,10 +262,10 @@ def evaluate_cycle(
     p_out_cold = expander_discharge["state_in"].p
     T_in_hot = hot_storage_upper_temperature
     p_in_hot = hot_storage_pressure
-    h_in_hot = heating_fluid.get_state(props.PT_INPUTS, p_in_hot, T_in_hot).h
+    h_in_hot = heating_fluid.get_state(cpx.PT_INPUTS, p_in_hot, T_in_hot).h
     T_out_hot = hot_storage_lower_temperature
     p_out_hot = hot_storage_pressure
-    h_out_hot = heating_fluid.get_state(props.PT_INPUTS, p_out_hot, T_out_hot).h
+    h_out_hot = heating_fluid.get_state(cpx.PT_INPUTS, p_out_hot, T_out_hot).h
     num_elements = parameters["heater_discharge"].pop("num_elements")
     heater_discharge = heat_exchanger(
         heating_fluid,
@@ -284,10 +285,10 @@ def evaluate_cycle(
     # Evaluate cooler
     T_in_cold = cold_storage_lower_temperature
     p_in_cold = cold_storage_pressure
-    h_in_cold = cooling_fluid.get_state(props.PT_INPUTS, p_in_cold, T_in_cold).h
+    h_in_cold = cooling_fluid.get_state(cpx.PT_INPUTS, p_in_cold, T_in_cold).h
     T_out_cold = cold_storage_upper_temperature_discharge
     p_out_cold = cold_storage_pressure
-    h_out_cold = cooling_fluid.get_state(props.PT_INPUTS, p_out_cold, T_out_cold).h
+    h_out_cold = cooling_fluid.get_state(cpx.PT_INPUTS, p_out_cold, T_out_cold).h
     h_in_hot = recuperator_discharge["hot_side"]["state_out"].h
     p_in_hot = recuperator_discharge["hot_side"]["state_out"].p
     h_out_hot = compressor_discharge["state_in"].h
