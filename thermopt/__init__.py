@@ -1,13 +1,13 @@
-# # Highlight exception messages
-# # https://stackoverflow.com/questions/25109105/how-to-colorize-the-output-of-python-errors-in-the-gnome-terminal/52797444#52797444
-# try:
-#     import IPython.core.ultratb
-# except ImportError:
-#     # No IPython. Use default exception printing.
-#     pass
-# else:
-#     import sys
-#     sys.excepthook = IPython.core.ultratb.FormattedTB(color_scheme='linux', call_pdb=False)
+# Highlight exception messages
+# https://stackoverflow.com/questions/25109105/how-to-colorize-the-output-of-python-errors-in-the-gnome-terminal/52797444#52797444
+try:
+    import IPython.core.ultratb
+except ImportError:
+    # No IPython. Use default exception printing.
+    pass
+else:
+    import sys
+    sys.excepthook = IPython.core.ultratb.FormattedTB(color_scheme='linux', call_pdb=False)
 
 # Import submodules
 # from .math import *
@@ -18,12 +18,8 @@ from .optimize_cycle import *
 from .cycles import *
 from .utilities import *
 
-
-
-
 # Set plot options
 set_plot_options()
-
 
 # Package info
 __version__ = "0.2.1"
