@@ -1,6 +1,13 @@
 # Work Progress
 
 
+## Todo 11.07.2025
+- Add mass flow rates as design variables and residuals to the heat exchangers
+- Add references to the mass flow rates of each component
+- Refactor yaml files so the fixed and optimization variables are specified.
+- Maybe for each variable add a falg "optimized=True" that by default is false, but if it is true, then it is added to the list of optimization variables and it requires a min max and value subfields.
+
+
 ## Todo
 - Clean the script to plot the Ts diagram with the Z-factor contours
 - Clean the cycle optimization functionality

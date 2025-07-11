@@ -501,7 +501,7 @@ def compute_component_energy_flows(components):
     None
         The function modifies the `components` dictionary in place, adding:
         - 'power' [W]
-        - 'heat_flow' and 'heat_flow_' [W]
+        - 'heat_flow' and 'heat_flow_bis' [W]
         - 'heat_balance' [W] for heat exchangers
     """
     for name, component in components.items():
@@ -515,7 +515,7 @@ def compute_component_energy_flows(components):
             # component["hot_side"]["states"]["heat_flow"] = Q_hot_array
             # component["cold_side"]["states"]["heat_flow"] = Q_cold_array
             component["heat_flow"] = Q_hot_array[0]
-            component["heat_flow_"] = Q_cold_array[-1]
+            component["heat_flow_bis"] = Q_cold_array[-1]
             component["heat_balance"] = Q_hot_array[0] - Q_cold_array[-1]
             component["power"] = 0.0
 
