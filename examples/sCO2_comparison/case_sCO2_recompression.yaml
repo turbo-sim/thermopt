@@ -7,14 +7,14 @@ solver_options:
   plot_convergence: False
   logger: None
   update_on: gradient
-  tolerance: 1e-6 
+  tolerance: 1e-8
   max_iterations: 200
   problem_scale: 10
   callbacks:
-    save_plot: True
+    save_plot: False
     save_config: True
     save_report: True
-    plot_cycle: True
+    plot_cycle: False
     plot_convergence: False
 
     
@@ -67,8 +67,8 @@ problem_formulation:
       exceptions: True
 
     heat_source:
-      inlet_temperature: 550 + 273.15
-      minimum_temperature: 25 + 273.15
+      inlet_temperature: 600 + 273.15
+      minimum_temperature: 200 + 273.15
       inlet_pressure: 101325
       exit_pressure: 101325
 
@@ -78,43 +78,43 @@ problem_formulation:
       exit_pressure: 101325
 
     heater:
-      pressure_drop_hot_side: 0.01
-      pressure_drop_cold_side: 0.02
+      pressure_drop_hot_side: 0.0
+      pressure_drop_cold_side: 0.01
       num_elements: 20
 
     recuperator_lowT:
-      pressure_drop_hot_side: 0.02
-      pressure_drop_cold_side: 0.02
+      pressure_drop_hot_side: 0.01
+      pressure_drop_cold_side: 0.01
       num_elements: 20
 
     recuperator_highT:
-      pressure_drop_hot_side: 0.02
-      pressure_drop_cold_side: 0.02
+      pressure_drop_hot_side: 0.01
+      pressure_drop_cold_side: 0.01
       num_elements: 20
 
     cooler:
-      pressure_drop_hot_side: 0.02
-      pressure_drop_cold_side: 0.02
+      pressure_drop_hot_side: 0.01
+      pressure_drop_cold_side: 0.0
       num_elements: 20
 
     expander:
-      efficiency: 0.90
-      efficiency_type: "isentropic"
+      efficiency: 0.9
+      efficiency_type: "polytropic"
 
     main_compressor:
-      efficiency: 0.85
-      efficiency_type: "isentropic"
+      efficiency: 0.9
+      efficiency_type: "polytropic"
 
     split_compressor:
-      efficiency: 0.85
-      efficiency_type: "isentropic"
+      efficiency: 0.9
+      efficiency_type: "polytropic"
 
     heat_source_pump:
-      efficiency: 0.80
+      efficiency: 0.9
       efficiency_type: "isentropic"
 
     heat_sink_pump:
-      efficiency: 0.80
+      efficiency: 0.9
       efficiency_type: "isentropic"
 
 
@@ -125,9 +125,9 @@ problem_formulation:
   
   design_variables:
     heat_source_exit_temperature:
-      min: 250 + 273.15
-      max: 540 + 273.15
-      value: 450 + 273.15
+      min: 200 + 273.15
+      max: 550 + 273.15
+      value: 500 + 273.15
 
     heat_sink_exit_temperature:
       min: 25 + 273.15

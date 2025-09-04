@@ -22,7 +22,7 @@ cycler = "^0.12.1"
 imageio = {extras = ["ffmpeg"], version = "^2.37.0"}
 spyder-kernels = "3.0.2"
 pysolver_view = "^0.6.2"
-coolpropx = "^0.1.0"
+coolpropx = "^0.2.8"
 #pysolver_view = { path = "../pysolver_view/", develop = true }
 #coolpropx = { path = "../coolpropx/", develop = true }
 

@@ -37,10 +37,10 @@ problem_formulation:
         y_prop: T
         x_scale: linear
         y_scale: linear
-      # - x_prop: h
-      #   y_prop: p
-      #   x_scale: linear
-      #   y_scale: log
+      - x_prop: h
+        y_prop: p
+        x_scale: linear
+        y_scale: log
       
 
   fixed_parameters:
