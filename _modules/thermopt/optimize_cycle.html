@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>thermopt.optimize_cycle &#8212; thermopt v0.2.2 documentation</title>
+    <title>thermopt.optimize_cycle &#8212; thermopt v0.2.3 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=a6e268a8"></script>
+    <script src="../../_static/documentation_options.js?v=1d1eeab5"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -140,7 +140,7 @@
   
   
   
-    <p class="title logo__title">thermopt v0.2.2 documentation</p>
+    <p class="title logo__title">thermopt v0.2.3 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -308,7 +308,7 @@ document.write(`
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">coolpropx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cpx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jaxprop</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cpx</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pysolver_view</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">psv</span>
 
 <span class="c1"># Local modules</span>
@@ -541,6 +541,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="p">,</span> <span class="s2">&quot;optimal_solution&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">save_data_to_excel</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot;.xlsx&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;hey&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">save_current_configuration</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot;.yaml&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">print_convergence_history</span><span class="p">(</span><span class="n">savefile</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">print_optimization_report</span><span class="p">(</span><span class="n">savefile</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -892,12 +893,19 @@ document.write(`
 
         <span class="c1"># Save states in the fixed parameters dictionary</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fixed_parameters</span><span class="p">)</span>
+        <span class="c1"># self.params[&quot;working_fluid&quot;] = {</span>
+        <span class="c1">#     &quot;critical_point&quot;: self.fluid.critical_point.to_dict(),</span>
+        <span class="c1">#     &quot;triple_point_liquid&quot;: self.fluid.triple_point_liquid.to_dict(),</span>
+        <span class="c1">#     &quot;triple_point_vapor&quot;: self.fluid.triple_point_vapor.to_dict(),</span>
+        <span class="c1">#     &quot;liquid_at_ambient_temperature&quot;: state_sat.to_dict(),</span>
+        <span class="c1">#     &quot;gas_at_maximum_temperature&quot;: state_dilute.to_dict(),</span>
+        <span class="c1"># }</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;working_fluid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;critical_point&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
-            <span class="s2">&quot;triple_point_liquid&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluid</span><span class="o">.</span><span class="n">triple_point_liquid</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
-            <span class="s2">&quot;triple_point_vapor&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluid</span><span class="o">.</span><span class="n">triple_point_vapor</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
-            <span class="s2">&quot;liquid_at_ambient_temperature&quot;</span><span class="p">:</span> <span class="n">state_sat</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
-            <span class="s2">&quot;gas_at_maximum_temperature&quot;</span><span class="p">:</span> <span class="n">state_dilute</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
+            <span class="s2">&quot;critical_point&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="p">,</span>
+            <span class="s2">&quot;triple_point_liquid&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluid</span><span class="o">.</span><span class="n">triple_point_liquid</span><span class="p">,</span>
+            <span class="s2">&quot;triple_point_vapor&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluid</span><span class="o">.</span><span class="n">triple_point_vapor</span><span class="p">,</span>
+            <span class="s2">&quot;liquid_at_ambient_temperature&quot;</span><span class="p">:</span> <span class="n">state_sat</span><span class="p">,</span>
+            <span class="s2">&quot;gas_at_maximum_temperature&quot;</span><span class="p">:</span> <span class="n">state_dilute</span><span class="p">,</span>
         <span class="p">}</span>
 
 <div class="viewcode-block" id="ThermodynamicCycleProblem.fitness">
@@ -1081,7 +1089,7 @@ document.write(`
                 <span class="sa">f</span><span class="s2">&quot;Iterative thermodynamic cycle configuration&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.95</span>
             <span class="p">)</span>
 
-            <span class="c1"># # Write optimization report to file</span>
+            <span class="c1"># Write optimization report to file</span>
             <span class="c1"># if write_report:</span>
             <span class="c1">#     report = self.make_optimization_report(self.x0)</span>
             <span class="c1">#     filename=&quot;initial_guess_report.txt&quot;</span>
@@ -1265,7 +1273,7 @@ document.write(`
             <span class="n">is_heat_exchanger</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># Retrieve data</span>
-        <span class="n">is_working_fluid</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">][</span><span class="s2">&quot;identifier&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;working_fluid&quot;</span>
+        <span class="n">is_working_fluid</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">][</span><span class="s2">&quot;identifier&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;working_fluid&quot;</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="ow">not</span> <span class="n">is_working_fluid</span>
             <span class="ow">and</span> <span class="n">is_heat_exchanger</span>
@@ -1543,28 +1551,28 @@ document.write(`
                 <span class="c1"># Handle heat exchanger sides separately</span>
                 <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">,</span> <span class="s2">&quot;cold_side&quot;</span><span class="p">]:</span>
                     <span class="c1"># Append the data for state_in and state_out to the rows list</span>
-                    <span class="n">state_in</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="n">side</span><span class="p">][</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-                    <span class="n">state_out</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="n">side</span><span class="p">][</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+                    <span class="n">state_in</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="n">side</span><span class="p">][</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span>
+                    <span class="n">state_out</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="n">side</span><span class="p">][</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span>
                     <span class="n">data_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                         <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">component_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s2">_in&quot;</span><span class="p">]</span>
-                        <span class="o">+</span> <span class="p">[</span><span class="n">state_in</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">variable_map</span><span class="p">]</span>
+                        <span class="o">+</span> <span class="p">[</span><span class="n">state_in</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">variable_map</span><span class="p">]</span>
                     <span class="p">)</span>
                     <span class="n">data_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                         <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">component_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s2">_out&quot;</span><span class="p">]</span>
-                        <span class="o">+</span> <span class="p">[</span><span class="n">state_out</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">variable_map</span><span class="p">]</span>
+                        <span class="o">+</span> <span class="p">[</span><span class="n">state_out</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">variable_map</span><span class="p">]</span>
                     <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Handle non-heat exchanger components</span>
                 <span class="c1"># Append the data for state_in and state_out to the rows list</span>
-                <span class="n">state_in</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-                <span class="n">state_out</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+                <span class="n">state_in</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span>
+                <span class="n">state_out</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span>
                 <span class="n">data_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">component_name</span><span class="si">}</span><span class="s2">_in&quot;</span><span class="p">]</span>
-                    <span class="o">+</span> <span class="p">[</span><span class="n">state_in</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">variable_map</span><span class="p">]</span>
+                    <span class="o">+</span> <span class="p">[</span><span class="n">state_in</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">variable_map</span><span class="p">]</span>
                 <span class="p">)</span>
                 <span class="n">data_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">component_name</span><span class="si">}</span><span class="s2">_out&quot;</span><span class="p">]</span>
-                    <span class="o">+</span> <span class="p">[</span><span class="n">state_out</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">variable_map</span><span class="p">]</span>
+                    <span class="o">+</span> <span class="p">[</span><span class="n">state_out</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">variable_map</span><span class="p">]</span>
                 <span class="p">)</span>
 
         <span class="c1"># Create a DataFrame with data rows</span>
@@ -1574,14 +1582,6 @@ document.write(`
         <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">units_row</span>  <span class="c1"># Adding a row</span>
         <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># Shifting index</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>  <span class="c1"># Sorting by index</span>
-
-        <span class="c1"># # Export to Excel</span>
-        <span class="c1"># df.to_excel(</span>
-        <span class="c1">#     os.path.join(self.out_dir, filename),</span>
-        <span class="c1">#     index=False,</span>
-        <span class="c1">#     header=True,</span>
-        <span class="c1">#     sheet_name=&quot;cycle_states&quot;,</span>
-        <span class="c1"># )</span>
 
         <span class="c1"># Prepare energy_analysis data</span>
         <span class="n">df_2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>

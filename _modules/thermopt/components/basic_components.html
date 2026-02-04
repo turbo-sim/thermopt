@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>thermopt.components.basic_components &#8212; thermopt v0.2.2 documentation</title>
+    <title>thermopt.components.basic_components &#8212; thermopt v0.2.3 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=a6e268a8"></script>
+    <script src="../../../_static/documentation_options.js?v=1d1eeab5"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>let toggleHintShow = 'Click to show';</script>
@@ -140,7 +140,7 @@
   
   
   
-    <p class="title logo__title">thermopt v0.2.2 documentation</p>
+    <p class="title logo__title">thermopt v0.2.3 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -304,7 +304,7 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">.turbomachinery_nondimensional</span><span class="w"> </span><span class="kn">import</span> <span class="n">RadialTurbine</span><span class="p">,</span> <span class="n">CentrifugalCompressor</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">CoolProp.CoolProp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cp</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">coolpropx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">props</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jaxprop</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">props</span>
 <span class="c1"># from .. import properties as props</span>
 
 
@@ -394,10 +394,10 @@ document.write(`
         <span class="n">num_steps</span><span class="o">=</span><span class="n">num_steps</span><span class="p">,</span>
     <span class="p">)</span>
 
+
     <span class="c1"># Sort values for temperature difference calculation</span>
     <span class="k">if</span> <span class="n">counter_current</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">hot_side</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">hot_side</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">hot_side</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hot_side</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">flipped</span><span class="p">()</span>
 
     <span class="c1"># Compute temperature difference</span>
     <span class="n">dT</span> <span class="o">=</span> <span class="n">hot_side</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">][</span><span class="s2">&quot;T&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">cold_side</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">][</span><span class="s2">&quot;T&quot;</span><span class="p">]</span>
@@ -468,23 +468,15 @@ document.write(`
     <span class="n">p_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">p_1</span><span class="p">,</span> <span class="n">p_2</span><span class="p">,</span> <span class="n">num_steps</span><span class="p">)</span>
     <span class="n">h_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">h_1</span><span class="p">,</span> <span class="n">h_2</span><span class="p">,</span> <span class="n">num_steps</span><span class="p">)</span>
 
-    <span class="c1"># Initialize lists to store states for hot and cold sides</span>
-    <span class="n">states</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="c1"># Calculate states for hot side</span>
-    <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">h</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">p_array</span><span class="p">,</span> <span class="n">h_array</span><span class="p">):</span>
-        <span class="n">states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
-
-    <span class="c1"># Store inlet and outlet states</span>
-    <span class="n">state_in</span> <span class="o">=</span> <span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">state_out</span> <span class="o">=</span> <span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1"># Compute states for hot or cold side</span>
+    <span class="n">states</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h_array</span><span class="p">,</span> <span class="n">p_array</span><span class="p">)</span>
 
     <span class="c1"># Create result dictionary</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;states&quot;</span><span class="p">:</span> <span class="n">props</span><span class="o">.</span><span class="n">states_to_dict</span><span class="p">(</span><span class="n">states</span><span class="p">),</span>
+        <span class="s2">&quot;states&quot;</span><span class="p">:</span> <span class="n">states</span><span class="p">,</span>
         <span class="s2">&quot;fluid_name&quot;</span><span class="p">:</span> <span class="n">fluid</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-        <span class="s2">&quot;state_in&quot;</span><span class="p">:</span> <span class="n">state_in</span><span class="p">,</span>
-        <span class="s2">&quot;state_out&quot;</span><span class="p">:</span> <span class="n">state_out</span><span class="p">,</span>
+        <span class="s2">&quot;state_in&quot;</span><span class="p">:</span> <span class="n">states</span><span class="o">.</span><span class="n">at_index</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+        <span class="s2">&quot;state_out&quot;</span><span class="p">:</span> <span class="n">states</span><span class="o">.</span><span class="n">at_index</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
         <span class="s2">&quot;mass_flow&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s2">&quot;heat_flow&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span>
@@ -539,7 +531,7 @@ document.write(`
     <span class="k">if</span> <span class="n">efficiency_type</span> <span class="o">==</span> <span class="s2">&quot;isentropic&quot;</span><span class="p">:</span>
         <span class="n">h_out</span> <span class="o">=</span> <span class="n">state_in</span><span class="o">.</span><span class="n">h</span> <span class="o">+</span> <span class="p">(</span><span class="n">state_out_is</span><span class="o">.</span><span class="n">h</span> <span class="o">-</span> <span class="n">state_in</span><span class="o">.</span><span class="n">h</span><span class="p">)</span> <span class="o">/</span> <span class="n">efficiency</span>
         <span class="n">state_out</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h_out</span><span class="p">,</span> <span class="n">p_out</span><span class="p">,</span> <span class="n">supersaturation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="n">state_in</span><span class="p">,</span> <span class="n">state_out</span><span class="p">]</span>
+        <span class="n">states</span> <span class="o">=</span> <span class="n">state_in</span> <span class="o">+</span> <span class="n">state_out</span>
         <span class="n">data_out</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;isentropic_efficiency&quot;</span><span class="p">:</span> <span class="n">efficiency</span><span class="p">}</span>
 
     <span class="k">elif</span> <span class="n">efficiency_type</span> <span class="o">==</span> <span class="s2">&quot;polytropic&quot;</span><span class="p">:</span>
@@ -560,7 +552,7 @@ document.write(`
 
         <span class="c1"># Evaluate fluid properties at intermediate states</span>
         <span class="n">states</span> <span class="o">=</span> <span class="n">postprocess_ode</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">sol</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">odefun</span><span class="p">)</span>
-        <span class="n">state_in</span><span class="p">,</span> <span class="n">state_out</span> <span class="o">=</span> <span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">state_in</span><span class="p">,</span> <span class="n">state_out</span> <span class="o">=</span> <span class="n">states</span><span class="o">.</span><span class="n">at_index</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">states</span><span class="o">.</span><span class="n">at_index</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">data_out</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;polytropic_efficiency&quot;</span><span class="p">:</span> <span class="n">efficiency</span><span class="p">}</span>
         
     <span class="k">elif</span> <span class="n">efficiency_type</span> <span class="o">==</span> <span class="s2">&quot;non-dimensional&quot;</span><span class="p">:</span>
@@ -589,7 +581,7 @@ document.write(`
     <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;compressor&quot;</span><span class="p">,</span>
         <span class="s2">&quot;fluid_name&quot;</span><span class="p">:</span> <span class="n">fluid</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-        <span class="s2">&quot;states&quot;</span><span class="p">:</span> <span class="n">props</span><span class="o">.</span><span class="n">states_to_dict</span><span class="p">(</span><span class="n">states</span><span class="p">),</span>
+        <span class="s2">&quot;states&quot;</span><span class="p">:</span> <span class="n">states</span><span class="p">,</span>
         <span class="s2">&quot;state_in&quot;</span><span class="p">:</span> <span class="n">state_in</span><span class="p">,</span>
         <span class="s2">&quot;state_out&quot;</span><span class="p">:</span> <span class="n">state_out</span><span class="p">,</span>
         <span class="s2">&quot;efficiency&quot;</span><span class="p">:</span> <span class="n">efficiency</span><span class="p">,</span>
@@ -650,7 +642,7 @@ document.write(`
         <span class="c1"># Compute outlet state according to the definition of isentropic efficiency</span>
         <span class="n">h_out</span> <span class="o">=</span> <span class="n">state_in</span><span class="o">.</span><span class="n">h</span> <span class="o">-</span> <span class="n">efficiency</span> <span class="o">*</span> <span class="p">(</span><span class="n">state_in</span><span class="o">.</span><span class="n">h</span> <span class="o">-</span> <span class="n">state_out_is</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
         <span class="n">state_out</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h_out</span><span class="p">,</span> <span class="n">p_out</span><span class="p">,</span> <span class="n">supersaturation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">generalize_quality</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="n">state_in</span><span class="p">,</span> <span class="n">state_out</span><span class="p">]</span>
+        <span class="n">states</span> <span class="o">=</span> <span class="n">state_in</span> <span class="o">+</span> <span class="n">state_out</span>
         <span class="n">data_out</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;isentropic_efficiency&quot;</span><span class="p">:</span> <span class="n">efficiency</span><span class="p">}</span>
         
     <span class="k">elif</span> <span class="n">efficiency_type</span> <span class="o">==</span> <span class="s2">&quot;polytropic&quot;</span><span class="p">:</span>
@@ -671,7 +663,7 @@ document.write(`
 
         <span class="c1"># Evaluate fluid properties at intermediate states</span>
         <span class="n">states</span> <span class="o">=</span> <span class="n">postprocess_ode</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">sol</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">odefun</span><span class="p">)</span>
-        <span class="n">state_in</span><span class="p">,</span> <span class="n">state_out</span> <span class="o">=</span> <span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">state_in</span><span class="p">,</span> <span class="n">state_out</span> <span class="o">=</span> <span class="n">states</span><span class="o">.</span><span class="n">at_index</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">states</span><span class="o">.</span><span class="n">at_index</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">data_out</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;polytropic_efficiency&quot;</span><span class="p">:</span> <span class="n">efficiency</span><span class="p">}</span>
         
     <span class="k">elif</span> <span class="n">efficiency_type</span> <span class="o">==</span> <span class="s2">&quot;non-dimensional&quot;</span><span class="p">:</span>
@@ -708,7 +700,7 @@ document.write(`
     <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;expander&quot;</span><span class="p">,</span>
         <span class="s2">&quot;fluid_name&quot;</span><span class="p">:</span> <span class="n">fluid</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-        <span class="s2">&quot;states&quot;</span><span class="p">:</span> <span class="n">props</span><span class="o">.</span><span class="n">states_to_dict</span><span class="p">(</span><span class="n">states</span><span class="p">),</span>
+        <span class="s2">&quot;states&quot;</span><span class="p">:</span> <span class="n">states</span><span class="p">,</span>
         <span class="s2">&quot;state_in&quot;</span><span class="p">:</span> <span class="n">state_in</span><span class="p">,</span>
         <span class="s2">&quot;state_out&quot;</span><span class="p">:</span> <span class="n">state_out</span><span class="p">,</span>
         <span class="s2">&quot;efficiency&quot;</span><span class="p">:</span> <span class="n">efficiency</span><span class="p">,</span>
@@ -755,9 +747,7 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>  
     <span class="n">p_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">state_in</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="n">p_out</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
     <span class="n">h_array</span> <span class="o">=</span> <span class="n">state_in</span><span class="o">.</span><span class="n">h</span> <span class="o">*</span> <span class="n">p_array</span>
-    <span class="n">states</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">h</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">p_array</span><span class="p">,</span> <span class="n">h_array</span><span class="p">):</span>
-        <span class="n">states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
+    <span class="n">states</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h_array</span><span class="p">,</span> <span class="n">p_array</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">states</span></div>
 
 
@@ -787,12 +777,14 @@ document.write(`
 <span class="sd">    list</span>
 <span class="sd">        List of thermodynamic states reconstructed from the ODE trajectory.</span>
 <span class="sd">    &quot;&quot;&quot;</span> 
-    <span class="c1"># Collect additional properties for each integration step</span>
-    <span class="n">ode_out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># Collect individual states</span>
+    <span class="n">states</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">t_i</span><span class="p">,</span> <span class="n">y_i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">T</span><span class="p">):</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="n">ode_handle</span><span class="p">(</span><span class="n">t_i</span><span class="p">,</span> <span class="n">y_i</span><span class="p">)</span>
-        <span class="n">ode_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ode_out</span></div>
+        <span class="n">states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
+    <span class="c1"># Combine into one batched FluidState</span>
+    <span class="k">return</span> <span class="n">props</span><span class="o">.</span><span class="n">FluidState</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">states</span><span class="p">)</span></div>
 
 
 
