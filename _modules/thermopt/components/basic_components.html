@@ -746,7 +746,7 @@ document.write(`
 <span class="sd">        List of thermodynamic states along the isenthalpic path.</span>
 <span class="sd">    &quot;&quot;&quot;</span>  
     <span class="n">p_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">state_in</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="n">p_out</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
-    <span class="n">h_array</span> <span class="o">=</span> <span class="n">state_in</span><span class="o">.</span><span class="n">h</span> <span class="o">*</span> <span class="n">p_array</span>
+    <span class="n">h_array</span> <span class="o">=</span> <span class="n">state_in</span><span class="o">.</span><span class="n">h</span> <span class="o">+</span> <span class="mf">0.</span> <span class="o">*</span> <span class="n">p_array</span>  <span class="c1"># TODO: should be fixed</span>
     <span class="n">states</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h_array</span><span class="p">,</span> <span class="n">p_array</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">states</span></div>
 
