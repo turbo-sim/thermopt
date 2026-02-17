@@ -435,7 +435,7 @@ def isenthalpic_valve(state_in, p_out, fluid, N=50):
         List of thermodynamic states along the isenthalpic path.
     """  
     p_array = np.linspace(state_in.p, p_out, N)
-    h_array = state_in.h * p_array
+    h_array = state_in.h + 0. * p_array  # TODO: should be fixed
     states = fluid.get_state(props.HmassP_INPUTS, h_array, p_array)
     return states
 
