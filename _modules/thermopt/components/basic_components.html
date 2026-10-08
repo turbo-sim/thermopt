@@ -294,6 +294,95 @@
 <span class="c1"># from .. import properties as props</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_snap_saturation_nodes</span><span class="p">(</span><span class="n">hot_side</span><span class="p">,</span> <span class="n">cold_side</span><span class="p">,</span> <span class="n">fluid_hot</span><span class="p">,</span> <span class="n">fluid_cold</span><span class="p">,</span> <span class="n">counter_current</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Move the wet node next to each phase boundary, then match the other stream.</span>
+
+<span class="sd">    A single linear interpolation of h - h_sat across the original crossing</span>
+<span class="sd">    estimates its pressure; a PQ evaluation puts the node exactly on saturation.</span>
+<span class="sd">    Its enthalpy determines the common heat-duty coordinate. The opposite stream</span>
+<span class="sd">    follows its original linear h/p path at that coordinate. With pressure loss,</span>
+<span class="sd">    the saturated stream&#39;s pressure location is approximate (the saturation curve</span>
+<span class="sd">    is nonlinear); there is no iterative solve. At constant pressure it is exact.</span>
+
+<span class="sd">    Only original two-phase/single-phase transitions are considered. Endpoints</span>
+<span class="sd">    and array lengths stay fixed. If boundaries compete for one wet node, retain</span>
+<span class="sd">    the smaller temperature gap. A grid with no interior wet nodes cannot snap.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sides</span> <span class="o">=</span> <span class="p">(</span><span class="n">hot_side</span><span class="p">,</span> <span class="n">cold_side</span><span class="p">)</span>
+    <span class="n">fluids</span> <span class="o">=</span> <span class="p">(</span><span class="n">fluid_hot</span><span class="p">,</span> <span class="n">fluid_cold</span><span class="p">)</span>
+    <span class="n">original</span> <span class="o">=</span> <span class="p">[</span><span class="n">side</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="n">sides</span><span class="p">]</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">original</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+    <span class="n">dh</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">side</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span> <span class="o">-</span> <span class="n">side</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span><span class="p">)</span> <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="n">sides</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="mi">3</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="n">change</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">change</span> <span class="ow">in</span> <span class="n">dh</span><span class="p">):</span>
+        <span class="k">return</span>
+    <span class="n">uniform</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>  <span class="c1"># Cold-inlet to cold-outlet coordinate.</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">fraction</span><span class="p">(</span><span class="n">side_index</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">x</span> <span class="k">if</span> <span class="n">side_index</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">counter_current</span> <span class="k">else</span> <span class="n">x</span>
+
+    <span class="n">candidates</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">side_index</span><span class="p">,</span> <span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="n">fluid</span><span class="p">,</span> <span class="n">states</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">sides</span><span class="p">,</span> <span class="n">fluids</span><span class="p">,</span> <span class="n">original</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="s2">&quot;triple_point_liquid&quot;</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">pressure_min</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">fluid</span><span class="o">.</span><span class="n">triple_point_liquid</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">pressure_max</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">two_phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">states</span><span class="o">.</span><span class="n">is_two_phase</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">left</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="n">left</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">two_phase</span><span class="p">[</span><span class="n">left</span><span class="p">]</span> <span class="o">==</span> <span class="n">two_phase</span><span class="p">[</span><span class="n">right</span><span class="p">]:</span>
+                <span class="k">continue</span>
+            <span class="n">current</span><span class="p">,</span> <span class="n">outside</span> <span class="o">=</span> <span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span> <span class="k">if</span> <span class="n">two_phase</span><span class="p">[</span><span class="n">left</span><span class="p">]</span> <span class="k">else</span> <span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">current</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">count</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="nb">float</span><span class="p">(</span><span class="n">states</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">current</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">continue</span>  <span class="c1"># Preserve endpoints and nodes already on saturation.</span>
+            <span class="n">p_wet</span><span class="p">,</span> <span class="n">p_dry</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">states</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="n">current</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">states</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="n">outside</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">pressure_min</span> <span class="o">&lt;=</span> <span class="n">p_wet</span> <span class="o">&lt;</span> <span class="n">pressure_max</span>
+                    <span class="ow">and</span> <span class="n">pressure_min</span> <span class="o">&lt;=</span> <span class="n">p_dry</span> <span class="o">&lt;</span> <span class="n">pressure_max</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Single-phase trimmed Q is an entropy proxy in jaxprop, and can</span>
+            <span class="c1"># label superheated dry fluids as liquid. Classify using enthalpy.</span>
+            <span class="n">sat_dry</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">PQ_INPUTS</span><span class="p">,</span> <span class="n">p_dry</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">quality</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">states</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="n">outside</span><span class="p">])</span> <span class="o">&lt;</span> <span class="nb">float</span><span class="p">(</span><span class="n">sat_dry</span><span class="o">.</span><span class="n">h</span><span class="p">)</span> <span class="k">else</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">quality</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">sat_dry</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">PQ_INPUTS</span><span class="p">,</span> <span class="n">p_dry</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">saturated</span> <span class="o">=</span> <span class="n">sat_dry</span>
+            <span class="k">if</span> <span class="n">p_wet</span> <span class="o">!=</span> <span class="n">p_dry</span><span class="p">:</span>
+                <span class="n">sat_wet</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">PQ_INPUTS</span><span class="p">,</span> <span class="n">p_wet</span><span class="p">,</span> <span class="n">quality</span><span class="p">)</span>
+                <span class="n">r_dry</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">states</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="n">outside</span><span class="p">]</span> <span class="o">-</span> <span class="n">sat_dry</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+                <span class="n">r_wet</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">states</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="n">current</span><span class="p">]</span> <span class="o">-</span> <span class="n">sat_wet</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">r_wet</span> <span class="o">==</span> <span class="n">r_dry</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="o">-</span><span class="n">r_dry</span> <span class="o">/</span> <span class="p">(</span><span class="n">r_wet</span> <span class="o">-</span> <span class="n">r_dry</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">weight</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">p_dry</span> <span class="o">+</span> <span class="n">weight</span> <span class="o">*</span> <span class="p">(</span><span class="n">p_wet</span> <span class="o">-</span> <span class="n">p_dry</span><span class="p">)</span>
+                <span class="n">saturated</span> <span class="o">=</span> <span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">PQ_INPUTS</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">quality</span><span class="p">)</span>
+
+            <span class="n">x</span> <span class="o">=</span> <span class="n">fraction</span><span class="p">(</span><span class="n">side_index</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">saturated</span><span class="o">.</span><span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">side</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span><span class="p">))</span> <span class="o">/</span> <span class="n">dh</span><span class="p">[</span><span class="n">side_index</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">uniform</span><span class="p">[</span><span class="n">left</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">uniform</span><span class="p">[</span><span class="n">right</span><span class="p">]:</span>
+                <span class="k">continue</span>  <span class="c1"># Do not cross an existing node or duplicate an endpoint.</span>
+            <span class="n">other_index</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">side_index</span>
+            <span class="n">other</span> <span class="o">=</span> <span class="n">sides</span><span class="p">[</span><span class="n">other_index</span><span class="p">]</span>
+            <span class="n">other_fraction</span> <span class="o">=</span> <span class="n">fraction</span><span class="p">(</span><span class="n">other_index</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">other_h</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">other</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span><span class="p">)</span> <span class="o">+</span> <span class="n">other_fraction</span> <span class="o">*</span> <span class="n">dh</span><span class="p">[</span><span class="n">other_index</span><span class="p">]</span>
+            <span class="n">other_p</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">other</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span><span class="p">)</span> <span class="o">+</span> <span class="n">other_fraction</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span>
+                <span class="n">other</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span> <span class="o">-</span> <span class="n">other</span><span class="p">[</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+            <span class="n">matched</span> <span class="o">=</span> <span class="n">fluids</span><span class="p">[</span><span class="n">other_index</span><span class="p">]</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">other_h</span><span class="p">,</span> <span class="n">other_p</span><span class="p">)</span>
+            <span class="n">pair</span> <span class="o">=</span> <span class="p">(</span><span class="n">saturated</span><span class="p">,</span> <span class="n">matched</span><span class="p">)</span> <span class="k">if</span> <span class="n">side_index</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">(</span><span class="n">matched</span><span class="p">,</span> <span class="n">saturated</span><span class="p">)</span>
+            <span class="n">gap</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span> <span class="o">-</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">current</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">candidates</span> <span class="ow">or</span> <span class="n">gap</span> <span class="o">&lt;</span> <span class="n">candidates</span><span class="p">[</span><span class="n">current</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">candidates</span><span class="p">[</span><span class="n">current</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">gap</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">pair</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">candidates</span><span class="p">:</span>
+        <span class="n">duty</span> <span class="o">=</span> <span class="n">uniform</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">updated</span> <span class="o">=</span> <span class="p">[[</span><span class="n">states</span><span class="o">.</span><span class="n">at_index</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span><span class="p">)]</span> <span class="k">for</span> <span class="n">states</span> <span class="ow">in</span> <span class="n">original</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">pair</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">candidates</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">duty</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">duty</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]:</span>
+                <span class="n">duty</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+                <span class="n">updated</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">index</span><span class="p">],</span> <span class="n">updated</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">pair</span>
+        <span class="k">for</span> <span class="n">side</span><span class="p">,</span> <span class="n">states</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">sides</span><span class="p">,</span> <span class="n">updated</span><span class="p">):</span>
+            <span class="n">side</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">FluidState</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">states</span><span class="p">)</span>
+
+
 <div class="viewcode-block" id="heat_exchanger">
 <a class="viewcode-back" href="../../../source/api/thermopt.components.basic_components.html#thermopt.components.basic_components.heat_exchanger">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">heat_exchanger</span><span class="p">(</span>
@@ -309,13 +398,14 @@
     <span class="n">p_out_cold</span><span class="p">,</span>
     <span class="n">num_steps</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
     <span class="n">counter_current</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">include_saturation_nodes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Simulate a counter-current or co-current heat exchanger using discretized enthalpy and pressure profiles.</span>
 
-<span class="sd">    The heat exchange is discretized along both streams. Thermodynamic states are evaluated at linearly spaced </span>
-<span class="sd">    enthalpy and pressure points. The resulting states are ordered in the direction of increasing temperature. </span>
-<span class="sd">    For counter-current flow, the hot-side state array is flipped to enable element-wise temperature difference </span>
+<span class="sd">    The heat exchange is discretized along both streams. Thermodynamic states are evaluated at linearly spaced</span>
+<span class="sd">    enthalpy and pressure points. The resulting states are ordered in the direction of increasing temperature.</span>
+<span class="sd">    For counter-current flow, the hot-side state array is flipped to enable element-wise temperature difference</span>
 <span class="sd">    computation.</span>
 
 <span class="sd">    Parameters</span>
@@ -345,6 +435,19 @@
 <span class="sd">    counter_current : bool, optional</span>
 <span class="sd">        If True, assumes counter-current flow and flips hot-side state arrays (default is True).</span>
 
+<span class="sd">    include_saturation_nodes : bool, optional</span>
+<span class="sd">        False by default; the uniform calculation is unchanged when disabled.</span>
+<span class="sd">        After uniform evaluation, snap the first interior two-phase node next</span>
+<span class="sd">        to each single-phase region to Q=0 or Q=1. Estimate saturation pressure</span>
+<span class="sd">        by linear interpolation across that crossing, then update the opposite</span>
+<span class="sd">        stream&#39;s enthalpy AND pressure at the same heat-duty fraction.</span>
+<span class="sd">        No root finding or extra nodes. Endpoints remain unchanged.</span>
+<span class="sd">        Saturation is exact; its pressure location on the baseline path is</span>
+<span class="sd">        approximate for nonzero pressure loss. Crossings without an interior</span>
+<span class="sd">        two-phase node cannot snap. Conflicting candidates retain the smaller</span>
+<span class="sd">        temperature gap, subject to heat-duty ordering. Retain enough nodes</span>
+<span class="sd">        to resolve the two-phase regions and check accuracy with refinement.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    dict</span>
@@ -358,8 +461,8 @@
 <span class="sd">        - &#39;temperature_cold_side&#39;: ndarray, temperatures [K] for the cold side</span>
 <span class="sd">        - &#39;temperature_difference&#39;: ndarray, element-wise temperature difference [K]</span>
 <span class="sd">        - &#39;mass_flow_ratio&#39;: float, ratio of cold-side to hot-side mass flow required for heat balance</span>
-<span class="sd">    &quot;&quot;&quot;</span>    
-    
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="c1"># Evaluate properties on the hot side</span>
     <span class="n">hot_side</span> <span class="o">=</span> <span class="n">heat_transfer_process</span><span class="p">(</span>
         <span class="n">fluid</span><span class="o">=</span><span class="n">fluid_hot</span><span class="p">,</span>
@@ -384,6 +487,9 @@
     <span class="c1"># Sort values for temperature difference calculation</span>
     <span class="k">if</span> <span class="n">counter_current</span><span class="p">:</span>
         <span class="n">hot_side</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hot_side</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">flipped</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">include_saturation_nodes</span><span class="p">:</span>
+        <span class="n">_snap_saturation_nodes</span><span class="p">(</span><span class="n">hot_side</span><span class="p">,</span> <span class="n">cold_side</span><span class="p">,</span> <span class="n">fluid_hot</span><span class="p">,</span> <span class="n">fluid_cold</span><span class="p">,</span> <span class="n">counter_current</span><span class="p">)</span>
 
     <span class="c1"># Compute temperature difference</span>
     <span class="n">dT</span> <span class="o">=</span> <span class="n">hot_side</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">][</span><span class="s2">&quot;T&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">cold_side</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">][</span><span class="s2">&quot;T&quot;</span><span class="p">]</span>
@@ -417,9 +523,9 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute a discretized heat transfer process by idiscretizing enthalpy and pressure between inlet and outlet.</span>
 
-<span class="sd">    This function generates a sequence of thermodynamic states along a heat transfer path </span>
-<span class="sd">    by linearly spacing enthalpy and pressure between inlet and outlet values. </span>
-<span class="sd">    The resulting states are organized in the direction of increasing enthalpy, </span>
+<span class="sd">    This function generates a sequence of thermodynamic states along a heat transfer path</span>
+<span class="sd">    by linearly spacing enthalpy and pressure between inlet and outlet values.</span>
+<span class="sd">    The resulting states are organized in the direction of increasing enthalpy,</span>
 <span class="sd">    which for sensible heating/cooling corresponds to increasing temperature.</span>
 
 <span class="sd">    Parameters</span>
@@ -449,7 +555,7 @@
 <span class="sd">        - &#39;heat_flow&#39;: float, set to NaN (to be populated externally)</span>
 <span class="sd">        - &#39;color&#39;: str, set to &#39;black&#39; (optional use for plotting)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-        
+
     <span class="c1"># Generate linearly spaced arrays for pressure and enthalpy</span>
     <span class="n">p_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">p_1</span><span class="p">,</span> <span class="n">p_2</span><span class="p">,</span> <span class="n">num_steps</span><span class="p">)</span>
     <span class="n">h_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">h_1</span><span class="p">,</span> <span class="n">h_2</span><span class="p">,</span> <span class="n">num_steps</span><span class="p">)</span>
@@ -469,6 +575,7 @@
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="n">result</span></div>
+
 
 
 

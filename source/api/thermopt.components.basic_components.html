@@ -453,11 +453,11 @@ enthalpy states, and specific work.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="thermopt.components.basic_components.heat_exchanger">
-<span class="sig-prename descclassname"><span class="pre">thermopt.components.basic_components.</span></span><span class="sig-name descname"><span class="pre">heat_exchanger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fluid_hot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_in_hot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_out_hot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_in_hot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_out_hot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fluid_cold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_in_cold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_out_cold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_in_cold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_out_cold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">counter_current</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/components/basic_components.html#heat_exchanger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.components.basic_components.heat_exchanger" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">thermopt.components.basic_components.</span></span><span class="sig-name descname"><span class="pre">heat_exchanger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fluid_hot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_in_hot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_out_hot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_in_hot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_out_hot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fluid_cold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_in_cold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_out_cold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_in_cold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_out_cold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">counter_current</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_saturation_nodes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/components/basic_components.html#heat_exchanger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.components.basic_components.heat_exchanger" title="Link to this definition">#</a></dt>
 <dd><p>Simulate a counter-current or co-current heat exchanger using discretized enthalpy and pressure profiles.</p>
-<p>The heat exchange is discretized along both streams. Thermodynamic states are evaluated at linearly spaced 
-enthalpy and pressure points. The resulting states are ordered in the direction of increasing temperature. 
-For counter-current flow, the hot-side state array is flipped to enable element-wise temperature difference 
+<p>The heat exchange is discretized along both streams. Thermodynamic states are evaluated at linearly spaced
+enthalpy and pressure points. The resulting states are ordered in the direction of increasing temperature.
+For counter-current flow, the hot-side state array is flipped to enable element-wise temperature difference
 computation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -486,6 +486,18 @@ computation.</p>
 </dd>
 <dt><strong>counter_current</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, assumes counter-current flow and flips hot-side state arrays (default is True).</p>
 </dd>
+<dt><strong>include_saturation_nodes</strong><span class="classifier">bool, optional</span></dt><dd><p>False by default; the uniform calculation is unchanged when disabled.
+After uniform evaluation, snap the first interior two-phase node next
+to each single-phase region to Q=0 or Q=1. Estimate saturation pressure
+by linear interpolation across that crossing, then update the opposite
+stream’s enthalpy AND pressure at the same heat-duty fraction.
+No root finding or extra nodes. Endpoints remain unchanged.
+Saturation is exact; its pressure location on the baseline path is
+approximate for nonzero pressure loss. Crossings without an interior
+two-phase node cannot snap. Conflicting candidates retain the smaller
+temperature gap, subject to heat-duty ordering. Retain enough nodes
+to resolve the two-phase regions and check accuracy with refinement.</p>
+</dd>
 </dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -510,9 +522,9 @@ computation.</p>
 <dt class="sig sig-object py" id="thermopt.components.basic_components.heat_transfer_process">
 <span class="sig-prename descclassname"><span class="pre">thermopt.components.basic_components.</span></span><span class="sig-name descname"><span class="pre">heat_transfer_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fluid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/thermopt/components/basic_components.html#heat_transfer_process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#thermopt.components.basic_components.heat_transfer_process" title="Link to this definition">#</a></dt>
 <dd><p>Compute a discretized heat transfer process by idiscretizing enthalpy and pressure between inlet and outlet.</p>
-<p>This function generates a sequence of thermodynamic states along a heat transfer path 
-by linearly spacing enthalpy and pressure between inlet and outlet values. 
-The resulting states are organized in the direction of increasing enthalpy, 
+<p>This function generates a sequence of thermodynamic states along a heat transfer path
+by linearly spacing enthalpy and pressure between inlet and outlet values.
+The resulting states are organized in the direction of increasing enthalpy,
 which for sensible heating/cooling corresponds to increasing temperature.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
