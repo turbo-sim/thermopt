@@ -1,0 +1,107 @@
+# SI units: temperature [K], pressure [Pa], enthalpy [J/kg], power [W].
+solver_options:
+  library: scipy
+  method: slsqp
+  derivative_method: 2-point
+  derivative_abs_step: 1.0e-6
+  tolerance: 1.0e-6
+  max_iterations: 250
+  problem_scale: 20
+  update_on: function
+  print_convergence: true
+  plot_convergence: false
+
+problem_formulation:
+  cycle_topology: simple
+  plot_settings:
+    pinch_point_diagram: true
+    fluid:
+      plot_saturation_line: true
+      plot_critical_point: false
+      plot_quality_isolines: false
+      plot_pseudocritical_line: false
+    diagrams:
+      - {x_prop: s, y_prop: T, x_scale: linear, y_scale: linear}
+
+  fixed_parameters:
+    working_fluid: {name: Cyclopentane, backend: HEOS, exceptions: true}
+    heating_fluid: {name: Water, backend: HEOS, exceptions: true}
+    cooling_fluid: {name: Water, backend: HEOS, exceptions: true}
+    net_power: 1.0e6
+    special_points:
+      ambient_pressure: 101325
+      ambient_temperature: 293.15
+      maximum_temperature: 413.15
+    heat_source:
+      inlet_temperature: 413.15
+      minimum_temperature: 343.15
+      inlet_pressure: 1.0e6
+      exit_pressure: 1.0e6
+    heat_sink:
+      inlet_temperature: 293.15
+      inlet_pressure: 101325
+      exit_pressure: 101325
+    heater:
+      pressure_drop_hot_side: 0.01
+      pressure_drop_cold_side: 0.01
+      num_elements: 10
+      include_saturation_nodes: true
+    cooler:
+      pressure_drop_hot_side: 0.01
+      pressure_drop_cold_side: 0.01
+      num_elements: 10
+      include_saturation_nodes: true
+    expander: {efficiency: 0.9, efficiency_type: isentropic}
+    compressor: {efficiency: 0.7, efficiency_type: isentropic}
+    heat_source_pump: {efficiency: 0.7, efficiency_type: isentropic}
+    heat_sink_pump: {efficiency: 0.7, efficiency_type: isentropic}
+
+  # Every grid starts from these same rounded values for its inlet case.
+  design_variables:
+    heat_source_exit_temperature: {min: 343.15, max: 413.14, value: 353.15}
+    heat_sink_exit_temperature: {min: 298.14, max: 298.15, value: 298.145}
+    compressor_inlet_pressure: {min: 2.0e4, max: 2.0e5, value: 6.0e4}
+    compressor_inlet_enthalpy: {min: -8.0e4, max: 5.5e5, value: -3.8e4}
+    expander_inlet_pressure: {min: 2.0e5, max: 1.0e6, value: 3.0e5}
+    expander_inlet_enthalpy: {min: -8.0e4, max: 5.5e5, value: 4.68e5}
+
+  constraints:
+    - {variable: $components.heater.temperature_difference, type: ">", value: 5.0, normalize: true}
+    - {variable: $components.cooler.temperature_difference, type: ">", value: 5.0, normalize: true}
+    - {variable: $components.compressor.state_in.subcooling, type: ">", value: 1.0, normalize: true}
+    - {variable: $components.expander.pressure_ratio, type: ">", value: 1.0, normalize: true}
+    - variable: $components.expander.specific_work - $components.compressor.specific_work
+      type: ">"
+      value: 0.0
+      normalize: 10000.0
+    - variable: $components.heater.cold_side.state_out.h - $components.heater.cold_side.state_in.h
+      type: ">"
+      value: 0.0
+      normalize: 100000.0
+    - variable: $components.cooler.hot_side.state_in.h - $components.cooler.hot_side.state_out.h
+      type: ">"
+      value: 0.0
+      normalize: 100000.0
+
+  objective_function:
+    variable: $energy_analysis.system_efficiency
+    type: maximize
+
+inlet_cases:
+  superheated:
+    initial_guess: {}
+    constraints:
+      - {variable: $components.expander.state_in.superheating, type: "=", value: 20.0, normalize: true}
+      - {variable: $components.expander.state_out.superheating, type: ">", value: 0.0, normalize: 20.0}
+  partial_evaporation:
+    initial_guess:
+      heat_source_exit_temperature: 343.15
+      compressor_inlet_pressure: 5.0e4
+      compressor_inlet_enthalpy: -4.2e4
+      expander_inlet_pressure: 6.0e5
+      expander_inlet_enthalpy: 2.1e5
+    # The turbine model evaluates generalized quality: negative for liquid,
+    # between 0 and 1 for wet vapor, and above 1 for superheated vapor.
+    constraints:
+      - {variable: $components.expander.state_in.Q, type: ">", value: 0.0, normalize: 1.0}
+      - {variable: $components.expander.state_in.Q, type: "<", value: 1.0, normalize: 1.0}

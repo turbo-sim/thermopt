@@ -981,7 +981,10 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             Q_cold, T_cold, plot_params_cold = self._get_process_data(
                 HX_name + "_cold_side", "heat_flow", "T"
             )
-            Q_hot = np.flip(Q_hot)
+            # Both temperature arrays are ordered from the cold inlet. Convert
+            # hot-side heat released since its inlet to that same coordinate;
+            # reversing the values only works for a uniform, symmetric grid.
+            Q_hot = Q_hot[0] - Q_hot
 
             component = self.cycle_data["components"][HX_name]
             # params_hot = component["hot_side"]["plot_params"]

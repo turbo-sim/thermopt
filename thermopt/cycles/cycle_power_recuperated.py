@@ -124,6 +124,7 @@ def evaluate_cycle(
         p_out_cold,
         counter_current=True,
         num_steps=num_elements,
+        include_saturation_nodes=parameters.get("recuperator", {}).pop("include_saturation_nodes", False),
     )
 
     # Evaluate heater
@@ -151,6 +152,7 @@ def evaluate_cycle(
         p_out_cold,
         counter_current=True,
         num_steps=num_elements,
+        include_saturation_nodes=parameters["heater"].pop("include_saturation_nodes", False),
     )
 
     # Evaluate heat source pump
@@ -208,6 +210,7 @@ def evaluate_cycle(
         p_out_cold,
         counter_current=True,
         num_steps=num_elements,
+        include_saturation_nodes=parameters["cooler"].pop("include_saturation_nodes", False),
     )
 
     # Compute mass flow rates

@@ -11,6 +11,95 @@ import jaxprop as props
 # from .. import properties as props
 
 
+def _snap_saturation_nodes(hot_side, cold_side, fluid_hot, fluid_cold, counter_current):
+    """Move the wet node next to each phase boundary, then match the other stream.
+
+    A single linear interpolation of h - h_sat across the original crossing
+    estimates its pressure; a PQ evaluation puts the node exactly on saturation.
+    Its enthalpy determines the common heat-duty coordinate. The opposite stream
+    follows its original linear h/p path at that coordinate. With pressure loss,
+    the saturated stream's pressure location is approximate (the saturation curve
+    is nonlinear); there is no iterative solve. At constant pressure it is exact.
+
+    Only original two-phase/single-phase transitions are considered. Endpoints
+    and array lengths stay fixed. If boundaries compete for one wet node, retain
+    the smaller temperature gap. A grid with no interior wet nodes cannot snap.
+    """
+    sides = (hot_side, cold_side)
+    fluids = (fluid_hot, fluid_cold)
+    original = [side["states"] for side in sides]
+    count = len(original[0].h)
+    dh = [float(side["state_out"].h - side["state_in"].h) for side in sides]
+    if count < 3 or any(change == 0 for change in dh):
+        return
+    uniform = np.linspace(0, 1, count)  # Cold-inlet to cold-outlet coordinate.
+
+    def fraction(side_index, x):
+        return 1 - x if side_index == 0 and counter_current else x
+
+    candidates = {}
+    for side_index, (side, fluid, states) in enumerate(zip(sides, fluids, original)):
+        if not hasattr(fluid, "triple_point_liquid"):
+            continue
+        pressure_min = float(fluid.triple_point_liquid.p)
+        pressure_max = float(fluid.critical_point.p)
+        two_phase = np.asarray(states.is_two_phase, dtype=bool)
+        for left in range(count - 1):
+            right = left + 1
+            if two_phase[left] == two_phase[right]:
+                continue
+            current, outside = (left, right) if two_phase[left] else (right, left)
+            if current in (0, count - 1) or not 0 < float(states.Q[current]) < 1:
+                continue  # Preserve endpoints and nodes already on saturation.
+            p_wet, p_dry = float(states.p[current]), float(states.p[outside])
+            if not (pressure_min <= p_wet < pressure_max
+                    and pressure_min <= p_dry < pressure_max):
+                continue
+
+            # Single-phase trimmed Q is an entropy proxy in jaxprop, and can
+            # label superheated dry fluids as liquid. Classify using enthalpy.
+            sat_dry = fluid.get_state(props.PQ_INPUTS, p_dry, 0)
+            quality = 0 if float(states.h[outside]) < float(sat_dry.h) else 1
+            if quality == 1:
+                sat_dry = fluid.get_state(props.PQ_INPUTS, p_dry, 1)
+            saturated = sat_dry
+            if p_wet != p_dry:
+                sat_wet = fluid.get_state(props.PQ_INPUTS, p_wet, quality)
+                r_dry = float(states.h[outside] - sat_dry.h)
+                r_wet = float(states.h[current] - sat_wet.h)
+                if r_wet == r_dry:
+                    continue
+                weight = -r_dry / (r_wet - r_dry)
+                if not 0 < weight < 1:
+                    continue
+                p = p_dry + weight * (p_wet - p_dry)
+                saturated = fluid.get_state(props.PQ_INPUTS, p, quality)
+
+            x = fraction(side_index, (float(saturated.h) - float(side["state_in"].h)) / dh[side_index])
+            if not uniform[left] < x < uniform[right]:
+                continue  # Do not cross an existing node or duplicate an endpoint.
+            other_index = 1 - side_index
+            other = sides[other_index]
+            other_fraction = fraction(other_index, x)
+            other_h = float(other["state_in"].h) + other_fraction * dh[other_index]
+            other_p = float(other["state_in"].p) + other_fraction * float(
+                other["state_out"].p - other["state_in"].p)
+            matched = fluids[other_index].get_state(props.HmassP_INPUTS, other_h, other_p)
+            pair = (saturated, matched) if side_index == 0 else (matched, saturated)
+            gap = float(pair[0].T - pair[1].T)
+            if current not in candidates or gap < candidates[current][0]:
+                candidates[current] = (gap, x, pair)
+    if candidates:
+        duty = uniform.copy()
+        updated = [[states.at_index(i) for i in range(count)] for states in original]
+        for index, (_, x, pair) in sorted(candidates.items()):
+            if duty[index - 1] < x < duty[index + 1]:
+                duty[index] = x
+                updated[0][index], updated[1][index] = pair
+        for side, states in zip(sides, updated):
+            side["states"] = props.FluidState.stack(states)
+
+
 def heat_exchanger(
     fluid_hot,
     h_in_hot,
@@ -24,13 +113,14 @@ def heat_exchanger(
     p_out_cold,
     num_steps=50,
     counter_current=True,
+    include_saturation_nodes=False,
 ):
     """
     Simulate a counter-current or co-current heat exchanger using discretized enthalpy and pressure profiles.
 
-    The heat exchange is discretized along both streams. Thermodynamic states are evaluated at linearly spaced 
-    enthalpy and pressure points. The resulting states are ordered in the direction of increasing temperature. 
-    For counter-current flow, the hot-side state array is flipped to enable element-wise temperature difference 
+    The heat exchange is discretized along both streams. Thermodynamic states are evaluated at linearly spaced
+    enthalpy and pressure points. The resulting states are ordered in the direction of increasing temperature.
+    For counter-current flow, the hot-side state array is flipped to enable element-wise temperature difference
     computation.
 
     Parameters
@@ -60,6 +150,19 @@ def heat_exchanger(
     counter_current : bool, optional
         If True, assumes counter-current flow and flips hot-side state arrays (default is True).
 
+    include_saturation_nodes : bool, optional
+        False by default; the uniform calculation is unchanged when disabled.
+        After uniform evaluation, snap the first interior two-phase node next
+        to each single-phase region to Q=0 or Q=1. Estimate saturation pressure
+        by linear interpolation across that crossing, then update the opposite
+        stream's enthalpy AND pressure at the same heat-duty fraction.
+        No root finding or extra nodes. Endpoints remain unchanged.
+        Saturation is exact; its pressure location on the baseline path is
+        approximate for nonzero pressure loss. Crossings without an interior
+        two-phase node cannot snap. Conflicting candidates retain the smaller
+        temperature gap, subject to heat-duty ordering. Retain enough nodes
+        to resolve the two-phase regions and check accuracy with refinement.
+
     Returns
     -------
     dict
@@ -73,8 +176,8 @@ def heat_exchanger(
         - 'temperature_cold_side': ndarray, temperatures [K] for the cold side
         - 'temperature_difference': ndarray, element-wise temperature difference [K]
         - 'mass_flow_ratio': float, ratio of cold-side to hot-side mass flow required for heat balance
-    """    
-    
+    """
+
     # Evaluate properties on the hot side
     hot_side = heat_transfer_process(
         fluid=fluid_hot,
@@ -99,6 +202,9 @@ def heat_exchanger(
     # Sort values for temperature difference calculation
     if counter_current:
         hot_side["states"] = hot_side["states"].flipped()
+
+    if include_saturation_nodes:
+        _snap_saturation_nodes(hot_side, cold_side, fluid_hot, fluid_cold, counter_current)
 
     # Compute temperature difference
     dT = hot_side["states"]["T"] - cold_side["states"]["T"]
@@ -129,9 +235,9 @@ def heat_transfer_process(fluid, h_1, p_1, h_2, p_2, num_steps=25):
     """
     Compute a discretized heat transfer process by idiscretizing enthalpy and pressure between inlet and outlet.
 
-    This function generates a sequence of thermodynamic states along a heat transfer path 
-    by linearly spacing enthalpy and pressure between inlet and outlet values. 
-    The resulting states are organized in the direction of increasing enthalpy, 
+    This function generates a sequence of thermodynamic states along a heat transfer path
+    by linearly spacing enthalpy and pressure between inlet and outlet values.
+    The resulting states are organized in the direction of increasing enthalpy,
     which for sensible heating/cooling corresponds to increasing temperature.
 
     Parameters
@@ -161,7 +267,7 @@ def heat_transfer_process(fluid, h_1, p_1, h_2, p_2, num_steps=25):
         - 'heat_flow': float, set to NaN (to be populated externally)
         - 'color': str, set to 'black' (optional use for plotting)
     """
-        
+
     # Generate linearly spaced arrays for pressure and enthalpy
     p_array = np.linspace(p_1, p_2, num_steps)
     h_array = np.linspace(h_1, h_2, num_steps)
@@ -181,6 +287,7 @@ def heat_transfer_process(fluid, h_1, p_1, h_2, p_2, num_steps=25):
     }
 
     return result
+
 
 
 def compression_process(
