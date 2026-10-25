@@ -20,8 +20,8 @@ PyYAML = "^6.0.2"
 toml = "^0.10.2"
 cycler = "^0.12.1"
 imageio = {extras = ["ffmpeg"], version = "^2.37.0"}
-pysolver_view = "^0.6.8"
-jaxprop = "^0.4.1"
+pysolver_view = "^0.7.1"
+jaxprop = "^0.5.7"
 #jaxprop = { path = "../jaxprop/", develop = true }
 #pysolver_view = { path = "../pysolver_view/", develop = true }
 #coolpropx = { path = "../coolpropx/", develop = true }
