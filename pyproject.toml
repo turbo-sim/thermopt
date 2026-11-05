@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "thermopt"
 version = "0.2.5"
-description = "A Python tool for the analysis and optimization of thermodynamic cycles."
+description = "Python package for modelling and optimization of thermodynamic cycles, including power generation, refrigeration, and energy storage applications."
 authors = ["Roberto Agromayor"]
 license = "MIT"
 readme = "README.md"

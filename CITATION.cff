@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+type: software
+message: If you use this software, please cite it using this metadata and record the version or commit used.
+title: 'ThermoOpt: Python package for modelling and optimization of thermodynamic cycles, including power generation,
+  refrigeration, and energy storage applications'
+abstract: Python package for modelling and optimization of thermodynamic cycles, including power generation, refrigeration,
+  and energy storage applications.
+authors:
+- family-names: Agromayor
+  given-names: Roberto
+  orcid: https://orcid.org/0009-0009-9289-1130
+version: 0.2.5
+repository-code: https://github.com/turbo-sim/thermopt
+url: https://github.com/turbo-sim/thermopt

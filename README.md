@@ -1,6 +1,6 @@
 # ThermoOpt
 
-``ThermoOpt`` is a Python package for the modeling and optimization of thermodynamic cycles.
+Python package for modelling and optimization of thermodynamic cycles, including power generation, refrigeration, and energy storage applications.
 
 📚 **Documentation**: [https://turbo-sim.github.io/thermopt/](https://turbo-sim.github.io/thermopt/) *(under construction)*  
 📦 **PyPI package**: [https://pypi.org/project/thermopt/](https://pypi.org/project/thermopt/)
@@ -86,3 +86,11 @@ Each example:
 - Outputs results in a subdirectory called `results/`
 
 To run any example, navigate to the corresponding subfolder and execute the optimization script.
+
+<!-- research-software-metadata:start -->
+## Development and citation
+
+Roberto Agromayor is the main developer of ThermoOpt.
+
+Citation metadata is provided in [CITATION.cff](CITATION.cff). For version-specific reproducibility, also record the release or commit used.
+<!-- research-software-metadata:end -->
