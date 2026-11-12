@@ -1,0 +1,36 @@
+{
+  "optimization_backend": "thermopt.native",
+  "optimization_entrypoint": "thermopt.ThermodynamicCycleOptimization",
+  "problem_class": "thermopt.optimize_cycle.ThermodynamicCycleProblem",
+  "python": "3.13.2",
+  "native_source_sha256": {
+    "optimize_cycle.py": "0dce8cef91c8b89715cf0952e66bb3ec11eb1769d2cd2767531a4d9fa13500a0",
+    "cycles\\__init__.py": "2bd515b3842e2c808a718cd2ba14c7a7d5e9f3e3da0053df8d59fd549d78c5b8",
+    "cycles\\cycle_power_recuperated.py": "5fac6404356b74e5eb642ca3e7e8a2aca9264ee6f4d415121cb1052e0e234002",
+    "cycles\\cycle_power_simple.py": "8718f4438488cf7c75c0e2b95a0f8ec6c701bb6e9e94dcb3a9f21b4820d31a77",
+    "cycles\\cycle_power_split_compression.py": "24bcc5381944bfa6a1685bd820487ec6b13945f62a6a5917d10210a7bfa64159",
+    "cycles\\cycle_PTES_recuperated.py": "f6e0145470420a76008e400f114bfad4b0d165f3ca0417b64d1e168f382b01fa",
+    "cycles\\cycle_PTES_recuperated_turbo.py": "4fa561342b3b32d0a2b60ee886627c7cb563fa4ed0482497c132f0f289b3237d",
+    "cycles\\cycle_refrigeration_recuperated.py": "073b936cf10d4b5da17415470256d3acc382d75634131542877512a2141e48fa",
+    "cycles\\cycle_refrigeration_simple.py": "22b98611bb24fc6fd469b68520f9eb32b7f2a81b1fa22e902b0ee82859561b35",
+    "components\\__init__.py": "9cbe465b34054b23b3605f2674d4ae07e052e9af087454b1fe67a41b62591bf0",
+    "components\\basic_components.py": "84d6f7ba3d6eeab1776a9529c8cf1aef749c4fa1707743ab3e41295ee9102c76",
+    "components\\heat_exchanger_plates.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "components\\turbomachinery_nondimensional.py": "c68ccdd4c864c68229fe1869642d6f21ac4a9636557fa8caa986125e73ea455e"
+  },
+  "packages": {
+    "thermopt": "0.2.5",
+    "jaxprop": "0.5.7",
+    "pysolver_view": "0.7.1",
+    "CoolProp": "7.2.0",
+    "scipy": "1.17.1",
+    "numpy": "2.4.4",
+    "matplotlib": "3.10.8"
+  },
+  "source_files_sha256": {
+    "RE_ EMPOWER Project - ORC Conference.eml": "e65ab38e9a3dde5eafef016666bb699547cd9976511aee3dcaa1d06d19ae7be7",
+    "summary results.xlsx": "d06dde31801797582884d727d98d3b682c83fc5459a3dfc59dabcc4eed4856ee",
+    "summary results_rev1.xlsx": "56efa192d24f13a905d3a299af2c6aa9b4bda11a339cd63f8616e4dcb682ce16"
+  },
+  "initialization": "Previously converged archived states; every finite-heat case is optimized again by native ThermoOpt."
+}

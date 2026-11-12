@@ -1,0 +1,121 @@
+cycle_topology: simple
+plot_settings:
+  pinch_point_diagram: true
+  fluid:
+    plot_saturation_line: true
+    plot_critical_point: false
+    plot_quality_isolines: false
+    plot_pseudocritical_line: false
+  diagrams:
+  - x_prop: s
+    y_prop: T
+    x_scale: linear
+    y_scale: linear
+fixed_parameters:
+  working_fluid:
+    name: n-Butane
+    backend: HEOS
+    exceptions: true
+  heating_fluid:
+    name: Water
+    backend: HEOS
+    exceptions: true
+  cooling_fluid:
+    name: Water
+    backend: HEOS
+    exceptions: true
+  net_power: 1000000.0
+  special_points:
+    ambient_pressure: 101325
+    ambient_temperature: 288.15
+    maximum_temperature: 413.15
+  heat_source:
+    inlet_temperature: 413.15
+    minimum_temperature: 293.15
+    inlet_pressure: 1000000
+    exit_pressure: 1000000
+  heat_sink:
+    inlet_temperature: 288.15
+    inlet_pressure: 101325
+    exit_pressure: 101325
+  heater:
+    pressure_drop_hot_side: 0.01
+    pressure_drop_cold_side: 0.01
+    num_elements: 100
+  cooler:
+    pressure_drop_hot_side: 0.01
+    pressure_drop_cold_side: 0.01
+    num_elements: 100
+  expander:
+    efficiency: 0.6
+    efficiency_type: isentropic
+  compressor:
+    efficiency: 0.7
+    efficiency_type: isentropic
+  heat_source_pump:
+    efficiency: 0.7
+    efficiency_type: isentropic
+  heat_sink_pump:
+    efficiency: 0.7
+    efficiency_type: isentropic
+design_variables:
+  heat_source_exit_temperature:
+    min: 293.15
+    max: 413.14
+    value: 308.767036573936
+  heat_sink_exit_temperature:
+    min: 298.05
+    max: 298.25
+    value: 298.15
+  compressor_inlet_pressure:
+    min: 103225.78946409265
+    max: 3606200.0165450186
+    value: 276396.64001659624
+  compressor_inlet_enthalpy:
+    min: 199999.9999999989
+    max: 602172.8444916772
+    value: 260092.14142020274
+  expander_inlet_pressure:
+    min: 103225.78946409265
+    max: 3606200.0165450186
+    value: 2302301.427747687
+  expander_inlet_enthalpy:
+    min: 199999.9999999989
+    max: 904023.4632723817
+    value: 562827.0373459607
+constraints:
+- variable: $components.heater.temperature_difference
+  type: '>'
+  value: 4.5
+  normalize: true
+- variable: $components.cooler.temperature_difference
+  type: '>'
+  value: 4.5
+  normalize: true
+- variable: $components.compressor.state_in.subcooling
+  type: '>'
+  value: 1.0
+  normalize: true
+- variable: $components.cooler.cold_side.state_out.T
+  type: '='
+  value: 298.15
+  normalize: 1.0
+- variable: $components.expander.pressure_ratio
+  type: '>'
+  value: 1.0
+  normalize: true
+- variable: $components.expander.specific_work - $components.compressor.specific_work
+  type: '>'
+  value: 0.0
+  normalize: 10000.0
+- variable: $components.heater.cold_side.state_out.h - $components.heater.cold_side.state_in.h
+  type: '>'
+  value: 0.0
+  normalize: 100000.0
+- variable: $components.cooler.hot_side.state_in.h - $components.cooler.hot_side.state_out.h
+  type: '>'
+  value: 0.0
+  normalize: 100000.0
+objective_function:
+  variable: $energy_analysis.system_efficiency
+  type: maximize

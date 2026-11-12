@@ -1,2 +1,3 @@
-/results/
-/seed_results/
+/output/
+__pycache__/
+*.py[cod]

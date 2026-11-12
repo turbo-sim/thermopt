@@ -1,11 +1,11 @@
 # Shared inputs. Fluid, topology, property-based bounds and inlet constraints
-# are supplied by run_fluid_comparison.py after loading this file.
+# are supplied by scripts/study.py after loading this file.
 solver_options:
   library: scipy
   method: slsqp
   derivative_method: 2-point
   derivative_abs_step: 1e-6
-  print_convergence: true
+  print_convergence: false
   plot_convergence: false
   logger: null
   # Track function evaluations so the native solver retains the final SLSQP
@@ -47,7 +47,7 @@ problem_formulation:
     net_power: 1.0e6
     special_points:
       ambient_pressure: 101325
-      ambient_temperature: 293.15
+      ambient_temperature: 288.15
       maximum_temperature: 413.15
     heat_source:
       inlet_temperature: 413.15
@@ -55,7 +55,7 @@ problem_formulation:
       inlet_pressure: 1000000
       exit_pressure: 1000000
     heat_sink:
-      inlet_temperature: 293.15
+      inlet_temperature: 288.15
       inlet_pressure: 101325
       exit_pressure: 101325
     heater:
@@ -67,7 +67,7 @@ problem_formulation:
       pressure_drop_cold_side: 0.01
       num_elements: 100
     expander:
-      efficiency: 0.90
+      efficiency: 0.886
       efficiency_type: isentropic
     compressor:
       efficiency: 0.7
@@ -86,10 +86,10 @@ problem_formulation:
       max: 413.14
       value: null
     heat_sink_exit_temperature:
-      # Approximately 20 -> 25 degC cooling water; 0.01 K bound width.
-      min: 298.14
-      max: 298.15
-      value: 298.145
+      # Exactly 25 degC through an equality constraint added by study.py.
+      min: 298.05
+      max: 298.25
+      value: 298.15
     compressor_inlet_pressure: null
     compressor_inlet_enthalpy: null
     expander_inlet_pressure: null
@@ -98,11 +98,11 @@ problem_formulation:
   constraints:
     - variable: $components.heater.temperature_difference
       type: ">"
-      value: 5.0
+      value: 4.5
       normalize: true
     - variable: $components.cooler.temperature_difference
       type: ">"
-      value: 5.0
+      value: 4.5
       normalize: true
     - variable: $components.compressor.state_in.subcooling
       type: ">"

@@ -1,356 +1,375 @@
-# Partial evaporation in geothermal Rankine cycles: butane, cyclopentane and Novec 649
+# Partial evaporation in geothermal Rankine cycles
 
-Partial evaporation in organic Rankine cycles can improve heat recovery from sources with a temperature glide by reducing the isothermal evaporation duty and modifying the temperature profile of heat addition. However, these benefits must compensate for any reduction in expander efficiency associated with two-phase operation. This study examines how the minimum permissible heat-source outlet temperature and expander efficiency determine when partial evaporation increases net power production. Simple cycles using n-butane and cyclopentane and a recuperated cycle using Novec 649 are optimized for a 140 °C water source and 20 °C cooling-water inlet. A sensitivity analysis comprising 360 optimized cases varies the minimum source outlet temperature from 135 to 20 °C and the expander efficiency from 60% to 90%. Each configuration is compared with its corresponding superheated cycle at 90% expander efficiency, using net power per unit source flow as the comparison basis. At equal expander efficiencies of 90% and a minimum source outlet temperature of 70 °C, partial evaporation increases net power by 6.5%, 15.2%, and 13.1% for n-butane, cyclopentane, and Novec 649, respectively. Relaxing this limit to 20 °C increases the gains to 40.8%, 59.3%, and 42.7%, through combined improvements in heat recovery and heat conversion. At this limit, gains remain positive with an 80%-efficient expander, reaching 22.8%, 40.6%, and 26.2%, respectively; only cyclopentane retains a positive gain at 60% efficiency. The corresponding designs at 90% efficiency require wet-to-wet expansion for n-butane and cyclopentane, whereas Novec 649 achieves wet-to-dry expansion. These results identify deeper source cooling as a major driver of the benefit of partial evaporation and quantify the expander performance needed to retain that benefit. 
+Updated EMPOWER study: n-butane, n-pentane, cyclopentane and Novec 649. The boundary conditions follow Nishith's 20 October 2026 request and Cristina's 19 October clarification. The standard-cycle reference and the 70 °C comparison use Cristina's 88.6% turbine isentropic efficiency. Partial-evaporation sensitivities retain 90%, 80%, 70% and 60% efficiency.
 
-- [Partial evaporation in geothermal Rankine cycles: butane, cyclopentane and Novec 649](#partial-evaporation-in-geothermal-rankine-cycles-butane-cyclopentane-and-novec-649)
-  - [1. Boundary conditions and optimization formulation](#1-boundary-conditions-and-optimization-formulation)
-  - [2. Comparison of fluid and cycle configurations](#2-comparison-of-fluid-and-cycle-configurations)
-  - [3. Sensitivity rationale and initialization](#3-sensitivity-rationale-and-initialization)
-  - [4. Butane: simple cycle](#4-butane-simple-cycle)
-  - [5. Cyclopentane: simple cycle](#5-cyclopentane-simple-cycle)
-  - [6. Novec 649: recuperated cycle](#6-novec-649-recuperated-cycle)
-  - [7. Cross-fluid interpretation and limits](#7-cross-fluid-interpretation-and-limits)
+At equal 88.6% turbine efficiency and a 70 °C source-outlet limit, partial evaporation changes net power per geothermal flow by n-Butane +4.50%, n-Pentane +7.50%, Cyclopentane +13.69%, Novec649 +12.07% relative to each fluid's own standard cycle. The highest output among these eight saved designs is 42.181 kW per kg/s, for novec partial evaporation. Deeper permitted source cooling can increase the advantage by improving heat recovery as well as conversion. These boundary-condition changes include the cooling-water inlet and turbine reference, so differences from the previous report cannot be attributed to pinch alone.
 
-## 1. Boundary conditions and optimization formulation
+## 1. Boundary conditions and interpretation
 
-### 1.1 Common conditions
-
-| Parameter | Value |
+| Parameter | Setting |
 |---|---|
-| Source water | 140 °C, 10 bar |
-| Source minimum outlet | 70 °C for the six-case comparison; 140–20 °C in 5 K steps for sensitivities |
-| Cooling water | 20 °C inlet; 24.99–25.00 °C outlet |
-| Net cycle power used to size every design | 1 MW after the working-fluid pump, before external-water pumps |
-| Working fluids and architectures | Simple n-butane; simple cyclopentane; recuperated Novec 649 |
-| Expander efficiency | 90% for superheated baselines; 90%, 80%, 70%, 60% for partial evaporation |
-| Pump efficiencies | 70% |
-| Exchanger pressure losses | 1% per active side |
-| Minimum exchanger approach | 5 K at 100 evaporator/condenser locations; 25 recuperator locations |
+| Source water | 140 °C; 10 bar |
+| Cooling water | 15 °C inlet; exactly 25 °C return |
+| External heater / condenser minimum approach | 4.5 K; 100 locations each |
+| Novec internal recuperator | 5 K minimum approach; 25 locations; optimized effectiveness |
+| Source minimum outlet | 70 °C comparison; 140 to 20 °C in 5 K sensitivity steps |
+| Standard-cycle turbine efficiency | 88.6% throughout |
+| Partial-evaporation turbine efficiency | 90%, 80%, 70%, 60%; additional 88.6% cases at 70 °C |
+| Standard inlet / outlet | 2 K inlet superheat; dry expander outlet |
+| Partial evaporation | Optimized inlet pressure and enthalpy; wet inlet and dry outlet not imposed |
+| Architectures | Simple n-butane, n-pentane and cyclopentane; recuperated Novec 649 |
+| Pumps / pressure drops | 70% isentropic pump efficiencies; 1% per active exchanger side |
 | Working-fluid pump inlet | At least 1 K subcooling |
-| Superheated formulation | 2 K inlet superheat and dry expander outlet |
-| Partial-evaporation formulation | Optimized inlet state; no fixed quality or dry-outlet constraint |
+| Sizing | 1 MW expander output minus working-fluid pump; external pumps deducted subsequently |
+| Optimization | SLSQP, tolerance 1e-6, maximum 250 iterations per attempt |
 
-### 1.2 Optimization variables
+The 4.5 K instruction applies to the external hot exchangers and condensation side for both cycle types. The existing 5 K internal-recuperator assumption is retained because the exchange does not explicitly revise it. The original 2 K superheat, pump efficiencies, pressure losses and architecture assumptions are also retained. The spreadsheets do not fully specify these quantities, generator losses or auxiliary-power accounting, so this study aligns the stated boundary conditions rather than claiming an exact reproduction of EXERGY electrical outputs.
+
+A 70 °C source limit is a lower bound, not a fixed outlet. The optimizer can leave the source warmer. Permission to cool the source to 20 °C likewise does not mean the optimum reaches 20 °C.
+
+### Optimization variables
 
 | Variable | Role |
 |---|---|
-| Source outlet temperature | Amount of source cooling, subject to the reinjection limit |
-| Cooling-water outlet temperature | Approximately 5 K total warming |
-| Working-fluid pump inlet pressure and enthalpy | Low-pressure state and subcooling |
-| Expander inlet pressure and enthalpy | High-pressure state and inlet phase |
-| Recuperator effectiveness | 0–1, Novec only |
+| Source outlet temperature | Optimized above the case's minimum outlet |
+| Cooling-water outlet temperature | Retained as a variable and constrained to exactly 25 °C |
+| Working-fluid pump inlet pressure and enthalpy | Low-pressure state and at least 1 K subcooling |
+| Expander inlet pressure and enthalpy | High-pressure state and admission phase |
+| Recuperator effectiveness | Optimized between 0 and 1 for Novec only |
 
-Mass flows follow from the states, heat balances and 1 MW sizing target. Pressure and enthalpy bounds are broad and property-based. Each initial state comes from a saved coarse-grid optimum; the partial-evaporation formulation does not constrain the inlet quality.
+Mass flows follow from the optimized states, heat balances and 1 MW cycle-sizing target. State bounds are broad and property-based. The standard-cycle superheat and dry-outlet constraints restrict the same inlet-state variables that remain flexible in the partial-evaporation formulation.
 
-### 1.3 Fixed-reference efficiency and comparison basis
+## 2. Normalization and computation
 
-The efficiency contours and baseline performance curves use net system power after all pumps divided by the source heat available between **140 and 20 °C**, at the source pressure of 10 bar:
+Fixed-reference efficiency is net system power divided by source mass flow and the water enthalpy drop from 140 to 15 °C at 10 bar. This reference heat is 525.639 kJ/kg. It is common to all designs, and efficiency therefore tracks net power per unit geothermal flow directly. Nominal exploitation is 100 × (140 − minimum outlet) / 125; actual exploitation replaces the minimum by the achieved outlet. A 20 °C limit corresponds to 96% nominal exploitation on this reference.
 
-```text
-ηfixed = net system power / [source mass flow × (hwater(140 °C, 10 bar) − hwater(20 °C, 10 bar))]
-```
+ThermoOpt's native system-efficiency objective uses available source heat down to each case's minimum outlet. At a fixed limit, maximizing that objective is equivalent to maximizing fixed-reference efficiency or net power per unit source flow. Reported powers at 194.44 kg/s scale each design to the source flow in Cristina's workbook. They remain model net powers before any separately specified generator losses.
 
-The reference enthalpy drop is **504.723 kJ/kg** for every case. This efficiency is directly proportional to net system power per source flow, so deeper permissible cooling is assessed on the same energy basis. The 1 MW cycle sizing does not imply equal geothermal flow.
+Every finite-heat case is optimized through the public thermopt.ThermodynamicCycleOptimization entry point using its native ThermodynamicCycleProblem, cycle equations and component models. No custom fitness function or alternate cycle evaluator is used. The previously converged designs supply initial guesses only. Each attempt preserves its complete case.yaml, initial and final configurations, convergence history, solver log and optimization report. Positive physical flows and work, constraint satisfaction and energy balance are checked before acceptance. Native source-code hashes are recorded so the implementation can be verified. A numerical solution is not proof of global optimality or real two-phase expander performance.
 
-## 2. Comparison of fluid and cycle configurations
+| Fluid | Accepted finite-heat cases | Failed finite-heat cases | Zero-heat unavailable |
+|---|---|---|---|
+| n-Butane | 121 | 0 | 5 |
+| n-Pentane | 121 | 0 | 5 |
+| Cyclopentane | 121 | 0 | 5 |
+| Novec649 | 121 | 0 | 5 |
 
-All six designs use a 70 °C reinjection limit and 90% expander efficiency. This table uses **superheated cyclopentane** as the common baseline; the sensitivities below use each fluid's own baseline.
+There are 484 finite-heat designs: 24 temperatures × five designs × four fluids, plus four partial-evaporation designs at 88.6% for the 70 °C comparison. The 20 requested combinations at a 140 °C minimum outlet cannot release geothermal heat and are unavailable. Each fluid's sensitivity gain uses its standard cycle at 88.6% and the matching source-outlet limit.
 
-| Case | Inlet vapor [%] | Outlet vapor [%] | Source outlet [°C] | Gain vs cyclopentane baseline [%] | Variable-reference system efficiency [%] | Fixed-reference system efficiency [%] |
-|---|---:|---:|---:|---:|---:|---:|
-| cyclopentane superheated | 100.00 | 100.00 | 70.11 | +0.00 | 11.5486 | 6.7663 |
-| cyclopentane partial evaporation | 15.95 | 51.32 | 70.00 | +15.24 | 13.3084 | 7.7974 |
-| butane superheated | 100.00 | 100.00 | 70.48 | +6.17 | 12.2615 | 7.1840 |
-| butane partial evaporation | 57.00 | 85.40 | 70.00 | +13.03 | 13.0528 | 7.6476 |
-| novec superheated | 100.00 | 100.00 | 70.00 | +8.92 | 12.5792 | 7.3702 |
-| novec partial evaporation | 60.80 | 100.00 | 70.00 | +23.20 | 14.2273 | 8.3358 |
+## 3. Eight-case comparison at 70 °C and 88.6% turbine efficiency
 
-Each fluid has a separate 2 × 2 comparison: superheated and partial-evaporation designs occupy the left and right columns, with T–s diagrams above T–Q diagrams.
+| Case | Inlet vapor % | Outlet vapor % | Source out °C | Net kW/(kg/s) | Gain vs standard n-butane % | Gain vs same-fluid standard % |
+|---|---|---|---|---|---|---|
+| butane superheated | 100.00 | 100.00 | 70.00 | 36.780 | +0.00 | +0.00 |
+| butane partial evaporation | 58.00 | 86.45 | 70.00 | 38.436 | +4.50 | +4.50 |
+| pentane superheated | 100.00 | 100.00 | 70.00 | 36.128 | -1.77 | +0.00 |
+| pentane partial evaporation | 23.11 | 71.39 | 70.00 | 38.838 | +5.60 | +7.50 |
+| cyclopentane superheated | 100.00 | 100.00 | 70.01 | 34.436 | -6.37 | +0.00 |
+| cyclopentane partial evaporation | 16.15 | 51.89 | 70.00 | 39.150 | +6.45 | +13.69 |
+| novec superheated | 100.00 | 100.00 | 70.00 | 37.639 | +2.34 | +0.00 |
+| novec partial evaporation | 61.15 | 100.00 | 70.00 | 42.181 | +14.69 | +12.07 |
 
-![Cyclopentane: simple cycle: superheated and partial evaporation, T–s above T–Q](results/fluid_comparison/comparison_grid_cyclopentane.png)
+The common cross-fluid reference is standard n-butane, matching Cristina's spreadsheet. The same-fluid column isolates the change in inlet-state formulation at equal turbine efficiency. Superheated vapor is displayed as 100% quality; raw quality extensions remain in the data. Partial evaporation may produce wet-to-wet, wet-to-dry or dry-to-dry endpoints.
 
-![Butane: simple cycle: superheated and partial evaporation, T–s above T–Q](results/fluid_comparison/comparison_grid_butane.png)
+The comparison exporter writes optimal_solution.xlsx with native cycle states and energy analysis, and design_variable_bounds.csv with the saved optimum, lower and upper bounds, fractional distance to the nearest bound and active-bound flags. Each case has its own directory under output/results/fluid_comparison/. The HTML comparison page offers the generated downloads when available. A bound is flagged when the optimum lies within 0.01% of its variable range.
 
-![Novec 649: recuperated cycle: superheated and partial evaporation, T–s above T–Q](results/fluid_comparison/comparison_grid_novec.png)
+![n-Butane: simple cycle: standard and partial evaporation; T-s above T-Q; turbine efficiency 88.6%.](output/results/fluid_comparison/comparison_grid_butane.png)
 
-Relative to each fluid's own superheated design, the partial-evaporation gains at this limit are **+6.45% for Butane**, **+15.24% for Cyclopentane**, **+13.10% for Novec 649**. The highest fixed-reference efficiency is **8.34%**, for **novec partial evaporation**. The optimized source outlets differ, so the comparison includes both heat-recovery and heat-conversion effects.
+[Embeddable HTML](output/results/fluid_comparison/comparison_grid_butane.html) · [SVG](output/results/fluid_comparison/comparison_grid_butane.svg) · [PDF](output/results/fluid_comparison/comparison_grid_butane.pdf)
 
+![n-Pentane: simple cycle: standard and partial evaporation; T-s above T-Q; turbine efficiency 88.6%.](output/results/fluid_comparison/comparison_grid_pentane.png)
 
-## 3. Sensitivity rationale and initialization
+[Embeddable HTML](output/results/fluid_comparison/comparison_grid_pentane.html) · [SVG](output/results/fluid_comparison/comparison_grid_pentane.svg) · [PDF](output/results/fluid_comparison/comparison_grid_pentane.pdf)
 
-### 3.1 Physical question and grid
+![Cyclopentane: simple cycle: standard and partial evaporation; T-s above T-Q; turbine efficiency 88.6%.](output/results/fluid_comparison/comparison_grid_cyclopentane.png)
 
-Wet admission can reduce the isothermal evaporation duty and alter source matching, while an efficiency penalty reduces work recovered in expansion. The sensitivity tests where the former benefit outweighs the latter. There are **24 finite-heat temperatures × five designs = 120 optimized points per fluid**, or **360 total**. The 140 °C limit permits no geothermal temperature drop and makes ThermoOpt's available-heat denominator zero. Its 15 requested combinations are recorded as unavailable, not as zero-efficiency cycles.
+[Embeddable HTML](output/results/fluid_comparison/comparison_grid_cyclopentane.html) · [SVG](output/results/fluid_comparison/comparison_grid_cyclopentane.svg) · [PDF](output/results/fluid_comparison/comparison_grid_cyclopentane.pdf)
 
+![Novec 649: recuperated cycle: standard and partial evaporation; T-s above T-Q; turbine efficiency 88.6%.](output/results/fluid_comparison/comparison_grid_novec.png)
 
+[Embeddable HTML](output/results/fluid_comparison/comparison_grid_novec.html) · [SVG](output/results/fluid_comparison/comparison_grid_novec.svg) · [PDF](output/results/fluid_comparison/comparison_grid_novec.pdf)
 
-### 3.2 Plot conventions
+## 4. Comparison with Cristina's revised workbook
 
-Nominal exploitation is `100 × (140 − minimum outlet) / 120`; actual exploitation replaces the minimum with the optimized outlet. Both use 20 °C as the reference. Quality is shown in percent: 0% includes liquid and 100% includes superheated vapor. Dark blue indicates more liquid. Contour lines label the interpolated bands. The T–s/T–Q overlays use every other temperature at 90% expander efficiency, thin lines, and magma restricted to colormap coordinates 0.25–0.75. Their native cumulative heat-duty coordinate uses the 1 MW sizing basis.
+The original and revised workbooks report the same performance values. The revision adds condenser-inlet pressures and clarifies turbine-inlet pressure. The overlapping cases below are compared at 194.44 kg/s source flow. Pressures and inlet qualities in that workbook are optimized outputs, so they are validation targets rather than imposed inputs. The standard cyclopentane condenser-inlet pressure is blank in the workbook.
 
-## 4. Butane: simple cycle
+| Case | Workbook net kWe | Model net kW | Turbine p: workbook / model bar | Condenser p: workbook / model bar | Inlet vapor: workbook / model % |
+|---|---|---|---|---|---|
+| butane superheated | 6795.8 | 7151.4 | 13.55 / 13.46 | 2.77 / 2.72 | 100.0 / 100.0 |
+| pentane superheated | 6396.0 | 7024.8 | 4.34 / 4.64 | 0.78 / 0.77 | 100.0 / 100.0 |
+| pentane partial evaporation | 7061.0 | 7551.8 | 8.33 / 9.33 | 0.81 / 0.81 | 31.0 / 23.1 |
+| cyclopentane superheated | 5917.0 | 6695.7 | 2.81 / 2.63 | unavailable / 0.50 | 100.0 / 100.0 |
+| cyclopentane partial evaporation | 6988.0 | 7612.3 | 6.09 / 6.61 | 0.51 / 0.50 | 19.0 / 16.2 |
 
-### 4.1 Superheated baseline
+Source: summary results_rev1.xlsx, Summary_results!C5:I17; assumptions clarified in RE: EMPOWER Project - ORC Conference, 19–20 October 2026. Net electrical and model mechanical powers may have different generator and auxiliary-loss definitions. The workbook's comparison row has a stray bar unit label; its values are dimensionless relative gains.
 
-![Butane: simple cycle: baseline net efficiency on a fixed heat reference and actual exploitation](results/sensitivity_butane/baseline_performance.png)
+## 5. n-Butane: simple cycle
 
-At 90% expander efficiency, the baseline's fixed-reference net efficiency changes from **0.69%** at the 135 °C reinjection limit to **7.31%** at 20 °C. Its corresponding net power per unit source flow changes from **3.48 to 36.88 kW per kg/s**. These two measures have exactly the same trend because their heat reference is fixed.
+At a 70 °C source limit, standard-cycle fixed-reference efficiency is 7.00%. Partial evaporation at 90% turbine efficiency reaches 7.44%, a 6.29% gain over the 88.6%-efficient standard reference. This sensitivity comparison includes the difference in turbine efficiency; the preceding eight-case comparison holds turbine efficiency equal.
 
-At the 20 °C limit, the baseline actually leaves the source at **63.41 °C**, or **63.82% actual exploitation**. Permission for further cooling does not require the optimizer to use it: the selected pressure levels, phase-change temperatures and exchanger approaches determine useful recovery.
+At equal 88.6% turbine efficiency and a 70 °C source limit, standard admission is 13.46 bar and 95.66 °C. Partial-evaporation admission is 17.98 bar and 108.61 °C. Flexible admission changes pressure level and the temperature of heat addition along with the vapor fraction.
 
-![Butane: simple cycle: superheated T–s and T–Q evolution at 90% expander efficiency](results/sensitivity_butane/baseline_cycle_evolution.png)
+At the 20 °C limit, standard and 90%-efficient partial cycles produce 37.37 and 52.92 kW per kg/s of source flow. Their achieved source outlets are 63.06 and 34.49 °C. The partial-expansion inlet/outlet vapor fractions are 0.1071 / 0.6962 before display clipping.
 
-The overlays show how the pressure levels and heat-addition profile change as the reinjection limit is relaxed. 
+At the 20 °C limit, recovered source heat per kilogram changes by +36.77% and net power per unit absorbed heat changes by +3.53%. Their ratios multiply to give the +41.59% net-power gain at equal geothermal flow. This comparison uses a 90%-efficient partial turbine and the 88.6%-efficient standard turbine.
 
-### 4.2 Evolution with partial evaporation
+| Minimum source outlet °C | 90% turbine: gain % | 80% turbine: gain % | 70% turbine: gain % | 60% turbine: gain % |
+|---|---|---|---|---|
+| 80 | 2.05 | -9.71 | -21.54 | -33.52 |
+| 70 | 6.29 | -6.49 | -19.27 | -32.05 |
+| 60 | 17.57 | 2.78 | -12.01 | -26.80 |
+| 50 | 30.35 | 13.88 | -2.58 | -19.05 |
+| 40 | 40.39 | 22.50 | 4.60 | -13.29 |
+| 20 | 41.59 | 23.53 | 5.47 | -12.51 |
 
-![Butane: simple cycle: optimized-inlet T–s and T–Q evolution at 90% efficiency](results/sensitivity_butane/partial_evaporation_cycle_evolution.png)
+At 80% turbine efficiency, the highest sampled source-outlet limit with a positive gain is 60 °C. The largest saved gain is 23.53%.
 
-The optimized inlet has **57.00% vapor** at a 70 °C limit and **9.90%** at 20 °C. Values below 100% shorten the evaporation portion of external heating. The balance between sensible heating and evaporation can then match the cooling source differently from the superheated cycle. 
+At 70% turbine efficiency, the highest sampled source-outlet limit with a positive gain is 45 °C. The largest saved gain is 5.47%.
 
-At the 70 °C limit, the partial-evaporation design admits fluid at **17.82 bar and 108.11 °C**, compared with **13.40 bar and 95.45 °C** for the baseline. Inlet-state flexibility therefore changes pressure level and temperature of heat addition, not just the amount of liquid entering the expander.
+At 60% turbine efficiency, no accepted sampled case beats the 88.6%-efficient standard reference.
 
-### 4.3 Net efficiency on the common heat basis
+Expansion endpoint counts across the 96 partial-evaporation sensitivity cases: wet to wet: 45, dry to dry: 40, wet to dry: 11. These endpoint classes do not certify the phase path inside a real expander.
 
-![Butane: simple cycle: fixed-reference net-efficiency contours](results/sensitivity_butane/system_efficiency_contours.png)
+![Standard-cycle efficiency and achieved heat-source exploitation at 88.6% turbine efficiency.](output/results/sensitivity_butane/baseline_performance.png)
 
-At 90% expander efficiency, the plotted efficiency is **0.69%** at a 135 °C limit, **7.65%** at 70 °C and **10.29%** at 20 °C. Unlike efficiency divided by heat available only down to each reinjection limit, this figure directly tracks net electricity per unit geothermal flow across the whole horizontal axis. Any plateau means that permitting further source cooling adds little useful power.
+[Embeddable HTML](output/results/sensitivity_butane/baseline_performance.html) · [SVG](output/results/sensitivity_butane/baseline_performance.svg) · [PDF](output/results/sensitivity_butane/baseline_performance.pdf)
 
-### 4.4 Actual source exploitation
+![Standard-cycle T-s and T-Q evolution at 88.6% turbine efficiency.](output/results/sensitivity_butane/baseline_cycle_evolution.png)
 
-![Butane: simple cycle: actual heat-source exploitation](results/sensitivity_butane/actual_exploitation_contours.png)
+[Embeddable HTML](output/results/sensitivity_butane/baseline_cycle_evolution.html) · [SVG](output/results/sensitivity_butane/baseline_cycle_evolution.svg) · [PDF](output/results/sensitivity_butane/baseline_cycle_evolution.pdf)
 
-At the 20 °C limit, the four partial-evaporation designs actually leave the source at **34.66–35.78 °C**, giving **86.85–87.78%** actual exploitation. The map distinguishes allowed cooling from cooling selected by the optimizer. More recovered heat alone does not establish greater power: its temperature and the expansion efficiency also matter.
+![Partial-evaporation T-s and T-Q evolution at 90% turbine efficiency.](output/results/sensitivity_butane/partial_evaporation_cycle_evolution.png)
 
-### 4.5 Expander inlet and outlet quality
+[Embeddable HTML](output/results/sensitivity_butane/partial_evaporation_cycle_evolution.html) · [SVG](output/results/sensitivity_butane/partial_evaporation_cycle_evolution.svg) · [PDF](output/results/sensitivity_butane/partial_evaporation_cycle_evolution.pdf)
 
-![Butane: simple cycle: expander inlet vapor quality in percent](results/sensitivity_butane/inlet_quality_contours.png)
+![Fixed-reference net system efficiency for the partial-evaporation sensitivity grid.](output/results/sensitivity_butane/system_efficiency_contours.png)
 
-Across the 96 partial-formulation designs, **64** have two-phase inlets, **32** have dry-vapor inlets and **0** have liquid inlets. The formulation optimizes inlet state rather than imposing a wet inlet. A displayed value of 100% includes superheated vapor.
+[Embeddable HTML](output/results/sensitivity_butane/system_efficiency_contours.html) · [SVG](output/results/sensitivity_butane/system_efficiency_contours.svg) · [PDF](output/results/sensitivity_butane/system_efficiency_contours.pdf)
 
-![Butane: simple cycle: expander outlet vapor quality in percent](results/sensitivity_butane/outlet_quality_contours.png)
+![Achieved heat-source exploitation on the 140-to-15 °C reference.](output/results/sensitivity_butane/actual_exploitation_contours.png)
 
-| Expansion endpoint phases | Number of designs |
-|---|---:|
-| wet to wet | 45 |
-| dry to dry | 32 |
-| wet to dry | 19 |
+[Embeddable HTML](output/results/sensitivity_butane/actual_exploitation_contours.html) · [SVG](output/results/sensitivity_butane/actual_exploitation_contours.svg) · [PDF](output/results/sensitivity_butane/actual_exploitation_contours.pdf)
 
-At 90% efficiency, displayed outlet quality is **85.40%** at the 70 °C limit and **69.11%** at 20 °C. The deep-recovery design remains two-phase at discharge; its advantage therefore requires an expander suited to substantial liquid at both ends.
+![Expander inlet vapor fraction. Superheated states are displayed as 100%.](output/results/sensitivity_butane/inlet_quality_contours.png)
 
-### 4.6 Relative gain and its physical origin
+[Embeddable HTML](output/results/sensitivity_butane/inlet_quality_contours.html) · [SVG](output/results/sensitivity_butane/inlet_quality_contours.svg) · [PDF](output/results/sensitivity_butane/inlet_quality_contours.pdf)
 
-![Butane: simple cycle: relative net-power gain against the same fluid's 90%-efficient superheated baseline](results/sensitivity_butane/relative_gain_contours.png)
+![Expander outlet vapor fraction. Wet admission does not imply dry discharge.](output/results/sensitivity_butane/outlet_quality_contours.png)
 
-At the **70 °C** limit and 90% expander efficiency, partial evaporation changes fixed-reference efficiency from **7.18% to 7.65%**, a **+6.45% relative gain**. The actual source outlets are **70.48 °C** for the baseline and **70.00 °C** for partial evaporation. The differing source outlets show that heat recovery also contributes; the gain cannot be interpreted as a change in conversion efficiency alone.
+[Embeddable HTML](output/results/sensitivity_butane/outlet_quality_contours.html) · [SVG](output/results/sensitivity_butane/outlet_quality_contours.svg) · [PDF](output/results/sensitivity_butane/outlet_quality_contours.pdf)
 
-At the **20 °C** limit, partial evaporation at 90% efficiency changes recovered source heat per kilogram by **+37.17%** and net system power per unit absorbed heat by **+2.66%**. These factors multiply, giving **+40.82% net-power gain** at equal geothermal flow. This separates the value of additional source cooling from the value of converting the recovered heat.
+![Net-power gain against the same fluid's standard cycle at 88.6% turbine efficiency.](output/results/sensitivity_butane/relative_gain_contours.png)
 
-| Minimum source outlet [°C] | Nominal exploitation [%] | Gain at expander efficiency 90% | 80% | 70% | 60% |
-|---:|---:|---:|---:|---:|---:|
-| 80 | 50.00 | +1.23% | -10.69% | -22.65% | -34.21% |
-| 70 | 58.33 | +6.45% | -6.36% | -19.18% | -31.99% |
-| 60 | 66.67 | +17.86% | +2.99% | -11.87% | -26.74% |
-| 50 | 75.00 | +30.61% | +14.06% | -2.49% | -19.04% |
-| 40 | 83.33 | +40.13% | +22.19% | +4.25% | -13.69% |
-| 20 | 100.00 | +40.82% | +22.81% | +4.80% | -13.09% |
+[Embeddable HTML](output/results/sensitivity_butane/relative_gain_contours.html) · [SVG](output/results/sensitivity_butane/relative_gain_contours.svg) · [PDF](output/results/sensitivity_butane/relative_gain_contours.pdf)
 
-### 4.7 Efficiency penalty and break-even conditions
+## 6. n-Pentane: simple cycle
 
-At **80% expander efficiency**, the largest modeled gain is **+22.81%**. The highest sampled reinjection limit with positive gain is **60 °C**, where the gain is **+2.99%**.
+At a 70 °C source limit, standard-cycle fixed-reference efficiency is 6.87%. Partial evaporation at 90% turbine efficiency reaches 7.51%, a 9.29% gain over the 88.6%-efficient standard reference. This sensitivity comparison includes the difference in turbine efficiency; the preceding eight-case comparison holds turbine efficiency equal.
 
-At **70% expander efficiency**, the largest modeled gain is **+4.80%**. The highest sampled reinjection limit with positive gain is **45 °C**, where the gain is **+1.52%**.
+At equal 88.6% turbine efficiency and a 70 °C source limit, standard admission is 4.64 bar and 91.42 °C. Partial-evaporation admission is 9.33 bar and 121.39 °C. Flexible admission changes pressure level and the temperature of heat addition along with the vapor fraction.
 
-At **60% expander efficiency**, the largest modeled gain is **-13.08%**. No sampled reinjection limit beats the 90%-efficient superheated baseline.
+At the 20 °C limit, standard and 90%-efficient partial cycles produce 36.36 and 55.05 kW per kg/s of source flow. Their achieved source outlets are 67.12 and 35.10 °C. The partial-expansion inlet/outlet vapor fractions are 0.0302 / 0.6426 before display clipping.
 
-The zero contour is an approximate break-even boundary between the sampled efficiencies. A positive gain means the inlet-state and heat-recovery benefits offset the prescribed expander penalty. It does not demonstrate that a real expander can attain that efficiency at the computed inlet and outlet qualities. Near-zero gains and abrupt phase transitions are especially sensitive to local optimization and exchanger discretization.
+At the 20 °C limit, recovered source heat per kilogram changes by +43.49% and net power per unit absorbed heat changes by +5.52%. Their ratios multiply to give the +51.42% net-power gain at equal geothermal flow. This comparison uses a 90%-efficient partial turbine and the 88.6%-efficient standard turbine.
 
-The largest decrease in saved power per source flow relative to an earlier, stricter outlet limit is **0.01%**. Relaxing the limit preserves the earlier design's feasibility, so such a decrease is a local-solution irregularity rather than a thermodynamic penalty for allowing more cooling. It is retained under the single-start protocol.
+| Minimum source outlet °C | 90% turbine: gain % | 80% turbine: gain % | 70% turbine: gain % | 60% turbine: gain % |
+|---|---|---|---|---|
+| 80 | 3.69 | -8.14 | -19.97 | -31.80 |
+| 70 | 9.29 | -3.47 | -16.22 | -28.97 |
+| 60 | 21.10 | 6.75 | -7.74 | -21.96 |
+| 50 | 35.40 | 19.29 | 3.29 | -12.76 |
+| 40 | 48.82 | 31.15 | 13.49 | -4.17 |
+| 20 | 51.42 | 33.44 | 15.50 | -2.44 |
 
-At equal 90% expander efficiency, the partial formulation falls below the superheated baseline by more than 0.01% at 1 sampled outlet limit (largest loss **0.04%**). The flexible formulation includes the baseline's inlet state, so these negative values identify local-solution limitations, not an inherent disadvantage of allowing partial evaporation.
+At 80% turbine efficiency, the highest sampled source-outlet limit with a positive gain is 65 °C. The largest saved gain is 33.69%.
 
-## 5. Cyclopentane: simple cycle
+At 70% turbine efficiency, the highest sampled source-outlet limit with a positive gain is 50 °C. The largest saved gain is 15.71%.
 
-### 5.1 Superheated baseline
+At 60% turbine efficiency, no accepted sampled case beats the 88.6%-efficient standard reference.
 
-![Cyclopentane: simple cycle: baseline net efficiency on a fixed heat reference and actual exploitation](results/sensitivity_cyclopentane/baseline_performance.png)
+Expansion endpoint counts across the 96 partial-evaporation sensitivity cases: wet to wet: 54, dry to dry: 29, wet to dry: 13. These endpoint classes do not certify the phase path inside a real expander.
 
-At 90% expander efficiency, the baseline's fixed-reference net efficiency changes from **0.78%** at the 135 °C reinjection limit to **6.75%** at 20 °C. Its corresponding net power per unit source flow changes from **3.95 to 34.05 kW per kg/s**. 
+![Standard-cycle efficiency and achieved heat-source exploitation at 88.6% turbine efficiency.](output/results/sensitivity_pentane/baseline_performance.png)
 
-At the 20 °C limit, the baseline actually leaves the source at **68.95 °C**, or **59.21% actual exploitation**. Permission for further cooling does not require the optimizer to use it: the selected pressure levels, phase-change temperatures and exchanger approaches determine useful recovery.
+[Embeddable HTML](output/results/sensitivity_pentane/baseline_performance.html) · [SVG](output/results/sensitivity_pentane/baseline_performance.svg) · [PDF](output/results/sensitivity_pentane/baseline_performance.pdf)
 
-![Cyclopentane: simple cycle: superheated T–s and T–Q evolution at 90% expander efficiency](results/sensitivity_cyclopentane/baseline_cycle_evolution.png)
+![Standard-cycle T-s and T-Q evolution at 88.6% turbine efficiency.](output/results/sensitivity_pentane/baseline_cycle_evolution.png)
 
-The overlays show how the pressure levels and heat-addition profile change as the reinjection limit is relaxed. Coincident low-limit curves indicate that a similar design is selected despite allowing more source cooling.
+[Embeddable HTML](output/results/sensitivity_pentane/baseline_cycle_evolution.html) · [SVG](output/results/sensitivity_pentane/baseline_cycle_evolution.svg) · [PDF](output/results/sensitivity_pentane/baseline_cycle_evolution.pdf)
 
-### 5.2 Evolution with partial evaporation
+![Partial-evaporation T-s and T-Q evolution at 90% turbine efficiency.](output/results/sensitivity_pentane/partial_evaporation_cycle_evolution.png)
 
-![Cyclopentane: simple cycle: optimized-inlet T–s and T–Q evolution at 90% efficiency](results/sensitivity_cyclopentane/partial_evaporation_cycle_evolution.png)
+[Embeddable HTML](output/results/sensitivity_pentane/partial_evaporation_cycle_evolution.html) · [SVG](output/results/sensitivity_pentane/partial_evaporation_cycle_evolution.svg) · [PDF](output/results/sensitivity_pentane/partial_evaporation_cycle_evolution.pdf)
 
-The optimized inlet has **15.95% vapor** at a 70 °C limit and **2.05%** at 20 °C. Values below 100% shorten the evaporation portion of external heating. The balance between sensible heating and evaporation can then match the cooling source differently from the superheated cycle. The expansion outlet must also be examined; wet admission does not imply dry discharge.
+![Fixed-reference net system efficiency for the partial-evaporation sensitivity grid.](output/results/sensitivity_pentane/system_efficiency_contours.png)
 
-At the 70 °C limit, the partial-evaporation design admits fluid at **6.54 bar and 120.19 °C**, compared with **2.60 bar and 83.17 °C** for the baseline. Inlet-state flexibility therefore changes pressure level and temperature of heat addition, not just the amount of liquid entering the expander.
+[Embeddable HTML](output/results/sensitivity_pentane/system_efficiency_contours.html) · [SVG](output/results/sensitivity_pentane/system_efficiency_contours.svg) · [PDF](output/results/sensitivity_pentane/system_efficiency_contours.pdf)
 
-### 5.3 Net efficiency on the common heat basis
+![Achieved heat-source exploitation on the 140-to-15 °C reference.](output/results/sensitivity_pentane/actual_exploitation_contours.png)
 
-![Cyclopentane: simple cycle: fixed-reference net-efficiency contours](results/sensitivity_cyclopentane/system_efficiency_contours.png)
+[Embeddable HTML](output/results/sensitivity_pentane/actual_exploitation_contours.html) · [SVG](output/results/sensitivity_pentane/actual_exploitation_contours.svg) · [PDF](output/results/sensitivity_pentane/actual_exploitation_contours.pdf)
 
-At 90% expander efficiency, the plotted efficiency is **0.78%** at a 135 °C limit, **7.80%** at 70 °C and **10.74%** at 20 °C. Unlike efficiency divided by heat available only down to each reinjection limit, this figure directly tracks net electricity per unit geothermal flow across the whole horizontal axis. Any plateau means that permitting further source cooling adds little useful power.
+![Expander inlet vapor fraction. Superheated states are displayed as 100%.](output/results/sensitivity_pentane/inlet_quality_contours.png)
 
-### 5.4 Actual source exploitation
+[Embeddable HTML](output/results/sensitivity_pentane/inlet_quality_contours.html) · [SVG](output/results/sensitivity_pentane/inlet_quality_contours.svg) · [PDF](output/results/sensitivity_pentane/inlet_quality_contours.pdf)
 
-![Cyclopentane: simple cycle: actual heat-source exploitation](results/sensitivity_cyclopentane/actual_exploitation_contours.png)
+![Expander outlet vapor fraction. Wet admission does not imply dry discharge.](output/results/sensitivity_pentane/outlet_quality_contours.png)
 
-At the 20 °C limit, the four partial-evaporation designs actually leave the source at **35.46–36.62 °C**, giving **86.15–87.12%** actual exploitation. The map distinguishes allowed cooling from cooling selected by the optimizer. More recovered heat alone does not establish greater power: its temperature and the expansion efficiency also matter.
+[Embeddable HTML](output/results/sensitivity_pentane/outlet_quality_contours.html) · [SVG](output/results/sensitivity_pentane/outlet_quality_contours.svg) · [PDF](output/results/sensitivity_pentane/outlet_quality_contours.pdf)
 
-### 5.5 Expander inlet and outlet quality
+![Net-power gain against the same fluid's standard cycle at 88.6% turbine efficiency.](output/results/sensitivity_pentane/relative_gain_contours.png)
 
-![Cyclopentane: simple cycle: expander inlet vapor quality in percent](results/sensitivity_cyclopentane/inlet_quality_contours.png)
+[Embeddable HTML](output/results/sensitivity_pentane/relative_gain_contours.html) · [SVG](output/results/sensitivity_pentane/relative_gain_contours.svg) · [PDF](output/results/sensitivity_pentane/relative_gain_contours.pdf)
 
-Across the 96 partial-formulation designs, **64** have two-phase inlets, **32** have dry-vapor inlets and **0** have liquid inlets. The formulation optimizes inlet state rather than imposing a wet inlet. A displayed value of 100% includes superheated vapor.
+## 7. Cyclopentane: simple cycle
 
-![Cyclopentane: simple cycle: expander outlet vapor quality in percent](results/sensitivity_cyclopentane/outlet_quality_contours.png)
+At a 70 °C source limit, standard-cycle fixed-reference efficiency is 6.55%. Partial evaporation at 90% turbine efficiency reaches 7.57%, a 15.55% gain over the 88.6%-efficient standard reference. This sensitivity comparison includes the difference in turbine efficiency; the preceding eight-case comparison holds turbine efficiency equal.
 
-| Expansion endpoint phases | Number of designs |
-|---|---:|
-| wet to wet | 56 |
-| dry to dry | 32 |
-| wet to dry | 8 |
+At equal 88.6% turbine efficiency and a 70 °C source limit, standard admission is 2.63 bar and 83.60 °C. Partial-evaporation admission is 6.61 bar and 120.69 °C. Flexible admission changes pressure level and the temperature of heat addition along with the vapor fraction.
 
-At 90% efficiency, displayed outlet quality is **51.32%** at the 70 °C limit and **46.14%** at 20 °C. The deep-recovery design remains two-phase at discharge; its advantage therefore requires an expander suited to substantial liquid at both ends.
+At the 20 °C limit, standard and 90%-efficient partial cycles produce 34.44 and 55.24 kW per kg/s of source flow. Their achieved source outlets are 70.01 and 35.17 °C. The partial-expansion inlet/outlet vapor fractions are 0.0191 / 0.4652 before display clipping.
 
-### 5.6 Relative gain and its physical origin
+At the 20 °C limit, recovered source heat per kilogram changes by +49.27% and net power per unit absorbed heat changes by +7.48%. Their ratios multiply to give the +60.43% net-power gain at equal geothermal flow. This comparison uses a 90%-efficient partial turbine and the 88.6%-efficient standard turbine.
 
-![Cyclopentane: simple cycle: relative net-power gain against the same fluid's 90%-efficient superheated baseline](results/sensitivity_cyclopentane/relative_gain_contours.png)
+| Minimum source outlet °C | 90% turbine: gain % | 80% turbine: gain % | 70% turbine: gain % | 60% turbine: gain % |
+|---|---|---|---|---|
+| 80 | 3.15 | -8.46 | -20.07 | -31.67 |
+| 70 | 15.55 | 2.24 | -11.08 | -24.39 |
+| 60 | 28.70 | 13.68 | -1.47 | -16.37 |
+| 50 | 43.94 | 27.08 | 10.32 | -6.48 |
+| 40 | 58.03 | 39.55 | 21.08 | 2.62 |
+| 20 | 60.43 | 41.67 | 22.93 | 4.21 |
 
-At the **70 °C** limit and 90% expander efficiency, partial evaporation changes fixed-reference efficiency from **6.77% to 7.80%**, a **+15.24% relative gain**. The actual source outlets are **70.11 °C** for the baseline and **70.00 °C** for partial evaporation. The differing source outlets show that heat recovery also contributes; the gain cannot be interpreted as a change in conversion efficiency alone.
+At 80% turbine efficiency, the highest sampled source-outlet limit with a positive gain is 70 °C. The largest saved gain is 41.67%.
 
-At the **20 °C** limit, partial evaporation at 90% efficiency changes recovered source heat per kilogram by **+45.04%** and net system power per unit absorbed heat by **+9.81%**. These factors multiply, giving **+59.27% net-power gain** at equal geothermal flow. This separates the value of additional source cooling from the value of converting the recovered heat.
+At 70% turbine efficiency, the highest sampled source-outlet limit with a positive gain is 55 °C. The largest saved gain is 22.93%.
 
-| Minimum source outlet [°C] | Nominal exploitation [%] | Gain at expander efficiency 90% | 80% | 70% | 60% |
-|---:|---:|---:|---:|---:|---:|
-| 80 | 50.00 | +2.28% | -9.23% | -20.75% | -32.26% |
-| 70 | 58.33 | +15.24% | +1.95% | -11.34% | -24.62% |
-| 60 | 66.67 | +28.90% | +13.83% | -1.36% | -16.30% |
-| 50 | 75.00 | +44.09% | +27.24% | +10.44% | -6.45% |
-| 40 | 83.33 | +57.76% | +39.28% | +20.83% | +2.36% |
-| 20 | 100.00 | +59.27% | +40.63% | +22.02% | +3.41% |
+At 60% turbine efficiency, the highest sampled source-outlet limit with a positive gain is 40 °C. The largest saved gain is 4.21%.
 
-### 5.7 Efficiency penalty and break-even conditions
+Expansion endpoint counts across the 96 partial-evaporation sensitivity cases: wet to wet: 56, dry to dry: 34, wet to dry: 6. These endpoint classes do not certify the phase path inside a real expander.
 
-At **80% expander efficiency**, the largest modeled gain is **+40.64%**. The highest sampled reinjection limit with positive gain is **70 °C**, where the gain is **+1.95%**.
+![Standard-cycle efficiency and achieved heat-source exploitation at 88.6% turbine efficiency.](output/results/sensitivity_cyclopentane/baseline_performance.png)
 
-At **70% expander efficiency**, the largest modeled gain is **+22.02%**. The highest sampled reinjection limit with positive gain is **55 °C**, where the gain is **+4.62%**.
+[Embeddable HTML](output/results/sensitivity_cyclopentane/baseline_performance.html) · [SVG](output/results/sensitivity_cyclopentane/baseline_performance.svg) · [PDF](output/results/sensitivity_cyclopentane/baseline_performance.pdf)
 
-At **60% expander efficiency**, the largest modeled gain is **+3.42%**. The highest sampled reinjection limit with positive gain is **40 °C**, where the gain is **+2.36%**.
+![Standard-cycle T-s and T-Q evolution at 88.6% turbine efficiency.](output/results/sensitivity_cyclopentane/baseline_cycle_evolution.png)
 
-The zero contour is an approximate break-even boundary between the sampled efficiencies. A positive gain means the inlet-state and heat-recovery benefits offset the prescribed expander penalty. It does not demonstrate that a real expander can attain that efficiency at the computed inlet and outlet qualities. Near-zero gains and abrupt phase transitions are especially sensitive to local optimization and exchanger discretization.
+[Embeddable HTML](output/results/sensitivity_cyclopentane/baseline_cycle_evolution.html) · [SVG](output/results/sensitivity_cyclopentane/baseline_cycle_evolution.svg) · [PDF](output/results/sensitivity_cyclopentane/baseline_cycle_evolution.pdf)
 
-The largest decrease in saved power per source flow relative to an earlier, stricter outlet limit is **0.33%**. Relaxing the limit preserves the earlier design's feasibility, so such a decrease is a local-solution irregularity rather than a thermodynamic penalty for allowing more cooling. It is retained under the single-start protocol.
+![Partial-evaporation T-s and T-Q evolution at 90% turbine efficiency.](output/results/sensitivity_cyclopentane/partial_evaporation_cycle_evolution.png)
 
-At equal 90% expander efficiency, the partial formulation falls below the superheated baseline by more than 0.01% at 1 sampled outlet limit (largest loss **0.06%**). The flexible formulation includes the baseline's inlet state, so these negative values identify local-solution limitations, not an inherent disadvantage of allowing partial evaporation.
+[Embeddable HTML](output/results/sensitivity_cyclopentane/partial_evaporation_cycle_evolution.html) · [SVG](output/results/sensitivity_cyclopentane/partial_evaporation_cycle_evolution.svg) · [PDF](output/results/sensitivity_cyclopentane/partial_evaporation_cycle_evolution.pdf)
 
-## 6. Novec 649: recuperated cycle
+![Fixed-reference net system efficiency for the partial-evaporation sensitivity grid.](output/results/sensitivity_cyclopentane/system_efficiency_contours.png)
 
-### 6.1 Superheated baseline
+[Embeddable HTML](output/results/sensitivity_cyclopentane/system_efficiency_contours.html) · [SVG](output/results/sensitivity_cyclopentane/system_efficiency_contours.svg) · [PDF](output/results/sensitivity_cyclopentane/system_efficiency_contours.pdf)
 
-![Novec 649: recuperated cycle: baseline net efficiency on a fixed heat reference and actual exploitation](results/sensitivity_novec/baseline_performance.png)
+![Achieved heat-source exploitation on the 140-to-15 °C reference.](output/results/sensitivity_cyclopentane/actual_exploitation_contours.png)
 
-At 90% expander efficiency, the baseline's fixed-reference net efficiency changes from **0.80%** at the 135 °C reinjection limit to **7.57%** at 20 °C. Its corresponding net power per unit source flow changes from **4.05 to 38.19 kW per kg/s**.
+[Embeddable HTML](output/results/sensitivity_cyclopentane/actual_exploitation_contours.html) · [SVG](output/results/sensitivity_cyclopentane/actual_exploitation_contours.svg) · [PDF](output/results/sensitivity_cyclopentane/actual_exploitation_contours.pdf)
 
-At the 20 °C limit, the baseline actually leaves the source at **47.50 °C**, or **77.09% actual exploitation**. Permission for further cooling does not require the optimizer to use it: the selected pressure levels, phase-change temperatures and exchanger approaches determine useful recovery.
+![Expander inlet vapor fraction. Superheated states are displayed as 100%.](output/results/sensitivity_cyclopentane/inlet_quality_contours.png)
 
-![Novec 649: recuperated cycle: superheated T–s and T–Q evolution at 90% expander efficiency](results/sensitivity_novec/baseline_cycle_evolution.png)
+[Embeddable HTML](output/results/sensitivity_cyclopentane/inlet_quality_contours.html) · [SVG](output/results/sensitivity_cyclopentane/inlet_quality_contours.svg) · [PDF](output/results/sensitivity_cyclopentane/inlet_quality_contours.pdf)
 
-The overlays show how the pressure levels and heat-addition profile change as the reinjection limit is relaxed. Coincident low-limit curves indicate that a similar design is selected despite allowing more source cooling.
+![Expander outlet vapor fraction. Wet admission does not imply dry discharge.](output/results/sensitivity_cyclopentane/outlet_quality_contours.png)
 
-### 6.2 Evolution with partial evaporation
+[Embeddable HTML](output/results/sensitivity_cyclopentane/outlet_quality_contours.html) · [SVG](output/results/sensitivity_cyclopentane/outlet_quality_contours.svg) · [PDF](output/results/sensitivity_cyclopentane/outlet_quality_contours.pdf)
 
-![Novec 649: recuperated cycle: optimized-inlet T–s and T–Q evolution at 90% efficiency](results/sensitivity_novec/partial_evaporation_cycle_evolution.png)
+![Net-power gain against the same fluid's standard cycle at 88.6% turbine efficiency.](output/results/sensitivity_cyclopentane/relative_gain_contours.png)
 
-The optimized inlet has **60.80% vapor** at a 70 °C limit and **5.58%** at 20 °C. Values below 100% shorten the evaporation portion of external heating. The balance between sensible heating and evaporation can then match the cooling source differently from the superheated cycle. The expansion outlet must also be examined; wet admission does not imply dry discharge.
+[Embeddable HTML](output/results/sensitivity_cyclopentane/relative_gain_contours.html) · [SVG](output/results/sensitivity_cyclopentane/relative_gain_contours.svg) · [PDF](output/results/sensitivity_cyclopentane/relative_gain_contours.pdf)
 
-At the 70 °C limit, the partial-evaporation design admits fluid at **5.81 bar and 110.99 °C**, compared with **3.51 bar and 92.37 °C** for the baseline. Inlet-state flexibility therefore changes pressure level and temperature of heat addition, not just the amount of liquid entering the expander.
+## 8. Novec 649: recuperated cycle
 
-For Novec, recuperator effectiveness is **0.617/0.648** for baseline/partial evaporation at 70 °C and **0.033/0.097** at 20 °C. Internal preheating reduces external heat demand, but can also prevent deep cooling of the geothermal stream. The optimizer balances these effects; a recuperated architecture need not use high effectiveness at every condition.
+At a 70 °C source limit, standard-cycle fixed-reference efficiency is 7.16%. Partial evaporation at 90% turbine efficiency reaches 8.14%, a 13.71% gain over the 88.6%-efficient standard reference. This sensitivity comparison includes the difference in turbine efficiency; the preceding eight-case comparison holds turbine efficiency equal.
 
-### 6.3 Net efficiency on the common heat basis
+At equal 88.6% turbine efficiency and a 70 °C source limit, standard admission is 3.55 bar and 92.87 °C. Partial-evaporation admission is 5.88 bar and 111.49 °C. Flexible admission changes pressure level and the temperature of heat addition along with the vapor fraction.
 
-![Novec 649: recuperated cycle: fixed-reference net-efficiency contours](results/sensitivity_novec/system_efficiency_contours.png)
+At the 20 °C limit, standard and 90%-efficient partial cycles produce 39.60 and 56.12 kW per kg/s of source flow. Their achieved source outlets are 46.96 and 34.37 °C. The partial-expansion inlet/outlet vapor fractions are 0.0660 / 1.0556 before display clipping.
 
-At 90% expander efficiency, the plotted efficiency is **0.80%** at a 135 °C limit, **8.34%** at 70 °C and **10.79%** at 20 °C. Unlike efficiency divided by heat available only down to each reinjection limit, this figure directly tracks net electricity per unit geothermal flow across the whole horizontal axis. Any plateau means that permitting further source cooling adds little useful power.
+At the 20 °C limit, recovered source heat per kilogram changes by +13.42% and net power per unit absorbed heat changes by +24.97%. Their ratios multiply to give the +41.73% net-power gain at equal geothermal flow. This comparison uses a 90%-efficient partial turbine and the 88.6%-efficient standard turbine.
 
-### 6.4 Actual source exploitation
+| Minimum source outlet °C | Standard effectiveness, 88.6% turbine | Partial turbine efficiency % | Partial effectiveness |
+|---|---|---|---|
+| 70 | 0.621 | 88.6 | 0.655 |
+| 20 | 0.034 | 90 | 0.098 |
 
-![Novec 649: recuperated cycle: actual heat-source exploitation](results/sensitivity_novec/actual_exploitation_contours.png)
+Internal recuperation reduces external heat demand and can limit how deeply the geothermal stream is cooled. Optimized effectiveness balances these effects, so its selected value changes with the permitted source outlet and inlet-state formulation.
 
-At the 20 °C limit, the four partial-evaporation designs actually leave the source at **31.54–34.04 °C**, giving **88.30–90.38%** actual exploitation. The map distinguishes allowed cooling from cooling selected by the optimizer. More recovered heat alone does not establish greater power: its temperature and the expansion efficiency also matter.
+| Minimum source outlet °C | 90% turbine: gain % | 80% turbine: gain % | 70% turbine: gain % | 60% turbine: gain % |
+|---|---|---|---|---|
+| 80 | 5.95 | -4.98 | -16.19 | -27.69 |
+| 70 | 13.71 | 1.94 | -10.08 | -22.53 |
+| 60 | 22.82 | 9.98 | -2.71 | -15.97 |
+| 50 | 36.44 | 22.25 | 6.87 | -7.78 |
+| 40 | 40.11 | 23.09 | 7.63 | -8.86 |
+| 20 | 41.73 | 25.44 | 9.31 | -6.95 |
 
-### 6.5 Expander inlet and outlet quality
+At 80% turbine efficiency, the highest sampled source-outlet limit with a positive gain is 70 °C. The largest saved gain is 25.44%.
 
-![Novec 649: recuperated cycle: expander inlet vapor quality in percent](results/sensitivity_novec/inlet_quality_contours.png)
+At 70% turbine efficiency, the highest sampled source-outlet limit with a positive gain is 55 °C. The largest saved gain is 9.31%.
 
-Across the 96 partial-formulation designs, **64** have two-phase inlets, **32** have dry-vapor inlets and **0** have liquid inlets. The formulation optimizes inlet state rather than imposing a wet inlet. A displayed value of 100% includes superheated vapor.
+At 60% turbine efficiency, no accepted sampled case beats the 88.6%-efficient standard reference.
 
-![Novec 649: recuperated cycle: expander outlet vapor quality in percent](results/sensitivity_novec/outlet_quality_contours.png)
+Expansion endpoint counts across the 96 partial-evaporation sensitivity cases: wet to dry: 64, dry to dry: 32. These endpoint classes do not certify the phase path inside a real expander.
 
-| Expansion endpoint phases | Number of designs |
-|---|---:|
-| wet to dry | 64 |
-| dry to dry | 32 |
+![Standard-cycle efficiency and achieved heat-source exploitation at 88.6% turbine efficiency.](output/results/sensitivity_novec/baseline_performance.png)
 
-At 90% efficiency, displayed outlet quality is **100.00%** at the 70 °C limit and **100.00%** at 20 °C. The deep-recovery design reaches dry vapor at discharge. If its inlet is wet, this is a wet-to-dry expansion; the dry outlet does not remove the need to accommodate liquid admission.
+[Embeddable HTML](output/results/sensitivity_novec/baseline_performance.html) · [SVG](output/results/sensitivity_novec/baseline_performance.svg) · [PDF](output/results/sensitivity_novec/baseline_performance.pdf)
 
-### 6.6 Relative gain and its physical origin
+![Standard-cycle T-s and T-Q evolution at 88.6% turbine efficiency.](output/results/sensitivity_novec/baseline_cycle_evolution.png)
 
-![Novec 649: recuperated cycle: relative net-power gain against the same fluid's 90%-efficient superheated baseline](results/sensitivity_novec/relative_gain_contours.png)
+[Embeddable HTML](output/results/sensitivity_novec/baseline_cycle_evolution.html) · [SVG](output/results/sensitivity_novec/baseline_cycle_evolution.svg) · [PDF](output/results/sensitivity_novec/baseline_cycle_evolution.pdf)
 
-At the **70 °C** limit and 90% expander efficiency, partial evaporation changes fixed-reference efficiency from **7.37% to 8.34%**, a **+13.10% relative gain**. The actual source outlets are **70.00 °C** for the baseline and **70.00 °C** for partial evaporation. Because both reach essentially the same outlet, this gain comes from converting the recovered heat more effectively, not from a larger recovered heat quantity.
+![Partial-evaporation T-s and T-Q evolution at 90% turbine efficiency.](output/results/sensitivity_novec/partial_evaporation_cycle_evolution.png)
 
-At the **20 °C** limit, partial evaporation at 90% efficiency changes recovered source heat per kilogram by **+15.66%** and net system power per unit absorbed heat by **+23.35%**. These factors multiply, giving **+42.66% net-power gain** at equal geothermal flow. This separates the value of additional source cooling from the value of converting the recovered heat.
+[Embeddable HTML](output/results/sensitivity_novec/partial_evaporation_cycle_evolution.html) · [SVG](output/results/sensitivity_novec/partial_evaporation_cycle_evolution.svg) · [PDF](output/results/sensitivity_novec/partial_evaporation_cycle_evolution.pdf)
 
-| Minimum source outlet [°C] | Nominal exploitation [%] | Gain at expander efficiency 90% | 80% | 70% | 60% |
-|---:|---:|---:|---:|---:|---:|
-| 80 | 50.00 | +4.46% | -6.35% | -17.43% | -28.79% |
-| 70 | 58.33 | +13.10% | +1.37% | -10.61% | -23.01% |
-| 60 | 66.67 | +23.11% | +10.22% | -2.51% | -15.79% |
-| 50 | 75.00 | +37.11% | +22.56% | +7.26% | -7.52% |
-| 40 | 83.33 | +42.14% | +25.06% | +8.93% | -7.77% |
-| 20 | 100.00 | +42.66% | +26.22% | +9.74% | -6.80% |
+![Fixed-reference net system efficiency for the partial-evaporation sensitivity grid.](output/results/sensitivity_novec/system_efficiency_contours.png)
 
-### 6.7 Efficiency penalty and break-even conditions
+[Embeddable HTML](output/results/sensitivity_novec/system_efficiency_contours.html) · [SVG](output/results/sensitivity_novec/system_efficiency_contours.svg) · [PDF](output/results/sensitivity_novec/system_efficiency_contours.pdf)
 
-At **80% expander efficiency**, the largest modeled gain is **+26.22%**. The highest sampled reinjection limit with positive gain is **70 °C**, where the gain is **+1.37%**.
+![Achieved heat-source exploitation on the 140-to-15 °C reference.](output/results/sensitivity_novec/actual_exploitation_contours.png)
 
-At **70% expander efficiency**, the largest modeled gain is **+9.75%**. The highest sampled reinjection limit with positive gain is **55 °C**, where the gain is **+2.78%**.
+[Embeddable HTML](output/results/sensitivity_novec/actual_exploitation_contours.html) · [SVG](output/results/sensitivity_novec/actual_exploitation_contours.svg) · [PDF](output/results/sensitivity_novec/actual_exploitation_contours.pdf)
 
-At **60% expander efficiency**, the largest modeled gain is **-6.80%**. No sampled reinjection limit beats the 90%-efficient superheated baseline.
+![Expander inlet vapor fraction. Superheated states are displayed as 100%.](output/results/sensitivity_novec/inlet_quality_contours.png)
 
-The zero contour is an approximate break-even boundary between the sampled efficiencies. A positive gain means the inlet-state and heat-recovery benefits offset the prescribed expander penalty. It does not demonstrate that a real expander can attain that efficiency at the computed inlet and outlet qualities. Near-zero gains and abrupt phase transitions are especially sensitive to local optimization and exchanger discretization.
+[Embeddable HTML](output/results/sensitivity_novec/inlet_quality_contours.html) · [SVG](output/results/sensitivity_novec/inlet_quality_contours.svg) · [PDF](output/results/sensitivity_novec/inlet_quality_contours.pdf)
 
-The largest decrease in saved power per source flow relative to an earlier, stricter outlet limit is **0.07%**. Relaxing the limit preserves the earlier design's feasibility, so such a decrease is a local-solution irregularity rather than a thermodynamic penalty for allowing more cooling. It is retained under the single-start protocol.
+![Expander outlet vapor fraction. Wet admission does not imply dry discharge.](output/results/sensitivity_novec/outlet_quality_contours.png)
 
-## 7. Cross-fluid interpretation and limits
+[Embeddable HTML](output/results/sensitivity_novec/outlet_quality_contours.html) · [SVG](output/results/sensitivity_novec/outlet_quality_contours.svg) · [PDF](output/results/sensitivity_novec/outlet_quality_contours.pdf)
 
-At a 20 °C reinjection limit and 90% expander efficiency:
+![Net-power gain against the same fluid's standard cycle at 88.6% turbine efficiency.](output/results/sensitivity_novec/relative_gain_contours.png)
 
-| Configuration | Baseline power per source flow [kW per kg/s] | Partial power per source flow [kW per kg/s] | Gain [%] | Partial fixed-reference efficiency [%] |
-|---|---:|---:|---:|---:|
-| Butane: simple cycle | 36.88 | 51.93 | +40.82 | 10.29 |
-| Cyclopentane: simple cycle | 34.05 | 54.22 | +59.27 | 10.74 |
-| Novec 649: recuperated cycle | 38.19 | 54.48 | +42.66 | 10.79 |
+[Embeddable HTML](output/results/sensitivity_novec/relative_gain_contours.html) · [SVG](output/results/sensitivity_novec/relative_gain_contours.svg) · [PDF](output/results/sensitivity_novec/relative_gain_contours.pdf)
 
-Relative gain and absolute electricity production answer different questions. A larger gain can reflect a weaker baseline rather than a better final cycle. The fixed-reference efficiency columns permit direct comparison of power per geothermal flow across both fluids and reinjection limits. 
+## 9. Validation and limits
 
-### 7.1 Remaining sampling and optimization limits
+The consolidated run passes comparison with the saved v2 reference across 484 finite-heat sweep cases, 20 unavailable endpoints and 8 comparison cases. The largest specific-power difference is 0.000e+00% relative and 0.000e+00 kW per kg/s absolute. Efficiencies, powers and source mass flow use 0.01% relative tolerance, pressures use 0.1%, temperatures use 0.02 K absolute tolerance and raw qualities use 0.001. Full metric comparisons and tolerances are recorded in output/results/reproducibility_comparison.json and its CSV companion.
 
-The **5 K approach is imposed at 100 evaporator/condenser locations and 25 recuperator locations, not continuously**. Nine selected designs per fluid and their coarse-grid seeds were reevaluated at 501 locations without reoptimization:
+| Fluid | Cases with native KKT records | All strict KKT checks passed |
+|---|---|---|
+| n-Butane | 121 | 67 |
+| n-Pentane | 121 | 68 |
+| Cyclopentane | 121 | 60 |
+| Novec649 | 121 | 89 |
 
-| Fluid | Coarse seed: lowest checked heater approach [K] | Fine result: lowest checked heater approach [K] | Fine result: lowest checked condenser approach [K] | Fine result: lowest checked recuperator approach [K] |
-|---|---:|---:|---:|---:|
-| Butane | 3.451 | 4.658 | 4.968 | — |
-| Cyclopentane | 2.983 | 4.553 | 4.970 | — |
-| Novec 649 | 4.118 | 4.780 | 4.955 | 5.000 |
+The native first-order KKT diagnostics use a threshold of five times the solver tolerance. Case acceptance follows the native solver-success, physical-flow, energy-balance and constraint checks used in the v2 reference. The additional first-order diagnostics qualify the reported local solutions, and global optimality remains unproven.
 
-These subset diagnostics do not locate the worst approach over all designs. The reported results retain the requested 100-element evaporator and condenser model. Approaches below 5 K mean that a finer discretization and reoptimization are needed before treating precise break-even efficiencies or small gains as design conclusions. Close fluid rankings should be read with the same caution.
+| Fluid | Native ThermoOpt optimizations | Dense heater min K | Dense condenser min K | Dense recuperator min K |
+|---|---|---|---|---|
+| n-Butane | 121 | 4.162 | 4.433 | n.a. |
+| n-Pentane | 121 | 4.115 | 4.406 | n.a. |
+| Cyclopentane | 121 | 4.052 | 4.407 | n.a. |
+| Novec649 | 121 | 4.276 | 4.411 | 5.000 |
 
+The minimum approaches are enforced on the optimization grids. Selected accepted designs at 135, 70 and 20 °C are reevaluated at 501 locations without reoptimization. Approaches below the prescribed limit reveal sampling error between optimization locations. These are subset diagnostics, not a global worst-case bound. Small gains, precise break-even contours and close fluid rankings need grid refinement before design conclusions. Contour lines interpolate between four sampled turbine efficiencies; the plots are not additional optimizations.
+
+The study compares three simple-fluid architectures and one recuperated architecture. Differences involving Novec combine working-fluid choice and recuperation. Real wet-expander efficiencies, internal phase trajectories, equipment sizes and economics are not predicted by a prescribed constant isentropic efficiency.
+
+## 10. Embedding figures
+
+Every report figure is saved as PNG, PDF, SVG and a self-contained HTML file using the same Matplotlib drawing. The HTML uses inline SVG, requires no network or JavaScript, and scales with its container. Embed the HTML in an iframe or the SVG in an image/object element. These are static vector figures; they do not provide Plotly-style hover or data filtering. The standalone HTML report embeds its figures and data. output/figures.html is a local gallery.
