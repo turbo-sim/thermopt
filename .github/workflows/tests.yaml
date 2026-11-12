@@ -1,0 +1,47 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  pytest:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.13"]
+    env:
+      MPLBACKEND: Agg
+      DISABLE_PLOTS: "1"
+      POETRY_VIRTUALENVS_IN_PROJECT: "true"
+      POETRY_NO_INTERACTION: "1"
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: poetry.lock
+
+      - name: Install Poetry
+        run: python -m pip install "poetry==2.2.1"
+
+      - name: Install locked production dependencies
+        run: poetry install --only main
+
+      - name: Install test runner
+        # Matches pytest in poetry.lock; avoid installing the full docs/dev group.
+        # Production dependencies above are lock-reproducible; pip resolves pytest's helpers.
+        run: poetry run python -m pip install "pytest==8.4.2"
+
+      - name: Run complete test suite
+        run: poetry run python -m pytest

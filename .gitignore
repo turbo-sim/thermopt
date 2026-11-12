@@ -63,6 +63,9 @@ environment.pickle
 .env
 .venv/
 venv/
+.test_artifacts/
+.test_tmp*/
+.pytest_cache/
 
 
 # Results folders

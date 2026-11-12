@@ -87,6 +87,14 @@ Each example:
 
 To run any example, navigate to the corresponding subfolder and execute the optimization script.
 
+## Tests
+
+Run `poetry run python -m pytest` for the complete regression suite, or add
+`-m "not slow"` for routine checks without full optimizations. The suite covers
+cycle outputs, components, optimizations, plotting and exports using frozen
+inputs and numerical references. See [tests/README.md](tests/README.md) for
+commands, tolerances, known failures and reference-update instructions.
+
 <!-- research-software-metadata:start -->
 ## Development and citation
 

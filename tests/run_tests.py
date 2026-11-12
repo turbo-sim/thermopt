@@ -1,14 +1,10 @@
-#!/usr/bin/env python3
+"""Run the suite from any directory, forwarding arguments to pytest."""
+
+from pathlib import Path
+import sys
+
 import pytest
 
-# Define the list of tests
-tests_list = [
-    "test_example_cases.py",
-]
 
-# Run pytest when this python script is executed
-# pytest.main(tests_list)
-# pytest.main(tests_list + [""])
-pytest.main(tests_list + ["-v"])
-
-
+if __name__ == "__main__":
+    raise SystemExit(pytest.main([str(Path(__file__).resolve().parent), *sys.argv[1:]]))
