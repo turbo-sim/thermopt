@@ -44,6 +44,73 @@ def canonical(value):
     return value
 
 
+def validate_cpu_mask(requested, inherited):
+    """Require a nonempty subset of the processors granted to this process."""
+    if requested <= 0 or requested & ~inherited:
+        raise ValueError(
+            f"CPU affinity {requested:#x} must be a nonzero subset of "
+            f"the inherited process mask {inherited:#x}"
+        )
+
+
+def cpu_affinity(requested=None):
+    """Observe, or constrain, this process and its subsequently spawned workers.
+
+    Set affinity before numerical imports so new worker threads inherit it.
+    This changes no unrelated process, CPU frequency or machine power setting.
+    Observations enter the comparison signature even without a requested mask.
+    """
+    if os.name == "nt":
+        import ctypes
+        from ctypes import wintypes
+
+        kernel = ctypes.WinDLL("kernel32", use_last_error=True)
+        kernel.GetCurrentProcess.argtypes = []
+        kernel.GetCurrentProcess.restype = wintypes.HANDLE
+        pointer = ctypes.POINTER(ctypes.c_size_t)
+        kernel.GetProcessAffinityMask.argtypes = [wintypes.HANDLE, pointer, pointer]
+        kernel.GetProcessAffinityMask.restype = wintypes.BOOL
+        kernel.SetProcessAffinityMask.argtypes = [wintypes.HANDLE, ctypes.c_size_t]
+        kernel.SetProcessAffinityMask.restype = wintypes.BOOL
+        handle = kernel.GetCurrentProcess()
+        actual, system = ctypes.c_size_t(), ctypes.c_size_t()
+
+        def read_mask():
+            if not kernel.GetProcessAffinityMask(
+                handle, ctypes.byref(actual), ctypes.byref(system)
+            ):
+                raise ctypes.WinError(ctypes.get_last_error())
+            return actual.value
+
+        inherited = read_mask()
+        if requested is not None:
+            validate_cpu_mask(requested, inherited)
+            if not kernel.SetProcessAffinityMask(handle, requested):
+                raise ctypes.WinError(ctypes.get_last_error())
+        observed = read_mask()
+        system_mask = hex(system.value)
+    elif hasattr(os, "sched_getaffinity"):
+        inherited = sum(1 << index for index in os.sched_getaffinity(0))
+        if requested is not None:
+            validate_cpu_mask(requested, inherited)
+            os.sched_setaffinity(
+                0, {i for i in range(requested.bit_length()) if requested & (1 << i)}
+            )
+        observed = sum(1 << index for index in os.sched_getaffinity(0))
+        system_mask = None
+    else:
+        if requested is not None:
+            raise RuntimeError("CPU affinity is unavailable on this platform")
+        return dict(requested_mask=None, actual_mask=None, system_mask=None)
+    if requested is not None and observed != requested:
+        raise RuntimeError(f"Requested CPU affinity {requested:#x}, read {observed:#x}")
+    return dict(
+        requested_mask=None if requested is None else hex(requested),
+        actual_mask=hex(observed),
+        system_mask=system_mask,
+    )
+
+
 def compare_checkpoint(current, previous):
     """Reject unmatched/invalid references before assessing known timing ratios."""
     if not previous.get("numerical_checks_passed") or (
@@ -73,6 +140,11 @@ def main():
     parser.add_argument("--grid-size", type=int)
     parser.add_argument("--samples", type=int, default=12)
     parser.add_argument(
+        "--cpu-affinity",
+        type=lambda value: int(value, 0),
+        help="Optional process CPU mask, e.g. 0xffff; inherited by benchmark workers",
+    )
+    parser.add_argument(
         "--baseline", type=Path, help="Accepted preceding run's manifest.json"
     )
     parser.add_argument(
@@ -89,6 +161,7 @@ def main():
     grid = args.grid_size or (200 if args.profile == "release" else 100)
     if grid < 2:
         parser.error("Grid size must be at least two")
+    affinity = cpu_affinity(args.cpu_affinity)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S_%fZ")
     output = (
         args.output or ROOT / f"benchmark/results/{stamp}_{args.profile}"
@@ -135,6 +208,7 @@ def main():
         machine=platform.machine(),
         processor=platform.processor(),
         logical_cpus=os.cpu_count(),
+        cpu_affinity=affinity,
         device=str(jax.devices()[0]),
         x64=jax.config.x64_enabled,
         dependencies={
@@ -243,9 +317,10 @@ def main():
         or sha(__file__) != manifest["runner_sha256"]
         or sha(WORKLOAD) != manifest["workload_sha256"]
         or sha(ROOT / "poetry.lock") != manifest["lock_sha256"]
+        or cpu_affinity()["actual_mask"] != affinity["actual_mask"]
     ):
         manifest["comparison_status"] = (
-            "source, harness or lock changed during this run"
+            "source, harness, lock or CPU affinity changed during this run"
         )
         save(destination, manifest)
         raise SystemExit(manifest["comparison_status"])

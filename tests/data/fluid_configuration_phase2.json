@@ -1,0 +1,330 @@
+{
+  "reference_commit": "8f56ccc92d712a17f8216e70b781ee4bb04c6e22",
+  "normalization": "Only remove legacy exceptions=True and the equivalent explicit method=coolprop from fluid constructor mappings; retain every other physical/solver/constraint/plot value.",
+  "cases": {
+    "assignments/organic_rankine_cycle/ORC_single_phase.yaml": {
+      "physical_sha256": "ec1e391fb4d554d8c0e7257b8b324fb66118168d1a0bb35c2abc3a0e2acd597e",
+      "original_file_sha256": "cf8d6aa1ee72609be318ededdde6383eef70e6d0460a719cefa874c79b5163e4",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "assignments/transcritical_heat_pump/transcritical_heat_pump.yaml": {
+      "physical_sha256": "96676cd4f3570b432c550234e85c8f74cd4da705d64cb82dd9a78e2d3a09e144",
+      "original_file_sha256": "3c4d2ddaff83d267cce3c4db1b3238caffc6b1daed3320a358b2b91d6275b106",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "docs/dev/case_sCO2_recuperated.yaml": {
+      "physical_sha256": "f6d32594916f5a5bd3d8f893f3ee764ee4fe13f0981e26cccce0c6c82daef0c7",
+      "original_file_sha256": "2f00742719dbfef67df498bac30b119239b09ea752839b75f374b4889e51574d",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "examples/PTES_CO2/case_PTES_CO2.yaml": {
+      "physical_sha256": "4fa32365bd4fa14c3e3f3885d6e03ae437ffcc9d07413576a0e1f0b7ffd76d1f",
+      "original_file_sha256": "51e1865f4add004c2aad74dc8141dbd7a039d696c4f1b6d9e3f4bd8ba9e88939",
+      "streams": [
+        "working_fluid",
+        "hot_storage_fluid",
+        "cold_storage_fluid"
+      ]
+    },
+    "examples/PTES_CO2/case_PTES_CO2_turbo.yaml": {
+      "physical_sha256": "9f3de24b4a3c5a223bd3808ca5c5ce344b41d19205050362812dbceac617876a",
+      "original_file_sha256": "2029d4eba118f89e436f783e540ebe6fb99dbc112cd56ab5b68c0cbc1b0fc391",
+      "streams": [
+        "working_fluid",
+        "hot_storage_fluid",
+        "cold_storage_fluid"
+      ]
+    },
+    "examples/demo_hx_node_snap/case.yaml": {
+      "physical_sha256": "37df9849927fe6f0186d7db42775a990b61cfc8cac22749923644c600f5bcc80",
+      "original_file_sha256": "78683317d31af3eda246b2a05fe3dbeb6832c421fbf73cb936bc4f49074ca51e",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "examples/heat_pump_CO2/case_sCO2_heat_pump_turbine.yaml": {
+      "physical_sha256": "a2d2b3eab18f278f811f18a07cd673b4bbced338b67d2f3941ca8be78e1e6c4c",
+      "original_file_sha256": "4216b6aed813d8a65ef46c12d098c863cb7da0d413662a523493f7d086c585ed",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "examples/heat_pump_CO2/case_sCO2_heat_pump_valve.yaml": {
+      "physical_sha256": "52d6ae1c8af0f14c5380b4f09ecac045be69e8c8efcc44963ee8fd5e7d081c56",
+      "original_file_sha256": "d42117fec3931e3bc563677113aef2b482d9fbafcf1acbd1d80ea9e18c97157e",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "examples/rankine_organic/case_butane_ORC.yaml": {
+      "physical_sha256": "a134db572b9634bcc5ebe496008bfdeaf55fe32dedc7fc3494a2313658ce159f",
+      "original_file_sha256": "607394cc1be927215fc3da143bede69732e1bb700ea86b99abc30be83f0c1b94",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "examples/rankine_organic/case_butane_PEORC.yaml": {
+      "physical_sha256": "7d2882b5eaf3f192679176f74817c6ca1373106ccc7a62ff7a559b83e888e83a",
+      "original_file_sha256": "91156bb19f3750041b06825f2099fe9af183d951ad02c2ce82a497c6d08e3c81",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "examples/rankine_organic/case_butane_transcritical.yaml": {
+      "physical_sha256": "f63f52b8f6b480c9021f027814d0cefd4feeafcf45f1454ad8a88beba038821a",
+      "original_file_sha256": "3d22c66e77b81cd5699b8bcbe508da48c1b9387dedf1e5f5a38e762707eb89c2",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "examples/rankine_steam/case_water.yaml": {
+      "physical_sha256": "959f626970fa7260382610fb4a36387f4440e9686e10232703294bbe7c801bfb",
+      "original_file_sha256": "2f20e68e42d214a1e9616fbad60ac7bf161673026e2848d29847bd11dbc2753a",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "examples/rankine_transcritical_vs_trilateral/case_template.yaml": {
+      "physical_sha256": "c171450d077a46aacd5d40d005cbe7ed19e7537d033ce617492443a85765c8ec",
+      "original_file_sha256": "a86e0998af004068b345dd2ea8f968012a92c0e6db26ee3402605449519b8393",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "examples/rankine_wet2dry/case_template.yaml": {
+      "physical_sha256": "924992d5fa19744abb008440582f8283a605c555ed4e4076f977e2d9cffa58b8",
+      "original_file_sha256": "4063205e4ae4622502ba6cbb7e8e0c08ce8be17116c634da53c5f701f1c72522",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "examples/refrigeration_R134a/case_R134a_refrigeration.yaml": {
+      "physical_sha256": "c5b9b44ace1cffbd93fe98d951b00649731cb1ef3f6943f888eeaf88582a2623",
+      "original_file_sha256": "31b12eaa8d9b5933e2780df2726351a742ec0b253d355893a4226f9078e51aa1",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "examples/refrigeration_air/case_air_refrigeration_recuperated.yaml": {
+      "physical_sha256": "6df9b0d241e1700218982b936f1cdcae7a9499e84091cd1285b5bb7992af5b4b",
+      "original_file_sha256": "fd6491e3ec1287580065bf25bac8cc17af84eb402d1b79370ccb4f5f84698dc5",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "examples/sCO2_comparison/case_sCO2_recompression.yaml": {
+      "physical_sha256": "b8fbfa3946fe26aff3a5e6232ab53b54314e722d041e7aa5753cb127260c5fc8",
+      "original_file_sha256": "d6ae1084a34ee635b8ee3edf7e43f6d3ca35ea798b9a264f08b421f539b065a9",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "examples/sCO2_comparison/case_sCO2_recuperated.yaml": {
+      "physical_sha256": "e8a372156840b033e2b0efbe16449cb98864fa95ebe2c3ec70ae5052e2523feb",
+      "original_file_sha256": "1ec4496113f6f84ff583369d1cfdbead6421ef32db2363208c41c31d93e6149b",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "examples/sCO2_comparison/case_sCO2_simple.yaml": {
+      "physical_sha256": "c79af2ee44fbdb9bfda9e2278c424dd7fc72ff40b78491cabdecb9c441ffa609",
+      "original_file_sha256": "9e2588701d77706347edfbbd3f5c6d7eb933b69ef5696c8f985191ea82a2dcd3",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "examples/sCO2_recompression/case_sCO2_recompression.yaml": {
+      "physical_sha256": "a90e054fc83c3449b14d392ff4095e727cd23319573fdd52c33cfcae7faf5e0f",
+      "original_file_sha256": "97e97b9b45a5c8259715726aade157d0db7a8c56c858e408b36ccfc2d756c44a",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "examples/sCO2_recuperated/case_sCO2_recuperated.yaml": {
+      "physical_sha256": "507520b1fbee0da5fff0f29a448954d94529a746ebd785f05c305ea590191901",
+      "original_file_sha256": "e60e96a20bdbb387645422c5feb20faf0fd9bd0a9d664d90d50f9de1c7968317",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "examples/sCO2_recuperated/case_sCO2_recuperated_ipopt.yaml": {
+      "physical_sha256": "15456523bacc8ea7ddbbcb67325b4d3a4a17230e1027431c6a9fcc60d6b6a2c1",
+      "original_file_sha256": "7ab21d6f2b9bf1bb54c34a3255106f7dca077b06c2dea3bb62822b5838c39428",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "tests/data/cases/heat_pump_co2_turbine.yaml": {
+      "physical_sha256": "a2d2b3eab18f278f811f18a07cd673b4bbced338b67d2f3941ca8be78e1e6c4c",
+      "original_file_sha256": "252fcd4e74d3de9d9a80a04b29b3083c1e60c68394f5313c4f76ca28a9895f11",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "tests/data/cases/heat_pump_co2_valve.yaml": {
+      "physical_sha256": "52d6ae1c8af0f14c5380b4f09ecac045be69e8c8efcc44963ee8fd5e7d081c56",
+      "original_file_sha256": "8a5f741bcff1dacb0865139e001e8e5ce1c4983ef63b6386339d6d9f9f602694",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "tests/data/cases/orc_partial_evaporation.yaml": {
+      "physical_sha256": "7d2882b5eaf3f192679176f74817c6ca1373106ccc7a62ff7a559b83e888e83a",
+      "original_file_sha256": "dc1812da8de4c955585c754f022afbbdd43accb3ebd4d70c4f297ed853dc82eb",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "tests/data/cases/orc_subcritical.yaml": {
+      "physical_sha256": "a134db572b9634bcc5ebe496008bfdeaf55fe32dedc7fc3494a2313658ce159f",
+      "original_file_sha256": "dfdcf3ec7a3d7ec15c3abfd3eaebded62d38b8f52b944a6065180dcdfb2a55e0",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "tests/data/cases/orc_transcritical.yaml": {
+      "physical_sha256": "f63f52b8f6b480c9021f027814d0cefd4feeafcf45f1454ad8a88beba038821a",
+      "original_file_sha256": "2855ecb7dd7b9c50a6c425647892b95fbeb858f49cc3dac76d1d1df35d38a2f9",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "tests/data/cases/orc_wet_expansion.yaml": {
+      "physical_sha256": "4f33b4aef6c1b671cf2ce55b20c15515ba486ba5983d54c0c8ef0e2a94967425",
+      "original_file_sha256": "8e623f65728b0f787b331089ac622963afabf557aea1c909eb80ff367a4d4345",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "tests/data/cases/ptes.yaml": {
+      "physical_sha256": "4fa32365bd4fa14c3e3f3885d6e03ae437ffcc9d07413576a0e1f0b7ffd76d1f",
+      "original_file_sha256": "dd3bcba02c3b206e42ab514c7602602ab435b908f06343a8096e072ca9636a90",
+      "streams": [
+        "working_fluid",
+        "hot_storage_fluid",
+        "cold_storage_fluid"
+      ]
+    },
+    "tests/data/cases/ptes_turbo.yaml": {
+      "physical_sha256": "9f3de24b4a3c5a223bd3808ca5c5ce344b41d19205050362812dbceac617876a",
+      "original_file_sha256": "0222b707fa59e85d8ea0f95ffcc9a8f9276f9095509c193971fb082b7a3d7fa6",
+      "streams": [
+        "working_fluid",
+        "hot_storage_fluid",
+        "cold_storage_fluid"
+      ]
+    },
+    "tests/data/cases/rankine_steam.yaml": {
+      "physical_sha256": "959f626970fa7260382610fb4a36387f4440e9686e10232703294bbe7c801bfb",
+      "original_file_sha256": "cc1aed3310f332318feddadbba94e9024383c3c41e69b4e3a3f702b97cf0987f",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "tests/data/cases/refrigeration_air.yaml": {
+      "physical_sha256": "6df9b0d241e1700218982b936f1cdcae7a9499e84091cd1285b5bb7992af5b4b",
+      "original_file_sha256": "7bea778dd7c488bab07cb177c0ea71175f5e4a40d06185d3d70ab47e7de5c90b",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "tests/data/cases/refrigeration_r134a.yaml": {
+      "physical_sha256": "c5b9b44ace1cffbd93fe98d951b00649731cb1ef3f6943f888eeaf88582a2623",
+      "original_file_sha256": "cc9cfad68d1a2cb623139ecfe322971668362fbdb50f0b670188c016e30d6ee3",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "tests/data/cases/sco2_recompression.yaml": {
+      "physical_sha256": "a90e054fc83c3449b14d392ff4095e727cd23319573fdd52c33cfcae7faf5e0f",
+      "original_file_sha256": "c0bcc6c6326f978de1b5182351d1924e6d4959ab13c26e201605a736cfa95874",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "tests/data/cases/sco2_recuperated.yaml": {
+      "physical_sha256": "507520b1fbee0da5fff0f29a448954d94529a746ebd785f05c305ea590191901",
+      "original_file_sha256": "2edb75376892a57347b8b76462c4a085dc4b2e87c1f96a24ada2c4e7a1eb3da9",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    },
+    "tests/data/cases/sco2_simple_polytropic.yaml": {
+      "physical_sha256": "c79af2ee44fbdb9bfda9e2278c424dd7fc72ff40b78491cabdecb9c441ffa609",
+      "original_file_sha256": "6d3132f66f50fa3f48557ff512e475126b5632c2fcdd411cfae2983cc194fa73",
+      "streams": [
+        "working_fluid",
+        "heating_fluid",
+        "cooling_fluid"
+      ]
+    }
+  }
+}

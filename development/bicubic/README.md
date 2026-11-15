@@ -38,9 +38,18 @@ working/heating/cooling stream identities. Changing `method` to `coolprop` and
 removing `table_options` restores source evaluation.
 
 The 0.6 interface uses keyword `backend`; it no longer accepts the old
-`Fluid("Air", "HEOS")` positional spelling. Old ThermOpt YAML files with
-`exceptions: True` remain accepted as the normal raising policy. A false value
-is rejected explicitly rather than quietly introducing invalid masked states.
+`Fluid("Air", "HEOS")` positional spelling. ThermOpt uses the constructor
+vocabulary directly: constructor-level `exceptions` is rejected even when true.
+Normal cycle calls use JaxProp's raising policy. An explicit `errors="mask"` or
+`errors="clip"` belongs on an individual state call only where its consuming
+algorithm has defined behavior for failed or adjusted states.
+
+Phase 2 migrates 36 maintained YAML inputs (108 fluid declarations), preserving
+all physical values, constraints and solver options. Historical initializer and
+figure-result YAML files remain dated data. The current wet-to-dry study reads
+only design-variable values from its 484 saved initializers and uses the new
+template for actual fluid settings. Old standalone configurations must be
+migrated before replay; no runtime legacy translation is provided.
 
 Table bounds must cover every physical state and finite-difference/optimizer
 probe. The CO2 rectangle above covers the validated supercritical cases, not

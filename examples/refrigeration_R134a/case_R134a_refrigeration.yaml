@@ -48,17 +48,17 @@ problem_formulation:
     working_fluid:
       name: R134a
       backend: HEOS
-      exceptions: True
+      method: coolprop
 
     heating_fluid:
         name: nitrogen
         backend: HEOS
-        exceptions: True
+        method: coolprop
 
     cooling_fluid:
       name: nitrogen
       backend: HEOS
-      exceptions: True
+      method: coolprop
 
     heat_duty: 100e3
 

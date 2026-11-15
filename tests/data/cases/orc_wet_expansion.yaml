@@ -37,15 +37,15 @@ problem_formulation:
     working_fluid:
       name: butane
       backend: HEOS
-      exceptions: true
+      method: coolprop
     heating_fluid:
       name: nitrogen
       backend: HEOS
-      exceptions: true
+      method: coolprop
     cooling_fluid:
       name: water
       backend: HEOS
-      exceptions: true
+      method: coolprop
     net_power: 1e6
     special_points:
       ambient_pressure: 101325

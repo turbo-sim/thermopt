@@ -47,17 +47,17 @@ problem_formulation:
     working_fluid:
       name: nitrogen
       backend: HEOS
-      exceptions: True
+      method: coolprop
 
     heating_fluid:
         name: nitrogen
         backend: HEOS
-        exceptions: True
+        method: coolprop
 
     cooling_fluid:
       name: nitrogen
       backend: HEOS
-      exceptions: True
+      method: coolprop
 
     heat_duty: 1e6
 

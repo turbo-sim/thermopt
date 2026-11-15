@@ -1,0 +1,2243 @@
+{
+  "reference_commit": "8f56ccc92d712a17f8216e70b781ee4bb04c6e22",
+  "phase": 2,
+  "protocol_change": {
+    "reference_commit": "8f56ccc92d712a17f8216e70b781ee4bb04c6e22",
+    "original_runner_sha256": "6d65c501eed35633e8ce4d7f3c28ba524b35704fcee8515a8fe4d8cf8273b4fc",
+    "common_runner_sha256": "8e5cb5cbb061d7f6fe5b5dbe0416663795f6a148b0a642c50a748ce6f3bc6f6c",
+    "reason": "Add optional CPU-affinity observation/control to BOTH harnesses before repeat cohorts; no workload/model/input changes.",
+    "cpu_affinity": "0xffff",
+    "order": [
+      "pre1",
+      "post1",
+      "post2",
+      "pre2",
+      "pre3",
+      "post3"
+    ]
+  },
+  "warm_ratio_limit": 1.1,
+  "all_eight_cohorts_exact_same_physical_snapshots": true,
+  "unrestricted_comparison": {
+    "ratios": {
+      "recuperated_working/100/source": 1.145074300313022,
+      "recuperated_working/100/bicubic": 1.1828561351843143,
+      "recuperated_all/100/source": 1.2338337431896145,
+      "recuperated_all/100/bicubic": 1.2205790536657308,
+      "simple_polytropic/100/source": 1.3675919945167356,
+      "simple_polytropic/100/bicubic": 1.4146719254963818,
+      "recompression/100/source": 0.9684576222315129,
+      "recompression/100/bicubic": 0.9861538437533341,
+      "refrigeration/100/source": 0.8634712767262127,
+      "refrigeration/100/bicubic": 0.7858831849351532
+    },
+    "timing_flags": [
+      "recuperated_working/100/source",
+      "recuperated_working/100/bicubic",
+      "recuperated_all/100/source",
+      "recuperated_all/100/bicubic",
+      "simple_polytropic/100/source",
+      "simple_polytropic/100/bicubic"
+    ]
+  },
+  "controlled_comparisons": [
+    {
+      "pair": 1,
+      "ratios": {
+        "recuperated_working/100/source": 1.0661886833960974,
+        "recuperated_working/100/bicubic": 1.0472202201521537,
+        "recuperated_all/100/source": 1.108363379153219,
+        "recuperated_all/100/bicubic": 1.021275701793706,
+        "simple_polytropic/100/source": 1.1430191878913494,
+        "simple_polytropic/100/bicubic": 1.1311018232529488,
+        "recompression/100/source": 1.249379165235937,
+        "recompression/100/bicubic": 1.1406471311309503,
+        "refrigeration/100/source": 1.0440637792957217,
+        "refrigeration/100/bicubic": 1.064617853817818
+      },
+      "timing_flags": [
+        "recuperated_all/100/source",
+        "simple_polytropic/100/source",
+        "simple_polytropic/100/bicubic",
+        "recompression/100/source",
+        "recompression/100/bicubic"
+      ]
+    },
+    {
+      "pair": 2,
+      "ratios": {
+        "recuperated_working/100/source": 1.0513018112118142,
+        "recuperated_working/100/bicubic": 1.047883345912864,
+        "recuperated_all/100/source": 0.9761301989021592,
+        "recuperated_all/100/bicubic": 0.9710648632185547,
+        "simple_polytropic/100/source": 1.0524397210119263,
+        "simple_polytropic/100/bicubic": 1.0492062469746442,
+        "recompression/100/source": 1.0181142289654979,
+        "recompression/100/bicubic": 0.980896942464803,
+        "refrigeration/100/source": 0.8993691675193622,
+        "refrigeration/100/bicubic": 0.837098915772351
+      },
+      "timing_flags": []
+    },
+    {
+      "pair": 3,
+      "ratios": {
+        "recuperated_working/100/source": 1.0050612368297214,
+        "recuperated_working/100/bicubic": 0.9725902796254822,
+        "recuperated_all/100/source": 0.9804975423544046,
+        "recuperated_all/100/bicubic": 0.9823646274499586,
+        "simple_polytropic/100/source": 1.130724461391005,
+        "simple_polytropic/100/bicubic": 1.1257325665084215,
+        "recompression/100/source": 1.0569747963183247,
+        "recompression/100/bicubic": 1.0741551417268005,
+        "refrigeration/100/source": 1.0313491863538737,
+        "refrigeration/100/bicubic": 1.0897442437453977
+      },
+      "timing_flags": [
+        "simple_polytropic/100/source",
+        "simple_polytropic/100/bicubic"
+      ]
+    }
+  ],
+  "aggregate": {
+    "description": "Ratio of post/pre medians of three fresh cohort medians; retain all 12 samples in every cohort.",
+    "before_seconds": {
+      "recuperated_working/100/source": 0.03386820000014268,
+      "recuperated_working/100/bicubic": 0.023296199997275835,
+      "recuperated_all/100/source": 0.03429055000015069,
+      "recuperated_all/100/bicubic": 0.01693755000087549,
+      "simple_polytropic/100/source": 0.1382040499993309,
+      "simple_polytropic/100/bicubic": 0.08424150000064401,
+      "recompression/100/source": 0.03766489999907208,
+      "recompression/100/bicubic": 0.02510479999909876,
+      "refrigeration/100/source": 0.026890649998676963,
+      "refrigeration/100/bicubic": 0.016666249997797422
+    },
+    "after_seconds": {
+      "recuperated_working/100/source": 0.03462244999536779,
+      "recuperated_working/100/bicubic": 0.023470500000257744,
+      "recuperated_all/100/source": 0.03386099999988801,
+      "recuperated_all/100/bicubic": 0.016638849996525096,
+      "simple_polytropic/100/source": 0.14803674999711802,
+      "simple_polytropic/100/bicubic": 0.0887905999989016,
+      "recompression/100/source": 0.03981085000486928,
+      "recompression/100/bicubic": 0.02689760000066599,
+      "refrigeration/100/source": 0.026916949998849304,
+      "refrigeration/100/bicubic": 0.01605299999937415
+    },
+    "ratios": {
+      "recuperated_working/100/source": 1.0222701529819103,
+      "recuperated_working/100/bicubic": 1.0074819070493166,
+      "recuperated_all/100/source": 0.9874732251229336,
+      "recuperated_all/100/bicubic": 0.9823646274499586,
+      "simple_polytropic/100/source": 1.071146250763525,
+      "simple_polytropic/100/bicubic": 1.0540007003462997,
+      "recompression/100/source": 1.0569747963183247,
+      "recompression/100/bicubic": 1.0714126382855704,
+      "refrigeration/100/source": 1.0009780351227522,
+      "refrigeration/100/bicubic": 0.9632040801917457
+    },
+    "timing_flags": []
+  },
+  "observations": {
+    "unrestricted_pre": {
+      "manifest_sha256": "302e48f9ba485c3602824f84ed9f9959e0b7cef9fdcad093afc688f2ce09a2e3",
+      "manifest_relative_path": "benchmark/results/phase2/reference/benchmark/results/pre_cohort1/manifest.json",
+      "started_at_utc": "2026-11-15T14:06:38.357491+00:00",
+      "finished_at_utc": "2026-11-15T14:07:31.989988+00:00",
+      "comparison_signature": "47c1238607c3c4b7e9f923df3f8387e699adade6eca45e1a29da8ed9cbb285a6",
+      "environment": {
+        "python": "3.13.2",
+        "platform": "Windows-11-10.0.26300-SP0",
+        "machine": "AMD64",
+        "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+        "logical_cpus": 28,
+        "device": "TFRT_CPU_0",
+        "x64": true,
+        "dependencies": {
+          "jaxprop": "0.6.0",
+          "jax": "0.6.2",
+          "jaxlib": "0.6.2",
+          "CoolProp": "7.2.0",
+          "numpy": "2.4.4",
+          "scipy": "1.17.1",
+          "pysolver_view": "0.7.1",
+          "equinox": "0.12.2",
+          "diffrax": "0.7.1",
+          "optimistix": "0.0.10",
+          "jaxtyping": "0.3.9",
+          "lineax": "0.1.0",
+          "matplotlib": "3.10.8",
+          "pandas": "2.3.3"
+        }
+      },
+      "thermopt_source_sha256": "a0abd437d975e65a9103f0e12bd7bb2e7285606d17d79b426b7ef5d8b95552a6",
+      "runner_sha256": "6d65c501eed35633e8ce4d7f3c28ba524b35704fcee8515a8fe4d8cf8273b4fc",
+      "workload_sha256": "0792b85c84f917e6106595bf8ff45d458fd8957afd49ea59d0f856b836f443e5",
+      "lock_sha256": "2be5c4ac0a7c9c26e09bffd94529f3ca67ef2d253a33e8992a8afa7a3c71e0d1",
+      "numerical_checks_passed": true,
+      "source_and_protocol_unchanged_during_run": true,
+      "timings_seconds": {
+        "recuperated_working/100/source": 0.03272529999958351,
+        "recuperated_working/100/bicubic": 0.022115199997642776,
+        "recuperated_all/100/source": 0.03133764999802224,
+        "recuperated_all/100/bicubic": 0.01657704999888665,
+        "simple_polytropic/100/source": 0.13677854999696137,
+        "simple_polytropic/100/bicubic": 0.07976390000112588,
+        "recompression/100/source": 0.04393930000151158,
+        "recompression/100/bicubic": 0.030925549996027257,
+        "refrigeration/100/source": 0.034706250004092,
+        "refrigeration/100/bicubic": 0.0248880500002997
+      },
+      "raw_samples_seconds": {
+        "recuperated_working/100": {
+          "source": [
+            0.032739499998569954,
+            0.03262279999762541,
+            0.03271110000059707,
+            0.030104400000709575,
+            0.030818500003078952,
+            0.03035929999896325,
+            0.03287140000611544,
+            0.035756599994783755,
+            0.030753599996387493,
+            0.03308850000030361,
+            0.032954800000879914,
+            0.0361170000032871
+          ],
+          "bicubic": [
+            0.023922899999888614,
+            0.02248659999895608,
+            0.02387829999497626,
+            0.021345200002542697,
+            0.02174379999632947,
+            0.020377599998028018,
+            0.02315910000470467,
+            0.021651100003509782,
+            0.021735199996328447,
+            0.021379799996793736,
+            0.02339159999974072,
+            0.023119499994209036
+          ]
+        },
+        "recuperated_all/100": {
+          "source": [
+            0.03285630000027595,
+            0.031387099996209145,
+            0.030308299996249843,
+            0.031067699994309805,
+            0.03189369999745395,
+            0.03116020000015851,
+            0.03067670000018552,
+            0.03213089999917429,
+            0.033199099998455495,
+            0.03106050000496907,
+            0.03195599999889964,
+            0.03128819999983534
+          ],
+          "bicubic": [
+            0.018016900001384784,
+            0.016520600001967978,
+            0.017237300002307165,
+            0.01715239999612095,
+            0.01620139999431558,
+            0.01576049999857787,
+            0.016316000001097564,
+            0.015845400004764087,
+            0.0183688000033726,
+            0.01688270000158809,
+            0.016633499995805323,
+            0.0162006000027759
+          ]
+        },
+        "simple_polytropic/100": {
+          "source": [
+            0.14385339999716962,
+            0.1349971000017831,
+            0.13667279999936,
+            0.14069219999510096,
+            0.13688429999456275,
+            0.14030780000030063,
+            0.13438489999680314,
+            0.13765609999973094,
+            0.14381610000418732,
+            0.13459900000452762,
+            0.13164449999749195,
+            0.13048459999845363
+          ],
+          "bicubic": [
+            0.08575800000107847,
+            0.0810977000001003,
+            0.08897019999858458,
+            0.08815219999814872,
+            0.07806940000591567,
+            0.07843010000215145,
+            0.08335570000053849,
+            0.07774520000384655,
+            0.08217250000598142,
+            0.07614350000221748,
+            0.07700080000358867,
+            0.07814050000160933
+          ]
+        },
+        "recompression/100": {
+          "source": [
+            0.044342900000629015,
+            0.046731099995668046,
+            0.04842780000035418,
+            0.04672759999812115,
+            0.04340980000415584,
+            0.041817299999820534,
+            0.04993159999867203,
+            0.04353570000239415,
+            0.04324110000015935,
+            0.04715500000020256,
+            0.03937730000325246,
+            0.038966800006164704
+          ],
+          "bicubic": [
+            0.033263999997871,
+            0.0327811000024667,
+            0.0339938000033726,
+            0.04046769999695243,
+            0.02944510000088485,
+            0.032705199999327306,
+            0.030854699994961265,
+            0.030232799996156245,
+            0.03099639999709325,
+            0.028626200000871904,
+            0.02750180000293767,
+            0.0271945999993477
+          ]
+        },
+        "refrigeration/100": {
+          "source": [
+            0.03434870000637602,
+            0.031640900000638794,
+            0.035063800001807977,
+            0.03154240000003483,
+            0.03002359999663895,
+            0.031446900000446476,
+            0.03390239999862388,
+            0.052774700001464225,
+            0.07165019999956712,
+            0.06372340000234544,
+            0.05445509999844944,
+            0.04240439999557566
+          ],
+          "bicubic": [
+            0.02325320000090869,
+            0.0230745000008028,
+            0.02075650000188034,
+            0.020770099996298086,
+            0.02243340000131866,
+            0.021668000001227483,
+            0.03727909999724943,
+            0.038828600001579616,
+            0.04627170000458136,
+            0.04388620000099763,
+            0.03731629999674624,
+            0.026522899999690708
+          ]
+        }
+      },
+      "numerical_agreement": {
+        "recuperated_working/100": {
+          "maximum_temperature_error_K": 3.232487279092311e-05,
+          "maximum_density_relative_error": 5.501691704434819e-07,
+          "maximum_residual_error": 3.2324872791811288e-06,
+          "efficiency_absolute_error": 3.009933324804592e-08
+        },
+        "recuperated_all/100": {
+          "maximum_temperature_error_K": 3.232488626281338e-05,
+          "maximum_density_relative_error": 5.501691704434819e-07,
+          "maximum_residual_error": 3.2324886261037022e-06,
+          "efficiency_absolute_error": 3.010108273748813e-08
+        },
+        "simple_polytropic/100": {
+          "maximum_temperature_error_K": 2.948781286704616e-05,
+          "maximum_density_relative_error": 8.720349531365912e-08,
+          "maximum_residual_error": 2.948781286704616e-06,
+          "efficiency_absolute_error": 5.082070320128196e-10
+        },
+        "recompression/100": {
+          "maximum_temperature_error_K": 0.00016176445433302433,
+          "maximum_density_relative_error": 2.6634790164514754e-06,
+          "maximum_residual_error": 1.617644543339125e-05,
+          "efficiency_absolute_error": 2.462242298939543e-09
+        },
+        "refrigeration/100": {
+          "maximum_temperature_error_K": 3.146290254107953e-06,
+          "maximum_density_relative_error": 2.3234942275740522e-06,
+          "maximum_residual_error": 5.952797721420211e-07,
+          "efficiency_absolute_error": 8.302577958474444e-09
+        }
+      },
+      "setup_seconds": {
+        "recuperated_working/source": 0.11496079999778885,
+        "recuperated_working/100/bicubic": 2.3496811000004527,
+        "recuperated_all/source": 0.08789889999752631,
+        "recuperated_all/100/bicubic": 6.7158014999949955,
+        "simple_polytropic/source": 0.2237673999989056,
+        "simple_polytropic/100/bicubic": 2.778168899996672,
+        "recompression/source": 0.13515129999723285,
+        "recompression/100/bicubic": 1.8194682000030298,
+        "refrigeration/source": 0.09275850000267383,
+        "refrigeration/100/bicubic": 9.539035399997374
+      },
+      "snapshots_sha256": {
+        "recuperated_working": "97aef32ec0c9aff02c4bcfc984a6105eaa7c6bb57a57a3b2ac8c90f396471fc1",
+        "recuperated_all": "7f7e90737151928a2180b6b3fb763037f6c579a112f11aa9d785f550fd603fcb",
+        "simple_polytropic": "04e80fcf11624ad01816296aede0ef40b884a0d5f895d8d6c335bf6417a25915",
+        "recompression": "4cc3766734da201b9ac126f8d20bf78933f1e36ca81466bdbde2b0164744b289",
+        "refrigeration": "0a8e61195ddba1b6213c958fd8f1afd6f3f5b950dbac09ec7d4ae33dec8d63b7"
+      }
+    },
+    "unrestricted_post": {
+      "manifest_sha256": "0024c31b0db3a4320a2baffd0675ac2eace13858c4bf7365a8e633d475dca277",
+      "manifest_relative_path": "benchmark/results/phase2/post_cohort1/manifest.json",
+      "started_at_utc": "2026-11-15T14:17:10.910323+00:00",
+      "finished_at_utc": "2026-11-15T14:18:05.303016+00:00",
+      "comparison_signature": "47c1238607c3c4b7e9f923df3f8387e699adade6eca45e1a29da8ed9cbb285a6",
+      "environment": {
+        "python": "3.13.2",
+        "platform": "Windows-11-10.0.26300-SP0",
+        "machine": "AMD64",
+        "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+        "logical_cpus": 28,
+        "device": "TFRT_CPU_0",
+        "x64": true,
+        "dependencies": {
+          "jaxprop": "0.6.0",
+          "jax": "0.6.2",
+          "jaxlib": "0.6.2",
+          "CoolProp": "7.2.0",
+          "numpy": "2.4.4",
+          "scipy": "1.17.1",
+          "pysolver_view": "0.7.1",
+          "equinox": "0.12.2",
+          "diffrax": "0.7.1",
+          "optimistix": "0.0.10",
+          "jaxtyping": "0.3.9",
+          "lineax": "0.1.0",
+          "matplotlib": "3.10.8",
+          "pandas": "2.3.3"
+        }
+      },
+      "thermopt_source_sha256": "31a7f01d69a5e21ff41f69c728a3abd642caa15e2cbc9d06ff376609b4b3fb8e",
+      "runner_sha256": "6d65c501eed35633e8ce4d7f3c28ba524b35704fcee8515a8fe4d8cf8273b4fc",
+      "workload_sha256": "0792b85c84f917e6106595bf8ff45d458fd8957afd49ea59d0f856b836f443e5",
+      "lock_sha256": "2be5c4ac0a7c9c26e09bffd94529f3ca67ef2d253a33e8992a8afa7a3c71e0d1",
+      "numerical_checks_passed": true,
+      "source_and_protocol_unchanged_during_run": true,
+      "timings_seconds": {
+        "recuperated_working/100/source": 0.03747289999955683,
+        "recuperated_working/100/bicubic": 0.026159099998039892,
+        "recuperated_all/100/source": 0.038665449999825796,
+        "recuperated_all/100/bicubic": 0.020233600000210572,
+        "simple_polytropic/100/source": 0.18705724999745144,
+        "simple_polytropic/100/bicubic": 0.1128397499996936,
+        "recompression/100/source": 0.042553350001981016,
+        "recompression/100/bicubic": 0.030497349998768186,
+        "refrigeration/100/source": 0.029967850001412444,
+        "refrigeration/100/bicubic": 0.01955910000106087
+      },
+      "raw_samples_seconds": {
+        "recuperated_working/100": {
+          "source": [
+            0.037278199997672345,
+            0.03705669999908423,
+            0.03659189999598311,
+            0.03659440000046743,
+            0.03771299999789335,
+            0.03787510000256589,
+            0.037769799993839115,
+            0.037667600001441315,
+            0.03625939999619732,
+            0.03788129999884404,
+            0.038333599994075485,
+            0.034380099998088554
+          ],
+          "bicubic": [
+            0.027651999997033272,
+            0.026483399997232482,
+            0.02780009999696631,
+            0.026226399997540284,
+            0.02726950000214856,
+            0.025590699995518662,
+            0.02718740000273101,
+            0.02514260000316426,
+            0.025301999994553626,
+            0.0260917999985395,
+            0.024802400002954528,
+            0.024632499997096602
+          ]
+        },
+        "recuperated_all/100": {
+          "source": [
+            0.038132599998789374,
+            0.04181799999787472,
+            0.038521599999512546,
+            0.038981699995929375,
+            0.03758219999872381,
+            0.035896500005037524,
+            0.038809300000139046,
+            0.036462700001720805,
+            0.042638900005840696,
+            0.03759949999948731,
+            0.03881359999650158,
+            0.04099960000166902
+          ],
+          "bicubic": [
+            0.02036239999870304,
+            0.019921300001442432,
+            0.020491799994488247,
+            0.01970150000124704,
+            0.021496000001206994,
+            0.01992430000245804,
+            0.021292900004482362,
+            0.021527999997488223,
+            0.019566800001484808,
+            0.018802699996740557,
+            0.020104800001718104,
+            0.020562300000165123
+          ]
+        },
+        "simple_polytropic/100": {
+          "source": [
+            0.1889962999994168,
+            0.2265077000047313,
+            0.18275720000383444,
+            0.3612903000030201,
+            0.2046831999978167,
+            0.2321010000014212,
+            0.20845249999547377,
+            0.17012640000029933,
+            0.18511819999548607,
+            0.1717627000034554,
+            0.1699873999968986,
+            0.16969910000625532
+          ],
+          "bicubic": [
+            0.12142339999991236,
+            0.11295310000423342,
+            0.10764150000613881,
+            0.16138360000331886,
+            0.12422589999914635,
+            0.11668510000163224,
+            0.10439700000279117,
+            0.09774299999844516,
+            0.11272639999515377,
+            0.10467040000366978,
+            0.11412700000073528,
+            0.10712680000142427
+          ]
+        },
+        "recompression/100": {
+          "source": [
+            0.041376699999091215,
+            0.04012679999868851,
+            0.042589099997712765,
+            0.04036720000294736,
+            0.03999099999782629,
+            0.04511060000368161,
+            0.04626030000508763,
+            0.04295769999589538,
+            0.04188319999957457,
+            0.04251760000624927,
+            0.04546870000194758,
+            0.04478880000533536
+          ],
+          "bicubic": [
+            0.034077100004651584,
+            0.028020200006722007,
+            0.03213010000035865,
+            0.02696049999940442,
+            0.0325613999957568,
+            0.02962890000344487,
+            0.0346133999992162,
+            0.032448100006149616,
+            0.02955870000005234,
+            0.03011269999842625,
+            0.02910899999551475,
+            0.03088199999911012
+          ]
+        },
+        "refrigeration/100": {
+          "source": [
+            0.030007200002728496,
+            0.03143160000036005,
+            0.027243700002145488,
+            0.03055319999839412,
+            0.027139999998325948,
+            0.02721670000028098,
+            0.03319229999760864,
+            0.029928500000096392,
+            0.03460410000116099,
+            0.029698300000745803,
+            0.03214259999367641,
+            0.028675000001385342
+          ],
+          "bicubic": [
+            0.019843699999910314,
+            0.019519500005117152,
+            0.019598699997004587,
+            0.018831800000043586,
+            0.01852080000389833,
+            0.017854000005172566,
+            0.021096900003612973,
+            0.01925929999561049,
+            0.02150660000188509,
+            0.020393099999637343,
+            0.019284199996036477,
+            0.022015300004568417
+          ]
+        }
+      },
+      "numerical_agreement": {
+        "recuperated_working/100": {
+          "maximum_temperature_error_K": 3.232487279092311e-05,
+          "maximum_density_relative_error": 5.501691704434819e-07,
+          "maximum_residual_error": 3.2324872791811288e-06,
+          "efficiency_absolute_error": 3.009933324804592e-08
+        },
+        "recuperated_all/100": {
+          "maximum_temperature_error_K": 3.232488626281338e-05,
+          "maximum_density_relative_error": 5.501691704434819e-07,
+          "maximum_residual_error": 3.2324886261037022e-06,
+          "efficiency_absolute_error": 3.010108273748813e-08
+        },
+        "simple_polytropic/100": {
+          "maximum_temperature_error_K": 2.948781286704616e-05,
+          "maximum_density_relative_error": 8.720349531365912e-08,
+          "maximum_residual_error": 2.948781286704616e-06,
+          "efficiency_absolute_error": 5.082070320128196e-10
+        },
+        "recompression/100": {
+          "maximum_temperature_error_K": 0.00016176445433302433,
+          "maximum_density_relative_error": 2.6634790164514754e-06,
+          "maximum_residual_error": 1.617644543339125e-05,
+          "efficiency_absolute_error": 2.462242298939543e-09
+        },
+        "refrigeration/100": {
+          "maximum_temperature_error_K": 3.146290254107953e-06,
+          "maximum_density_relative_error": 2.3234942275740522e-06,
+          "maximum_residual_error": 5.952797721420211e-07,
+          "efficiency_absolute_error": 8.302577958474444e-09
+        }
+      },
+      "setup_seconds": {
+        "recuperated_working/source": 0.10445440000330564,
+        "recuperated_working/100/bicubic": 2.101668700001028,
+        "recuperated_all/source": 0.1232321999996202,
+        "recuperated_all/100/bicubic": 7.473389099999622,
+        "simple_polytropic/source": 0.2301616999975522,
+        "simple_polytropic/100/bicubic": 3.3683677000008174,
+        "recompression/source": 0.1028632999950787,
+        "recompression/100/bicubic": 1.6495744999992894,
+        "refrigeration/source": 0.10205039999709697,
+        "refrigeration/100/bicubic": 6.659070699999575
+      },
+      "snapshots_sha256": {
+        "recuperated_working": "97aef32ec0c9aff02c4bcfc984a6105eaa7c6bb57a57a3b2ac8c90f396471fc1",
+        "recuperated_all": "7f7e90737151928a2180b6b3fb763037f6c579a112f11aa9d785f550fd603fcb",
+        "simple_polytropic": "04e80fcf11624ad01816296aede0ef40b884a0d5f895d8d6c335bf6417a25915",
+        "recompression": "4cc3766734da201b9ac126f8d20bf78933f1e36ca81466bdbde2b0164744b289",
+        "refrigeration": "0a8e61195ddba1b6213c958fd8f1afd6f3f5b950dbac09ec7d4ae33dec8d63b7"
+      }
+    },
+    "pre1": {
+      "manifest_sha256": "6602acbc57c1067ae956cc7fb1ce663c476fa60d168a7ace0bf9ae89c826f5bb",
+      "manifest_relative_path": "benchmark/results/phase2/reference/benchmark/results/controlled_pre1/manifest.json",
+      "started_at_utc": "2026-11-15T14:26:08.549407+00:00",
+      "finished_at_utc": "2026-11-15T14:26:51.872219+00:00",
+      "comparison_signature": "fa33461109a3f943b0c3e07e9c0ed02269725831ab148461b606bdac19ccffb8",
+      "environment": {
+        "python": "3.13.2",
+        "platform": "Windows-11-10.0.26300-SP0",
+        "machine": "AMD64",
+        "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+        "logical_cpus": 28,
+        "cpu_affinity": {
+          "requested_mask": "0xffff",
+          "actual_mask": "0xffff",
+          "system_mask": "0xfffffff"
+        },
+        "device": "TFRT_CPU_0",
+        "x64": true,
+        "dependencies": {
+          "jaxprop": "0.6.0",
+          "jax": "0.6.2",
+          "jaxlib": "0.6.2",
+          "CoolProp": "7.2.0",
+          "numpy": "2.4.4",
+          "scipy": "1.17.1",
+          "pysolver_view": "0.7.1",
+          "equinox": "0.12.2",
+          "diffrax": "0.7.1",
+          "optimistix": "0.0.10",
+          "jaxtyping": "0.3.9",
+          "lineax": "0.1.0",
+          "matplotlib": "3.10.8",
+          "pandas": "2.3.3"
+        }
+      },
+      "thermopt_source_sha256": "a0abd437d975e65a9103f0e12bd7bb2e7285606d17d79b426b7ef5d8b95552a6",
+      "runner_sha256": "8e5cb5cbb061d7f6fe5b5dbe0416663795f6a148b0a642c50a748ce6f3bc6f6c",
+      "workload_sha256": "0792b85c84f917e6106595bf8ff45d458fd8957afd49ea59d0f856b836f443e5",
+      "lock_sha256": "2be5c4ac0a7c9c26e09bffd94529f3ca67ef2d253a33e8992a8afa7a3c71e0d1",
+      "numerical_checks_passed": true,
+      "source_and_protocol_unchanged_during_run": true,
+      "timings_seconds": {
+        "recuperated_working/100/source": 0.0300429000017175,
+        "recuperated_working/100/bicubic": 0.020530399997369386,
+        "recuperated_all/100/source": 0.030550450002920115,
+        "recuperated_all/100/bicubic": 0.015470700000150828,
+        "simple_polytropic/100/source": 0.12822719999530818,
+        "simple_polytropic/100/bicubic": 0.07542725000166683,
+        "recompression/100/source": 0.034630800004379125,
+        "recompression/100/bicubic": 0.023581000001286156,
+        "refrigeration/100/source": 0.024597299998276867,
+        "refrigeration/100/bicubic": 0.015078649998031324
+      },
+      "raw_samples_seconds": {
+        "recuperated_working/100": {
+          "source": [
+            0.032545300004130695,
+            0.03029160000005504,
+            0.031033800005388912,
+            0.030433300002187025,
+            0.02957619999506278,
+            0.030559899998479523,
+            0.027735000003303867,
+            0.031425699999090284,
+            0.028352900000754744,
+            0.029764600003545638,
+            0.027736199997889344,
+            0.029794200003379956
+          ],
+          "bicubic": [
+            0.020228400004270952,
+            0.02078550000442192,
+            0.01969210000243038,
+            0.01930240000365302,
+            0.01962189999903785,
+            0.019502000002830755,
+            0.02132759999949485,
+            0.021203600001172163,
+            0.022190099996805657,
+            0.02048559999821009,
+            0.022023500001523644,
+            0.02057519999652868
+          ]
+        },
+        "recuperated_all/100": {
+          "source": [
+            0.04202559999976074,
+            0.030350900000485126,
+            0.031650000004447065,
+            0.030547800000931602,
+            0.030315299998619594,
+            0.031752000002597924,
+            0.03153040000324836,
+            0.030401900003198534,
+            0.029673400000319816,
+            0.030184800001734402,
+            0.03055310000490863,
+            0.030652500005089678
+          ],
+          "bicubic": [
+            0.01689489999989746,
+            0.015093800000613555,
+            0.016040299997257534,
+            0.01643710000644205,
+            0.0164673999970546,
+            0.015349400004197378,
+            0.016114899997774046,
+            0.014697699996759184,
+            0.01448559999698773,
+            0.01469090000318829,
+            0.015591999996104278,
+            0.015076299998327158
+          ]
+        },
+        "simple_polytropic/100": {
+          "source": [
+            0.12586110000120243,
+            0.12991479999618605,
+            0.12670430000434862,
+            0.12644030000228668,
+            0.12893769999936922,
+            0.12873189999663737,
+            0.13043800000014016,
+            0.1280066999970586,
+            0.1272936999957892,
+            0.1270550999979605,
+            0.12844769999355776,
+            0.1312924000012572
+          ],
+          "bicubic": [
+            0.0718979999946896,
+            0.07934940000268398,
+            0.08008609999524197,
+            0.07737180000549415,
+            0.07758849999663653,
+            0.07477980000112439,
+            0.07263509999756934,
+            0.07274080000206595,
+            0.0753575999988243,
+            0.07549690000450937,
+            0.078817200002959,
+            0.0741106999994372
+          ]
+        },
+        "recompression/100": {
+          "source": [
+            0.03461240000615362,
+            0.033927799995581154,
+            0.0358325999986846,
+            0.0334657999992487,
+            0.0335899000056088,
+            0.03512290000071516,
+            0.033511100002215244,
+            0.034258200001204386,
+            0.03464920000260463,
+            0.03603750000183936,
+            0.03647129999444587,
+            0.035773299998254515
+          ],
+          "bicubic": [
+            0.022946700002648868,
+            0.02338199999940116,
+            0.023694800001976546,
+            0.023035699996398762,
+            0.022501700004795566,
+            0.022669400001177564,
+            0.023467200000595767,
+            0.023900100000901148,
+            0.024481100001139566,
+            0.02543639999930747,
+            0.03584489999775542,
+            0.02402299999812385
+          ]
+        },
+        "refrigeration/100": {
+          "source": [
+            0.024696799999219365,
+            0.024701799993636087,
+            0.02252559999760706,
+            0.02582159999292344,
+            0.024333599998499267,
+            0.026376499998150393,
+            0.02449779999733437,
+            0.027475099996081553,
+            0.02446359999885317,
+            0.024203400003898423,
+            0.022620299998379778,
+            0.02520599999843398
+          ],
+          "bicubic": [
+            0.015182800001639407,
+            0.013727300000027753,
+            0.014619199995649979,
+            0.015380199998617172,
+            0.015525599999818951,
+            0.014065100003790576,
+            0.016035699998610653,
+            0.015204600000288337,
+            0.016402900000684895,
+            0.014338499997393228,
+            0.01497449999442324,
+            0.014333500002976507
+          ]
+        }
+      },
+      "numerical_agreement": {
+        "recuperated_working/100": {
+          "maximum_temperature_error_K": 3.232487279092311e-05,
+          "maximum_density_relative_error": 5.501691704434819e-07,
+          "maximum_residual_error": 3.2324872791811288e-06,
+          "efficiency_absolute_error": 3.009933324804592e-08
+        },
+        "recuperated_all/100": {
+          "maximum_temperature_error_K": 3.232488626281338e-05,
+          "maximum_density_relative_error": 5.501691704434819e-07,
+          "maximum_residual_error": 3.2324886261037022e-06,
+          "efficiency_absolute_error": 3.010108273748813e-08
+        },
+        "simple_polytropic/100": {
+          "maximum_temperature_error_K": 2.948781286704616e-05,
+          "maximum_density_relative_error": 8.720349531365912e-08,
+          "maximum_residual_error": 2.948781286704616e-06,
+          "efficiency_absolute_error": 5.082070320128196e-10
+        },
+        "recompression/100": {
+          "maximum_temperature_error_K": 0.00016176445433302433,
+          "maximum_density_relative_error": 2.6634790164514754e-06,
+          "maximum_residual_error": 1.617644543339125e-05,
+          "efficiency_absolute_error": 2.462242298939543e-09
+        },
+        "refrigeration/100": {
+          "maximum_temperature_error_K": 3.146290254107953e-06,
+          "maximum_density_relative_error": 2.3234942275740522e-06,
+          "maximum_residual_error": 5.952797721420211e-07,
+          "efficiency_absolute_error": 8.302577958474444e-09
+        }
+      },
+      "setup_seconds": {
+        "recuperated_working/source": 0.1022272000045632,
+        "recuperated_working/100/bicubic": 2.329369699997187,
+        "recuperated_all/source": 0.08596270000271033,
+        "recuperated_all/100/bicubic": 5.9420893999995315,
+        "simple_polytropic/source": 0.19490099999529775,
+        "simple_polytropic/100/bicubic": 2.611075599998003,
+        "recompression/source": 0.10815939999883994,
+        "recompression/100/bicubic": 1.335982900003728,
+        "refrigeration/source": 0.11165510000137147,
+        "refrigeration/100/bicubic": 5.65269100000296
+      },
+      "snapshots_sha256": {
+        "recuperated_working": "97aef32ec0c9aff02c4bcfc984a6105eaa7c6bb57a57a3b2ac8c90f396471fc1",
+        "recuperated_all": "7f7e90737151928a2180b6b3fb763037f6c579a112f11aa9d785f550fd603fcb",
+        "simple_polytropic": "04e80fcf11624ad01816296aede0ef40b884a0d5f895d8d6c335bf6417a25915",
+        "recompression": "4cc3766734da201b9ac126f8d20bf78933f1e36ca81466bdbde2b0164744b289",
+        "refrigeration": "0a8e61195ddba1b6213c958fd8f1afd6f3f5b950dbac09ec7d4ae33dec8d63b7"
+      }
+    },
+    "post1": {
+      "manifest_sha256": "0405466dc7afef4631e0946926679082249f21a2037c8039308c67b995483ec0",
+      "manifest_relative_path": "benchmark/results/phase2/controlled_post1/manifest.json",
+      "started_at_utc": "2026-11-15T14:26:54.512499+00:00",
+      "finished_at_utc": "2026-11-15T14:27:37.142965+00:00",
+      "comparison_signature": "fa33461109a3f943b0c3e07e9c0ed02269725831ab148461b606bdac19ccffb8",
+      "environment": {
+        "python": "3.13.2",
+        "platform": "Windows-11-10.0.26300-SP0",
+        "machine": "AMD64",
+        "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+        "logical_cpus": 28,
+        "cpu_affinity": {
+          "requested_mask": "0xffff",
+          "actual_mask": "0xffff",
+          "system_mask": "0xfffffff"
+        },
+        "device": "TFRT_CPU_0",
+        "x64": true,
+        "dependencies": {
+          "jaxprop": "0.6.0",
+          "jax": "0.6.2",
+          "jaxlib": "0.6.2",
+          "CoolProp": "7.2.0",
+          "numpy": "2.4.4",
+          "scipy": "1.17.1",
+          "pysolver_view": "0.7.1",
+          "equinox": "0.12.2",
+          "diffrax": "0.7.1",
+          "optimistix": "0.0.10",
+          "jaxtyping": "0.3.9",
+          "lineax": "0.1.0",
+          "matplotlib": "3.10.8",
+          "pandas": "2.3.3"
+        }
+      },
+      "thermopt_source_sha256": "31a7f01d69a5e21ff41f69c728a3abd642caa15e2cbc9d06ff376609b4b3fb8e",
+      "runner_sha256": "8e5cb5cbb061d7f6fe5b5dbe0416663795f6a148b0a642c50a748ce6f3bc6f6c",
+      "workload_sha256": "0792b85c84f917e6106595bf8ff45d458fd8957afd49ea59d0f856b836f443e5",
+      "lock_sha256": "2be5c4ac0a7c9c26e09bffd94529f3ca67ef2d253a33e8992a8afa7a3c71e0d1",
+      "numerical_checks_passed": true,
+      "source_and_protocol_unchanged_during_run": true,
+      "timings_seconds": {
+        "recuperated_working/100/source": 0.03203139999823179,
+        "recuperated_working/100/bicubic": 0.021499850005056942,
+        "recuperated_all/100/source": 0.03386099999988801,
+        "recuperated_all/100/bicubic": 0.015799849999893922,
+        "simple_polytropic/100/source": 0.1465661500042188,
+        "simple_polytropic/100/bicubic": 0.08531589999984135,
+        "recompression/100/source": 0.04326700000092387,
+        "recompression/100/bicubic": 0.02689760000066599,
+        "refrigeration/100/source": 0.025681149996671593,
+        "refrigeration/100/bicubic": 0.01605299999937415
+      },
+      "raw_samples_seconds": {
+        "recuperated_working/100": {
+          "source": [
+            0.030597000004490837,
+            0.03294910000113305,
+            0.03275800000119489,
+            0.0325033999979496,
+            0.032105199999932665,
+            0.0299557000034838,
+            0.03065220000280533,
+            0.03097709999565268,
+            0.03200420000212034,
+            0.031960999993316364,
+            0.03281109999807086,
+            0.03205859999434324
+          ],
+          "bicubic": [
+            0.021670599999197293,
+            0.020278399999369867,
+            0.022332900000037625,
+            0.020085299998754635,
+            0.02181350000319071,
+            0.02073530000052415,
+            0.02061919999687234,
+            0.02154500000324333,
+            0.021454700006870553,
+            0.020345099997939542,
+            0.022510000002512243,
+            0.021725099999457598
+          ]
+        },
+        "recuperated_all/100": {
+          "source": [
+            0.037176300000282936,
+            0.03506249999918509,
+            0.03454010000132257,
+            0.031676899998274166,
+            0.032386099999712314,
+            0.034133599998313,
+            0.03364760000113165,
+            0.03407439999864437,
+            0.034231999998155516,
+            0.03362529999867547,
+            0.03203229999780888,
+            0.032269600000290666
+          ],
+          "bicubic": [
+            0.016980799999146257,
+            0.015787500000442378,
+            0.015838800005440135,
+            0.014208000000508036,
+            0.01734489999944344,
+            0.014815900001849514,
+            0.015911800001049414,
+            0.014818999996350612,
+            0.015812199999345466,
+            0.01494730000558775,
+            0.01589139999850886,
+            0.015390000000479631
+          ]
+        },
+        "simple_polytropic/100": {
+          "source": [
+            0.15247369999997318,
+            0.15364540000155102,
+            0.15124459999788087,
+            0.1352143000040087,
+            0.13612470000225585,
+            0.19119789999967907,
+            0.17464659999677679,
+            0.1431185000037658,
+            0.1400883000023896,
+            0.1500138000046718,
+            0.1376010000021779,
+            0.14158170000155224
+          ],
+          "bicubic": [
+            0.08674030000111088,
+            0.08474069999647327,
+            0.11060919999727048,
+            0.08380900000338443,
+            0.08126020000054268,
+            0.0942365000009886,
+            0.08250630000111414,
+            0.08393059999798425,
+            0.08502210000006016,
+            0.08620639999571722,
+            0.08560969999962253,
+            0.08631320000131382
+          ]
+        },
+        "recompression/100": {
+          "source": [
+            0.043779300001915544,
+            0.04769049999595154,
+            0.051898600002459716,
+            0.04308860000310233,
+            0.043445399998745415,
+            0.05854240000189748,
+            0.05808949999482138,
+            0.03856149999774061,
+            0.03971520000050077,
+            0.03781729999900563,
+            0.03938489999563899,
+            0.0402888000025996
+          ],
+          "bicubic": [
+            0.02895149999676505,
+            0.02731800000037765,
+            0.037844599995878525,
+            0.03590489999623969,
+            0.026083199998538475,
+            0.02854309999383986,
+            0.03646160000062082,
+            0.02643339999485761,
+            0.024135100000421517,
+            0.026477200000954326,
+            0.025927700000465848,
+            0.02502210000238847
+          ]
+        },
+        "refrigeration/100": {
+          "source": [
+            0.025823600000876468,
+            0.02696079999441281,
+            0.02522070000122767,
+            0.028660000003583264,
+            0.025613799996790476,
+            0.02428259999578586,
+            0.02507740000146441,
+            0.024370200000703335,
+            0.025679200000013225,
+            0.0269071000002441,
+            0.02568309999332996,
+            0.028294600000663195
+          ],
+          "bicubic": [
+            0.016622700000880286,
+            0.014000299997860566,
+            0.017044400003214832,
+            0.015437899994140025,
+            0.019935600001190323,
+            0.020276199997169897,
+            0.016365900002710987,
+            0.015364500002760906,
+            0.016040700000303332,
+            0.01587920000019949,
+            0.01606529999844497,
+            0.014121100000920705
+          ]
+        }
+      },
+      "numerical_agreement": {
+        "recuperated_working/100": {
+          "maximum_temperature_error_K": 3.232487279092311e-05,
+          "maximum_density_relative_error": 5.501691704434819e-07,
+          "maximum_residual_error": 3.2324872791811288e-06,
+          "efficiency_absolute_error": 3.009933324804592e-08
+        },
+        "recuperated_all/100": {
+          "maximum_temperature_error_K": 3.232488626281338e-05,
+          "maximum_density_relative_error": 5.501691704434819e-07,
+          "maximum_residual_error": 3.2324886261037022e-06,
+          "efficiency_absolute_error": 3.010108273748813e-08
+        },
+        "simple_polytropic/100": {
+          "maximum_temperature_error_K": 2.948781286704616e-05,
+          "maximum_density_relative_error": 8.720349531365912e-08,
+          "maximum_residual_error": 2.948781286704616e-06,
+          "efficiency_absolute_error": 5.082070320128196e-10
+        },
+        "recompression/100": {
+          "maximum_temperature_error_K": 0.00016176445433302433,
+          "maximum_density_relative_error": 2.6634790164514754e-06,
+          "maximum_residual_error": 1.617644543339125e-05,
+          "efficiency_absolute_error": 2.462242298939543e-09
+        },
+        "refrigeration/100": {
+          "maximum_temperature_error_K": 3.146290254107953e-06,
+          "maximum_density_relative_error": 2.3234942275740522e-06,
+          "maximum_residual_error": 5.952797721420211e-07,
+          "efficiency_absolute_error": 8.302577958474444e-09
+        }
+      },
+      "setup_seconds": {
+        "recuperated_working/source": 0.07944919999863487,
+        "recuperated_working/100/bicubic": 1.8678250000011758,
+        "recuperated_all/source": 0.09026779999840073,
+        "recuperated_all/100/bicubic": 6.200857700001507,
+        "simple_polytropic/source": 0.20766700000240235,
+        "simple_polytropic/100/bicubic": 3.0210816000035265,
+        "recompression/source": 0.08834709999791812,
+        "recompression/100/bicubic": 1.5276070999971125,
+        "refrigeration/source": 0.07601959999738028,
+        "refrigeration/100/bicubic": 5.612485099998594
+      },
+      "snapshots_sha256": {
+        "recuperated_working": "97aef32ec0c9aff02c4bcfc984a6105eaa7c6bb57a57a3b2ac8c90f396471fc1",
+        "recuperated_all": "7f7e90737151928a2180b6b3fb763037f6c579a112f11aa9d785f550fd603fcb",
+        "simple_polytropic": "04e80fcf11624ad01816296aede0ef40b884a0d5f895d8d6c335bf6417a25915",
+        "recompression": "4cc3766734da201b9ac126f8d20bf78933f1e36ca81466bdbde2b0164744b289",
+        "refrigeration": "0a8e61195ddba1b6213c958fd8f1afd6f3f5b950dbac09ec7d4ae33dec8d63b7"
+      }
+    },
+    "post2": {
+      "manifest_sha256": "b338bb6916a96cf58c1303f8a393b7dfa64bc4c4a29ddc85ed74509bf51ce630",
+      "manifest_relative_path": "benchmark/results/phase2/controlled_post2/manifest.json",
+      "started_at_utc": "2026-11-15T14:27:39.889242+00:00",
+      "finished_at_utc": "2026-11-15T14:28:23.411975+00:00",
+      "comparison_signature": "fa33461109a3f943b0c3e07e9c0ed02269725831ab148461b606bdac19ccffb8",
+      "environment": {
+        "python": "3.13.2",
+        "platform": "Windows-11-10.0.26300-SP0",
+        "machine": "AMD64",
+        "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+        "logical_cpus": 28,
+        "cpu_affinity": {
+          "requested_mask": "0xffff",
+          "actual_mask": "0xffff",
+          "system_mask": "0xfffffff"
+        },
+        "device": "TFRT_CPU_0",
+        "x64": true,
+        "dependencies": {
+          "jaxprop": "0.6.0",
+          "jax": "0.6.2",
+          "jaxlib": "0.6.2",
+          "CoolProp": "7.2.0",
+          "numpy": "2.4.4",
+          "scipy": "1.17.1",
+          "pysolver_view": "0.7.1",
+          "equinox": "0.12.2",
+          "diffrax": "0.7.1",
+          "optimistix": "0.0.10",
+          "jaxtyping": "0.3.9",
+          "lineax": "0.1.0",
+          "matplotlib": "3.10.8",
+          "pandas": "2.3.3"
+        }
+      },
+      "thermopt_source_sha256": "31a7f01d69a5e21ff41f69c728a3abd642caa15e2cbc9d06ff376609b4b3fb8e",
+      "runner_sha256": "8e5cb5cbb061d7f6fe5b5dbe0416663795f6a148b0a642c50a748ce6f3bc6f6c",
+      "workload_sha256": "0792b85c84f917e6106595bf8ff45d458fd8957afd49ea59d0f856b836f443e5",
+      "lock_sha256": "2be5c4ac0a7c9c26e09bffd94529f3ca67ef2d253a33e8992a8afa7a3c71e0d1",
+      "numerical_checks_passed": true,
+      "source_and_protocol_unchanged_during_run": true,
+      "timings_seconds": {
+        "recuperated_working/100/source": 0.035605700002633967,
+        "recuperated_working/100/bicubic": 0.024411700000200653,
+        "recuperated_all/100/source": 0.03468214999884367,
+        "recuperated_all/100/bicubic": 0.01730859999952372,
+        "simple_polytropic/100/source": 0.14803674999711802,
+        "simple_polytropic/100/bicubic": 0.0887905999989016,
+        "recompression/100/source": 0.03897270000379649,
+        "recompression/100/bicubic": 0.024762399996689055,
+        "refrigeration/100/source": 0.026916949998849304,
+        "refrigeration/100/bicubic": 0.015572299998893868
+      },
+      "raw_samples_seconds": {
+        "recuperated_working/100": {
+          "source": [
+            0.03831779999745777,
+            0.035692800003744196,
+            0.036092399997869506,
+            0.03551860000152374,
+            0.03437090000079479,
+            0.0361787000001641,
+            0.03595140000106767,
+            0.03614769999694545,
+            0.03391890000057174,
+            0.03464700000040466,
+            0.035202099999878556,
+            0.035468200003379025
+          ],
+          "bicubic": [
+            0.024613900000986177,
+            0.023765000005369075,
+            0.026864500003284775,
+            0.02490780000516679,
+            0.02474369999981718,
+            0.023589199998241384,
+            0.02420949999941513,
+            0.021880300002521835,
+            0.024732699996093288,
+            0.02268460000050254,
+            0.026987100005499087,
+            0.024029799998970702
+          ]
+        },
+        "recuperated_all/100": {
+          "source": [
+            0.03211280000687111,
+            0.03465400000277441,
+            0.03351979999570176,
+            0.0348115999950096,
+            0.03501220000180183,
+            0.03444579999631969,
+            0.033881399998790585,
+            0.035657000000355765,
+            0.03471029999491293,
+            0.034841200002119876,
+            0.03396709999651648,
+            0.035315799999807496
+          ],
+          "bicubic": [
+            0.01875329999893438,
+            0.016163699998287484,
+            0.018156999998609535,
+            0.01684910000039963,
+            0.01751239999430254,
+            0.015883100000792183,
+            0.01849709999805782,
+            0.017104800004744902,
+            0.018716400001721922,
+            0.01634850000118604,
+            0.019381199999770615,
+            0.015984500001650304
+          ]
+        },
+        "simple_polytropic/100": {
+          "source": [
+            0.16728309999598423,
+            0.14384609999979148,
+            0.14584210000612075,
+            0.1436355999976513,
+            0.13931030000094324,
+            0.14989300000161165,
+            0.14718249999714317,
+            0.1596466999981203,
+            0.14640819999476662,
+            0.1544281999958912,
+            0.16480610000144225,
+            0.14889099999709288
+          ],
+          "bicubic": [
+            0.08895079999638256,
+            0.08468749999883585,
+            0.10934350000025006,
+            0.1006238999980269,
+            0.08408200000121724,
+            0.08855000000039581,
+            0.08766119999927469,
+            0.08636090000072727,
+            0.09415250000165543,
+            0.08999549999862211,
+            0.09441539999534143,
+            0.08863040000142064
+          ]
+        },
+        "recompression/100": {
+          "source": [
+            0.037800500002049375,
+            0.037902500000200234,
+            0.04049030000169296,
+            0.04049569999915548,
+            0.0385524000012083,
+            0.03974010000092676,
+            0.03900840000278549,
+            0.039470399999117944,
+            0.03868940000393195,
+            0.0394252999976743,
+            0.035606299999926705,
+            0.03893700000480749
+          ],
+          "bicubic": [
+            0.025077099999180064,
+            0.024391999999352265,
+            0.024144999995769467,
+            0.02511219999723835,
+            0.024822899998980574,
+            0.024046300000918563,
+            0.026087600002938416,
+            0.027427900000475347,
+            0.023859000000811648,
+            0.02594459999818355,
+            0.024701899994397536,
+            0.023749100000713952
+          ]
+        },
+        "refrigeration/100": {
+          "source": [
+            0.027101200001197867,
+            0.028004300002066884,
+            0.02673269999650074,
+            0.028225000001839362,
+            0.02562490000127582,
+            0.027222500000789296,
+            0.02630279999721097,
+            0.028935999995155726,
+            0.027713800001947675,
+            0.025599099993996788,
+            0.02526660000148695,
+            0.025880100001813844
+          ],
+          "bicubic": [
+            0.017426400001568254,
+            0.01652690000628354,
+            0.01922280000144383,
+            0.014185899999574758,
+            0.017133000001194887,
+            0.015074399998411536,
+            0.014847099999315105,
+            0.013824699999531731,
+            0.015858999999181833,
+            0.015285599998605903,
+            0.016708199997083284,
+            0.014364199996634852
+          ]
+        }
+      },
+      "numerical_agreement": {
+        "recuperated_working/100": {
+          "maximum_temperature_error_K": 3.232487279092311e-05,
+          "maximum_density_relative_error": 5.501691704434819e-07,
+          "maximum_residual_error": 3.2324872791811288e-06,
+          "efficiency_absolute_error": 3.009933324804592e-08
+        },
+        "recuperated_all/100": {
+          "maximum_temperature_error_K": 3.232488626281338e-05,
+          "maximum_density_relative_error": 5.501691704434819e-07,
+          "maximum_residual_error": 3.2324886261037022e-06,
+          "efficiency_absolute_error": 3.010108273748813e-08
+        },
+        "simple_polytropic/100": {
+          "maximum_temperature_error_K": 2.948781286704616e-05,
+          "maximum_density_relative_error": 8.720349531365912e-08,
+          "maximum_residual_error": 2.948781286704616e-06,
+          "efficiency_absolute_error": 5.082070320128196e-10
+        },
+        "recompression/100": {
+          "maximum_temperature_error_K": 0.00016176445433302433,
+          "maximum_density_relative_error": 2.6634790164514754e-06,
+          "maximum_residual_error": 1.617644543339125e-05,
+          "efficiency_absolute_error": 2.462242298939543e-09
+        },
+        "refrigeration/100": {
+          "maximum_temperature_error_K": 3.146290254107953e-06,
+          "maximum_density_relative_error": 2.3234942275740522e-06,
+          "maximum_residual_error": 5.952797721420211e-07,
+          "efficiency_absolute_error": 8.302577958474444e-09
+        }
+      },
+      "setup_seconds": {
+        "recuperated_working/source": 0.08413089999521617,
+        "recuperated_working/100/bicubic": 1.984531900001457,
+        "recuperated_all/source": 0.09304740000516176,
+        "recuperated_all/100/bicubic": 6.772568599997612,
+        "simple_polytropic/source": 0.19727769999735756,
+        "simple_polytropic/100/bicubic": 2.836176400000113,
+        "recompression/source": 0.0896331000039936,
+        "recompression/100/bicubic": 1.4675433000011253,
+        "refrigeration/source": 0.07441880000260426,
+        "refrigeration/100/bicubic": 5.7797032999951625
+      },
+      "snapshots_sha256": {
+        "recuperated_working": "97aef32ec0c9aff02c4bcfc984a6105eaa7c6bb57a57a3b2ac8c90f396471fc1",
+        "recuperated_all": "7f7e90737151928a2180b6b3fb763037f6c579a112f11aa9d785f550fd603fcb",
+        "simple_polytropic": "04e80fcf11624ad01816296aede0ef40b884a0d5f895d8d6c335bf6417a25915",
+        "recompression": "4cc3766734da201b9ac126f8d20bf78933f1e36ca81466bdbde2b0164744b289",
+        "refrigeration": "0a8e61195ddba1b6213c958fd8f1afd6f3f5b950dbac09ec7d4ae33dec8d63b7"
+      }
+    },
+    "pre2": {
+      "manifest_sha256": "34575693592642314deaf66567114476aea66503f918913f2b057eac1ba77c35",
+      "manifest_relative_path": "benchmark/results/phase2/reference/benchmark/results/controlled_pre2/manifest.json",
+      "started_at_utc": "2026-11-15T14:28:26.356950+00:00",
+      "finished_at_utc": "2026-11-15T14:29:09.450813+00:00",
+      "comparison_signature": "fa33461109a3f943b0c3e07e9c0ed02269725831ab148461b606bdac19ccffb8",
+      "environment": {
+        "python": "3.13.2",
+        "platform": "Windows-11-10.0.26300-SP0",
+        "machine": "AMD64",
+        "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+        "logical_cpus": 28,
+        "cpu_affinity": {
+          "requested_mask": "0xffff",
+          "actual_mask": "0xffff",
+          "system_mask": "0xfffffff"
+        },
+        "device": "TFRT_CPU_0",
+        "x64": true,
+        "dependencies": {
+          "jaxprop": "0.6.0",
+          "jax": "0.6.2",
+          "jaxlib": "0.6.2",
+          "CoolProp": "7.2.0",
+          "numpy": "2.4.4",
+          "scipy": "1.17.1",
+          "pysolver_view": "0.7.1",
+          "equinox": "0.12.2",
+          "diffrax": "0.7.1",
+          "optimistix": "0.0.10",
+          "jaxtyping": "0.3.9",
+          "lineax": "0.1.0",
+          "matplotlib": "3.10.8",
+          "pandas": "2.3.3"
+        }
+      },
+      "thermopt_source_sha256": "a0abd437d975e65a9103f0e12bd7bb2e7285606d17d79b426b7ef5d8b95552a6",
+      "runner_sha256": "8e5cb5cbb061d7f6fe5b5dbe0416663795f6a148b0a642c50a748ce6f3bc6f6c",
+      "workload_sha256": "0792b85c84f917e6106595bf8ff45d458fd8957afd49ea59d0f856b836f443e5",
+      "lock_sha256": "2be5c4ac0a7c9c26e09bffd94529f3ca67ef2d253a33e8992a8afa7a3c71e0d1",
+      "numerical_checks_passed": true,
+      "source_and_protocol_unchanged_during_run": true,
+      "timings_seconds": {
+        "recuperated_working/100/source": 0.03386820000014268,
+        "recuperated_working/100/bicubic": 0.023296199997275835,
+        "recuperated_all/100/source": 0.035530249999283114,
+        "recuperated_all/100/bicubic": 0.017824350004957523,
+        "simple_polytropic/100/source": 0.14066054999784683,
+        "simple_polytropic/100/bicubic": 0.08462644999963231,
+        "recompression/100/source": 0.03827929999897606,
+        "recompression/100/bicubic": 0.025244649998057866,
+        "refrigeration/100/source": 0.029928699994343333,
+        "refrigeration/100/bicubic": 0.018602699998155003
+      },
+      "raw_samples_seconds": {
+        "recuperated_working/100": {
+          "source": [
+            0.03581560000020545,
+            0.0335722000017995,
+            0.03401289999601431,
+            0.034958299998834264,
+            0.036129100000835024,
+            0.03212640000128886,
+            0.03372249999665655,
+            0.033501400001114234,
+            0.034614500000316184,
+            0.03490790000068955,
+            0.031848400001763366,
+            0.033723500004271045
+          ],
+          "bicubic": [
+            0.025087099995289464,
+            0.024001899997529108,
+            0.0217798000012408,
+            0.02212650000001304,
+            0.023145200000726618,
+            0.021154900001420174,
+            0.023419099998136517,
+            0.023680300000705756,
+            0.023173299996415153,
+            0.021185400000831578,
+            0.024099700000078883,
+            0.027351400000043213
+          ]
+        },
+        "recuperated_all/100": {
+          "source": [
+            0.035637900000438094,
+            0.03748529999575112,
+            0.035422599998128135,
+            0.03622140000516083,
+            0.03450689999590395,
+            0.03336990000389051,
+            0.03599960000428837,
+            0.03422339999815449,
+            0.03509019999910379,
+            0.03649569999834057,
+            0.034785700001521036,
+            0.0368633999969461
+          ],
+          "bicubic": [
+            0.019809400000667665,
+            0.01770310000574682,
+            0.015604599997459445,
+            0.017945600004168227,
+            0.017462099996919278,
+            0.018336200002522673,
+            0.021252099999401253,
+            0.017114399997808505,
+            0.02066470000136178,
+            0.01616249999642605,
+            0.01707670000178041,
+            0.02013040000019828
+          ]
+        },
+        "simple_polytropic/100": {
+          "source": [
+            0.1462658000018564,
+            0.13918410000042059,
+            0.1403035999974236,
+            0.13797940000222297,
+            0.14107289999810746,
+            0.1430657999953837,
+            0.13440410000475822,
+            0.13987990000168793,
+            0.15137019999383483,
+            0.14537209999980405,
+            0.1367434999992838,
+            0.14101749999827007
+          ],
+          "bicubic": [
+            0.08199830000376096,
+            0.07912519999808865,
+            0.08381519999966258,
+            0.0873074000046472,
+            0.08360420000099111,
+            0.09154770000168355,
+            0.08618169999681413,
+            0.08238479999999981,
+            0.08907560000079684,
+            0.08981499999936204,
+            0.08277519999683136,
+            0.08543769999960205
+          ]
+        },
+        "recompression/100": {
+          "source": [
+            0.03826839999965159,
+            0.041239099999074824,
+            0.037341099996410776,
+            0.03790030000527622,
+            0.036634700001741294,
+            0.03872140000021318,
+            0.03829019999830052,
+            0.03649030000087805,
+            0.036907699999574106,
+            0.03873130000283709,
+            0.03936969999631401,
+            0.03962070000125095
+          ],
+          "bicubic": [
+            0.02710300000035204,
+            0.02547190000041155,
+            0.02613069999642903,
+            0.023749100000713952,
+            0.025261099995987024,
+            0.025081299994781148,
+            0.02485049999813782,
+            0.025147199994535185,
+            0.026216899997962173,
+            0.02522820000012871,
+            0.025428099994314834,
+            0.025142799997411203
+          ]
+        },
+        "refrigeration/100": {
+          "source": [
+            0.028756400002748705,
+            0.03341029999864986,
+            0.030779799999436364,
+            0.030206799994630273,
+            0.03667789999599336,
+            0.030334299997775815,
+            0.02919590000237804,
+            0.029650599994056392,
+            0.03186920000007376,
+            0.029335200000787154,
+            0.02708870000060415,
+            0.026958599999488797
+          ],
+          "bicubic": [
+            0.018729999996139668,
+            0.01587370000197552,
+            0.019431699998676777,
+            0.018197400000644848,
+            0.02514560000417987,
+            0.01894699999684235,
+            0.019659999998111743,
+            0.01810760000080336,
+            0.017072500006179325,
+            0.01891030000115279,
+            0.01847540000017034,
+            0.017076299998734612
+          ]
+        }
+      },
+      "numerical_agreement": {
+        "recuperated_working/100": {
+          "maximum_temperature_error_K": 3.232487279092311e-05,
+          "maximum_density_relative_error": 5.501691704434819e-07,
+          "maximum_residual_error": 3.2324872791811288e-06,
+          "efficiency_absolute_error": 3.009933324804592e-08
+        },
+        "recuperated_all/100": {
+          "maximum_temperature_error_K": 3.232488626281338e-05,
+          "maximum_density_relative_error": 5.501691704434819e-07,
+          "maximum_residual_error": 3.2324886261037022e-06,
+          "efficiency_absolute_error": 3.010108273748813e-08
+        },
+        "simple_polytropic/100": {
+          "maximum_temperature_error_K": 2.948781286704616e-05,
+          "maximum_density_relative_error": 8.720349531365912e-08,
+          "maximum_residual_error": 2.948781286704616e-06,
+          "efficiency_absolute_error": 5.082070320128196e-10
+        },
+        "recompression/100": {
+          "maximum_temperature_error_K": 0.00016176445433302433,
+          "maximum_density_relative_error": 2.6634790164514754e-06,
+          "maximum_residual_error": 1.617644543339125e-05,
+          "efficiency_absolute_error": 2.462242298939543e-09
+        },
+        "refrigeration/100": {
+          "maximum_temperature_error_K": 3.146290254107953e-06,
+          "maximum_density_relative_error": 2.3234942275740522e-06,
+          "maximum_residual_error": 5.952797721420211e-07,
+          "efficiency_absolute_error": 8.302577958474444e-09
+        }
+      },
+      "setup_seconds": {
+        "recuperated_working/source": 0.07988050000130897,
+        "recuperated_working/100/bicubic": 1.9548313000050257,
+        "recuperated_all/source": 0.09025799999653827,
+        "recuperated_all/100/bicubic": 6.534736099994916,
+        "simple_polytropic/source": 0.21747049999976298,
+        "simple_polytropic/100/bicubic": 2.8033446999979788,
+        "recompression/source": 0.10155649999796879,
+        "recompression/100/bicubic": 1.4357665999996243,
+        "refrigeration/source": 0.07617159999790601,
+        "refrigeration/100/bicubic": 5.642386300001817
+      },
+      "snapshots_sha256": {
+        "recuperated_working": "97aef32ec0c9aff02c4bcfc984a6105eaa7c6bb57a57a3b2ac8c90f396471fc1",
+        "recuperated_all": "7f7e90737151928a2180b6b3fb763037f6c579a112f11aa9d785f550fd603fcb",
+        "simple_polytropic": "04e80fcf11624ad01816296aede0ef40b884a0d5f895d8d6c335bf6417a25915",
+        "recompression": "4cc3766734da201b9ac126f8d20bf78933f1e36ca81466bdbde2b0164744b289",
+        "refrigeration": "0a8e61195ddba1b6213c958fd8f1afd6f3f5b950dbac09ec7d4ae33dec8d63b7"
+      }
+    },
+    "pre3": {
+      "manifest_sha256": "f84bce19926a036d451b8f3320719305986391fc8ff67fc9637bdc1f1ba6b71f",
+      "manifest_relative_path": "benchmark/results/phase2/reference/benchmark/results/controlled_pre3/manifest.json",
+      "started_at_utc": "2026-11-15T14:29:12.397597+00:00",
+      "finished_at_utc": "2026-11-15T14:29:55.357854+00:00",
+      "comparison_signature": "fa33461109a3f943b0c3e07e9c0ed02269725831ab148461b606bdac19ccffb8",
+      "environment": {
+        "python": "3.13.2",
+        "platform": "Windows-11-10.0.26300-SP0",
+        "machine": "AMD64",
+        "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+        "logical_cpus": 28,
+        "cpu_affinity": {
+          "requested_mask": "0xffff",
+          "actual_mask": "0xffff",
+          "system_mask": "0xfffffff"
+        },
+        "device": "TFRT_CPU_0",
+        "x64": true,
+        "dependencies": {
+          "jaxprop": "0.6.0",
+          "jax": "0.6.2",
+          "jaxlib": "0.6.2",
+          "CoolProp": "7.2.0",
+          "numpy": "2.4.4",
+          "scipy": "1.17.1",
+          "pysolver_view": "0.7.1",
+          "equinox": "0.12.2",
+          "diffrax": "0.7.1",
+          "optimistix": "0.0.10",
+          "jaxtyping": "0.3.9",
+          "lineax": "0.1.0",
+          "matplotlib": "3.10.8",
+          "pandas": "2.3.3"
+        }
+      },
+      "thermopt_source_sha256": "a0abd437d975e65a9103f0e12bd7bb2e7285606d17d79b426b7ef5d8b95552a6",
+      "runner_sha256": "8e5cb5cbb061d7f6fe5b5dbe0416663795f6a148b0a642c50a748ce6f3bc6f6c",
+      "workload_sha256": "0792b85c84f917e6106595bf8ff45d458fd8957afd49ea59d0f856b836f443e5",
+      "lock_sha256": "2be5c4ac0a7c9c26e09bffd94529f3ca67ef2d253a33e8992a8afa7a3c71e0d1",
+      "numerical_checks_passed": true,
+      "source_and_protocol_unchanged_during_run": true,
+      "timings_seconds": {
+        "recuperated_working/100/source": 0.03444810000291909,
+        "recuperated_working/100/bicubic": 0.024131950001901714,
+        "recuperated_all/100/source": 0.03429055000015069,
+        "recuperated_all/100/bicubic": 0.01693755000087549,
+        "simple_polytropic/100/source": 0.1382040499993309,
+        "simple_polytropic/100/bicubic": 0.08424150000064401,
+        "recompression/100/source": 0.03766489999907208,
+        "recompression/100/bicubic": 0.02510479999909876,
+        "refrigeration/100/source": 0.026890649998676963,
+        "refrigeration/100/bicubic": 0.016666249997797422
+      },
+      "raw_samples_seconds": {
+        "recuperated_working/100": {
+          "source": [
+            0.03467670000100043,
+            0.03314900000259513,
+            0.033302800002275035,
+            0.0327811000024667,
+            0.034105800004908815,
+            0.035945099996752106,
+            0.032780300003651064,
+            0.038294400001177564,
+            0.03730080000241287,
+            0.034219500004837755,
+            0.035613499996543396,
+            0.03692040000169072
+          ],
+          "bicubic": [
+            0.022968800003582146,
+            0.020785099994100165,
+            0.021810400001413655,
+            0.024130800004058983,
+            0.02407610000227578,
+            0.024133099999744445,
+            0.025725099992996547,
+            0.02720730000146432,
+            0.023664599997573532,
+            0.02569470000162255,
+            0.026402700001199264,
+            0.02530119999573799
+          ]
+        },
+        "recuperated_all/100": {
+          "source": [
+            0.03416039999865461,
+            0.034236400002555456,
+            0.03464019999955781,
+            0.03434469999774592,
+            0.03497889999562176,
+            0.03601930000149878,
+            0.034028800000669435,
+            0.03349029999662889,
+            0.034149600003729574,
+            0.03473189999931492,
+            0.03339469999627909,
+            0.03466550000302959
+          ],
+          "bicubic": [
+            0.017493899998953566,
+            0.01646199999959208,
+            0.017561599997861777,
+            0.016046800003095996,
+            0.020523499995761085,
+            0.016780300000391435,
+            0.019284299996797927,
+            0.016729799994209316,
+            0.018098300002748147,
+            0.0149743000001763,
+            0.017094800001359545,
+            0.015569299997878261
+          ]
+        },
+        "simple_polytropic/100": {
+          "source": [
+            0.1446836000031908,
+            0.13752129999920726,
+            0.1433303000012529,
+            0.14147200000297744,
+            0.1421330000011949,
+            0.13801660000171978,
+            0.14343150000058813,
+            0.1379830999940168,
+            0.13681750000250759,
+            0.13671149999572663,
+            0.138391499996942,
+            0.13424729999678675
+          ],
+          "bicubic": [
+            0.07837840000138385,
+            0.07901449999917531,
+            0.08787870000378462,
+            0.08142499999667052,
+            0.0904270999963046,
+            0.08429830000386573,
+            0.08274730000266572,
+            0.09055359999911161,
+            0.08307150000473484,
+            0.08691439999529393,
+            0.08418469999742229,
+            0.08524629999737954
+          ]
+        },
+        "recompression/100": {
+          "source": [
+            0.03866980000020703,
+            0.03613729999779025,
+            0.03597760000411654,
+            0.038192699998035096,
+            0.039528299996163696,
+            0.037682499998481944,
+            0.038678800003253855,
+            0.035231599998951424,
+            0.03779750000103377,
+            0.0361581000033766,
+            0.03764729999966221,
+            0.037118300002475735
+          ],
+          "bicubic": [
+            0.026233300006424543,
+            0.02310320000106003,
+            0.025123599996732082,
+            0.024017099996854085,
+            0.02527890000055777,
+            0.025110399998084176,
+            0.02758219999668654,
+            0.025099200000113342,
+            0.02465009999286849,
+            0.025766099999600556,
+            0.024725700000999495,
+            0.022996100000455044
+          ]
+        },
+        "refrigeration/100": {
+          "source": [
+            0.025108599998930003,
+            0.02815559999726247,
+            0.026363999997556675,
+            0.029216100003395695,
+            0.027922400004172232,
+            0.025873099999444094,
+            0.02731869999843184,
+            0.026462599998922087,
+            0.025815199995122384,
+            0.038483199998154305,
+            0.027948700000706594,
+            0.024797999998554587
+          ],
+          "bicubic": [
+            0.016993799996271264,
+            0.015574600001855288,
+            0.015725299999758136,
+            0.01552839999931166,
+            0.017276999999012332,
+            0.015543800000159536,
+            0.01755570000386797,
+            0.017181999995955266,
+            0.017027499998221174,
+            0.01633869999932358,
+            0.01822090000496246,
+            0.015584100001433399
+          ]
+        }
+      },
+      "numerical_agreement": {
+        "recuperated_working/100": {
+          "maximum_temperature_error_K": 3.232487279092311e-05,
+          "maximum_density_relative_error": 5.501691704434819e-07,
+          "maximum_residual_error": 3.2324872791811288e-06,
+          "efficiency_absolute_error": 3.009933324804592e-08
+        },
+        "recuperated_all/100": {
+          "maximum_temperature_error_K": 3.232488626281338e-05,
+          "maximum_density_relative_error": 5.501691704434819e-07,
+          "maximum_residual_error": 3.2324886261037022e-06,
+          "efficiency_absolute_error": 3.010108273748813e-08
+        },
+        "simple_polytropic/100": {
+          "maximum_temperature_error_K": 2.948781286704616e-05,
+          "maximum_density_relative_error": 8.720349531365912e-08,
+          "maximum_residual_error": 2.948781286704616e-06,
+          "efficiency_absolute_error": 5.082070320128196e-10
+        },
+        "recompression/100": {
+          "maximum_temperature_error_K": 0.00016176445433302433,
+          "maximum_density_relative_error": 2.6634790164514754e-06,
+          "maximum_residual_error": 1.617644543339125e-05,
+          "efficiency_absolute_error": 2.462242298939543e-09
+        },
+        "refrigeration/100": {
+          "maximum_temperature_error_K": 3.146290254107953e-06,
+          "maximum_density_relative_error": 2.3234942275740522e-06,
+          "maximum_residual_error": 5.952797721420211e-07,
+          "efficiency_absolute_error": 8.302577958474444e-09
+        }
+      },
+      "setup_seconds": {
+        "recuperated_working/source": 0.08923639999557054,
+        "recuperated_working/100/bicubic": 1.9799889999994775,
+        "recuperated_all/source": 0.08964649999688845,
+        "recuperated_all/100/bicubic": 6.550649200005864,
+        "simple_polytropic/source": 0.1918225999979768,
+        "simple_polytropic/100/bicubic": 2.7376031999956467,
+        "recompression/source": 0.11141670000506565,
+        "recompression/100/bicubic": 1.553774499996507,
+        "refrigeration/source": 0.07516409999516327,
+        "refrigeration/100/bicubic": 6.002350599999772
+      },
+      "snapshots_sha256": {
+        "recuperated_working": "97aef32ec0c9aff02c4bcfc984a6105eaa7c6bb57a57a3b2ac8c90f396471fc1",
+        "recuperated_all": "7f7e90737151928a2180b6b3fb763037f6c579a112f11aa9d785f550fd603fcb",
+        "simple_polytropic": "04e80fcf11624ad01816296aede0ef40b884a0d5f895d8d6c335bf6417a25915",
+        "recompression": "4cc3766734da201b9ac126f8d20bf78933f1e36ca81466bdbde2b0164744b289",
+        "refrigeration": "0a8e61195ddba1b6213c958fd8f1afd6f3f5b950dbac09ec7d4ae33dec8d63b7"
+      }
+    },
+    "post3": {
+      "manifest_sha256": "63ce856ce9f15b41202b658bb5eca57cd15fae934e70211765291aa2dbf98d63",
+      "manifest_relative_path": "benchmark/results/phase2/controlled_post3/manifest.json",
+      "started_at_utc": "2026-11-15T14:29:58.263778+00:00",
+      "finished_at_utc": "2026-11-15T14:30:43.402641+00:00",
+      "comparison_signature": "fa33461109a3f943b0c3e07e9c0ed02269725831ab148461b606bdac19ccffb8",
+      "environment": {
+        "python": "3.13.2",
+        "platform": "Windows-11-10.0.26300-SP0",
+        "machine": "AMD64",
+        "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+        "logical_cpus": 28,
+        "cpu_affinity": {
+          "requested_mask": "0xffff",
+          "actual_mask": "0xffff",
+          "system_mask": "0xfffffff"
+        },
+        "device": "TFRT_CPU_0",
+        "x64": true,
+        "dependencies": {
+          "jaxprop": "0.6.0",
+          "jax": "0.6.2",
+          "jaxlib": "0.6.2",
+          "CoolProp": "7.2.0",
+          "numpy": "2.4.4",
+          "scipy": "1.17.1",
+          "pysolver_view": "0.7.1",
+          "equinox": "0.12.2",
+          "diffrax": "0.7.1",
+          "optimistix": "0.0.10",
+          "jaxtyping": "0.3.9",
+          "lineax": "0.1.0",
+          "matplotlib": "3.10.8",
+          "pandas": "2.3.3"
+        }
+      },
+      "thermopt_source_sha256": "31a7f01d69a5e21ff41f69c728a3abd642caa15e2cbc9d06ff376609b4b3fb8e",
+      "runner_sha256": "8e5cb5cbb061d7f6fe5b5dbe0416663795f6a148b0a642c50a748ce6f3bc6f6c",
+      "workload_sha256": "0792b85c84f917e6106595bf8ff45d458fd8957afd49ea59d0f856b836f443e5",
+      "lock_sha256": "2be5c4ac0a7c9c26e09bffd94529f3ca67ef2d253a33e8992a8afa7a3c71e0d1",
+      "numerical_checks_passed": true,
+      "source_and_protocol_unchanged_during_run": true,
+      "timings_seconds": {
+        "recuperated_working/100/source": 0.03462244999536779,
+        "recuperated_working/100/bicubic": 0.023470500000257744,
+        "recuperated_all/100/source": 0.03362180000112858,
+        "recuperated_all/100/bicubic": 0.016638849996525096,
+        "simple_polytropic/100/source": 0.15627069999754895,
+        "simple_polytropic/100/bicubic": 0.09483340000224416,
+        "recompression/100/source": 0.03981085000486928,
+        "recompression/100/bicubic": 0.02696645000105491,
+        "refrigeration/100/source": 0.02773364999666228,
+        "refrigeration/100/bicubic": 0.01816194999992149
+      },
+      "raw_samples_seconds": {
+        "recuperated_working/100": {
+          "source": [
+            0.034018600003037136,
+            0.03669130000344012,
+            0.036501300004601944,
+            0.037014599998656195,
+            0.035271700005978346,
+            0.03351429999747779,
+            0.03364299999520881,
+            0.03333879999991041,
+            0.03410729999450268,
+            0.03513759999623289,
+            0.03581110000232002,
+            0.03251849999651313
+          ],
+          "bicubic": [
+            0.023617200000444427,
+            0.022634799999650568,
+            0.025473699999565724,
+            0.022194600001967046,
+            0.02422179999848595,
+            0.02332380000007106,
+            0.023901399996248074,
+            0.021907299997110385,
+            0.023023099995043594,
+            0.023798599999281578,
+            0.02501049999409588,
+            0.0228759000019636
+          ]
+        },
+        "recuperated_all/100": {
+          "source": [
+            0.03390850000141654,
+            0.03418010000314098,
+            0.033273600005486514,
+            0.031666900002164766,
+            0.034643300001334865,
+            0.035548599997127894,
+            0.03570630000467645,
+            0.032525900001928676,
+            0.03527840000606375,
+            0.03327929999795742,
+            0.03333510000084061,
+            0.032061400001111906
+          ],
+          "bicubic": [
+            0.016511599998921156,
+            0.015060199999425095,
+            0.016766099994129036,
+            0.014585699995222967,
+            0.017189400001370814,
+            0.014156099998217542,
+            0.018046700002742,
+            0.015947400002914947,
+            0.017677600000752136,
+            0.017129300002125092,
+            0.016267400002107024,
+            0.017902400002640206
+          ]
+        },
+        "simple_polytropic/100": {
+          "source": [
+            0.14909249999618623,
+            0.1516940000001341,
+            0.15797579999343725,
+            0.1563931999990018,
+            0.16139819999807514,
+            0.1552395999970031,
+            0.1594729999997071,
+            0.1613364000004367,
+            0.15614819999609608,
+            0.1485238000022946,
+            0.16269060000195168,
+            0.1485291999997571
+          ],
+          "bicubic": [
+            0.09674539999832632,
+            0.09372050000092713,
+            0.10170360000483925,
+            0.09606460000213701,
+            0.10673010000027716,
+            0.09982489999674726,
+            0.08802110000397079,
+            0.0919687999994494,
+            0.0907216999985394,
+            0.09594630000356119,
+            0.08749030000035418,
+            0.09228879999864148
+          ]
+        },
+        "recompression/100": {
+          "source": [
+            0.04083830000308808,
+            0.04867849999573082,
+            0.03979690000414848,
+            0.03999639999528881,
+            0.03805129999818746,
+            0.03982480000559008,
+            0.03835490000346908,
+            0.04067800000484567,
+            0.03807519999827491,
+            0.040314500001841225,
+            0.03942739999911282,
+            0.03790850000223145
+          ],
+          "bicubic": [
+            0.02805359999911161,
+            0.031017099994642194,
+            0.030291199997009244,
+            0.02688839999609627,
+            0.026803599997947458,
+            0.026214799996523652,
+            0.02704450000601355,
+            0.02588149999792222,
+            0.026137099994230084,
+            0.027438299999630544,
+            0.026703199997427873,
+            0.05456609999964712
+          ]
+        },
+        "refrigeration/100": {
+          "source": [
+            0.08352739999827463,
+            0.0542836000022362,
+            0.04338599999755388,
+            0.02820629999769153,
+            0.02726099999563303,
+            0.025982099999964703,
+            0.02698870000313036,
+            0.029866600001696497,
+            0.029433600000629667,
+            0.02687539999897126,
+            0.025997900003858376,
+            0.025384399996255524
+          ],
+          "bicubic": [
+            0.055808500001148786,
+            0.04998170000180835,
+            0.025035400001797825,
+            0.020503500003542285,
+            0.018343800002185162,
+            0.016390299999329727,
+            0.017980099997657817,
+            0.017012699994666036,
+            0.018846500002837274,
+            0.017895599994517397,
+            0.017856200000096578,
+            0.01647919999959413
+          ]
+        }
+      },
+      "numerical_agreement": {
+        "recuperated_working/100": {
+          "maximum_temperature_error_K": 3.232487279092311e-05,
+          "maximum_density_relative_error": 5.501691704434819e-07,
+          "maximum_residual_error": 3.2324872791811288e-06,
+          "efficiency_absolute_error": 3.009933324804592e-08
+        },
+        "recuperated_all/100": {
+          "maximum_temperature_error_K": 3.232488626281338e-05,
+          "maximum_density_relative_error": 5.501691704434819e-07,
+          "maximum_residual_error": 3.2324886261037022e-06,
+          "efficiency_absolute_error": 3.010108273748813e-08
+        },
+        "simple_polytropic/100": {
+          "maximum_temperature_error_K": 2.948781286704616e-05,
+          "maximum_density_relative_error": 8.720349531365912e-08,
+          "maximum_residual_error": 2.948781286704616e-06,
+          "efficiency_absolute_error": 5.082070320128196e-10
+        },
+        "recompression/100": {
+          "maximum_temperature_error_K": 0.00016176445433302433,
+          "maximum_density_relative_error": 2.6634790164514754e-06,
+          "maximum_residual_error": 1.617644543339125e-05,
+          "efficiency_absolute_error": 2.462242298939543e-09
+        },
+        "refrigeration/100": {
+          "maximum_temperature_error_K": 3.146290254107953e-06,
+          "maximum_density_relative_error": 2.3234942275740522e-06,
+          "maximum_residual_error": 5.952797721420211e-07,
+          "efficiency_absolute_error": 8.302577958474444e-09
+        }
+      },
+      "setup_seconds": {
+        "recuperated_working/source": 0.08286629999929573,
+        "recuperated_working/100/bicubic": 1.9963132000048063,
+        "recuperated_all/source": 0.08741379999992205,
+        "recuperated_all/100/bicubic": 6.378550900000846,
+        "simple_polytropic/source": 0.21137560000352096,
+        "simple_polytropic/100/bicubic": 2.9596917999951984,
+        "recompression/source": 0.10338059999776306,
+        "recompression/100/bicubic": 1.6086865999968722,
+        "refrigeration/source": 0.08398029999807477,
+        "refrigeration/100/bicubic": 6.211893400002737
+      },
+      "snapshots_sha256": {
+        "recuperated_working": "97aef32ec0c9aff02c4bcfc984a6105eaa7c6bb57a57a3b2ac8c90f396471fc1",
+        "recuperated_all": "7f7e90737151928a2180b6b3fb763037f6c579a112f11aa9d785f550fd603fcb",
+        "simple_polytropic": "04e80fcf11624ad01816296aede0ef40b884a0d5f895d8d6c335bf6417a25915",
+        "recompression": "4cc3766734da201b9ac126f8d20bf78933f1e36ca81466bdbde2b0164744b289",
+        "refrigeration": "0a8e61195ddba1b6213c958fd8f1afd6f3f5b950dbac09ec7d4ae33dec8d63b7"
+      }
+    }
+  },
+  "interpretation": "Controlled process-affinity evidence is scoped to this Windows CPU/x64 profile. Original unrestricted flags are retained; affinity alone is not established as their cause.",
+  "full_suite": {
+    "passed": 319,
+    "existing_strict_xfails": 4,
+    "failures": 0,
+    "ordinary_skips": 0,
+    "warnings": 6,
+    "process_seconds": 67.06071009999869,
+    "log": "benchmark/results/phase2/final_tests.log",
+    "junit_xml": "benchmark/results/phase2/final_tests.xml",
+    "log_sha256": "4f6e81f6a8398bf084543f86bd92f1b49538679bd2c578e1c451336c03f03404",
+    "junit_xml_sha256": "f677a43c2c25e148a662d8813c701cd868d2d810c749cb70c1a44ab02616cb51"
+  },
+  "source_scope": {
+    "unchanged_package_files": [
+      "thermopt/__init__.py",
+      "thermopt/components/__init__.py",
+      "thermopt/components/basic_components.py",
+      "thermopt/components/turbomachinery_nondimensional.py",
+      "thermopt/config.py",
+      "thermopt/cycles/__init__.py",
+      "thermopt/cycles/cycle_PTES_recuperated.py",
+      "thermopt/cycles/cycle_PTES_recuperated_turbo.py",
+      "thermopt/cycles/cycle_power_recuperated.py",
+      "thermopt/cycles/cycle_power_simple.py",
+      "thermopt/cycles/cycle_power_split_compression.py",
+      "thermopt/cycles/cycle_refrigeration_recuperated.py",
+      "thermopt/cycles/cycle_refrigeration_simple.py",
+      "thermopt/math.py",
+      "thermopt/optimize_cycle.py",
+      "thermopt/utilities/__init__.py",
+      "thermopt/utilities/file_utils.py",
+      "thermopt/utilities/graphics.py",
+      "thermopt/utilities/numerics.py",
+      "thermopt/utilities/optimization_utils.py"
+    ],
+    "changed_package_files": [
+      "thermopt/utilities/fluid_utils.py"
+    ],
+    "unchanged_helper_functions": [
+      "get_cycle_fluid",
+      "process_state_options"
+    ],
+    "description": "Only construction-time configuration normalization/selection changes; all component, cycle and optimizer sources are byte-identical. Existing tests reject model reconstruction during configured evaluations."
+  }
+}

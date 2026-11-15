@@ -53,3 +53,18 @@ def test_missing_workload_does_not_become_a_partial_pass():
 def test_invalid_timings_are_rejected(value):
     with pytest.raises(ValueError, match="finite and positive"):
         protocol.compare_checkpoint(record({"a": value}), record({"a": 1.0}))
+
+
+@pytest.mark.parametrize("requested", [0, -1, 0b10000, 0b10001])
+def test_invalid_affinity_cannot_expand_or_empty_the_process_mask(requested):
+    with pytest.raises(ValueError, match="nonzero subset"):
+        protocol.validate_cpu_mask(requested, 0b1111)
+
+
+@pytest.mark.parametrize("requested", [1, 0b1010, 0b1111])
+def test_affinity_accepts_nonempty_subsets(requested):
+    protocol.validate_cpu_mask(requested, 0b1111)
+
+
+def test_default_affinity_observation_does_not_change_scheduling():
+    assert protocol.cpu_affinity() == protocol.cpu_affinity()

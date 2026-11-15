@@ -111,13 +111,15 @@ def test_native_bicubic_components_match_source(
         )
 
 
-def test_legacy_case_policy_is_explicit():
+def test_case_model_selection_is_explicit():
     assert (
-        type(utilities.fluid_from_configuration(dict(name="Air", exceptions=True)))
+        type(
+            utilities.fluid_from_configuration(
+                dict(name="Air", method="coolprop", backend="HEOS")
+            )
+        )
         is jp.FluidCoolProp
     )
-    with pytest.raises(ValueError, match="raising"):
-        utilities.fluid_from_configuration(dict(name="Air", exceptions=False))
 
 
 def test_bicubic_excel_contains_numbers_and_blank_unsupported_fields(

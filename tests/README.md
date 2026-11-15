@@ -2,8 +2,21 @@
 
 ## JaxProp 0.6 compatibility checkpoint
 
-The current code requires the released JaxProp 0.6 package. A fresh locked
-installation passes **262 tests**, with four unchanged strict expected failures.
+Phase 2 uses the constructor vocabulary directly and removes the legacy policy
+translation. `test_fluid_configuration.py` covers native source/perfect-gas/table
+objects, immutable settings, typed rejection of old/unknown constructor fields,
+and explicit state-call error policies. It inventories all 36 maintained YAML
+cases and checks whole-document physical/solver signatures against the
+pre-migration checkpoint. Initializer archives are data, not legacy runtime
+configuration; the current study is tested with both independent and saved seeds.
+
+The completed Phase 2 run passes **319 tests**, with the same four strict expected
+failures. It adds 49 configuration checks and eight benchmark-affinity checks to
+the adoption checkpoint. [Phase 2 evidence](../benchmark/PHASE2.md) includes the
+full-suite record and three-cohort complete-cycle timing assessment.
+
+The released-dependency adoption checkpoint passed **262 tests**, with four
+unchanged strict expected failures, in a fresh locked installation.
 See [the release-adoption record](../benchmark/RELEASE_060.md) and
 [phase plan](../z_JAXPROP_060_IMPLEMENTATION_PLAN.md).
 

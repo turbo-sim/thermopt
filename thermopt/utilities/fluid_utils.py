@@ -1,5 +1,6 @@
 """Shared property models for study scripts, owned entirely by jaxprop."""
 
+from collections.abc import Mapping
 from functools import lru_cache
 
 import jaxprop
@@ -13,33 +14,29 @@ __all__ = [
 ]
 
 
-def fluid_from_configuration(configuration, *, identifier=None):
-    """Construct an actual JaxProp evaluator from a cycle's YAML settings.
+def _scalar_settings(value):
+    """Copy static configuration mappings into native Python scalar metadata.
 
-    Old case files spell the default raising policy as ``exceptions: True``.
-    Accept that setup spelling only; ThermOpt needs finite states and does not
-    silently turn a disabled exception flag into masked or clipped calculations.
-    New cases select ``method`` and pass ``table_options`` directly to JaxProp.
+    YAML processing uses NumPy scalars, while read-only mappings are convenient
+    for sharing configuration safely. Normalize both once at setup; numerical
+    arrays and configured model objects retain their original meaning.
     """
+    if isinstance(value, np.generic):
+        return value.item()
+    if isinstance(value, Mapping):
+        return {key: _scalar_settings(item) for key, item in value.items()}
+    return value
 
-    def scalar_settings(value):
-        # YAML processing represents numbers as NumPy scalars. Model setup
-        # options are static Python metadata, not numerical array parameters.
-        # Normalize them once to avoid Equinox's static-array warnings and
-        # keep every repeated property call free of this conversion work.
-        if isinstance(value, np.generic):
-            return value.item()
-        if isinstance(value, dict):
-            return {key: scalar_settings(item) for key, item in value.items()}
-        return value
 
-    settings = scalar_settings(dict(configuration))
-    exceptions = settings.pop("exceptions", True)
-    if exceptions is not True:
-        raise ValueError(
-            "ThermOpt requires raising fluid errors; remove exceptions: False. "
-            "JaxProp's mask/clip policies must be requested explicitly on state calls."
-        )
+def fluid_from_configuration(configuration, *, identifier=None):
+    """Construct a native evaluator using the JaxProp 0.6 vocabulary directly.
+
+    The configuration is copied, never mutated. JaxProp validates its own
+    selectors/options and reports unsupported constructor fields. In particular,
+    error policies belong on ``get_state`` calls, not in model construction.
+    No ThermOpt compatibility translation or property-call wrapper is applied.
+    """
+    settings = _scalar_settings(dict(configuration))
     if identifier is not None:
         settings["identifier"] = identifier
     return jaxprop.Fluid(**settings)
@@ -79,4 +76,4 @@ def process_state_options(fluid, *, generalize_quality=False):
 @lru_cache(maxsize=32)
 def get_property_fluid(name, backend="HEOS"):
     """Reuse a jaxprop model within a process; obtain states with get_state."""
-    return jaxprop.Fluid(name=name, backend=backend)
+    return jaxprop.Fluid(name=name, method="coolprop", backend=backend)

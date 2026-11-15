@@ -26,9 +26,9 @@ problem_formulation:
         x_scale: linear
         y_scale: linear
   fixed_parameters:
-    working_fluid: {name: null, backend: HEOS, exceptions: true}
-    heating_fluid: {name: Water, backend: HEOS, exceptions: true}
-    cooling_fluid: {name: Water, backend: HEOS, exceptions: true}
+    working_fluid: {name: null, backend: HEOS, method: coolprop}
+    heating_fluid: {name: Water, backend: HEOS, method: coolprop}
+    cooling_fluid: {name: Water, backend: HEOS, method: coolprop}
     net_power: 1000000
     special_points:
       ambient_pressure: 101325

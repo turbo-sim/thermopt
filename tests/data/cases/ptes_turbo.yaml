@@ -48,17 +48,17 @@ problem_formulation:
     working_fluid:
       name: CO2 #don't change
       backend: HEOS
-      exceptions: True
+      method: coolprop
 
     hot_storage_fluid:
         name: nitrogen #don't change, not important
         backend: HEOS
-        exceptions: True
+        method: coolprop
 
     cold_storage_fluid:
       name: nitrogen #don't change, not important
       backend: HEOS
-      exceptions: True
+      method: coolprop
 
     charging_power: 100e6   #MW  #(doesn't change anything) #35e6  #add to table
 

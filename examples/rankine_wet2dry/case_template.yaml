@@ -34,15 +34,15 @@ problem_formulation:
     working_fluid:
       name: null
       backend: HEOS
-      exceptions: true
+      method: coolprop
     heating_fluid:
       name: Water
       backend: HEOS
-      exceptions: true
+      method: coolprop
     cooling_fluid:
       name: Water
       backend: HEOS
-      exceptions: true
+      method: coolprop
     # Turbine power minus working-fluid pump power (repository convention).
     net_power: 1.0e6
     special_points:

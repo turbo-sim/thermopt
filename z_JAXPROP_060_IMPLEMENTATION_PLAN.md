@@ -127,23 +127,30 @@ passes. A working `PYTHONPATH` override alone does not close this phase.
 
 ## Phase 2 — Make fluid configuration use the new interface directly
 
-**Status: planned.** The temporary `exceptions: True` translation is explicitly
-scheduled for removal, not retained as the desired public interface.
+**Status: complete locally on 15 November 2026.** The `exceptions` translation is
+removed. See [verification and timing evidence](benchmark/PHASE2.md): 319 tests
+pass, four existing strict expected failures remain, and all ten three-cohort
+aggregate warm comparisons meet the unchanged 1.10 budget. Original and individual
+repeat timing flags remain recorded; this is scoped to the tested CPU/x64 profile.
 
-- [ ] Migrate maintained example/case YAML and corresponding test input schemas
+- [x] Migrate maintained example/case YAML and corresponding test input schemas
   to explicit `name`, `method`, `backend`, `identifier`, `table_options` and
   applicable `model_options`. Remove constructor-level `exceptions` settings.
-- [ ] Remove the legacy translation in `fluid_from_configuration`; reject
+- [x] Remove the legacy translation in `fluid_from_configuration`; reject
   obsolete/unknown fields with useful guidance. Do not accept old positional
   backend spelling or silently reinterpret constructor policies.
-- [ ] Keep error policy on state calls. Normal ThermOpt solver calls raise on
+- [x] Keep error policy on state calls. Normal ThermOpt solver calls raise on
   invalid states; mask/clip are explicit choices only where the algorithm has
   defined semantics and tests. Never hide a failed optimizer trial with clipping.
-- [ ] Normalize static YAML scalar settings once and preserve native model
+- [x] Normalize static YAML scalar settings once and preserve native model
   objects. No state-call wrappers or backend-specific fluid subclasses.
-- [ ] Cover source, bicubic and perfect-gas construction, malformed settings,
+- [x] Cover source, bicubic and perfect-gas construction, malformed settings,
   input immutability and identifiers. Update tests to the new schema without
   changing their physical inputs or expected numerical outputs.
+- [x] Add optional process CPU-affinity control/readback to the benchmark protocol
+  and its comparison signature. Repeat pre/post with the same updated harness;
+  preserve earlier unrestricted observations and declare the protocol transition.
+  Windows behavior is exercised; Linux/platform coverage remains Phase 8 work.
 
 Acceptance: maintained cases use the new vocabulary, no old-interface shim is
 needed, complete source tests pass and the phase benchmark meets its budget.
@@ -249,6 +256,13 @@ works; maintain an explicit execution inventory.
   unexecuted full sweeps honestly. Larger redesigns get their own checklist item.
 - [ ] Retire/archive the old 0.5 bicubic adapter and monkey-patching experiment
   after its useful provenance is retained and the native workflow replaces it.
+- [ ] Remove the historical benchmark input's `exceptions` normalization when
+  consolidating the harness, verifying a new protocol/checkpoint explicitly.
+  Phase 2 keeps the old benchmark builder unchanged for comparable measurements.
+- [ ] Review study cache identity separately from physical-input schema. Existing
+  caches hash complete configurations and correctly reject changed schema/API
+  provenance; use a new results directory after migration. Do not rewrite old
+  cache signatures or relabel saved results as current-library evaluations.
 - [ ] Consolidate active comparison code under `benchmark/`, retaining dated
   evidence under `development/`. Keep tests independent of result generation.
 
@@ -263,6 +277,9 @@ clear external-input/research classification; no blanket "all examples pass".
   native bicubic/component/example checks. Document optional REFPROP selection.
 - [ ] Keep timing gates in controlled scheduled/manual jobs, with artifacts and
   repeated flags; do not fail ordinary shared-host CI on one noisy stopwatch.
+- [ ] Exercise optional affinity observation/control on Linux and unsupported
+  platforms, including inherited worker masks. Phase 2 verifies Windows on a
+  single processor group; do not infer multi-group or cross-platform coverage.
 - [ ] Run the full benchmark release profile and compare against accepted
   checkpoints. Require source cross-evaluation, energy balances, feasibility,
   physical metrics and iteration/call counts for complete optimizations.
@@ -293,3 +310,4 @@ numerical agreement and performance gates pass or have explicit scoped decisions
 | Prepared 0.6 compatibility | 253 passed, four existing expected failures; [report](development/bicubic/VERIFICATION_060.md), [measurements](development/bicubic/verification_060.json). |
 | Published 0.6 dependency/environment | Complete locally: PyPI artifact/hash and 43 source files checked; only JaxProp changes locked version; Poetry 2.2.1 accepts the lock; clean locked environment passes 262 tests plus four unchanged expected failures. [Evidence](benchmark/RELEASE_060.md). |
 | Phase baseline benchmarks | Five source/bicubic case or stream modes recorded with 12 samples per backend. [Checkpoint](benchmark/checkpoints/pypi_060_phase.json). One starting cohort, not a between-phase performance acceptance claim. |
+| Phase 2 configuration | Complete locally: 36 YAML inputs / 108 stream declarations migrated; native objects and read-only configuration supported; obsolete fields rejected. 319 passed plus four unchanged strict expected failures. All ten aggregate warm comparisons meet 1.10 after three matched cohorts; individual flags remain retained. [Assessment](benchmark/PHASE2.md), [checkpoint](benchmark/checkpoints/phase2.json). |
