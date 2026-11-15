@@ -1,5 +1,9 @@
 # Phase 3: native state access and setup requirements
 
+Follow-up: the metadata fix is committed and verified through a separate package.
+See [METADATA_FIX.md](METADATA_FIX.md). This original report retains the earlier
+open-gate observations; the follow-up preserves the historical flags too.
+
 Reference commit: `b211fa084b800e970d4bc86f594c02bfc7fef385` (Phase 2).
 Both implementations use installed PyPI JaxProp 0.6.0 and the same locked
 CPU/x64 environment. ThermOpt remains eager NumPy/SciPy.

@@ -14,6 +14,11 @@ matched complete-consumer measurements and a confirmed model-metadata cache
 confounder. Its strict historical timing gate remains open; Phase 2 remains the
 accepted checkpoint.
 
+The [metadata-fix follow-up](METADATA_FIX.md) verifies the local JaxProp fix and
+records an [artifact-specific checkpoint](checkpoints/metadata_fix.json) for the
+next phase. Its historical flags and targeted follow-up remain visible; use the
+recorded environment/artifact when comparing it.
+
 This is the canonical benchmark entry point for the
 [JaxProp 0.6 migration plan](../z_JAXPROP_060_IMPLEMENTATION_PLAN.md).
 ThermOpt stays eager NumPy/SciPy. Current workload code is reused from

@@ -157,12 +157,16 @@ needed, complete source tests pass and the phase benchmark meets its budget.
 
 ## Phase 3 — Standardize state access and capability requirements
 
-**Status: implementation/numerical verification complete; strict historical
-performance gate remains open.** The full suite passes 396 tests plus four
+**Status: implementation and matched metadata-fix verification complete;
+historical absolute timing closure remains separately tracked.** The full suite passes 396 tests plus four
 unchanged strict expected failures. All twelve controlled functional complete-cycle
 comparisons meet 1.10 (largest increase 4.0%); three historical-checkpoint bicubic
 flags remain recorded. Equivalent-model cache identity is a confirmed dependency
-confounder, tracked under Phase 5. No clean Phase 3 checkpoint is promoted.
+confounder, now fixed in JaxProp commit `52c98b8`. The packaged fix passes the
+standalone and paired-application gates; its one fresh nitrogen flag does not
+repeat in the targeted three-cohort follow-up. Phase 4 proceeds on the user's
+instruction while old absolute flags remain Phase 8 verification work. See
+[the follow-up](benchmark/METADATA_FIX.md). No clean historical checkpoint is claimed.
 See the [inventory](tests/STATE_ACCESS_060.md) and [assessment](benchmark/PHASE3.md).
 
 - [x] Inventory core versus optional fields used by each component, constraint,
@@ -183,7 +187,8 @@ See the [inventory](tests/STATE_ACCESS_060.md) and [assessment](benchmark/PHASE3
   mappings without adding metadata checks to state calculation functions.
 - [x] Restore canonical-axis auxiliary plotting and replace the active blending
   example's obsolete state-collection call; verify its isolated headless run.
-- [ ] Close the strict historical checkpoint gate before phase acceptance.
+- [ ] Close the historical absolute checkpoint gate in final verification
+  (carried to Phase 8 while the matched fix is verified and Phase 4 proceeds).
   Current flags: all-stream recuperated bicubic +10.7%, recompression bicubic
   +13.6%, refrigeration bicubic +22.8%. Preserve the fresh-process and cache-order
   controls; controlled shared-native-model comparisons isolate application changes
@@ -236,7 +241,7 @@ cross-checks and matched complete-consumer performance pass.
 - [ ] Confirm initial designs, bounds, objectives and residual ordering across
   the 14 cycle cases; rerun three standard optimizations plus native bicubic
   recuperated optimization and source cross-evaluation.
-- [ ] Assess the released JaxProp 0.6 bicubic static-metadata equality/cache cost
+- [x] Assess and fix the released JaxProp 0.6 bicubic static-metadata equality/cache cost
   with equivalent independent model objects. Phase 3 profiling finds repeated
   dataclass/FrozenMapping equality in JIT lookup; an identical-source control
   is 28.8% slower for the second model, and reversing cache order reverses the
@@ -244,6 +249,9 @@ cross-checks and matched complete-consumer performance pass.
   report the dependency issue upstream; do not patch installed JaxProp or share
   mutable evaluators globally as a ThermOpt workaround. Consider immutable
   metadata interning or efficient equality in a separately tested JaxProp change.
+  The aligned equality fix is committed as `52c98b8` with 17 new tests, 3,046
+  distinct library tests and packaged ThermOpt verification. The local artifact
+  and all residual observations are recorded in `benchmark/METADATA_FIX.md`.
 
 Acceptance: lifecycle tests pass, repeated evaluations contain no construction
 or table loading, and setup/warm/whole-solve timing costs are recorded separately.
@@ -313,6 +321,11 @@ clear external-input/research classification; no blanket "all examples pass".
 - [ ] Run the full benchmark release profile and compare against accepted
   checkpoints. Require source cross-evaluation, energy balances, feasibility,
   physical metrics and iteration/call counts for complete optimizations.
+- [ ] Reassess the carried absolute Phase 2/3 timing flags with stable matched
+  artifact/context controls. Keep the original flags and successful metadata-fix
+  follow-up separate; matched fix acceptance does not erase earlier ratios.
+- [ ] Once separately released, update the dependency/lock to the JaxProp patch
+  containing `52c98b8`. The verified local wheel is not an official PyPI artifact.
 - [ ] Update package/API/example docs and migration notes to the supported 0.6
   interface. Remove obsolete compatibility branches and installation caveats
   only when the corresponding checks actually pass.
