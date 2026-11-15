@@ -4,6 +4,7 @@
 import yaml
 import numbers
 import numpy as np
+import jaxprop
 from . import utilities
 
 # TURBOMACHINERIES = [
@@ -152,8 +153,10 @@ def object_to_dict(obj):
     Recursively convert an object's attributes to a dictionary.
 
     This function takes an object and converts its attributes to a dictionary format.
-    It handles nested dictionaries, lists, and objects with a `__dict__` attribute,
-    recursively converting all attributes to dictionaries or arrays as appropriate.
+    It handles nested dictionaries, lists, and ordinary objects with a
+    `__dict__` attribute. Native fluid states use their public lossless data
+    representation, preserving identity, enabled fields, status and masks
+    without exposing private numerical storage.
 
     Parameters
     ----------
@@ -167,7 +170,9 @@ def object_to_dict(obj):
         A dictionary representation of the object, where all nested attributes
         are recursively converted.
     """
-    if isinstance(obj, dict):
+    if isinstance(obj, jaxprop.FluidState):
+        return obj.to_data()
+    elif isinstance(obj, dict):
         return {k: object_to_dict(v) for k, v in obj.items()}
     elif isinstance(obj, list):
         return np.array([object_to_dict(i) for i in obj])

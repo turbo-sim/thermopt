@@ -27,11 +27,11 @@ def test_shrouded_stress_interpolation_and_clipped_endpoints(flow, coefficient):
 @pytest.mark.parametrize("offset", [0., 1e-10, -1e-10, .02, -.02])
 def test_polytropic_head_is_finite_and_differentiable_at_equal_temperatures(offset):
     """The logarithmic-mean limit is T, with temperature derivative 1/2."""
-    inlet = dict(T=300., h=4e5, s=2000.)
+    inlet = dict(temperature=300., enthalpy=4e5, entropy=2000.)
 
     def head(temperature):
         """Evaluate Eq. 9 with fixed h,s to isolate the temperature mean."""
-        return polytropic_head(inlet, dict(T=temperature, h=4.1e5, s=2001.), xp=jnp)
+        return polytropic_head(inlet, dict(temperature=temperature, enthalpy=4.1e5, entropy=2001.), xp=jnp)
 
     value, derivative = jax.jit(jax.value_and_grad(head))(300. + offset)
     change = offset / 300.

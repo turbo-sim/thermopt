@@ -14,7 +14,7 @@ result = solve_compressor(
     fluid, inlet, p_out=2e5, mass_flow=2.0,
     design={"flow_coefficient": 0.07, "backsweep": 40.0},
 )
-print(result["state_out"].T)
+print(result["state_out"].temperature)
 print(result["performance"])
 print(result["residual"], result["solver"])
 ```
@@ -52,6 +52,12 @@ This reproduces component Figures 1-7 with production correlation functions and 
 ## Numerical implementation and JAX
 
 `compressor_performance()` evaluates the arithmetic at a trial outlet without property calls. `turbine_performance()` additionally performs one rotor-static h,s flash through the supplied fluid. Both return the same eight performance quantities as the solve functions. Input states use the standard jaxprop names and can also be numerical mappings.
+
+Numerical mappings use canonical keys such as `temperature`, `enthalpy`,
+`entropy`, `density`, `viscosity` and `speed_of_sound`. Native JaxProp states
+already expose that schema. The cycle-facing compression/expansion functions
+return a batched immutable `FluidState` for every path, including nondimensional
+machinery, with scalar endpoints and unchanged correlation/solver outputs.
 
 The `xp` keyword selects NumPy (default) or `jax.numpy`. This keeps host evaluations free of eager JAX dispatch overhead while allowing the same correlation equations to be compiled and differentiated:
 

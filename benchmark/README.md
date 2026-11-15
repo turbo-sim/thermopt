@@ -9,6 +9,11 @@ including all individual flags and the original unrestricted observations.
 Its [new checkpoint](checkpoints/phase2.json) records CPU affinity explicitly;
 use its matching protocol for subsequent phase comparisons.
 
+The [Phase 3 assessment](PHASE3.md) records completed state-interface verification,
+matched complete-consumer measurements and a confirmed model-metadata cache
+confounder. Its strict historical timing gate remains open; Phase 2 remains the
+accepted checkpoint.
+
 This is the canonical benchmark entry point for the
 [JaxProp 0.6 migration plan](../z_JAXPROP_060_IMPLEMENTATION_PLAN.md).
 ThermOpt stays eager NumPy/SciPy. Current workload code is reused from
@@ -30,6 +35,36 @@ python benchmark/run.py --profile release
   including simple/polytropic CO2, recompression and nitrogen refrigeration.
 - `release`: workloads at 200x200 plus full source/bicubic recuperated optimizations,
   source cross-evaluation, feasibility and objective agreement.
+
+`state_paths.py` complements these profiles with complete source PTES consumers,
+including nondimensional radial machinery and its returned state paths:
+
+```powershell
+python benchmark/state_paths.py --case ptes --cpu-affinity 0xffff --output benchmark/results/ptes_reference.json
+python benchmark/state_paths.py --case ptes_turbo --cpu-affinity 0xffff --output benchmark/results/ptes_turbo_reference.json
+```
+
+Use new output paths for each run. It retains 12 synchronized full-cycle samples,
+setup cost, complete numerical snapshots, CPU affinity and dependency/source/input
+identities. Compare matching before/after records; ordinary tests have no timing
+assertions. Like the main runner, this helper currently shares frozen workload
+definitions with the regression suite; Phase 7 will consolidate them.
+
+For small interface changes, alternate both source implementations in one process:
+
+```powershell
+python benchmark/compare_versions.py --reference-root PATH_TO_REFERENCE_TREE --output benchmark/results/paired_run --cpu-affinity 0xffff
+```
+
+This loads real source packages in separate namespaces and retains complete-cycle
+outputs, raw samples and an executable harness snapshot. `--workload` restricts
+cases, `--first-version current` counterbalances construction/warmup order, and
+`--identical-source-control` uses reference code for both independent instances.
+`--shared-models` compares the existing functional cycle API with identical native
+model arguments to isolate application changes from metadata-identity cache costs.
+That mode excludes the problem object's bookkeeping; keep full `run.py` and
+`state_paths.py` measurements as lifecycle/end-to-end evidence too. No fluid
+backend or numerical implementation is patched by these helpers.
 
 First-time property-table generation can take several minutes. The shared
 `benchmark/results/tables/` cache is reused only after JaxProp validation.

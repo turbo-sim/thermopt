@@ -37,11 +37,11 @@ def test_compressor_equations_at_reference_size_speed_and_clearance(phi, backswe
     design = dict(flow_coefficient=phi, backsweep=backsweep, has_vaned=vaned)
     rho = 1.2
     mass_flow = rho * phi * 277 * .4**2
-    inlet = dict(h=4e5, s=2000., T=300., rho=rho,
-                         mu=rho * 15.7e-6, a=277 / .8)
+    inlet = dict(enthalpy=4e5, entropy=2000., temperature=300., density=rho,
+                         viscosity=rho * 15.7e-6, speed_of_sound=277 / .8)
     log_mean_temperature = 100 / log(400 / 300)
-    outlet = dict(h=4e5 + work, s=2000 + .2 * work / log_mean_temperature, T=400.)
-    outlet_isentropic = dict(h=4e5 + .75 * work)
+    outlet = dict(enthalpy=4e5 + work, entropy=2000 + .2 * work / log_mean_temperature, temperature=400.)
+    outlet_isentropic = dict(enthalpy=4e5 + .75 * work)
     output = compressor_performance(inlet, outlet, outlet_isentropic, mass_flow, design)
     residual = output["correlation_efficiency"] - output["polytropic_efficiency"]
     assert output["correlation_efficiency"] == pytest.approx(efficiency, abs=1e-12)
@@ -66,9 +66,9 @@ def test_reynolds_correction_uses_figure4_velocity_for_actual_and_reference_stat
     head_coefficient = .59 + 4 * .7 * phi / pi - (4 / pi)**2 * 7.5 * phi**2 - pi * .00025 / (4 * phi)
     work = work_coefficient * tip_speed**2
     rho, viscosity = 1.2, 15.7e-6
-    inlet = dict(h=4e5, s=2000., T=300., rho=rho, mu=rho * viscosity, a=tip_speed / .8)
-    outlet = dict(h=4e5 + work, s=2000. + .2 * work / (100 / log(400 / 300)), T=400.)
-    isentropic = dict(h=4e5 + .75 * work)
+    inlet = dict(enthalpy=4e5, entropy=2000., temperature=300., density=rho, viscosity=rho * viscosity, speed_of_sound=tip_speed / .8)
+    outlet = dict(enthalpy=4e5 + work, entropy=2000. + .2 * work / (100 / log(400 / 300)), temperature=400.)
+    isentropic = dict(enthalpy=4e5 + .75 * work)
     mass_flow = rho * phi * tip_speed * diameter**2
     output = compressor_performance(inlet, outlet, isentropic, mass_flow, {"flow_coefficient": phi})
     diameter_over_chord = 1.1 + 22 * phi

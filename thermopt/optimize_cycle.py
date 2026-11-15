@@ -18,17 +18,19 @@ import pysolver_view as psv
 from . import cycles
 from . import utilities as utils
 from .config import read_configuration_file
+from .cycles.state_requirements import validate_cycle_state_requirements
 
 COLORS_MATLAB = utils.COLORS_MATLAB
 LABEL_MAPPING = {
-    "s": "Entropy [J/kg/K]",
-    "T": "Temperature [K]",
-    "p": "Pressure [Pa]",
-    "h": "Enthalpy [J/kg]",
-    "d": "Density [kg/m$^3$]",
-    "a": "Speed of sound [m/s]",
-    "Z": "Compressibility factor [-]",
+    "entropy": "Entropy [J/kg/K]",
+    "temperature": "Temperature [K]",
+    "pressure": "Pressure [Pa]",
+    "enthalpy": "Enthalpy [J/kg]",
+    "density": "Density [kg/m$^3$]",
+    "speed_of_sound": "Speed of sound [m/s]",
+    "compressibility_factor": "Compressibility factor [-]",
     "heat": "Heat flow rate [W]",
+    "heat_flow": "Heat flow rate [W]",
 }
 
 # Cycle configurations available
@@ -473,6 +475,10 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             for role in roles if role in self.fixed_parameters
         }
         self.fluid = self.fluids["working_fluid"]
+        validate_cycle_state_requirements(
+            self.cycle_topology, self.fixed_parameters, self.fluids,
+            self.constraints, self.objective_function,
+        )
         # Reference-only setup queries can lie outside a table's declared domain.
         # Evaluate those through the same source EOS, never through interpolation.
         self.reference_fluid = utils.get_property_fluid(self.fluid.name, self.fluid.backend)
@@ -529,14 +535,14 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         # Use pseudocritical line if heat sink is above critical temperature
         T_sink = self.fixed_parameters["special_points"]["ambient_temperature"]
         crit = self.reference_fluid.critical_point
-        if T_sink < crit.T:
+        if T_sink < crit.temperature:
             state_sat = self.reference_fluid.get_state(cpx.QT_INPUTS, 0.0, T_sink)
         else:
-            state_sat = self.reference_fluid.get_state(cpx.DmassT_INPUTS, crit.rho, T_sink)
+            state_sat = self.reference_fluid.get_state(cpx.DmassT_INPUTS, crit.density, T_sink)
 
         # Compute dilute gas state at heat source temperature
         T_source = self.fixed_parameters["special_points"]["maximum_temperature"]
-        p_triple = 1.01 * self.reference_fluid.triple_point_liquid.p
+        p_triple = 1.01 * self.reference_fluid.triple_point_liquid.pressure
         state_dilute = self.reference_fluid.get_state(cpx.PT_INPUTS, p_triple, T_source)
 
         # Save states in the fixed parameters dictionary
@@ -882,6 +888,11 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             color: Color code for the plot.
         """
 
+        # Normalize public aliases at this plotting boundary. Auxiliary streams
+        # must behave identically with canonical names and familiar axis names.
+        prop_x = cpx.ALIAS_TO_CANONICAL.get(prop_x, prop_x)
+        prop_y = cpx.ALIAS_TO_CANONICAL.get(prop_y, prop_y)
+
         # Get heat exchanger side data
         if "_hot_side" in name or "_cold_side" in name:
             # Extract the component and side from the name
@@ -905,13 +916,13 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         if (
             not is_working_fluid
             and is_heat_exchanger
-            and prop_y == "T"
-            and prop_x in ["h", "s"]
+            and prop_y == "temperature"
+            and prop_x in ["enthalpy", "entropy"]
         ):
             # Special case for heat exchangers in h-T or s-T diagrams
             x_data = data_other_side["states"][prop_x]
             y_data = data["states"][prop_y]
-        elif is_heat_exchanger and prop_y == "T" and prop_x == "heat_flow":
+        elif is_heat_exchanger and prop_y == "temperature" and prop_x == "heat_flow":
             # Special case for pinch point diagram
             x_data = data["heat_flow"]
             y_data = data["states"][prop_y]
@@ -969,11 +980,11 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
 
         # Set the axes labels
         ax.set_xlabel(LABEL_MAPPING["heat"])
-        ax.set_ylabel(LABEL_MAPPING["T"])
+        ax.set_ylabel(LABEL_MAPPING["temperature"])
 
         # Extract heat exchanger names and their minimum cold side temperatures
         heat_exchangers = [
-            (name, min(component["cold_side"]["states"]["T"]))
+            (name, min(component["cold_side"]["states"]["temperature"]))
             for name, component in self.cycle_data["components"].items()
             if component["type"] == "heat_exchanger"
         ]
@@ -987,10 +998,10 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
 
             # Hot side
             Q_hot, T_hot, plot_params_hot = self._get_process_data(
-                HX_name + "_hot_side", "heat_flow", "T"
+                HX_name + "_hot_side", "heat_flow", "temperature"
             )
             Q_cold, T_cold, plot_params_cold = self._get_process_data(
-                HX_name + "_cold_side", "heat_flow", "T"
+                HX_name + "_cold_side", "heat_flow", "temperature"
             )
             # Both temperature arrays are ordered from the cold inlet. Convert
             # hot-side heat released since its inlet to that same coordinate;
@@ -1115,8 +1126,8 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             A dictionary containing the merged plot settings.
         """
         default_settings = {
-            "x_prop": "s",
-            "y_prop": "T",
+            "x_prop": "entropy",
+            "y_prop": "temperature",
             "x_scale": "linear",
             "y_scale": "linear",
             "plot_saturation_line": True,
@@ -1135,7 +1146,10 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         plot_config = plot_config | fluid_settings
 
         # Merge with default values
-        return default_settings | plot_config
+        settings = default_settings | plot_config
+        for axis in ("x_prop", "y_prop"):
+            settings[axis] = cpx.ALIAS_TO_CANONICAL.get(settings[axis], settings[axis])
+        return settings
 
     def save_data_to_excel(self, filename="performance.xlsx"):
         """
@@ -1145,20 +1159,20 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         # Define variable map
         variable_map = {
             "fluid_name": {"name": "fluid_name", "unit": "-"},
-            "T": {"name": "temperature", "unit": "K"},
-            "p": {"name": "pressure", "unit": "Pa"},
-            "rho": {"name": "density", "unit": "kg/m3"},
-            "Q": {"name": "quality", "unit": "-"},
-            "Z": {"name": "compressibility_factor", "unit": "-"},
-            "u": {"name": "internal_energy", "unit": "J/kg"},
-            "h": {"name": "enthalpy", "unit": "J/kg"},
-            "s": {"name": "entropy", "unit": "J/kg/K"},
-            "cp": {"name": "isobaric_heat_capacity", "unit": "J/kg/K"},
-            "cv": {"name": "isochoric_heat_capacity", "unit": "J/kg/K"},
-            "gamma": {"name": "heat_capacity_ratio", "unit": "-"},
-            "a": {"name": "speed_of_sound", "unit": "m/s"},
-            "mu": {"name": "dynamic_viscosity", "unit": "Pa*s"},
-            "k": {"name": "thermal_conductivity", "unit": "W/m/K"},
+            "temperature": {"name": "temperature", "unit": "K"},
+            "pressure": {"name": "pressure", "unit": "Pa"},
+            "density": {"name": "density", "unit": "kg/m3"},
+            "quality_mass": {"name": "quality", "unit": "-"},
+            "compressibility_factor": {"name": "compressibility_factor", "unit": "-"},
+            "internal_energy": {"name": "internal_energy", "unit": "J/kg"},
+            "enthalpy": {"name": "enthalpy", "unit": "J/kg"},
+            "entropy": {"name": "entropy", "unit": "J/kg/K"},
+            "isobaric_heat_capacity": {"name": "isobaric_heat_capacity", "unit": "J/kg/K"},
+            "isochoric_heat_capacity": {"name": "isochoric_heat_capacity", "unit": "J/kg/K"},
+            "heat_capacity_ratio": {"name": "heat_capacity_ratio", "unit": "-"},
+            "speed_of_sound": {"name": "speed_of_sound", "unit": "m/s"},
+            "viscosity": {"name": "dynamic_viscosity", "unit": "Pa*s"},
+            "conductivity": {"name": "thermal_conductivity", "unit": "W/m/K"},
             "superheating": {"name": "superheating_degree", "unit": "K"},
             "subcooling": {"name": "subcooling_degree", "unit": "K"},
         }

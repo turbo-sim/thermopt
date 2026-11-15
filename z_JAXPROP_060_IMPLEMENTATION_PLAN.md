@@ -157,21 +157,37 @@ needed, complete source tests pass and the phase benchmark meets its budget.
 
 ## Phase 3 — Standardize state access and capability requirements
 
-**Status: planned; basic capability-aware diagnostics are already implemented.**
+**Status: implementation/numerical verification complete; strict historical
+performance gate remains open.** The full suite passes 396 tests plus four
+unchanged strict expected failures. All twelve controlled functional complete-cycle
+comparisons meet 1.10 (largest increase 4.0%); three historical-checkpoint bicubic
+flags remain recorded. Equivalent-model cache identity is a confirmed dependency
+confounder, tracked under Phase 5. No clean Phase 3 checkpoint is promoted.
+See the [inventory](tests/STATE_ACCESS_060.md) and [assessment](benchmark/PHASE3.md).
 
-- [ ] Inventory core versus optional fields used by each component, constraint,
+- [x] Inventory core versus optional fields used by each component, constraint,
   study, plot and exporter. Use canonical property names in maintained code;
   keep friendly display labels separate from field access.
-- [ ] Resolve required capabilities during component/problem setup. Request
+- [x] Resolve required capabilities during component/problem setup. Request
   optional source diagnostics only when supported and needed; a constraint
   requiring an unsupported property must fail clearly, never disappear.
-- [ ] Use the public immutable-state/index/stack/serialization interfaces.
+- [x] Use the public immutable-state/index/stack/serialization interfaces.
   Remove dataclass/private-field mutation and obsolete `states_to_dict` helpers.
-- [ ] Separate unsupported, disabled and locally unavailable properties. Preserve
+- [x] Separate unsupported, disabled and locally unavailable properties. Preserve
   statuses, optional NaNs and honest blank report cells; never invent zeros.
-- [ ] Test scalar/singleton/batch shapes, immutability, source/table identities,
+- [x] Test scalar/singleton/batch shapes, immutability, source/table identities,
   optional-property failures, source diagnostics and source-model-specific
   quality meaning outside the two-phase region.
+- [x] Remove duplicate guarded property evaluation in expression traversal and
+  preserve typed JaxProp failures plus expression context. Accept read-only
+  mappings without adding metadata checks to state calculation functions.
+- [x] Restore canonical-axis auxiliary plotting and replace the active blending
+  example's obsolete state-collection call; verify its isolated headless run.
+- [ ] Close the strict historical checkpoint gate before phase acceptance.
+  Current flags: all-stream recuperated bicubic +10.7%, recompression bicubic
+  +13.6%, refrigeration bicubic +22.8%. Preserve the fresh-process and cache-order
+  controls; controlled shared-native-model comparisons isolate application changes
+  within 4.1%, rather than establishing that those absolute flags have vanished.
 
 Acceptance: same complete state/property behavior through supported routes,
 typed informative failures elsewhere, and no new per-property validation work.
@@ -194,6 +210,9 @@ typed informative failures elsewhere, and no new per-property validation work.
   PG/table configurations. Do not infer universal phase interchangeability.
 - [ ] Benchmark complete component returns and cycles, not exposed individual
   property projections. Keep diagnostics/output costs visible.
+- [ ] Assess whether optional source diagnostics can be deferred from polytropic
+  ODE trial states to reporting states, preserving identical returned diagnostics,
+  generalized-quality meaning and solver behavior. Measure before changing it.
 
 Acceptance: independent physical tests, full source regressions, model-specific
 cross-checks and matched complete-consumer performance pass.
@@ -217,6 +236,14 @@ cross-checks and matched complete-consumer performance pass.
 - [ ] Confirm initial designs, bounds, objectives and residual ordering across
   the 14 cycle cases; rerun three standard optimizations plus native bicubic
   recuperated optimization and source cross-evaluation.
+- [ ] Assess the released JaxProp 0.6 bicubic static-metadata equality/cache cost
+  with equivalent independent model objects. Phase 3 profiling finds repeated
+  dataclass/FrozenMapping equality in JIT lookup; an identical-source control
+  is 28.8% slower for the second model, and reversing cache order reverses the
+  apparent application regression. Preserve numerical/model independence and
+  report the dependency issue upstream; do not patch installed JaxProp or share
+  mutable evaluators globally as a ThermOpt workaround. Consider immutable
+  metadata interning or efficient equality in a separately tested JaxProp change.
 
 Acceptance: lifecycle tests pass, repeated evaluations contain no construction
 or table loading, and setup/warm/whole-solve timing costs are recorded separately.
@@ -233,6 +260,9 @@ or table loading, and setup/warm/whole-solve timing costs are recorded separatel
   exported inspection metadata must not be mistaken for a universal fluid recipe.
 - [ ] Verify normal callbacks, reports and headless launchers in addition to
   callback-disabled benchmark runs. Time reporting separately from core fitness.
+- [ ] If exchanger diagnostics are needed in constraints, design explicit setup
+  opt-in and enable only the required paths. Plain exchanger profiles currently
+  reject disabled diagnostic constraints; do not silently add source flashes.
 
 Acceptance: graphical/data round trips reflect actual evaluated states and the
 ordinary user workflow works with the same native objects as the timed cases.
@@ -302,6 +332,9 @@ numerical agreement and performance gates pass or have explicit scoped decisions
   fluids/phase regions, with independent references and declared tolerances.
 - [ ] Any future ThermOpt JAX cycle port, differentiable host solver replacement
   or status-packing redesign requires a separate user decision and plan.
+- [ ] In that later sweep, consider preparing expression/residual functions and
+  fixed result schemas at setup rather than evaluating configuration strings
+  inside numerical calls. Benchmark the design before replacing existing logic.
 
 ## Evidence log
 
@@ -311,3 +344,4 @@ numerical agreement and performance gates pass or have explicit scoped decisions
 | Published 0.6 dependency/environment | Complete locally: PyPI artifact/hash and 43 source files checked; only JaxProp changes locked version; Poetry 2.2.1 accepts the lock; clean locked environment passes 262 tests plus four unchanged expected failures. [Evidence](benchmark/RELEASE_060.md). |
 | Phase baseline benchmarks | Five source/bicubic case or stream modes recorded with 12 samples per backend. [Checkpoint](benchmark/checkpoints/pypi_060_phase.json). One starting cohort, not a between-phase performance acceptance claim. |
 | Phase 2 configuration | Complete locally: 36 YAML inputs / 108 stream declarations migrated; native objects and read-only configuration supported; obsolete fields rejected. 319 passed plus four unchanged strict expected failures. All ten aggregate warm comparisons meet 1.10 after three matched cohorts; individual flags remain retained. [Assessment](benchmark/PHASE2.md), [checkpoint](benchmark/checkpoints/phase2.json). |
+| Phase 3 state access | Implementation and numerical verification complete: 396 passed plus four unchanged expected failures. Twelve controlled functional consumer comparisons pass 1.10; three historical bicubic flags leave the strict gate open. Metadata/cache-order controls and an identical-source false positive are retained. [Assessment](benchmark/PHASE3.md). |

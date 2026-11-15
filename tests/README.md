@@ -2,6 +2,14 @@
 
 ## JaxProp 0.6 compatibility checkpoint
 
+Phase 3 passes **396 tests**, with the same four strict expected failures. The
+77 new state-contract checks cover all three native model routes, scalar/singleton/
+batch paths, immutable endpoints, all topology stream identities, typed property
+failures, setup-only capability checks, source quality semantics, canonical plots
+and the restored blending example. See [the inventory](STATE_ACCESS_060.md) and
+[Phase 3 assessment](../benchmark/PHASE3.md); its strict historical timing gate
+remains open even though controlled application comparisons meet their budget.
+
 Phase 2 uses the constructor vocabulary directly and removes the legacy policy
 translation. `test_fluid_configuration.py` covers native source/perfect-gas/table
 objects, immutable settings, typed rejection of old/unknown constructor fields,
@@ -72,6 +80,7 @@ Expect roughly half a minute for the fast suite and another one to two minutes f
 
 | Module | Checks |
 |---|---|
+| `test_state_contract.py` | Native source/PG/bicubic path types/shapes, status and provenance serialization, read-only expression contexts, single guarded lookups, typed failures, required properties/input pairs, every topology's stream ownership, source quality indicators and complete blending-example execution. |
 | `test_example_cases.py` | Numerical regression at initial and nearby designs for 14 cases, all seven distinct topology implementations and their aliases; energy/heat/shaft balances; repeated-call isolation; invalid topology; explicit two-phase expansion. |
 | `test_optimization.py` | Three complete SLSQP solves from original initial designs, independent final reevaluation, normalized bound feasibility, every equality/inequality residual, reference objective/COP/efficiency and fixed-design state regression at saved optima. |
 | `test_components.py` | Isentropic and polytropic compression/expansion, reversible limits, real-fluid CO₂ regression, gas/flashing valves, exchanger mapping/zero duty/energy, live nondimensional compressor/turbine outlet and design calculations, friction correlation. |

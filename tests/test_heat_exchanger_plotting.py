@@ -22,19 +22,19 @@ class TestHeatExchangerPlotting(unittest.TestCase):
                 x = np.asarray(coordinate)
                 hot = {
                     "mass_flow": 4.0,
-                    "state_in": {"h": 150.0},
+                    "state_in": {"enthalpy": 150.0},
                     "states": {
-                        "h": 100.0 + 50.0 * x,
-                        "T": 350.0 + 20.0 * x,
+                        "enthalpy": 100.0 + 50.0 * x,
+                        "temperature": 350.0 + 20.0 * x,
                         "identifier": "working_fluid",
                     },
                 }
                 cold = {
                     "mass_flow": 2.0,
-                    "state_in": {"h": 200.0},
+                    "state_in": {"enthalpy": 200.0},
                     "states": {
-                        "h": 200.0 + 100.0 * x,
-                        "T": 300.0 + 10.0 * x,
+                        "enthalpy": 200.0 + 100.0 * x,
+                        "temperature": 300.0 + 10.0 * x,
                         "identifier": "cooling_fluid",
                     },
                 }
@@ -55,10 +55,10 @@ class TestHeatExchangerPlotting(unittest.TestCase):
                 np.testing.assert_allclose(artists["hot_line"].get_xdata(), 200.0 * x)
                 np.testing.assert_allclose(artists["cold_line"].get_xdata(), 200.0 * x)
                 np.testing.assert_array_equal(
-                    artists["hot_line"].get_ydata(), hot["states"]["T"]
+                    artists["hot_line"].get_ydata(), hot["states"]["temperature"]
                 )
                 np.testing.assert_array_equal(
-                    artists["cold_line"].get_ydata(), cold["states"]["T"]
+                    artists["cold_line"].get_ydata(), cold["states"]["temperature"]
                 )
                 np.testing.assert_array_equal(hot["heat_flow"], original_hot_duty)
                 np.testing.assert_allclose(artists["hot_start"].get_xdata(), [0.0])

@@ -20,6 +20,10 @@ port or replace host solvers without a new instruction.
   them solely in anticipation of JAX. A frozen dataclass is not automatically
   a JAX PyTree: future transformation support must distinguish dynamic numeric
   leaves from static metadata and provide deliberate registration when needed.
+- Treat static metadata equality/hash behavior as a measured performance concern.
+  Equivalent JaxProp bicubic model instances can incur deep metadata equality
+  during JIT-cache lookup. Counterbalance cache/model identity when benchmarking;
+  do not add global sharing of mutable evaluators to disguise that cost.
 - Preserve physical equations, failure semantics, useful docstrings, units and
   derivations. Future transformability does not justify weakening correctness
   checks or duplicating JaxProp thermodynamic models in ThermOpt.

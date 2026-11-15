@@ -1,8 +1,10 @@
 import re
+from collections.abc import Mapping
 import yaml
 import numbers
 import numpy as np
 import jax.numpy as jnp
+import jaxprop
 
 from . import numerics as num
 
@@ -86,6 +88,11 @@ def render_and_evaluate(expression, data):
         # Now evaluate the expression
         return eval(resolved_expr)
 
+    except jaxprop.JaxPropError as error:
+        # Preserve unsupported/disabled/local-availability distinctions and
+        # structured provider/index context for callers and optimizer logs.
+        error.add_note(f"While evaluating ThermOpt expression {expression!r}.")
+        raise
     except SyntaxError as e:
         raise SyntaxError(f"Syntax error in '{expression}': {e}")
     except Exception as e:
@@ -135,7 +142,7 @@ def render_nested_value(nested_key, data):
     traversed_path = []
 
     for key in keys:
-        if isinstance(value, dict):
+        if isinstance(value, dict) or isinstance(value, Mapping):
             # Handle dictionary-like objects
             if key in value:
                 traversed_path.append(key)
@@ -148,16 +155,20 @@ def render_nested_value(nested_key, data):
                 raise KeyError(
                     f"Nested key '{key}' not found at '{traversed_path_str}'. Available keys: {valid_keys}"
                 )
-        elif hasattr(value, key):
-            # Handle objects with attributes
-            traversed_path.append(key)
-            value = getattr(value, key)
         else:
-            traversed_path_str = ".".join(traversed_path)
-            available_keys = ", ".join(value.keys())
-            raise KeyError(
-                f"Key '{key}' not found in object at '{traversed_path_str}'. Available keys: {available_keys}"
-            )
+            # A native state's attribute lookup performs availability checks.
+            # Read once: hasattr followed by getattr used to evaluate it twice.
+            try:
+                child = getattr(value, key)
+            except AttributeError as error:
+                traversed_path_str = ".".join(traversed_path)
+                available = value.keys() if hasattr(value, "keys") else dir(value)
+                available_keys = ", ".join(available)
+                raise KeyError(
+                    f"Key '{key}' not found in object at '{traversed_path_str}'. Available keys: {available_keys}"
+                ) from error
+            traversed_path.append(key)
+            value = child
 
     if not num.is_numeric(value):
         raise ValueError(

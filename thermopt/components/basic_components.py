@@ -23,8 +23,8 @@ def _snap_saturation_nodes(hot_side, cold_side, fluid_hot, fluid_cold, counter_c
     sides = (hot_side, cold_side)
     fluids = (fluid_hot, fluid_cold)
     original = [side["states"] for side in sides]
-    count = len(original[0].h)
-    dh = [float(side["state_out"].h - side["state_in"].h) for side in sides]
+    count = len(original[0].enthalpy)
+    dh = [float(side["state_out"].enthalpy - side["state_in"].enthalpy) for side in sides]
     if count < 3 or any(change == 0 for change in dh):
         return
     uniform = np.linspace(0, 1, count)  # Cold-inlet to cold-outlet coordinate.
@@ -36,17 +36,17 @@ def _snap_saturation_nodes(hot_side, cold_side, fluid_hot, fluid_cold, counter_c
     for side_index, (side, fluid, states) in enumerate(zip(sides, fluids, original)):
         if not hasattr(fluid, "triple_point_liquid"):
             continue
-        pressure_min = float(fluid.triple_point_liquid.p)
-        pressure_max = float(fluid.critical_point.p)
+        pressure_min = float(fluid.triple_point_liquid.pressure)
+        pressure_max = float(fluid.critical_point.pressure)
         two_phase = np.asarray(states.is_two_phase, dtype=bool)
         for left in range(count - 1):
             right = left + 1
             if two_phase[left] == two_phase[right]:
                 continue
             current, outside = (left, right) if two_phase[left] else (right, left)
-            if current in (0, count - 1) or not 0 < float(states.Q[current]) < 1:
+            if current in (0, count - 1) or not 0 < float(states.quality_mass[current]) < 1:
                 continue  # Preserve endpoints and nodes already on saturation.
-            p_wet, p_dry = float(states.p[current]), float(states.p[outside])
+            p_wet, p_dry = float(states.pressure[current]), float(states.pressure[outside])
             if not (pressure_min <= p_wet < pressure_max
                     and pressure_min <= p_dry < pressure_max):
                 continue
@@ -54,14 +54,14 @@ def _snap_saturation_nodes(hot_side, cold_side, fluid_hot, fluid_cold, counter_c
             # Single-phase trimmed Q is an entropy proxy in jaxprop, and can
             # label superheated dry fluids as liquid. Classify using enthalpy.
             sat_dry = fluid.get_state(props.PQ_INPUTS, p_dry, 0)
-            quality = 0 if float(states.h[outside]) < float(sat_dry.h) else 1
+            quality = 0 if float(states.enthalpy[outside]) < float(sat_dry.enthalpy) else 1
             if quality == 1:
                 sat_dry = fluid.get_state(props.PQ_INPUTS, p_dry, 1)
             saturated = sat_dry
             if p_wet != p_dry:
                 sat_wet = fluid.get_state(props.PQ_INPUTS, p_wet, quality)
-                r_dry = float(states.h[outside] - sat_dry.h)
-                r_wet = float(states.h[current] - sat_wet.h)
+                r_dry = float(states.enthalpy[outside] - sat_dry.enthalpy)
+                r_wet = float(states.enthalpy[current] - sat_wet.enthalpy)
                 if r_wet == r_dry:
                     continue
                 weight = -r_dry / (r_wet - r_dry)
@@ -70,18 +70,18 @@ def _snap_saturation_nodes(hot_side, cold_side, fluid_hot, fluid_cold, counter_c
                 p = p_dry + weight * (p_wet - p_dry)
                 saturated = fluid.get_state(props.PQ_INPUTS, p, quality)
 
-            x = fraction(side_index, (float(saturated.h) - float(side["state_in"].h)) / dh[side_index])
+            x = fraction(side_index, (float(saturated.enthalpy) - float(side["state_in"].enthalpy)) / dh[side_index])
             if not uniform[left] < x < uniform[right]:
                 continue  # Do not cross an existing node or duplicate an endpoint.
             other_index = 1 - side_index
             other = sides[other_index]
             other_fraction = fraction(other_index, x)
-            other_h = float(other["state_in"].h) + other_fraction * dh[other_index]
-            other_p = float(other["state_in"].p) + other_fraction * float(
-                other["state_out"].p - other["state_in"].p)
+            other_h = float(other["state_in"].enthalpy) + other_fraction * dh[other_index]
+            other_p = float(other["state_in"].pressure) + other_fraction * float(
+                other["state_out"].pressure - other["state_in"].pressure)
             matched = fluids[other_index].get_state(props.HmassP_INPUTS, other_h, other_p)
             pair = (saturated, matched) if side_index == 0 else (matched, saturated)
-            gap = float(pair[0].T - pair[1].T)
+            gap = float(pair[0].temperature - pair[1].temperature)
             if current not in candidates or gap < candidates[current][0]:
                 candidates[current] = (gap, x, pair)
     if candidates:
@@ -212,12 +212,12 @@ def heat_exchanger(
         _snap_saturation_nodes(hot_side, cold_side, fluid_hot, fluid_cold, counter_current)
 
     # Compute temperature difference
-    dT = hot_side["states"]["T"] - cold_side["states"]["T"]
+    dT = hot_side["states"]["temperature"] - cold_side["states"]["temperature"]
 
     # Compute mass flow ratio
     # Use 1.0 for cases with no heat exchange (i.e., no recuperator)
-    dh_hot = hot_side["state_in"].h - hot_side["state_out"].h
-    dh_cold = cold_side["state_out"].h - cold_side["state_in"].h
+    dh_hot = hot_side["state_in"].enthalpy - hot_side["state_out"].enthalpy
+    dh_cold = cold_side["state_out"].enthalpy - cold_side["state_in"].enthalpy
     mass_ratio = 1.00 if (dh_cold == 0 or dh_hot == 0) else dh_cold / dh_hot
 
     # Create result dictionary
@@ -227,8 +227,8 @@ def heat_exchanger(
         "cold_side": cold_side,
         "q_hot_side": dh_hot,
         "q_cold_side": dh_cold,
-        "temperature_hot_side": hot_side["states"]["T"],
-        "temperature_cold_side": cold_side["states"]["T"],
+        "temperature_hot_side": hot_side["states"]["temperature"],
+        "temperature_cold_side": cold_side["states"]["temperature"],
         "temperature_difference": dT,
         "mass_flow_ratio": mass_ratio,
     }
@@ -326,11 +326,11 @@ def compression_process(
         props.HmassP_INPUTS, h_in, p_in, **state_options,
     )
     if efficiency_type != "non-dimensional":
-        state_out_is = fluid.get_state(props.PSmass_INPUTS, p_out, state_in.s, **state_options)
+        state_out_is = fluid.get_state(props.PSmass_INPUTS, p_out, state_in.entropy, **state_options)
 
     # Evaluate compression process
     if efficiency_type == "isentropic":
-        h_out = state_in.h + (state_out_is.h - state_in.h) / efficiency
+        h_out = state_in.enthalpy + (state_out_is.enthalpy - state_in.enthalpy) / efficiency
         state_out = fluid.get_state(props.HmassP_INPUTS, h_out, p_out, **state_options)
         states = state_in + state_out
         data_out = {"isentropic_efficiency": efficiency}
@@ -339,15 +339,15 @@ def compression_process(
         # Differential equation defining the polytropic compression
         def odefun(p, h):
             state = fluid.get_state(props.HmassP_INPUTS, np.asarray(h).item(), p, **state_options)
-            dhdp = 1.0 / (efficiency * state.rho)
+            dhdp = 1.0 / (efficiency * state.density)
             return dhdp, state
 
         # Solve polytropic compression differential equation
         sol = solve_ivp(
             lambda p, h: odefun(p, h)[0],
-            [state_in.p, p_out],
-            [state_in.h],
-            t_eval=np.linspace(state_in.p, p_out, num_steps),
+            [state_in.pressure, p_out],
+            [state_in.enthalpy],
+            t_eval=np.linspace(state_in.pressure, p_out, num_steps),
             method="RK45",
         )
 
@@ -360,11 +360,11 @@ def compression_process(
         solution = solve_compressor(fluid, state_in, p_out, mass_flow, data_in)
         # Preserve cycle quality annotations without converting h -> T -> h.
         state_out = fluid.get_state(
-            props.HmassP_INPUTS, solution["state_out"].h, p_out,
+            props.HmassP_INPUTS, solution["state_out"].enthalpy, p_out,
             **state_options,
         )
         state_out_is = solution["state_out_isentropic"]
-        states = [state_in, state_out]
+        states = state_in + state_out
         data_out = solution["performance"]
         data_in = solution["design"]
 
@@ -372,8 +372,8 @@ def compression_process(
         raise ValueError("Invalid efficiency_type. Use 'isentropic', 'polytropic' or 'non-dimensional'.")
 
     # Compute work
-    isentropic_work = state_out_is.h - state_in.h
-    specific_work = state_out.h - state_in.h
+    isentropic_work = state_out_is.enthalpy - state_in.enthalpy
+    specific_work = state_out.enthalpy - state_in.enthalpy
 
     # Create result dictionary
     result = {
@@ -386,7 +386,7 @@ def compression_process(
         "efficiency_type": efficiency_type,
         "specific_work": specific_work,
         "isentropic_work": isentropic_work,
-        "pressure_ratio": state_out.p / state_in.p,
+        "pressure_ratio": state_out.pressure / state_in.pressure,
         "mass_flow": np.nan,
         "color": "black",
         "data_in": data_in,
@@ -424,10 +424,10 @@ def expansion_process(
     # Compute inlet state
     state_in = fluid.get_state(props.HmassP_INPUTS, h_in, p_in, **state_options)
     if efficiency_type != "non-dimensional":
-        state_out_is = fluid.get_state(props.PSmass_INPUTS, p_out, state_in.s, **state_options)
+        state_out_is = fluid.get_state(props.PSmass_INPUTS, p_out, state_in.entropy, **state_options)
     if efficiency_type == "isentropic":
         # Compute outlet state according to the definition of isentropic efficiency
-        h_out = state_in.h - efficiency * (state_in.h - state_out_is.h)
+        h_out = state_in.enthalpy - efficiency * (state_in.enthalpy - state_out_is.enthalpy)
         state_out = fluid.get_state(props.HmassP_INPUTS, h_out, p_out, **state_options)
         states = state_in + state_out
         data_out = {"isentropic_efficiency": efficiency}
@@ -436,15 +436,15 @@ def expansion_process(
         # Differential equation defining the polytropic expansion
         def odefun(p, h):
             state = fluid.get_state(props.HmassP_INPUTS, np.asarray(h).item(), p, **state_options)
-            dhdp = efficiency / state.rho
+            dhdp = efficiency / state.density
             return dhdp, state
 
         # Solve polytropic expansion differential equation
         sol = solve_ivp(
             lambda p, h: odefun(p, h)[0],
-            [state_in.p, p_out],
-            [state_in.h],
-            t_eval=np.linspace(state_in.p, p_out, num_steps),
+            [state_in.pressure, p_out],
+            [state_in.enthalpy],
+            t_eval=np.linspace(state_in.pressure, p_out, num_steps),
             method="RK45",
         )
 
@@ -457,11 +457,11 @@ def expansion_process(
         solution = solve_turbine(fluid, state_in, p_out, mass_flow, data_in)
         # Preserve cycle quality annotations without converting h -> T -> h.
         state_out = fluid.get_state(
-            props.HmassP_INPUTS, solution["state_out"].h, p_out,
+            props.HmassP_INPUTS, solution["state_out"].enthalpy, p_out,
             **state_options,
         )
         state_out_is = solution["state_out_isentropic"]
-        states = [state_in, state_out]
+        states = state_in + state_out
         data_out = solution["performance"]
         data_in = solution["design"]
         
@@ -469,8 +469,8 @@ def expansion_process(
         raise ValueError("Invalid efficiency_type. Use 'isentropic', 'polytropic' or 'non-dimensional'.")
 
     # Compute work
-    isentropic_work = state_in.h - state_out_is.h
-    specific_work = state_in.h - state_out.h
+    isentropic_work = state_in.enthalpy - state_out_is.enthalpy
+    specific_work = state_in.enthalpy - state_out.enthalpy
 
     # Create result dictionary
     result = {
@@ -483,7 +483,7 @@ def expansion_process(
         "efficiency_type": efficiency_type,
         "specific_work": specific_work,
         "isentropic_work": isentropic_work,
-        "pressure_ratio": state_in.p / state_out.p,
+        "pressure_ratio": state_in.pressure / state_out.pressure,
         "mass_flow": np.nan,
         "color": "black",
         "data_in": data_in,
@@ -518,8 +518,8 @@ def isenthalpic_valve(state_in, p_out, fluid, N=50):
     jaxprop.FluidState
         List of thermodynamic states along the isenthalpic path.
     """  
-    p_array = np.linspace(state_in.p, p_out, N)
-    h_array = state_in.h + 0. * p_array  # TODO: should be fixed
+    p_array = np.linspace(state_in.pressure, p_out, N)
+    h_array = state_in.enthalpy + 0. * p_array  # TODO: should be fixed
     states = fluid.get_state(props.HmassP_INPUTS, h_array, p_array)
     return states
 
@@ -544,8 +544,8 @@ def postprocess_ode(t, y, ode_handle):
 
     Returns
     -------
-    list
-        List of thermodynamic states reconstructed from the ODE trajectory.
+    jaxprop.FluidState
+        Batched immutable state reconstructed from scalar ODE trajectory states.
     """ 
     # Collect individual states
     states = []
@@ -584,8 +584,8 @@ def compute_component_energy_flows(components):
         if component["type"] == "heat_exchanger":
             hot = component["hot_side"]
             cold = component["cold_side"]
-            Q_hot_array = hot["mass_flow"] * (hot["state_in"]["h"] - hot["states"]["h"])
-            Q_cold_array = cold["mass_flow"] * (cold["states"]["h"] - cold["state_in"]["h"])
+            Q_hot_array = hot["mass_flow"] * (hot["state_in"]["enthalpy"] - hot["states"]["enthalpy"])
+            Q_cold_array = cold["mass_flow"] * (cold["states"]["enthalpy"] - cold["state_in"]["enthalpy"])
             component["hot_side"]["heat_flow"] = Q_hot_array
             component["cold_side"]["heat_flow"] = Q_cold_array
             # component["hot_side"]["states"]["heat_flow"] = Q_hot_array

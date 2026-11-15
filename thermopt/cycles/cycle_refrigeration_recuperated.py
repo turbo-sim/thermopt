@@ -82,12 +82,12 @@ def evaluate_cycle(
     )
 
     # Evaluate recuperator
-    p_out_hot = expander["state_in"].p
-    h_out_hot = expander["state_in"].h
+    p_out_hot = expander["state_in"].pressure
+    h_out_hot = expander["state_in"].enthalpy
     h_in_hot = recuperator_inlet_enthalpy_hot
     p_in_hot = p_out_hot / (1.0 - dp_recup_h)
-    p_out_cold = compressor["state_in"].p
-    h_out_cold = compressor["state_in"].h
+    p_out_cold = compressor["state_in"].pressure
+    h_out_cold = compressor["state_in"].enthalpy
     p_in_cold = p_out_cold / (1.0 - dp_recup_c)
     h_in_cold = h_out_cold - (h_in_hot - h_out_hot)
     if recuperated:
@@ -110,16 +110,16 @@ def evaluate_cycle(
     )
 
     # Evaluate heater
-    h_in_cold = expander["state_out"].h
-    p_in_cold = expander["state_out"].p
-    h_out_cold = recuperator["cold_side"]["state_in"].h
-    p_out_cold = recuperator["cold_side"]["state_in"].p
+    h_in_cold = expander["state_out"].enthalpy
+    p_in_cold = expander["state_out"].pressure
+    h_out_cold = recuperator["cold_side"]["state_in"].enthalpy
+    p_out_cold = recuperator["cold_side"]["state_in"].pressure
     T_in_hot = parameters["heat_source"].pop("inlet_temperature")
     p_in_hot = parameters["heat_source"].pop("inlet_pressure")
-    h_in_hot = heating_fluid.get_state(cpx.PT_INPUTS, p_in_hot, T_in_hot).h
+    h_in_hot = heating_fluid.get_state(cpx.PT_INPUTS, p_in_hot, T_in_hot).enthalpy
     T_out_hot = heat_source_temperature_out
     p_out_hot = p_in_hot * (1 - dp_heater_h)
-    h_out_hot = heating_fluid.get_state(cpx.PT_INPUTS, p_out_hot, T_out_hot).h
+    h_out_hot = heating_fluid.get_state(cpx.PT_INPUTS, p_out_hot, T_out_hot).enthalpy
     num_elements = parameters["heater"].pop("num_elements")
     heater = heat_exchanger(
         heating_fluid,
@@ -138,8 +138,8 @@ def evaluate_cycle(
 
     # Evaluate heat source pump
     # TODO place on other side?
-    h_in = heater["hot_side"]["state_out"].h
-    p_in = heater["hot_side"]["state_out"].p
+    h_in = heater["hot_side"]["state_out"].enthalpy
+    p_in = heater["hot_side"]["state_out"].pressure
     p_out = p_source_out
     efficiency = parameters["heat_source_pump"].pop("efficiency")
     efficiency_type = parameters["heat_source_pump"].pop("efficiency_type")
@@ -156,7 +156,7 @@ def evaluate_cycle(
     # TODO place on other side?
     T_in = parameters["heat_sink"].pop("inlet_temperature")
     p_in = parameters["heat_sink"].pop("inlet_pressure")
-    h_in = cooling_fluid.get_state(cpx.PT_INPUTS, p_in, T_in).h
+    h_in = cooling_fluid.get_state(cpx.PT_INPUTS, p_in, T_in).enthalpy
     p_out = p_sink_out / (1 - dp_cooler_c)
     efficiency = parameters["heat_sink_pump"].pop("efficiency")
     efficiency_type = parameters["heat_sink_pump"].pop("efficiency_type")
@@ -170,15 +170,15 @@ def evaluate_cycle(
     )
 
     # Evaluate cooler
-    p_in_cold = heat_sink_pump["state_out"].p
-    h_in_cold = heat_sink_pump["state_out"].h
+    p_in_cold = heat_sink_pump["state_out"].pressure
+    h_in_cold = heat_sink_pump["state_out"].enthalpy
     p_out_cold = p_in_cold * (1 - dp_cooler_c)
     T_out_cold = heat_sink_temperature_out
-    h_out_cold = cooling_fluid.get_state(cpx.PT_INPUTS, p_out_cold, T_out_cold).h
-    h_in_hot = compressor["state_out"].h
-    p_in_hot = compressor["state_out"].p
-    h_out_hot = recuperator["hot_side"]["state_in"].h
-    p_out_hot = recuperator["hot_side"]["state_in"].p
+    h_out_cold = cooling_fluid.get_state(cpx.PT_INPUTS, p_out_cold, T_out_cold).enthalpy
+    h_in_hot = compressor["state_out"].enthalpy
+    p_in_hot = compressor["state_out"].pressure
+    h_out_hot = recuperator["hot_side"]["state_in"].enthalpy
+    p_out_hot = recuperator["hot_side"]["state_in"].pressure
     num_elements = parameters["cooler"].pop("num_elements")
     cooler = heat_exchanger(
         working_fluid,

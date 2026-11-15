@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 
 import thermopt as th
+import jaxprop as jp
+from thermopt.math import sigmoid_smoothstep
 
 
 
@@ -16,10 +18,11 @@ def get_htc_2phase(state):
     return 5000
 
 def get_htc_blend(state, Q_start=0.0, Q_end=0.05):
-    Q = state["Q"]
+    Q = state["quality_mass"]
     x = (Q - Q_start) / (Q_end - Q_start)  # Normalize Q to [0, 1]
-    sigma = th.sigmoid_smoothstep(x)  # 3rd order polynomial
-    # sigma = th.sigmoid_smootherstep(x)  # 5th order polynomial
+    sigma = sigmoid_smoothstep(x)  # 3rd order polynomial
+    # Alternative: import sigmoid_smootherstep from thermopt.math and use
+    # sigma = sigmoid_smootherstep(x)  # 5th order polynomial
     return get_htc_1phase(state) * (1 - sigma) + get_htc_2phase(state) * sigma
 
 
@@ -34,25 +37,25 @@ th.set_plot_options()
 # --------------------------------------------------------------------------- #
 
 # Create fluid
-fluid = th.Fluid(name="butane", exceptions=True)
+fluid = jp.Fluid(name="butane", method="coolprop", backend="HEOS")
 
 # Compute subcritical state in two-phase region
 quality = 0.50
-pressure = 0.25 * fluid.critical_point.p  # Access property using object-like notation (".")
-state_1 = fluid.get_state(th.PQ_INPUTS, pressure, quality)
+pressure = 0.25 * fluid.critical_point.pressure  # Access property using object-like notation (".")
+state_1 = fluid.get_state(jp.PQ_INPUTS, pressure, quality)
 print(state_1)
 
 # Compute subcritical state with subcooling
 subcooling = 50.0
-pressure = 0.95 * state_1["p"] # Access property using dict-like notation ("[]")
-temperature = fluid.get_state(th.PQ_INPUTS, pressure, 0.0).T - subcooling
-state_2 = fluid.get_state(th.PT_INPUTS, pressure, temperature)
+pressure = 0.95 * state_1["pressure"] # Access property using dict-like notation ("[]")
+temperature = fluid.get_state(jp.PQ_INPUTS, pressure, 0.0).temperature - subcooling
+state_2 = fluid.get_state(jp.PT_INPUTS, pressure, temperature)
 print(state_2)
 
 # Calculate states
 points = 300
-enthalpies = np.linspace(state_1.h, state_2.h, points)
-pressures = np.linspace(state_1.p, state_2.p, points)
+enthalpies = np.linspace(state_1.enthalpy, state_2.enthalpy, points)
+pressures = np.linspace(state_1.pressure, state_2.pressure, points)
 states = []
 htc_1phase_list = []
 htc_2phase_list = []
@@ -60,7 +63,7 @@ htc_blend_list = []
 for p, h in zip(pressures, enthalpies):
 
     # Compute thermodynamic states
-    state = fluid.get_state(th.HmassP_INPUTS, h, p, generalize_quality=True, supersaturation=True)
+    state = fluid.get_state(jp.HmassP_INPUTS, h, p, generalize_quality=True, supersaturation=True)
     states.append(state)
 
     # Compute heat transfer coefficients
@@ -71,8 +74,8 @@ for p, h in zip(pressures, enthalpies):
     htc_2phase_list.append(htc_2phase)
     htc_blend_list.append(htc_blend)
 
-# Convert from list of states to dict of arrays
-states = th.states_to_dict(states)
+# Keep one native immutable state with a batch axis for the process path.
+states = jp.FluidState.stack(states)
 
 
 # --------------------------------------------------------------------------- #
@@ -80,8 +83,8 @@ states = th.states_to_dict(states)
 # --------------------------------------------------------------------------- #
 
 # Plot phase diagram
-prop_x = "s"
-prop_y = "T"
+prop_x = "entropy"
+prop_y = "temperature"
 fig, ax = fluid.plot_phase_diagram(
     prop_x,
     prop_y,
@@ -106,12 +109,12 @@ fig2, ax2 = plt.subplots(figsize=(6.0, 4.8))
 ax2.set_ylim([0000, 10000])
 ax2.set_xlabel("Enthalpy (J/kg)")
 ax2.set_ylabel("Heat trransfer coefficient (W/m2/K)")
-ax2.plot(states["h"], htc_1phase_list, label="Single-phase")
-ax2.plot(states["h"], htc_2phase_list, label="Two-phase")
-ax2.plot(states["h"], htc_blend_list, color="k", linestyle="--", label="Blended")
+ax2.plot(states["enthalpy"], htc_1phase_list, label="Single-phase")
+ax2.plot(states["enthalpy"], htc_2phase_list, label="Two-phase")
+ax2.plot(states["enthalpy"], htc_blend_list, color="k", linestyle="--", label="Blended")
 
 # Plot vertical line at phase change onset
-ax2.axvline(x=states["h"][np.argmin(np.abs(states["Q"]))], color="k", linestyle=":", label="Q ≈ 0")
+ax2.axvline(x=states["enthalpy"][np.argmin(np.abs(states["quality_mass"]))], color="k", linestyle=":", label="Q ≈ 0")
 ax2.legend(loc="upper right", fontsize=11)
 fig2.tight_layout(pad=1)
 th.savefig_in_formats(fig2, "heat_transfer_coefficient", formats=[".png"])

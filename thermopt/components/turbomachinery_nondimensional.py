@@ -80,20 +80,21 @@ def friction_factor(reynolds, relative_roughness, *, xp=np):
 def polytropic_head(inlet, outlet, *, xp=np):
     """Return signed Mallen–Saville polytropic head in J/kg (Eq. 9).
 
-    States or mappings contain T [K], h [J/kg] and s [J/(kg K)]. Compression
+    States or mappings contain canonical temperature [K], enthalpy [J/kg] and
+    entropy [J/(kg K)] fields. Compression
     gives positive head and expansion negative head. The entropy correction
     uses the logarithmic mean of endpoint temperatures. log1p and its series
     limit keep values and derivatives finite when temperatures coincide.
     This approximation is exact for a calorically perfect gas; it is not a
     path integration. xp selects NumPy or JAX without converting tracers.
     """
-    change = (outlet["T"] - inlet["T"]) / inlet["T"]
+    change = (outlet["temperature"] - inlet["temperature"]) / inlet["temperature"]
     near_equal = xp.abs(change) < 1e-4
     # Prevent 0/0 even in the inactive branch: JAX differentiates both branches.
     safe_change = xp.where(near_equal, 1.0, change)
     series = 1 + change / 2 - change**2 / 12 + change**3 / 24
-    log_mean = inlet["T"] * xp.where(near_equal, series, safe_change / xp.log1p(safe_change))
-    return outlet["h"] - inlet["h"] - (outlet["s"] - inlet["s"]) * log_mean
+    log_mean = inlet["temperature"] * xp.where(near_equal, series, safe_change / xp.log1p(safe_change))
+    return outlet["enthalpy"] - inlet["enthalpy"] - (outlet["entropy"] - inlet["entropy"]) * log_mean
 
 
 def compressor_reference_coefficients(flow_coefficient, *, is_shrouded=False, xp=np):
@@ -175,7 +176,7 @@ def compressor_performance(inlet, outlet, outlet_isentropic, mass_flow, design=N
     """Evaluate compressor efficiency, size, speed and stress at a trial outlet.
 
     Implements Section 3.2, Eqs. (12)–(27) and Table 4. inlet/outlet are total
-    states with jaxprop names; outlet_isentropic is at the same outlet pressure
+    states with canonical JaxProp property names; outlet_isentropic is at the same outlet pressure
     and inlet entropy. mass_flow is kg/s. design partially overrides
     compressor_defaults(); inputs are not modified. The paper's
     flow-coefficient data span approximately 0.01–0.15.
@@ -203,17 +204,17 @@ def compressor_performance(inlet, outlet, outlet_isentropic, mass_flow, design=N
 
     backsweep_deficit = xp.maximum(0.0, 40.0 - design["backsweep"])
     work_coefficient = work_reference + (0.004 + 0.2 * flow**2) * backsweep_deficit
-    work = outlet["h"] - inlet["h"]
+    work = outlet["enthalpy"] - inlet["enthalpy"]
     tip_speed = xp.sqrt(work / work_coefficient)
-    diameter = xp.sqrt(mass_flow / (inlet["rho"] * flow * tip_speed))
-    mach_correction = compressor_mach_correction(flow, tip_speed / inlet["a"], xp=xp)
+    diameter = xp.sqrt(mass_flow / (inlet["density"] * flow * tip_speed))
+    mach_correction = compressor_mach_correction(flow, tip_speed / inlet["speed_of_sound"], xp=xp)
 
     # Eqs. (22)–(25): chord and relative inlet speed set Reynolds number.
     diameter_over_chord = compressor_diameter_to_chord_ratio(flow, design["backsweep"], xp=xp)
     chord = diameter / diameter_over_chord
     velocity_ratio = compressor_relative_velocity_ratio(flow)
     relative_speed = velocity_ratio * tip_speed
-    viscosity = inlet["mu"] / inlet["rho"]
+    viscosity = inlet["viscosity"] / inlet["density"]
     reynolds = relative_speed * chord / viscosity
     reference_chord = 0.4 / diameter_over_chord
     reference_reynolds = velocity_ratio * 277 * reference_chord / 15.7e-6
@@ -231,7 +232,7 @@ def compressor_performance(inlet, outlet, outlet_isentropic, mass_flow, design=N
     stress_factor = xp.where(shrouded, shrouded_stress_factor, 0.41)
     return dict(correlation_efficiency=correlation_efficiency,
                 polytropic_efficiency=polytropic_head(inlet, outlet, xp=xp) / work,
-                isentropic_efficiency=(outlet_isentropic["h"] - inlet["h"]) / work,
+                isentropic_efficiency=(outlet_isentropic["enthalpy"] - inlet["enthalpy"]) / work,
                 power=mass_flow * work, diameter=diameter, peripheral_speed=tip_speed,
                 angular_speed=2 * tip_speed / diameter,
                 mechanical_stress=stress_factor * design["metal_density"] * tip_speed**2)
@@ -284,20 +285,20 @@ def turbine_performance(fluid, inlet, outlet, outlet_isentropic, mass_flow, desi
     diffuser_factor = 1 + design["diffuser_loss_fraction"] * kinetic_fraction
     overall_efficiency = rotor_efficiency / diffuser_factor
 
-    work = inlet["h"] - outlet["h"]
-    isentropic_work = inlet["h"] - outlet_isentropic["h"]
+    work = inlet["enthalpy"] - outlet["enthalpy"]
+    isentropic_work = inlet["enthalpy"] - outlet_isentropic["enthalpy"]
     rotor_isentropic_work = isentropic_work / diffuser_factor
     rotor_entropy = (
-        inlet["s"] + (outlet["s"] - inlet["s"])
+        inlet["entropy"] + (outlet["entropy"] - inlet["entropy"])
         * (1 - rotor_efficiency) / (diffuser_factor - rotor_efficiency)
     )
-    rotor_enthalpy = outlet["h"] - kinetic_fraction * rotor_isentropic_work
+    rotor_enthalpy = outlet["enthalpy"] - kinetic_fraction * rotor_isentropic_work
     rotor_options = {} if errors == "raise" else {"errors": errors}
     rotor_static = fluid.get_state(props.HmassSmass_INPUTS, rotor_enthalpy, rotor_entropy, **rotor_options)
     tip_speed = 0.7 * xp.sqrt(2 * rotor_isentropic_work)
-    angular_speed = speed * rotor_isentropic_work**0.75 / xp.sqrt(mass_flow / rotor_static["rho"])
+    angular_speed = speed * rotor_isentropic_work**0.75 / xp.sqrt(mass_flow / rotor_static["density"])
     diameter = 2 * tip_speed / angular_speed
-    reynolds = 2 * mass_flow / (inlet["mu"] * diameter)
+    reynolds = 2 * mass_flow / (inlet["viscosity"] * diameter)
     correlation_efficiency = 1 - (1 - overall_efficiency) * (
         0.3 + 0.7 * xp.minimum(1.0, reynolds / 352000.0)**-0.2
     )
@@ -319,15 +320,15 @@ def _validate_inputs(inlet, p_out, mass_flow, design, defaults, *, compressor):
     Validation stays outside arithmetic functions so it never inspects JAX
     tracers or adds Python control flow to a differentiated kernel.
     """
-    for key in ("T", "p", "h", "s", "rho", "mu", "a"):
+    for key in ("temperature", "pressure", "enthalpy", "entropy", "density", "viscosity", "speed_of_sound"):
         value = float(inlet[key])
-        if not np.isfinite(value) or (key not in ("h", "s") and value <= 0):
-            raise ValueError(f"Inlet {key} must be finite" + (" and positive." if key not in ("h", "s") else "."))
+        if not np.isfinite(value) or (key not in ("enthalpy", "entropy") and value <= 0):
+            raise ValueError(f"Inlet {key} must be finite" + (" and positive." if key not in ("enthalpy", "entropy") else "."))
     for key, value in (("mass_flow", mass_flow), ("p_out", p_out)):
         if value is None or not np.isfinite(value) or value <= 0:
             raise ValueError(f"{key} must be finite and positive.")
-    equal_pressure = np.isclose(p_out, inlet["p"], rtol=1e-12, atol=0)
-    if equal_pressure or (compressor and p_out < inlet["p"]) or (not compressor and p_out > inlet["p"]):
+    equal_pressure = np.isclose(p_out, inlet["pressure"], rtol=1e-12, atol=0)
+    if equal_pressure or (compressor and p_out < inlet["pressure"]) or (not compressor and p_out > inlet["pressure"]):
         direction = "greater" if compressor else "less"
         raise ValueError(f"Outlet pressure must be {direction} than inlet pressure.")
     unknown = design.keys() - defaults.keys()
@@ -369,10 +370,10 @@ def _solve_outlet(fluid, inlet, p_out, mass_flow, design, *, compressor):
     defaults = compressor_defaults() if compressor else turbine_defaults()
     design = defaults | ({} if design is None else design)
     _validate_inputs(inlet, p_out, mass_flow, design, defaults, compressor=compressor)
-    isentropic = fluid.get_state(props.PSmass_INPUTS, p_out, inlet["s"])
-    isentropic_work = float(isentropic["h"] - inlet["h"])
+    isentropic = fluid.get_state(props.PSmass_INPUTS, p_out, inlet["entropy"])
+    isentropic_work = float(isentropic["enthalpy"] - inlet["enthalpy"])
     low_efficiency = 0.5 if compressor else 0.1
-    other_bound = float(inlet["h"]) + isentropic_work * (1 / low_efficiency if compressor else low_efficiency)
+    other_bound = float(inlet["enthalpy"]) + isentropic_work * (1 / low_efficiency if compressor else low_efficiency)
     efficiency_key = "polytropic_efficiency" if compressor else "isentropic_efficiency"
 
     def evaluate(enthalpy):
@@ -391,7 +392,7 @@ def _solve_outlet(fluid, inlet, p_out, mass_flow, design, *, compressor):
 
     kind = "compressor" if compressor else "turbine"
     try:
-        enthalpy, status = brentq(residual, float(isentropic["h"]), other_bound, full_output=True)
+        enthalpy, status = brentq(residual, float(isentropic["enthalpy"]), other_bound, full_output=True)
     except ValueError as error:
         raise ValueError(
             f"Could not solve {kind} at p_out={p_out:g} Pa, "
