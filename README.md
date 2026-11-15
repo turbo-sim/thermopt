@@ -5,6 +5,12 @@ Python package for modelling and optimization of thermodynamic cycles, including
 📚 **Documentation**: [https://turbo-sim.github.io/thermopt/](https://turbo-sim.github.io/thermopt/) *(under construction)*  
 📦 **PyPI package**: [https://pypi.org/project/thermopt/](https://pypi.org/project/thermopt/)
 
+This development checkout uses the released **JaxProp 0.6 interface** and no
+longer targets JaxProp 0.5. The [phased migration plan](z_JAXPROP_060_IMPLEMENTATION_PLAN.md)
+tracks the remaining package/example cleanup and per-phase verification.
+Run correctness checks from `tests/` and repeatable performance profiles through
+[benchmark/](benchmark/README.md). Cycle calculations remain eager NumPy/SciPy.
+
 
 ## 🚀 User installation (via PyPI)
 

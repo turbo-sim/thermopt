@@ -61,6 +61,10 @@ def main():
                         "nearby_x": plain(perturbed),
                         "initial": snapshot(problem, initial),
                         "nearby": snapshot(problem, perturbed)}
+                if name == "ptes_turbo":
+                    item["model_corrections"] = [
+                        "Compressor relative inlet velocity follows Figure 4: w/U = 0.38 + 3*phi - 7.8*phi**2; corrects the printed Equation 23 error."
+                    ]
                 record["cases"][name] = item
                 print(name, "recorded", flush=True)
             except Exception as error:

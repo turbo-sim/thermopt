@@ -104,7 +104,20 @@ def nearby_design(problem):
 
 
 def read_baselines():
-    return json.loads((DATA / "cycle_baselines.json").read_text(encoding="utf-8"))
+    records = json.loads((DATA / "cycle_baselines.json").read_text(encoding="utf-8"))
+    # Keep the original physical references intact. JaxProp 0.6 corrects
+    # generalized quality and one source-diagnostic constraint; their explicit
+    # versioned values were checked independently from fresh source states and
+    # saturation endpoints. No comparison tolerance is broadened.
+    annotations = json.loads((DATA / "source_annotations_060.json").read_text(encoding="utf-8"))
+    for change in annotations["changes"]:
+        target = records["cases"][change["case"]][change["point"]]
+        if change["kind"] == "quality":
+            target["components"][change["component"]][change["endpoint"]]["Q"] = change["expected_060"]
+        else:
+            assert change["kind"] == "diagnostic_constraint"
+            target["residuals"][change["index"]] = change["expected_060"]
+    return records
 
 
 OPTIMIZATION_CASES = ["sco2_recuperated", "refrigeration_r134a", "orc_subcritical"]

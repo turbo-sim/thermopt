@@ -2,6 +2,8 @@
 
 Date: 12 November 2026. This inventory records the current repository before the requested property-access migration. No production import, fluid implementation or dependency was changed by this audit.
 
+Migration status: the executable accesses inventoried below have now been replaced with jaxprop state calls, including local executable archives and development benchmarks. This table is retained as the pre-migration inventory. `test_property_boundary.py` checks project Python/notebook sources for direct imports and raw-state access and verifies direct dependency declarations. CoolProp remains a transitive jaxprop backend dependency in the lockfile.
+
 ## Intended dependency boundary
 
 Thermopt should declare `jaxprop` as its fluid-property dependency and obtain property states through `jaxprop.Fluid`, `FluidJAX`, `FluidPerfectGas` or `FluidBicubic`. Direct `CoolProp`/`coolpropx` use in thermopt, examples and development scripts remains to be migrated after the regression suite is established.

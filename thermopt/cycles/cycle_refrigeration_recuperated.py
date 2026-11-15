@@ -14,21 +14,16 @@ def evaluate_cycle(
     constraints,
     objective_function,
     recuperated=True,
+    fluids=None,
 ):
     # Create copies to not change the originals
     variables = copy.deepcopy(variables)
     parameters = copy.deepcopy(parameters)
 
     # Initialize fluid objects
-    working_fluid = cpx.Fluid(
-        **parameters.pop("working_fluid"), identifier="working_fluid"
-    )
-    heating_fluid = cpx.Fluid(
-        **parameters.pop("heating_fluid"), identifier="heating_fluid"
-    )
-    cooling_fluid = cpx.Fluid(
-        **parameters.pop("cooling_fluid"), identifier="cooling_fluid"
-    )
+    working_fluid = utilities.get_cycle_fluid(parameters, "working_fluid", fluids)
+    heating_fluid = utilities.get_cycle_fluid(parameters, "heating_fluid", fluids)
+    cooling_fluid = utilities.get_cycle_fluid(parameters, "cooling_fluid", fluids)
 
     # Extract special points
     special_points = parameters.pop("special_points")

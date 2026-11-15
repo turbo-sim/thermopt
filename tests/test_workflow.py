@@ -8,6 +8,7 @@ changes, rather than merely checking that a file was created.
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+import jaxprop as jp
 import numpy as np
 import pandas as pd
 import pytest
@@ -180,8 +181,13 @@ def test_excel_export_roundtrips_all_endpoint_properties_and_energy(cycle_manage
                 expected = stream[endpoint]
                 assert states.loc[row_name, "fluid_name"] == expected["fluid_name"]
                 for column, (alias, _) in properties.items():
+                    try:
+                        expected_value = float(expected[alias])
+                    except (jp.UnsupportedPropertyError, jp.PropertyUnavailableError):
+                        assert pd.isna(states.loc[row_name, column])
+                        continue
                     np.testing.assert_allclose(
-                        float(states.loc[row_name, column]), float(expected[alias]),
+                        float(states.loc[row_name, column]), expected_value,
                         rtol=1e-12, atol=1e-9, equal_nan=True,
                         err_msg=f"{row_name}/{column}",
                     )

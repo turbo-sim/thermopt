@@ -1,4 +1,7 @@
 """Shared configuration, optimization and native verification for the study."""
+
+from thermopt.utilities.fluid_utils import get_property_fluid
+import jaxprop as props
 from contextlib import redirect_stdout
 from copy import deepcopy
 from functools import lru_cache
@@ -12,7 +15,6 @@ import time
 import traceback
 import warnings
 
-import CoolProp.CoolProp as CP
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -48,8 +50,8 @@ def point_name(mode, minimum, efficiency):
 
 @lru_cache(maxsize=1)
 def fixed_reference_heat_J_per_kg():
-    return float(CP.PropsSI("H", "P", 1e6, "T", 413.15, "Water")
-                 - CP.PropsSI("H", "P", 1e6, "T", 288.15, "Water"))
+    return float(get_property_fluid('Water').get_state(props.PT_INPUTS, 1000000.0, 413.15).h
+                 - get_property_fluid('Water').get_state(props.PT_INPUTS, 1000000.0, 288.15).h)
 
 
 def configuration(family, mode, minimum, efficiency, variables=None, seed="saved"):
@@ -63,16 +65,16 @@ def configuration(family, mode, minimum, efficiency, variables=None, seed="saved
     fixed["heat_source"]["minimum_temperature"] = minimum+273.15
     fixed["expander"]["efficiency"] = efficiency
     # Retain the original broad subcritical state bounds, recomputed per fluid.
-    pc = CP.PropsSI("pcrit", name)
-    pmin = CP.PropsSI("P", "T", 273.15, "Q", 0, name)
-    hmin = CP.PropsSI("H", "T", 273.15, "Q", 0, name)
-    hliqmax = CP.PropsSI("H", "T", 413.15, "Q", 0, name)
-    hmax = CP.PropsSI("H", "T", 413.15, "P", pmin, name)+50000
-    pp = CP.PropsSI("P", "T", 302.65, "Q", 0, name)
-    ph = CP.PropsSI("H", "T", 301.65, "P", pp, name)
+    pc = float(get_property_fluid(name).critical_point.p)
+    pmin = get_property_fluid(name).get_state(props.QT_INPUTS, 0, 273.15).p
+    hmin = get_property_fluid(name).get_state(props.QT_INPUTS, 0, 273.15).h
+    hliqmax = get_property_fluid(name).get_state(props.QT_INPUTS, 0, 413.15).h
+    hmax = get_property_fluid(name).get_state(props.PT_INPUTS, pmin, 413.15).h+50000
+    pp = get_property_fluid(name).get_state(props.QT_INPUTS, 0, 302.65).p
+    ph = get_property_fluid(name).get_state(props.PT_INPUTS, pp, 301.65).h
     ti = min(403.15, max(345., minimum+273.15-12))
-    hp = CP.PropsSI("P", "T", ti, "Q", 0, name)
-    hh = CP.PropsSI("H", "T", ti+2, "P", hp, name) if mode == "superheated" else CP.PropsSI("H", "T", ti, "Q", 0.3, name)
+    hp = get_property_fluid(name).get_state(props.QT_INPUTS, 0, ti).p
+    hh = get_property_fluid(name).get_state(props.PT_INPUTS, hp, ti + 2).h if mode == "superheated" else get_property_fluid(name).get_state(props.QT_INPUTS, 0.3, ti).h
     design["heat_source_exit_temperature"].update(min=minimum+273.15, value=max(minimum+273.15, 343.15))
     design["compressor_inlet_pressure"] = dict(min=pmin, max=.95*pc, value=pp)
     design["compressor_inlet_enthalpy"] = dict(min=hmin, max=hliqmax, value=ph)

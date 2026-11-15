@@ -1,468 +1,443 @@
-# -*- coding: utf-8 -*-
+"""Design-point models for centrifugal compressors and radial inflow turbines.
+
+Reference: Parisi et al., Advancing non-dimensional models for radial
+turbomachinery applied to pumped thermal energy storage, Energy Conversion
+and Management 342 (2025), 120085, doi:10.1016/j.enconman.2025.120085.
+
+States use jaxprop names (T, p, h, s, rho, mu, a) and SI units. Performance
+functions evaluate trial states without a machine object. They use NumPy by
+default; pass xp=jax.numpy to trace their algebra. Turbines additionally need
+an h,s property flash, so tracing requires a compatible jaxprop fluid. The
+SciPy outlet solvers are separate host functions, not differentiable kernels.
+
+These are single-phase design correlations, not off-design performance maps.
+Compressor correlation efficiency is polytropic; turbine efficiency is overall
+isentropic. The models are not validated for wet flow.
 """
-@author: sipar
-NondimensionalRadial
-A python module to estimate the efficiency of turbomachinery.
-Based on the work presented in the paper:
 
-Advancing non-dimensional moºdels for radial turbomachinery applied to pumped thermal energy storage
+import numpy as np
+import jaxprop as props
+from scipy.optimize import brentq
 
-Simone Parisi, Roberto Agromayor, Angelo La Seta,
-Kenny Krogh Nielsen, Fredrik Haglind
-In preparation (2025)
-
-"""
-
-from math import nan, pi, log, exp, log10, sqrt
-import scipy.optimize as sp
-import CoolProp.CoolProp as cp
-
-NaN = float("NaN")
+__all__ = [
+    "compressor_defaults", "turbine_defaults", "friction_factor",
+    "polytropic_head", "turbine_baseline_efficiency",
+    "compressor_performance", "turbine_performance",
+    "compressor_reference_coefficients", "compressor_mach_correction",
+    "compressor_relative_velocity_ratio", "compressor_diameter_to_chord_ratio",
+    "turbine_kinetic_energy_fraction",
+    "solve_compressor", "solve_turbine",
+]
 
 
-def friction_factor(Re, ksc):
-    """ """
-    # Laminar friction factor component
-    cfl = 2.656 / Re**0.5
-    # Turbulent friction factor component
-    cft = 0.136 / (-log10(0.2 * ksc + 12.5 / Re)) ** 2.15
-    # Transition function
-    t = 5 * (cfl / cft - 1)
-    P = 1 / (1 + exp(-t))
-    cf = P * cfl + (1 - P) * cft
-    # Darcy friction factor
-    f = 4 * cf
-    return f
+def compressor_defaults():
+    """Return fresh compressor design parameters (Section 3.2).
 
-
-class _Machine:
-    """Base class for turbomachinery models."""
-
-    def set_CoolProp_fluid(self, fluid):
-        """Sets the CoolProp fluid object for thermodynamic property calculations."""
-        self._fluid = fluid
-        self._iterate_on_enthalpy = False
-
-    def _CoolProp_iterate_outlet_fixed_P(self, x_out):
-        """
-        Internal function called by the solver to iterate on outlet conditions.
-        It calculates the residual between model-predicted efficiency and
-        efficiency derived from thermodynamic states.
-        """
-        # Update outlet state based on current guess of x_out and known p_out
-        if self._iterate_on_enthalpy:
-            self._fluid.update(cp.HmassP_INPUTS, x_out, self.outlet_isentropic["p"])
-        else:
-            self._fluid.update(cp.PT_INPUTS, self.outlet_isentropic["p"], x_out)
-        self.outlet = {
-            "T": self._fluid.T(),
-            "p": self._fluid.p(),
-            "hmass": self._fluid.hmass(),
-            "smass": self._fluid.smass(),
-            "rhomass": self._fluid.rhomass(),
-            "viscosity": self._fluid.viscosity(),
-            "speed_sound": self._fluid.speed_sound(),
-        }
-        # Calculate and return the residual based on the machine's specific model
-        return self.residual()
-
-    def CoolProp_solve_outlet_fixed_P(
-        self, mass_flow, p_in, T_in, p_out, iterate_on_enthalpy=False
-    ):
-        """
-        Solves for the outlet state given inlet conditions, outlet pressure,
-        and mass flow rate using CoolProp for fluid properties.
-        This method implements the numerical solution procedure described in
-        Section 4 of Parisi et al.
-        Args:
-            mass_flow (float): Mass flow rate (kg/s).
-            p_in (float): Inlet total pressure (Pa).
-            T_in (float): Inlet total temperature (K).
-            p_out (float): Outlet total pressure (Pa).
-            iterate_on_enthalpy (bool): Use outlet enthalpy to compute state. If False, use temperature instead.
-        """
-        self._iterate_on_enthalpy = iterate_on_enthalpy
-        self.mass_flow = mass_flow
-        # Set inlet conditions
-        self._fluid.update(cp.PT_INPUTS, p_in, T_in)
-        self.inlet = {
-            "T": self._fluid.T(),
-            "p": self._fluid.p(),
-            "hmass": self._fluid.hmass(),
-            "smass": self._fluid.smass(),
-            "rhomass": self._fluid.rhomass(),
-            "viscosity": self._fluid.viscosity(),
-            "speed_sound": self._fluid.speed_sound(),
-        }
-        # Calculate isentropic outlet conditions
-        self._fluid.update(cp.PSmass_INPUTS, p_out, self.inlet["smass"])
-        self.outlet_isentropic = {
-            "T": self._fluid.T(),
-            "p": self._fluid.p(),
-            "hmass": self._fluid.hmass(),
-            "smass": self._fluid.smass(),
-            "rhomass": self._fluid.rhomass(),
-            "viscosity": self._fluid.viscosity(),
-            "speed_sound": self._fluid.speed_sound(),
-        }
-        # Set bounds for Brent's method
-        if iterate_on_enthalpy:
-            x_low = self.outlet_isentropic["hmass"]
-            x_in = self.inlet["hmass"]
-        else:
-            x_low = self.outlet_isentropic["T"]
-            x_in = self.inlet["T"]
-        # Determine  bounds for iteration based on machine type
-        if p_out < p_in:  # turbine -> real hmass or T is between inlet and isentropic
-            x_high = x_in + (x_low - x_in) * self.reference.get("K_loweff", 0.01)
-        else:  # compressor -> real hmass or T goes to inf as efficiency goes to 0
-            x_high = x_in + (x_low - x_in) / self.reference["K_loweff"]
-
-        x_out_solution, result = sp.brentq(
-            self._CoolProp_iterate_outlet_fixed_P, x_low, x_high, full_output=True
-        )
-        residual = self._CoolProp_iterate_outlet_fixed_P(x_out_solution)
-        if not result.converged:
-            print(
-                "The root finding algorithm failed to find an outlet state that satisfies the efficiency correlation. Final resiudal: {residual:.2e}"
-            )
-        return None
-
-    def get_output_data(self):
-        """Returns a copy of the calculated performance data."""
-        if self._data is not None:
-            return self._data.copy()
-        return None
-
-
-class CentrifugalCompressor(_Machine):
+    Flow coefficient uses Eq. (3), based on total inlet density. Backsweep is
+    in degrees, roughness in m, and metal density in kg/m³. Clearance is the
+    tip gap divided by exit blade height. d_eta_other is an additive efficiency
+    correction (fraction, not percent). is_shrouded selects the impeller;
+    has_vaned selects a vaned rather than vaneless diffuser. The baseline is
+    an unshrouded, 40-degree backswept impeller with a vaned diffuser.
     """
-    Non-dimensional model for centrifugal compressors.
-    Based on Section 3.2 of Parisi et al.
+    return dict(flow_coefficient=0.07, backsweep=40.0, is_shrouded=False,
+                has_vaned=True, roughness=3.6e-6, clearance_height_ratio=0.02,
+                metal_density=7800.0, d_eta_other=0.0)
+
+
+def turbine_defaults():
+    """Return fresh turbine design parameters (Section 3.3).
+
+    specific_speed is dimensionless and uses rotor-exit static density in
+    Eq. (4), not inlet or overall-outlet density; the study spans 0.35–0.85.
+    is_scalloped selects a scalloped disk. diffuser_loss_fraction is the
+    fraction of rotor-exit kinetic energy lost downstream. Clearance is the
+    tip gap/blade-height ratio, metal_density is in kg/m³, and d_eta_other is
+    an additive rotor-efficiency correction expressed as a fraction.
     """
-
-    def __init__(self):
-        self.data_in = {
-            "flow_coefficient": 0.07,  # phi
-            "backsweep": 40.0,  # theta (degrees)
-            "is_shrouded": False,
-            "has_vaned": True,
-            "roughness": 3.6e-6,  # R_a (m)
-            "clearance_height_ratio": 0.02,  # (epsilon/b_2)
-            "metal_density": 7800,  # rho_metal (kg/m^3)
-            "d_eta_other": 0.0,
-        }
-        self.reference = {
-            "diameter": 0.4,  # D_ref (m)
-            "peripheral_speed": 277,  # U_ref (m/s)
-            "roughness": 3.6e-6,  # R_a_ref (m)
-            "clearance_height_ratio": 0.02,  # (epsilon/b_2)
-            "kinematic_viscosity": 15.7e-6,  # nu_ref (m^2/s)
-            "K_loweff": 0.5,
-            "K_stress_unshrouded": 0.41,
-            "K_stress_shrouded_1": 0.67,
-            "K_stress_shrouded_2": 0.75,
-            "phi_stress_shrouded_1": 0.05,
-            "phi_stress_shrouded_2": 0.12,
-        }
-        self._fluid = None
-        self.mass_flow = None
-        self.inlet = {
-            "T": None,
-            "p": None,
-            "hmass": None,
-            "smass": None,
-            "rhomass": None,
-            "viscosity": None,
-            "speed_sound": None,
-        }
-        self.outlet = {
-            "T": None,
-            "p": None,
-            "hmass": None,
-            "smass": None,
-            "rhomass": None,
-            "viscosity": None,
-            "speed_sound": None,
-        }
-        self._data = None
-
-    def residual(self):
-        i = self.inlet
-        o = self.outlet
-        # compute polytropic head and efficiency
-        dh = o["hmass"] - i["hmass"]
-        dh_is = self.outlet_isentropic["hmass"] - i["hmass"]
-        dh_p = dh - (o["smass"] - i["smass"]) * (o["T"] - i["T"]) / log(o["T"] / i["T"])
-        eta_therm = dh_p / dh
-        eta_is = dh_is / dh
-        # import primary parameters
-        phi = self.data_in["flow_coefficient"]  # flow coefficient
-        th = self.data_in["backsweep"]
-        if phi < 1e-4:
-            raise ValueError(
-                "The selected value for the flow coefficient is <1e-4, this is outside the correlation range and will cause errors in the code"
-            )
-        # baseline correlation
-        if self.data_in["is_shrouded"]:
-            k1 = +0.62
-            k2 = -pi / 4 * 0.4
-            k3 = +pi / 4 * 0.0014
-            k4 = +0.51
-            k5 = +4 / pi * 1.0
-            k6 = -((4 / pi) ** 2) * 7.6
-            k7 = -pi / 4 * 0.00025
-            phi_clipped = max(
-                self.reference["K_stress_shrouded_phi1"],
-                min(phi, self.reference["K_stress_shrouded_phi2"]),
-            )
-            Kstress = self.reference["K_stress_shrouded_1"] + (
-                self.reference["K_stress_shrouded_2"]
-                - self.reference["K_stress_shrouded_1"]
-            ) * (phi_clipped - self.reference["phi_stress_shrouded_1"]) / (
-                self.reference["phi_stress_shrouded_2"]
-                - self.reference["phi_stress_shrouded_1"]
-            )
-        else:  # unshrouded
-            k1 = +0.68
-            k2 = -pi / 4 * 0.37
-            k3 = +pi / 4 * 0.002
-            k4 = +0.59
-            k5 = +4 / pi * 0.7
-            k6 = -((4 / pi) ** 2) * 7.5
-            k7 = -pi / 4 * 0.00025
-            Kstress = self.reference["K_stress_unshrouded"]
-        I_ref = k1 + (phi / k2) ** 3 + k3 / phi
-        Ip_vaned = k4 + k5 * phi + k6 * phi**2 + k7 / phi
-        eta_vaned = Ip_vaned / I_ref
-        # vaneless correction
-        if self.data_in["has_vaned"]:
-            eta_base = eta_vaned
-        else:
-            eta_base = eta_vaned - 0.017 / (0.04 + (20 / pi) * phi + eta_vaned**3)
-        # work coefficient corrrection
-        th_limited = min(th, 40.0)
-        d_eta_th = -0.0006 * (40.0 - th_limited)
-        I = I_ref + (0.004 + 0.2 * phi**2) * (40.0 - th_limited)
-
-        # Peripheral speed, Diameter, Mach
-        U = sqrt(dh / I)
-        D = sqrt(self.mass_flow / (i["rhomass"] * phi * U))
-        Ma_u = U / i["speed_sound"]
-
-        # Mach correction
-        P_Ma = max(0, phi * (Ma_u - 0.8))
-        d_eta_Ma = -(0.05 + 3 * P_Ma) * P_Ma
-
-        # Reynolds number correction calculations
-        # Relative velocity w/U
-        w_over_U = 0.42 + 5 * phi - 14 * phi**2
-        w = w_over_U * U
-        # Diameter-to-chord ratio D/c
-        Dc_ref = 1.1 + 22 * phi
-        if th < 40.0:
-            Dc = Dc_ref + 0.01 * (40.0 - th)
-        else:
-            Dc = Dc_ref
-        c = D / Dc
-        ksc = (1 * self.data_in["roughness"]) / c
-        c_ref = c * (self.reference["diameter"] / D)
-        # Relative roughness k_s/c
-        ksc_ref = self.reference["roughness"] / c_ref
-
-        # Reynolds number and friction factor
-        kinematic_viscosity = i["viscosity"] / i["rhomass"]
-        Re = w * c / kinematic_viscosity
-        # The reference Reynolds number is indirectly a function of phi,
-        # because it depends on U, therefore it is calculated by scaling
-        # with the length and peripeheral speed in the machine
-        Re_ref = (
-            Re
-            * (self.reference["diameter"] / D)
-            * (self.reference["peripheral_speed"] / U)
-            / (self.reference["kinematic_viscosity"] / kinematic_viscosity)
-        )
-
-        f = friction_factor(Re, ksc)
-        f_ref = friction_factor(Re_ref, ksc_ref)
-        # Reynolds number correction
-        d_eta_Re = -(0.05 + 0.002 / (phi + 0.0025)) * (f - f_ref) / f_ref
-
-        # Clearance correction
-        d_eta_cl = -0.5 * (
-            self.data_in["clearance_height_ratio"]
-            - self.reference["clearance_height_ratio"]
-        )
-
-        eta_corr = (
-            eta_base
-            + d_eta_th
-            + d_eta_Ma
-            + d_eta_Re
-            + d_eta_cl
-            + self.data_in["d_eta_other"]
-        )
-
-        residual = eta_corr - eta_therm
-        self._data = {
-            "correlation_efficiency": eta_corr,
-            "polytropic_efficiency": eta_therm,
-            "isentropic_efficiency": eta_is,
-            "power": dh * self.mass_flow,
-            "diameter": D,
-            "peripheral_speed": U,
-            "angular_speed": U / (D / 2),
-            "mechanical_stress": Kstress * self.data_in["metal_density"] * U**2,
-        }
-
-        return residual
+    return dict(specific_speed=0.6, is_scalloped=True,
+                diffuser_loss_fraction=0.35, clearance_height_ratio=0.02,
+                metal_density=7800.0, d_eta_other=0.0)
 
 
-class RadialTurbine(_Machine):
+def friction_factor(reynolds, relative_roughness, *, xp=np):
+    """Return the Darcy friction factor for the compressor Reynolds correction.
+
+    reynolds is based on blade chord and relative inlet velocity; roughness
+    is sand-grain height/chord, approximated by average roughness/chord here.
+    The laminar and turbulent expressions are blended smoothly following the
+    Casey–Robinson procedure cited beside Eqs. (21)–(22). The factor of four
+    converts the blended skin-friction coefficient to a Darcy factor.
+    Inputs need positive Reynolds number and nonnegative roughness.
+    xp may be numpy or jax.numpy; broadcastable array inputs also work.
     """
-    Non-dimensional model for radial inflow turbines.
-    Based on Section 3.3 of Parisi et al.
+    laminar = 2.656 / xp.sqrt(reynolds)
+    turbulent = 0.136 / (-xp.log10(0.2 * relative_roughness + 12.5 / reynolds))**2.15
+    laminar_weight = 1 / (1 + xp.exp(-5 * (laminar / turbulent - 1)))
+    return 4 * (laminar_weight * laminar + (1 - laminar_weight) * turbulent)
+
+
+def polytropic_head(inlet, outlet, *, xp=np):
+    """Return signed Mallen–Saville polytropic head in J/kg (Eq. 9).
+
+    States or mappings contain T [K], h [J/kg] and s [J/(kg K)]. Compression
+    gives positive head and expansion negative head. The entropy correction
+    uses the logarithmic mean of endpoint temperatures. log1p and its series
+    limit keep values and derivatives finite when temperatures coincide.
+    This approximation is exact for a calorically perfect gas; it is not a
+    path integration. xp selects NumPy or JAX without converting tracers.
     """
+    change = (outlet["T"] - inlet["T"]) / inlet["T"]
+    near_equal = xp.abs(change) < 1e-4
+    # Prevent 0/0 even in the inactive branch: JAX differentiates both branches.
+    safe_change = xp.where(near_equal, 1.0, change)
+    series = 1 + change / 2 - change**2 / 12 + change**3 / 24
+    log_mean = inlet["T"] * xp.where(near_equal, series, safe_change / xp.log1p(safe_change))
+    return outlet["h"] - inlet["h"] - (outlet["s"] - inlet["s"]) * log_mean
 
-    def __init__(self):
-        self.data_in = {
-            "specific_speed": 0.6,  # oms
-            "is_scalloped": True,  #
-            "diffuser_loss_fraction": 0.35,  # chi
-            "clearance_height_ratio": 0.02,  # epsilon/b
-            "metal_density": 7800,  # rho_metal (kg/m^3)
-            "d_eta_other": 0.0,
-        }
-        self.reference = {
-            "clearance_height_ratio": 0.02,  # epsilon/b
-            "Reynolds": 352000.0,  # Re_ref
-            "K_loweff": 0.1,
-            "K_stress_unshrouded": 0.35,
-            "K_stress_scalloped": 0.15,
-        }
-        self._fluid = None
-        self.mass_flow = None
-        self.inlet = {
-            "T": None,
-            "p": None,
-            "hmass": None,
-            "smass": None,
-            "rhomass": None,
-            "viscosity": None,
-            "speed_sound": None,
-        }
-        self.outlet = {
-            "T": None,
-            "p": None,
-            "hmass": None,
-            "smass": None,
-            "rhomass": None,
-            "viscosity": None,
-            "speed_sound": None,
-        }
-        self.outlet_isentropic = {
-            "T": None,
-            "p": None,
-            "hmass": None,
-            "smass": None,
-            "rhomass": None,
-            "viscosity": None,
-            "speed_sound": None,
-        }
-        self.rotor_outlet_static = {
-            "T": None,
-            "p": None,
-            "hmass": None,
-            "smass": None,
-            "rhomass": None,
-            "viscosity": None,
-            "speed_sound": None,
-        }
-        self._data = None
 
-    def compute_rotor_outlet_static(self, hmass, smass):
-        """Helper function to compute and store rotor outlet static conditions."""
-        self._fluid.update(cp.HmassSmass_INPUTS, hmass, smass)
-        self.rotor_outlet_static = {
-            "T": self._fluid.T(),
-            "p": self._fluid.p(),
-            "hmass": self._fluid.hmass(),
-            "smass": self._fluid.smass(),
-            "rhomass": self._fluid.rhomass(),
-            "viscosity": self._fluid.viscosity(),
-            "speed_sound": self._fluid.speed_sound(),
-        }
-        return None
+def compressor_reference_coefficients(flow_coefficient, *, is_shrouded=False, xp=np):
+    """Return reference work and vaned polytropic-head coefficients (Eqs. 12-13).
 
-    def residual(self):
-        i = self.inlet
-        o = self.outlet
-        # compute polytropic head and efficiency
-        dh = o["hmass"] - i["hmass"]
-        dh_is = self.outlet_isentropic["hmass"] - i["hmass"]
-        dh_p = dh - (o["smass"] - i["smass"]) * (o["T"] - i["T"]) / log(o["T"] / i["T"])
-        eta_therm = dh / dh_is
-        eta_p = dh / dh_p
-        # import primary parameters
-        oms = self.data_in["specific_speed"]
-        # baseline correlation
-        eta_base = 0.93 - 0.3 * (oms - 0.6) ** 2 - 0.5 * (oms - 0.6) ** 3
-        if oms < 0.45:
-            eta_base -= 4.2 * (oms - 0.45) ** 2
-        kappa_rot = max(0.02 + 0.08 * oms**2, 0.2 * oms**4)
-        # Clearance correction
-        d_eta_cl = (
-            -1.15
-            * eta_base
-            * (
-                self.data_in["clearance_height_ratio"]
-                - self.reference["clearance_height_ratio"]
-            )
-        )
-        # Scallop correction
-        if self.data_in["is_scalloped"]:
-            d_eta_scal = -0.03
-            Kstress = self.reference["K_stress_scalloped"]
+    These dimensionless coefficients describe a 40-degree backswept impeller
+    before Mach, Reynolds, clearance or diffuser corrections. Table 4 selects
+    shrouded/unshrouded coefficients. Their ratio is the baseline polytropic
+    efficiency in Eq. (14), as plotted in Figure 1. The work coefficient is
+    the reference curve in Figure 2. flow_coefficient follows Eq. (3).
+    Scalar and array inputs are supported; xp selects NumPy or JAX.
+    """
+    flow = flow_coefficient
+    work = (xp.where(is_shrouded, 0.62, 0.68)
+            + (flow / (-np.pi / 4 * xp.where(is_shrouded, 0.4, 0.37)))**3
+            + np.pi / 4 * xp.where(is_shrouded, 0.0014, 0.002) / flow)
+    head = (xp.where(is_shrouded, 0.51, 0.59)
+            + 4 / np.pi * xp.where(is_shrouded, 1.0, 0.7) * flow
+            - (4 / np.pi)**2 * xp.where(is_shrouded, 7.6, 7.5) * flow**2
+            - np.pi / 4 * 0.00025 / flow)
+    return work, head
+
+
+def compressor_mach_correction(flow_coefficient, peripheral_mach, *, xp=np):
+    """Return the additive efficiency penalty for high tip Mach (Eqs. 18-20).
+
+    peripheral_mach is tip speed divided by the total-inlet speed of sound.
+    The correction is zero up to Mach 0.8 and negative above it. Figure 3
+    illustrates this penalty at different pressure ratios. Both arguments
+    are dimensionless and may be broadcastable NumPy or JAX arrays.
+    """
+    excess = xp.maximum(0.0, flow_coefficient * (peripheral_mach - 0.8))
+    return -(0.05 + 3 * excess) * excess
+
+
+def compressor_relative_velocity_ratio(flow_coefficient):
+    """Return relative inlet velocity / tip speed using the Figure 4 correlation.
+
+    This dimensionless ratio sets the chord Reynolds number in Eq. (22).
+    Parisi et al. (2025), doi:10.1016/j.enconman.2025.120085, contains an
+    error in the printed Eq. (23): 0.42 + 5*phi - 14*phi**2 disagrees with
+    Figure 4 and its mean-line points. Use 0.38 + 3*phi - 7.8*phi**2, which
+    reproduces the plotted correlation within PDF coordinate precision.
+    The fitted flow-coefficient range is 0.01-0.15. The original thermopt
+    implementation followed the erroneous printed equation.
+
+    flow_coefficient follows Eq. (3); the returned w/U ratio is dimensionless.
+    NumPy and JAX scalar/array inputs work directly through arithmetic only.
+    Both actual and reference Reynolds numbers must use this same ratio.
+    """
+    return 0.38 + 3 * flow_coefficient - 7.8 * flow_coefficient**2
+
+
+def compressor_diameter_to_chord_ratio(flow_coefficient, backsweep=40.0, *, xp=np):
+    """Return impeller diameter divided by blade chord (Eqs. 24-25).
+
+    The reference ratio is 1.1 + 22*phi at 40-degree backsweep. Smaller
+    backsweep angles [degrees] increase the ratio; no further correction is
+    applied above 40 degrees. Figure 5 compares mean-line designs corrected
+    to this reference. The dimensionless ratio sets the chord used in the
+    Reynolds correction. xp supports NumPy arrays or JAX transformations.
+    """
+    return 1.1 + 22 * flow_coefficient + 0.01 * xp.maximum(0.0, 40.0 - backsweep)
+
+
+def turbine_kinetic_energy_fraction(specific_speed, *, xp=np):
+    """Return rotor-exit kinetic energy divided by isentropic rotor work (Eq. 36).
+
+    specific_speed is based on the static rotor outlet. This dimensionless
+    kinetic fraction relates baseline total-to-total and total-to-static
+    efficiencies through eta_ts = eta_tt / (1 + kappa), Eq. (37), shown in
+    Figure 7. With a diffuser, only its loss fraction times kappa contributes
+    to the overall efficiency penalty (Eq. 39). xp selects NumPy or JAX.
+    """
+    return xp.maximum(0.02 + 0.08 * specific_speed**2, 0.2 * specific_speed**4)
+
+
+def compressor_performance(inlet, outlet, outlet_isentropic, mass_flow, design=None, *, xp=np):
+    """Evaluate compressor efficiency, size, speed and stress at a trial outlet.
+
+    Implements Section 3.2, Eqs. (12)–(27) and Table 4. inlet/outlet are total
+    states with jaxprop names; outlet_isentropic is at the same outlet pressure
+    and inlet entropy. mass_flow is kg/s. design partially overrides
+    compressor_defaults(); inputs are not modified. The paper's
+    flow-coefficient data span approximately 0.01–0.15.
+
+    Returns correlation/polytropic/isentropic efficiencies as fractions,
+    positive consumed power [W], impeller diameter [m], peripheral speed
+    [m/s], angular speed [rad/s] and disk stress [Pa]. The solved residual is
+    correlation_efficiency minus polytropic_efficiency (Eq. 11). Appendix B
+    supplies stress factors: shrouded stress interpolates between flow
+    coefficients 0.05 and 0.12 and clips outside those endpoints.
+
+    No property flashes or scalar validation occur here. Pass xp=jax.numpy
+    to jit/grad/vmap the algebra, including continuous design parameters.
+    """
+    design = compressor_defaults() | ({} if design is None else design)
+    flow = design["flow_coefficient"]
+    shrouded = design["is_shrouded"]
+    # Table 4: work and polytropic-head coefficients at 40-degree backsweep.
+    work_reference, head_reference = compressor_reference_coefficients(
+        flow, is_shrouded=shrouded, xp=xp,
+    )
+    vaned_efficiency = head_reference / work_reference
+    vaneless_penalty = 0.017 / (0.04 + 20 / np.pi * flow + vaned_efficiency**3)
+    baseline = vaned_efficiency - xp.where(design["has_vaned"], 0.0, vaneless_penalty)
+
+    backsweep_deficit = xp.maximum(0.0, 40.0 - design["backsweep"])
+    work_coefficient = work_reference + (0.004 + 0.2 * flow**2) * backsweep_deficit
+    work = outlet["h"] - inlet["h"]
+    tip_speed = xp.sqrt(work / work_coefficient)
+    diameter = xp.sqrt(mass_flow / (inlet["rho"] * flow * tip_speed))
+    mach_correction = compressor_mach_correction(flow, tip_speed / inlet["a"], xp=xp)
+
+    # Eqs. (22)–(25): chord and relative inlet speed set Reynolds number.
+    diameter_over_chord = compressor_diameter_to_chord_ratio(flow, design["backsweep"], xp=xp)
+    chord = diameter / diameter_over_chord
+    velocity_ratio = compressor_relative_velocity_ratio(flow)
+    relative_speed = velocity_ratio * tip_speed
+    viscosity = inlet["mu"] / inlet["rho"]
+    reynolds = relative_speed * chord / viscosity
+    reference_chord = 0.4 / diameter_over_chord
+    reference_reynolds = velocity_ratio * 277 * reference_chord / 15.7e-6
+    friction = friction_factor(reynolds, design["roughness"] / chord, xp=xp)
+    reference_friction = friction_factor(reference_reynolds, 3.6e-6 / reference_chord, xp=xp)
+    reynolds_correction = (
+        -(0.05 + 0.002 / (flow + 0.0025))
+        * (friction - reference_friction) / reference_friction
+    )
+
+    correlation_efficiency = (baseline - 0.0006 * backsweep_deficit + mach_correction
+                              + reynolds_correction - 0.5 * (design["clearance_height_ratio"] - 0.02)
+                              + design["d_eta_other"])
+    shrouded_stress_factor = 0.67 + (0.75 - 0.67) * (xp.clip(flow, 0.05, 0.12) - 0.05) / (0.12 - 0.05)
+    stress_factor = xp.where(shrouded, shrouded_stress_factor, 0.41)
+    return dict(correlation_efficiency=correlation_efficiency,
+                polytropic_efficiency=polytropic_head(inlet, outlet, xp=xp) / work,
+                isentropic_efficiency=(outlet_isentropic["h"] - inlet["h"]) / work,
+                power=mass_flow * work, diameter=diameter, peripheral_speed=tip_speed,
+                angular_speed=2 * tip_speed / diameter,
+                mechanical_stress=stress_factor * design["metal_density"] * tip_speed**2)
+
+
+def turbine_baseline_efficiency(specific_speed, *, xp=np):
+    """Return baseline rotor isentropic efficiency (Eq. 29 and Figure 6).
+
+    specific_speed is dimensionless and defined at the rotor static outlet
+    (Eq. 4). The extra quadratic penalty below 0.45 models low-speed
+    departures. This baseline precedes scalloping, clearance, diffuser and
+    Reynolds corrections; it is not final machine efficiency. The fitted
+    study range is 0.35–0.85. xp supports NumPy arrays or JAX tracing.
+    """
+    deviation = specific_speed - 0.6
+    # Keep 0.5 to match the published Figure 6 and the authors' implementation.
+    # Table 6 contains a typo: it lists 0.30 for this cubic coefficient.
+    # Parisi et al. (2025), doi:10.1016/j.enconman.2025.120085.
+    baseline = 0.93 - 0.3 * deviation**2 - 0.5 * deviation**3
+    return baseline - 4.2 * xp.minimum(0.0, specific_speed - 0.45)**2
+
+
+def turbine_performance(fluid, inlet, outlet, outlet_isentropic, mass_flow, design=None, *, xp=np, errors="raise"):
+    """Evaluate a radial turbine at a trial total outlet (Section 3.3).
+
+    Implements Eqs. (29)–(41), (46)–(48) and Appendix B. States use jaxprop
+    names and SI units; mass_flow is kg/s. design partially overrides
+    turbine_defaults(). The supplied fluid performs the rotor static h,s
+    flash: this density is essential to specific-speed sizing in Eq. (4).
+    Neither state mappings nor design parameters are modified.
+
+    Returns the same eight performance quantities/units as the compressor,
+    with positive produced power [W]. Here correlation_efficiency is overall
+    isentropic efficiency; its difference from isentropic_efficiency is the
+    solved residual (Eq. 10). The rotor entropy allocation follows the
+    paper's diffuser-loss model, not an additional empirical loss.
+
+    xp=jax.numpy enables tracing if fluid.get_state supports h,s under JAX
+    (e.g. FluidPerfectGas). A HEOS fluid still requires a host flash; changing
+    xp alone cannot make that backend differentiable. For a native model under
+    JAX transformations, select errors="mask" explicitly for the rotor flash.
+    """
+    design = turbine_defaults() | ({} if design is None else design)
+    speed = design["specific_speed"]
+    baseline = turbine_baseline_efficiency(speed, xp=xp)
+    kinetic_fraction = turbine_kinetic_energy_fraction(speed, xp=xp)
+    clearance_correction = -1.15 * baseline * (design["clearance_height_ratio"] - 0.02)
+    scalloping_correction = xp.where(design["is_scalloped"], -0.03, 0.0)
+    rotor_efficiency = baseline + clearance_correction + scalloping_correction + design["d_eta_other"]
+    diffuser_factor = 1 + design["diffuser_loss_fraction"] * kinetic_fraction
+    overall_efficiency = rotor_efficiency / diffuser_factor
+
+    work = inlet["h"] - outlet["h"]
+    isentropic_work = inlet["h"] - outlet_isentropic["h"]
+    rotor_isentropic_work = isentropic_work / diffuser_factor
+    rotor_entropy = (
+        inlet["s"] + (outlet["s"] - inlet["s"])
+        * (1 - rotor_efficiency) / (diffuser_factor - rotor_efficiency)
+    )
+    rotor_enthalpy = outlet["h"] - kinetic_fraction * rotor_isentropic_work
+    rotor_options = {} if errors == "raise" else {"errors": errors}
+    rotor_static = fluid.get_state(props.HmassSmass_INPUTS, rotor_enthalpy, rotor_entropy, **rotor_options)
+    tip_speed = 0.7 * xp.sqrt(2 * rotor_isentropic_work)
+    angular_speed = speed * rotor_isentropic_work**0.75 / xp.sqrt(mass_flow / rotor_static["rho"])
+    diameter = 2 * tip_speed / angular_speed
+    reynolds = 2 * mass_flow / (inlet["mu"] * diameter)
+    correlation_efficiency = 1 - (1 - overall_efficiency) * (
+        0.3 + 0.7 * xp.minimum(1.0, reynolds / 352000.0)**-0.2
+    )
+    stress_factor = xp.where(design["is_scalloped"], 0.15, 0.35)
+    return dict(correlation_efficiency=correlation_efficiency,
+                polytropic_efficiency=-work / polytropic_head(inlet, outlet, xp=xp),
+                isentropic_efficiency=work / isentropic_work,
+                power=mass_flow * work, diameter=diameter, peripheral_speed=tip_speed,
+                angular_speed=angular_speed,
+                mechanical_stress=stress_factor * design["metal_density"] * tip_speed**2)
+
+
+def _validate_inputs(inlet, p_out, mass_flow, design, defaults, *, compressor):
+    """Reject invalid scalar host inputs before starting an outlet root solve.
+
+    Validate finite states, positive pressure/temperature/flow, pressure
+    direction and design parameter names/domains. Published study ranges are
+    documented, not clamped: extrapolation remains the caller's responsibility.
+    Validation stays outside arithmetic functions so it never inspects JAX
+    tracers or adds Python control flow to a differentiated kernel.
+    """
+    for key in ("T", "p", "h", "s", "rho", "mu", "a"):
+        value = float(inlet[key])
+        if not np.isfinite(value) or (key not in ("h", "s") and value <= 0):
+            raise ValueError(f"Inlet {key} must be finite" + (" and positive." if key not in ("h", "s") else "."))
+    for key, value in (("mass_flow", mass_flow), ("p_out", p_out)):
+        if value is None or not np.isfinite(value) or value <= 0:
+            raise ValueError(f"{key} must be finite and positive.")
+    equal_pressure = np.isclose(p_out, inlet["p"], rtol=1e-12, atol=0)
+    if equal_pressure or (compressor and p_out < inlet["p"]) or (not compressor and p_out > inlet["p"]):
+        direction = "greater" if compressor else "less"
+        raise ValueError(f"Outlet pressure must be {direction} than inlet pressure.")
+    unknown = design.keys() - defaults.keys()
+    if unknown:
+        raise ValueError(f"Unknown design parameters: {', '.join(sorted(unknown))}")
+    for key, value in design.items():
+        if isinstance(defaults[key], bool):
+            if not isinstance(value, (bool, np.bool_)):
+                raise ValueError(f"{key} must be a boolean.")
+        elif not np.isfinite(value):
+            raise ValueError(f"{key} must be finite.")
+    for key in ("roughness", "clearance_height_ratio", "backsweep"):
+        if key in design and design[key] < 0:
+            raise ValueError(f"{key} must be nonnegative.")
+    for key in ("metal_density", "specific_speed"):
+        if key in design and design[key] <= 0:
+            raise ValueError(f"{key} must be positive.")
+    if compressor and design["flow_coefficient"] < 1e-4:
+        raise ValueError("flow_coefficient must be at least 1e-4.")
+    if not compressor and not 0 <= design["diffuser_loss_fraction"] <= 1:
+        raise ValueError("diffuser_loss_fraction must be between 0 and 1.")
+
+
+def _solve_outlet(fluid, inlet, p_out, mass_flow, design, *, compressor):
+    """Match correlation and state efficiencies in outlet enthalpy (Section 4).
+
+    Cache the inlet and isentropic outlet, then use a bracketed Brent solve
+    over outlet enthalpy [J/kg] at fixed pressure [Pa]. Original brackets
+    correspond to isentropic efficiencies of 1 to 0.5 for compression and
+    1 to 0.1 for expansion. Failed bracketing raises a contextual ValueError;
+    an unconverged or nonphysical root is never returned as a valid design.
+
+    Returns jaxprop states, performance, efficiency residual, the completed
+    design and SciPy iteration/function-call diagnostics. All flashes use the
+    explicit fluid argument. This host routine is not JIT-able or
+    differentiable: that requires performance kernels and a differentiable
+    root solver. It does not mutate or retain intermediate machine states.
+    """
+    defaults = compressor_defaults() if compressor else turbine_defaults()
+    design = defaults | ({} if design is None else design)
+    _validate_inputs(inlet, p_out, mass_flow, design, defaults, compressor=compressor)
+    isentropic = fluid.get_state(props.PSmass_INPUTS, p_out, inlet["s"])
+    isentropic_work = float(isentropic["h"] - inlet["h"])
+    low_efficiency = 0.5 if compressor else 0.1
+    other_bound = float(inlet["h"]) + isentropic_work * (1 / low_efficiency if compressor else low_efficiency)
+    efficiency_key = "polytropic_efficiency" if compressor else "isentropic_efficiency"
+
+    def evaluate(enthalpy):
+        """Flash one trial h,p outlet and return its state and performance."""
+        outlet = fluid.get_state(props.HmassP_INPUTS, enthalpy, p_out)
+        if compressor:
+            performance = compressor_performance(inlet, outlet, isentropic, mass_flow, design)
         else:
-            d_eta_scal = 0.00
-            Kstress = self.reference["K_stress_unshrouded"]
+            performance = turbine_performance(fluid, inlet, outlet, isentropic, mass_flow, design)
+        return outlet, performance
 
-        # overall efficiency
-        eta_rot = eta_base + d_eta_cl + d_eta_scal + self.data_in["d_eta_other"]
-        eta_overall = eta_rot / (1 + self.data_in["diffuser_loss_fraction"] * kappa_rot)
-        # Peripheral speed, Diameter, Mach
-        nu = 0.7
-        dh_rot_is = dh_is / (1 + self.data_in["diffuser_loss_fraction"] * kappa_rot)
-        s_rot = i["smass"] + (o["smass"] - i["smass"]) * (1 / eta_rot - 1) / (
-            1 / eta_overall - 1
-        )
-        h_rot_static = o["hmass"] - kappa_rot * abs(dh_rot_is)
-        s_rot_static = s_rot
-        self.compute_rotor_outlet_static(h_rot_static, s_rot)
-        U = nu * sqrt(2 * (-dh_rot_is))
-        om = (
-            oms
-            * (-dh_rot_is) ** 0.75
-            / (self.mass_flow / self.rotor_outlet_static["rhomass"]) ** 0.5
-        )
-        D = 2 * U / om
-        Re = self.mass_flow / (i["viscosity"] * D / 2)
+    def residual(enthalpy):
+        """Return the scalar correlation-minus-thermodynamic efficiency mismatch."""
+        _, performance = evaluate(enthalpy)
+        return float(performance["correlation_efficiency"] - performance[efficiency_key])
 
-        # Re correction
-        eta_corr = 1 - (1 - eta_overall) * (
-            0.3 + 0.7 * min(1, Re / self.reference["Reynolds"]) ** -0.2
-        )
+    kind = "compressor" if compressor else "turbine"
+    try:
+        enthalpy, status = brentq(residual, float(isentropic["h"]), other_bound, full_output=True)
+    except ValueError as error:
+        raise ValueError(
+            f"Could not solve {kind} at p_out={p_out:g} Pa, "
+            f"mass_flow={mass_flow:g} kg/s: {error}"
+        ) from error
+    outlet, performance = evaluate(enthalpy)
+    performance = {key: float(value) for key, value in performance.items()}
+    final_residual = performance["correlation_efficiency"] - performance[efficiency_key]
+    if (not status.converged or abs(final_residual) > 1e-8
+            or not all(np.isfinite(value) for value in performance.values())
+            or not 0 < performance[efficiency_key] <= 1):
+        raise RuntimeError(f"Invalid {kind} solution: efficiency residual={final_residual:g}.")
+    return dict(state_in=inlet, state_out=outlet, state_out_isentropic=isentropic,
+                performance=performance, design=design, residual=final_residual,
+                solver=dict(converged=status.converged, iterations=status.iterations,
+                            function_calls=status.function_calls))
 
-        residual = eta_corr - eta_therm
-        self._data = {
-            "correlation_efficiency": eta_corr,
-            "polytropic_efficiency": eta_p,
-            "isentropic_efficiency": eta_therm,
-            "power": -dh * self.mass_flow,
-            "diameter": D,
-            "peripheral_speed": U,
-            "angular_speed": om,
-            "mechanical_stress": Kstress * self.data_in["metal_density"] * U**2,
-        }
 
-        return residual
+def solve_compressor(fluid, inlet, p_out, mass_flow, design=None):
+    """Solve a centrifugal-compressor design point from an existing inlet state.
+
+    fluid is a jaxprop model providing p,s and h,p flashes; inlet is its total
+    inlet FluidState. p_out [Pa] must exceed inlet pressure and mass_flow
+    [kg/s] must be positive. design partially overrides compressor_defaults().
+    Section 4's efficiency matching uses only outlet enthalpy; there is no
+    temperature-iteration option or stored machine state.
+
+    Returns a dictionary with state_in, state_out, state_out_isentropic,
+    performance (units in compressor_performance), completed design, residual
+    and solver diagnostics. This is a scalar SciPy host solve; use
+    compressor_performance for JAX transformations of the correlation itself.
+    """
+    return _solve_outlet(fluid, inlet, p_out, mass_flow, design, compressor=True)
+
+
+def solve_turbine(fluid, inlet, p_out, mass_flow, design=None):
+    """Solve a radial-inflow-turbine design point from an existing inlet state.
+
+    fluid is a jaxprop model providing p,s, h,p and h,s flashes; inlet is its
+    total inlet FluidState. p_out [Pa] must be below inlet pressure and
+    mass_flow [kg/s] must be positive. design partially overrides
+    turbine_defaults(). The rotor static flash sets size/speed; state_out is
+    the overall total outlet downstream of the diffuser.
+
+    Returns the same fields as solve_compressor, with positive produced
+    power and overall isentropic efficiency. Section 4's scalar efficiency
+    matching uses outlet enthalpy and SciPy, outside the JAX kernel boundary.
+    """
+    return _solve_outlet(fluid, inlet, p_out, mass_flow, design, compressor=False)

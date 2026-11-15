@@ -20,7 +20,13 @@ def test_cycle_numerical_regression(name, point, tmp_path):
     problem = make_problem(name, tmp_path)
     assert problem.variable_names == expected["variable_names"]
     assert problem.cycle_topology == expected["topology"]
-    np.testing.assert_allclose(problem.x0, expected["x0"], rtol=1e-12, atol=1e-8)
+    # The 0.6 source references deliberately correct critical-point coordinates.
+    # Only initialization has new references; operating-point snapshots and
+    # their strict tolerances below retain the original 0.5.7 physical designs.
+    import json
+    from regression_support import DATA
+    initialization = json.loads((DATA / "initialization_060.json").read_text(encoding="utf-8"))
+    np.testing.assert_allclose(problem.x0, initialization["cases"][name]["x0"], rtol=1e-12, atol=1e-8)
     x = expected["x0"] if point == "initial" else expected["nearby_x"]
     actual = snapshot(problem, x)
     assert_snapshot(actual, expected[point])
@@ -105,7 +111,9 @@ def test_unknown_topology_is_reported(tmp_path):
 
 def test_wet_expansion_fixture_exercises_two_phase_inlet_and_outlet(tmp_path):
     problem = make_problem("orc_wet_expansion", tmp_path)
-    problem.fitness(problem.x0)
+    # Keep the original pressure/h design defining exactly Q=0.7. The new
+    # critical reference shifts a freshly rendered initial pressure slightly.
+    problem.fitness(read_baselines()["cases"]["orc_wet_expansion"]["x0"])
     expander = problem.cycle_data["components"]["expander"]
     assert expander["state_in"].is_two_phase == 1
     assert expander["state_out"].is_two_phase == 1

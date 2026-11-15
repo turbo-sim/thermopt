@@ -410,8 +410,6 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
 
         # As the first step, process the fixed parameters for dynamic calculations
         self.fixed_parameters = configuration["fixed_parameters"]
-        self.fluid = cpx.Fluid(**self.fixed_parameters["working_fluid"])
-        self._calculate_special_points()
 
         # Initialize variables
         self.figure = None
@@ -467,6 +465,18 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         self.ub_dict = {k: v["max"] for k, v in conf["design_variables"].items()}
         self.x0_dict = {k: v["value"] for k, v in conf["design_variables"].items()}
 
+        # Reuse native JaxProp evaluators throughout this configured problem.
+        roles = ("working_fluid", "heating_fluid", "cooling_fluid",
+                 "hot_storage_fluid", "cold_storage_fluid")
+        self.fluids = {
+            role: utils.fluid_from_configuration(self.fixed_parameters[role], identifier=role)
+            for role in roles if role in self.fixed_parameters
+        }
+        self.fluid = self.fluids["working_fluid"]
+        # Reference-only setup queries can lie outside a table's declared domain.
+        # Evaluate those through the same source EOS, never through interpolation.
+        self.reference_fluid = utils.get_property_fluid(self.fluid.name, self.fluid.backend)
+
         # Calculate special points before rendering
         self._calculate_special_points()
 
@@ -518,30 +528,30 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         # Compute saturated liquid state at sink temperature
         # Use pseudocritical line if heat sink is above critical temperature
         T_sink = self.fixed_parameters["special_points"]["ambient_temperature"]
-        crit = self.fluid.critical_point
+        crit = self.reference_fluid.critical_point
         if T_sink < crit.T:
-            state_sat = self.fluid.get_state(cpx.QT_INPUTS, 0.0, T_sink)
+            state_sat = self.reference_fluid.get_state(cpx.QT_INPUTS, 0.0, T_sink)
         else:
-            state_sat = self.fluid.get_state(cpx.DmassT_INPUTS, crit.rho, T_sink)
+            state_sat = self.reference_fluid.get_state(cpx.DmassT_INPUTS, crit.rho, T_sink)
 
         # Compute dilute gas state at heat source temperature
         T_source = self.fixed_parameters["special_points"]["maximum_temperature"]
-        p_triple = 1.01 * self.fluid.triple_point_liquid.p
-        state_dilute = self.fluid.get_state(cpx.PT_INPUTS, p_triple, T_source)
+        p_triple = 1.01 * self.reference_fluid.triple_point_liquid.p
+        state_dilute = self.reference_fluid.get_state(cpx.PT_INPUTS, p_triple, T_source)
 
         # Save states in the fixed parameters dictionary
         self.params = copy.deepcopy(self.fixed_parameters)
         # self.params["working_fluid"] = {
-        #     "critical_point": self.fluid.critical_point.to_dict(),
-        #     "triple_point_liquid": self.fluid.triple_point_liquid.to_dict(),
-        #     "triple_point_vapor": self.fluid.triple_point_vapor.to_dict(),
+        #     "critical_point": self.reference_fluid.critical_point.to_dict(),
+        #     "triple_point_liquid": self.reference_fluid.triple_point_liquid.to_dict(),
+        #     "triple_point_vapor": self.reference_fluid.triple_point_vapor.to_dict(),
         #     "liquid_at_ambient_temperature": state_sat.to_dict(),
         #     "gas_at_maximum_temperature": state_dilute.to_dict(),
         # }
         self.params["working_fluid"] = {
-            "critical_point": self.fluid.critical_point,
-            "triple_point_liquid": self.fluid.triple_point_liquid,
-            "triple_point_vapor": self.fluid.triple_point_vapor,
+            "critical_point": self.reference_fluid.critical_point,
+            "triple_point_liquid": self.reference_fluid.triple_point_liquid,
+            "triple_point_vapor": self.reference_fluid.triple_point_vapor,
             "liquid_at_ambient_temperature": state_sat,
             "gas_at_maximum_temperature": state_dilute,
         }
@@ -569,6 +579,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
                 self.fixed_parameters,
                 self.constraints,
                 self.objective_function,
+                fluids=self.fluids,
             )
         else:
             options = ", ".join(f"'{k}'" for k in CYCLE_TOPOLOGIES.keys())
@@ -755,7 +766,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         ax.set_yscale(plot_config["y_scale"])
 
         # Plot phase diagram
-        self.fluid.plot_phase_diagram(axes=ax, **plot_config)
+        cpx.plot_phase_diagram(self.fluid, axes=ax, **plot_config)
 
         # Plot thermodynamic processes
         for name, component in cycle_data["components"].items():
@@ -1163,6 +1174,17 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             headers.append(variable_map[key]["name"])
             units_row.append(variable_map[key]["unit"])
 
+        def export_value(state, key):
+            # Optional diagnostics can be disabled or unsupported by a model.
+            # Export a blank numeric cell rather than inventing a zero or
+            # performing extra property flashes while writing the workbook.
+            try:
+                # Excel writers do not recognize zero-dimensional JAX arrays
+                # as numbers. Materialize scalar cells only at this I/O edge.
+                return np.asarray(state[key]).item()
+            except (cpx.UnsupportedPropertyError, cpx.PropertyUnavailableError):
+                return np.nan
+
         # Iterate over each component in the dictionary
         for component_name, component in self.cycle_data["components"].items():
             if component["type"] == "heat_exchanger":
@@ -1173,11 +1195,11 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
                     state_out = component[side]["state_out"]
                     data_rows.append(
                         [f"{component_name}_{side}_in"]
-                        + [state_in[key] for key in variable_map]
+                        + [export_value(state_in, key) for key in variable_map]
                     )
                     data_rows.append(
                         [f"{component_name}_{side}_out"]
-                        + [state_out[key] for key in variable_map]
+                        + [export_value(state_out, key) for key in variable_map]
                     )
             else:
                 # Handle non-heat exchanger components
@@ -1186,11 +1208,11 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
                 state_out = component["state_out"]
                 data_rows.append(
                     [f"{component_name}_in"]
-                    + [state_in[key] for key in variable_map]
+                    + [export_value(state_in, key) for key in variable_map]
                 )
                 data_rows.append(
                     [f"{component_name}_out"]
-                    + [state_out[key] for key in variable_map]
+                    + [export_value(state_out, key) for key in variable_map]
                 )
 
         # Create a DataFrame with data rows

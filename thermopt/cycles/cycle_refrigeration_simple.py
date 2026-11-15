@@ -5,6 +5,7 @@ def evaluate_cycle(
     parameters,
     constraints,
     objective_function,
+    fluids=None,
 ):
     
     output = cycle_refrigeration_recuperated.evaluate_cycle(
@@ -13,6 +14,7 @@ def evaluate_cycle(
         constraints,
         objective_function,
         recuperated=False,
+        fluids=fluids,
     )
 
     return output

@@ -5,10 +5,11 @@ Independent fluid/expander-efficiency sweeps may run in separate processes; each
 sweep uses continuation and at most two restarts per point. Checkpoints are reused.
 """
 
+from thermopt.utilities.fluid_utils import get_property_fluid
+
 from concurrent.futures import ProcessPoolExecutor
 from contextlib import redirect_stdout
 from copy import deepcopy
-from dataclasses import replace
 from functools import lru_cache
 import hashlib
 import io
@@ -18,7 +19,6 @@ import sys
 import time
 import traceback
 
-import CoolProp.CoolProp as CP
 import jaxprop as props
 import matplotlib
 matplotlib.use("Agg")
@@ -47,13 +47,13 @@ FLUIDS = {"propane": "Propane", "butane": "n-Butane"}
 
 @lru_cache(maxsize=None)
 def fluid(name):
-    return props.Fluid(name=FLUIDS[name], backend="HEOS", exceptions=True)
+    return props.Fluid(name=FLUIDS[name], backend="HEOS")
 
 
 @lru_cache(maxsize=1)
 def reference_heat():
-    return float(CP.PropsSI("H", "P", 1e6, "T", 413.15, "Water")
-                 - CP.PropsSI("H", "P", 1e6, "T", 293.15, "Water"))
+    return float(get_property_fluid('Water').get_state(props.PT_INPUTS, 1000000.0, 413.15).h
+                 - get_property_fluid('Water').get_state(props.PT_INPUTS, 1000000.0, 293.15).h)
 
 
 def expansion_path(problem, count=PATH_POINTS, subcritical_only=False):
@@ -69,9 +69,9 @@ def expansion_path(problem, count=PATH_POINTS, subcritical_only=False):
     name = problem.fixed_parameters["working_fluid"]["name"]
     upper = float(inlet.p)
     if subcritical_only:
-        upper = min(upper, 0.999999 * CP.PropsSI("pcrit", name))
+        upper = min(upper, 0.999999 * float(get_property_fluid(name).critical_point.p))
     pressure = np.geomspace(upper, float(outlet.p), count)
-    ideal_h = CP.PropsSI("H", "P", pressure, "S", float(inlet.s), name)
+    ideal_h = get_property_fluid(name).get_state(props.PSmass_INPUTS, pressure, float(inlet.s)).h
     enthalpy = float(inlet.h) - expander["efficiency"] * (float(inlet.h) - ideal_h)
     return pressure, enthalpy
 
@@ -81,29 +81,11 @@ class ComparisonProblem(th.ThermodynamicCycleProblem):
 
     def fitness(self, x):
         result = super().fitness(x)
-        # Compute saturation departures from the returned p/h/T. Some jaxprop
-        # versions perturb their internal AbstractState while calculating
-        # derivative properties of wet states, corrupting these auxiliary fields.
-        name = self.fixed_parameters["working_fluid"]["name"]
-        components = self.cycle_data["components"]
-        for component, endpoint, departure, quality in (
-            ("compressor", "state_in", "subcooling", 0),
-            ("expander", "state_out", "superheating", 1),
-        ):
-            state = components[component][endpoint]
-            sat_h = CP.PropsSI("H", "P", float(state.p), "Q", quality, name)
-            sat_t = CP.PropsSI("T", "P", float(state.p), "Q", quality, name)
-            sat_cp = CP.PropsSI("C", "P", float(state.p), "Q", quality, name)
-            if quality == 0:
-                value = (sat_h-float(state.h))/sat_cp if float(state.h) > sat_h else sat_t-float(state.T)
-            else:
-                value = (float(state.h)-sat_h)/sat_cp if float(state.h) < sat_h else float(state.T)-sat_t
-            components[component][endpoint] = replace(state, **{departure: value})
-        self.c_eq, self.c_ineq, self.constraint_data = th.evaluate_constraints(self.cycle_data, self.constraints)
-        result = psv.combine_objective_and_constraints(self.f, self.c_eq, self.c_ineq)
+        # JaxProp 0.6 evaluates source departures without perturbing the
+        # returned state; retain its diagnostics and immutable state objects.
         if self.fixed_parameters["working_fluid"]["name"] == FLUIDS["propane"]:
             pressure, enthalpy = expansion_path(self, subcritical_only=True)
-            vapor_h = CP.PropsSI("H", "P", pressure, "Q", 1, FLUIDS["propane"])
+            vapor_h = get_property_fluid(FLUIDS['propane']).get_state(props.PQ_INPUTS, pressure, 1).h
             self.path_vapor_margin = enthalpy - vapor_h
             self.c_ineq = np.r_[self.c_ineq, -self.path_vapor_margin / 1e5]
             result = psv.combine_objective_and_constraints(self.f, self.c_eq, self.c_ineq)
@@ -146,7 +128,7 @@ def configuration(family, exploitation, pump, turbine, seed_kind="high", variabl
     design["compressor_inlet_pressure"] = dict(min=float(cold.p), max=float(warm.p), value=float(pump_in.p))
     design["compressor_inlet_enthalpy"] = dict(min=float(cold.h)-20000, max=float(warm.h), value=float(pump_in.h))
     design["expander_inlet_pressure"] = dict(min=1.02*float(cold.p), max=3*critical_p, value=None)
-    dilute_h = CP.PropsSI("H", "P", 101325, "T", 413.15, FLUIDS[family])
+    dilute_h = get_property_fluid(FLUIDS[family]).get_state(props.PT_INPUTS, 101325, 413.15).h
     design["expander_inlet_enthalpy"] = dict(min=float(cold.h), max=float(dilute_h)+50000, value=None)
     if family == "propane":
         p_high = (1.5 if seed_kind == "high" else 0.72) * critical_p
@@ -173,7 +155,7 @@ def phase(state, family):
     p, h = float(state.p), float(state.h)
     if p >= float(fluid(family).critical_point.p):
         return "supercritical_pressure", np.nan
-    liquid, vapor = CP.PropsSI("H", "P", p, "Q", [0, 1], FLUIDS[family])
+    liquid, vapor = get_property_fluid(FLUIDS[family]).get_state(props.PQ_INPUTS, p, [0, 1]).h
     q = (h-liquid)/(vapor-liquid)
     return ("liquid" if q < -1e-7 else "vapor" if q >= 1-1e-7 else "two_phase"), float(q)
 
@@ -183,10 +165,10 @@ def inlet_superheat(pressure, enthalpy, temperature_C, family):
     if pressure >= float(fluid(family).critical_point.p):
         return np.nan
     name = FLUIDS[family]
-    vapor_h = CP.PropsSI("H", "P", pressure, "Q", 1, name)
+    vapor_h = get_property_fluid(name).get_state(props.PQ_INPUTS, pressure, 1).h
     if enthalpy < vapor_h:
-        return float((enthalpy-vapor_h)/CP.PropsSI("C", "P", pressure, "Q", 1, name))
-    return float(temperature_C+273.15-CP.PropsSI("T", "P", pressure, "Q", 1, name))
+        return float((enthalpy-vapor_h)/get_property_fluid(name).get_state(props.PQ_INPUTS, pressure, 1).cp)
+    return float(temperature_C+273.15-get_property_fluid(name).get_state(props.PQ_INPUTS, pressure, 1).T)
 
 
 def measurements(cycle, family):
@@ -205,7 +187,7 @@ def measurements(cycle, family):
     dense_margin = np.nan
     if family == "propane":
         p, h = expansion_path(problem, count=201, subcritical_only=True)
-        dense_margin = float(np.min(h - CP.PropsSI("H", "P", p, "Q", 1, FLUIDS[family])))
+        dense_margin = float(np.min(h - get_property_fluid(FLUIDS[family]).get_state(props.PQ_INPUTS, p, 1).h))
         valid = valid and dense_margin >= -1.0
     constraint_violation = violation(problem)
     valid = valid and abs(float(energy["energy_balance"])) < 0.1

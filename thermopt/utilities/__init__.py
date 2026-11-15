@@ -4,3 +4,4 @@ from .numerics import *
 
 
 from .optimization_utils import *
+from .fluid_utils import *

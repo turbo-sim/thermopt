@@ -14,8 +14,8 @@ from thermopt.utilities.optimization_utils import evaluate_constraints
 class TestHeatExchangerSaturation(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.water = props.Fluid("Water", "HEOS")
-        cls.organic = props.Fluid("Cyclopentane", "HEOS")
+        cls.water = props.Fluid("Water", backend="HEOS")
+        cls.organic = props.Fluid("Cyclopentane", backend="HEOS")
 
     def args(self, drop=0, condensing=False):
         p = 1e5
@@ -146,7 +146,9 @@ class TestHeatExchangerSaturation(unittest.TestCase):
         def false_quality(*args, **kwargs):
             state = get_state(*args, **kwargs)
             quality = np.where(np.asarray(state.is_two_phase) == 1, np.asarray(state.Q), 0.)
-            return eqx.tree_at(lambda value: value.Q, state, quality)
+            data = state.to_data()
+            data["properties"]["quality_mass"] = quality
+            return props.FluidState.from_data(data)
 
         for counter in (False, True):
             with self.subTest(counter=counter), patch.object(self.organic, "get_state", side_effect=false_quality):
@@ -186,7 +188,7 @@ class TestHeatExchangerSaturation(unittest.TestCase):
         self.assertAlmostEqual(snapped_min, dense_min, delta=.01)
 
     def test_no_crossing_and_supercritical(self):
-        for p in (1e6, 1.1*self.water.abstract_state.p_critical()):
+        for p in (1e6, 1.1*self.water.critical_point.p):
             args = (self.water, 3e5, 3e5, p, p, self.water, 1e5, 1e5, p, p)
             base = heat_exchanger(*args, num_steps=5)
             out = heat_exchanger(*args, num_steps=5, include_saturation_nodes=True)

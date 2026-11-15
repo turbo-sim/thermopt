@@ -1,0 +1,386 @@
+{
+  "version": "0.6.0",
+  "reason": "Corrected generalized-quality/source-reference annotations and two R134a superheating constraint residuals; independently checked against fresh source states and saturation endpoints. Original physical operating-point references and comparison tolerances remain unchanged.",
+  "changes": [
+    {
+      "kind": "quality",
+      "case": "sco2_simple_polytropic",
+      "point": "initial",
+      "component": "expander",
+      "endpoint": "state_in",
+      "previous": -0.7601796047603879,
+      "expected_060": 0.9232531752435585,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "sco2_simple_polytropic",
+      "point": "initial",
+      "component": "expander",
+      "endpoint": "state_out",
+      "previous": -0.9502475831189134,
+      "expected_060": 1.251212346657759,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "sco2_simple_polytropic",
+      "point": "nearby",
+      "component": "expander",
+      "endpoint": "state_in",
+      "previous": -0.7602041961272603,
+      "expected_060": 0.9232388070592599,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "sco2_simple_polytropic",
+      "point": "nearby",
+      "component": "expander",
+      "endpoint": "state_out",
+      "previous": -0.9502532393249747,
+      "expected_060": 1.2511841358946385,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "sco2_recuperated",
+      "point": "initial",
+      "component": "expander",
+      "endpoint": "state_in",
+      "previous": -0.7601796047603879,
+      "expected_060": 0.9232531752435585,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "sco2_recuperated",
+      "point": "initial",
+      "component": "expander",
+      "endpoint": "state_out",
+      "previous": -0.9481336630911514,
+      "expected_060": 1.2450251100717484,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "sco2_recuperated",
+      "point": "nearby",
+      "component": "expander",
+      "endpoint": "state_in",
+      "previous": -0.7602041961272603,
+      "expected_060": 0.9232388070592599,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "sco2_recuperated",
+      "point": "nearby",
+      "component": "expander",
+      "endpoint": "state_out",
+      "previous": -0.9481394109632632,
+      "expected_060": 1.2449965569058217,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "sco2_recompression",
+      "point": "initial",
+      "component": "expander",
+      "endpoint": "state_in",
+      "previous": -0.8963057796506471,
+      "expected_060": 1.0864568242242725,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "sco2_recompression",
+      "point": "initial",
+      "component": "expander",
+      "endpoint": "state_out",
+      "previous": -0.9978066952016512,
+      "expected_060": 1.63186372521087,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "sco2_recompression",
+      "point": "nearby",
+      "component": "expander",
+      "endpoint": "state_in",
+      "previous": -0.8963149513764131,
+      "expected_060": 1.0864335836831962,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "sco2_recompression",
+      "point": "nearby",
+      "component": "expander",
+      "endpoint": "state_out",
+      "previous": -0.9978086183115158,
+      "expected_060": 1.6319344870619195,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "refrigeration_air",
+      "point": "initial",
+      "component": "expander",
+      "endpoint": "state_in",
+      "previous": -0.9836019251733379,
+      "expected_060": 1.9999999998825893,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "refrigeration_air",
+      "point": "initial",
+      "component": "expander",
+      "endpoint": "state_out",
+      "previous": -0.9999999999998564,
+      "expected_060": 2.0000000000000093,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "refrigeration_air",
+      "point": "nearby",
+      "component": "expander",
+      "endpoint": "state_in",
+      "previous": -0.9836108838490221,
+      "expected_060": 1.9999999998827402,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "refrigeration_air",
+      "point": "nearby",
+      "component": "expander",
+      "endpoint": "state_out",
+      "previous": -0.9999999999998582,
+      "expected_060": 2.0000000000000093,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "diagnostic_constraint",
+      "case": "refrigeration_r134a",
+      "point": "initial",
+      "index": 52,
+      "previous": 311.48651551295995,
+      "expected_060": 2.4968274841826767,
+      "source_value": -1.4968274841826767,
+      "constraint": "$components.compressor.state_in.superheating"
+    },
+    {
+      "kind": "diagnostic_constraint",
+      "case": "refrigeration_r134a",
+      "point": "nearby",
+      "index": 52,
+      "previous": 311.4487736920458,
+      "expected_060": 2.591814564520872,
+      "source_value": -1.591814564520872,
+      "constraint": "$components.compressor.state_in.superheating"
+    },
+    {
+      "kind": "quality",
+      "case": "ptes",
+      "point": "initial",
+      "component": "expander_charge",
+      "endpoint": "state_in",
+      "previous": 2.0000000000000093,
+      "expected_060": -1.0,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "ptes",
+      "point": "initial",
+      "component": "expander_discharge",
+      "endpoint": "state_in",
+      "previous": -0.7216895390350113,
+      "expected_060": 0.9057445196760014,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "ptes",
+      "point": "initial",
+      "component": "expander_discharge",
+      "endpoint": "state_out",
+      "previous": -0.9693940481645974,
+      "expected_060": 1.354759683336225,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "ptes",
+      "point": "nearby",
+      "component": "expander_charge",
+      "endpoint": "state_in",
+      "previous": 2.0000000000000093,
+      "expected_060": -1.0,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "ptes",
+      "point": "nearby",
+      "component": "expander_discharge",
+      "endpoint": "state_in",
+      "previous": -0.7217705363258327,
+      "expected_060": 0.9057642340168567,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "ptes",
+      "point": "nearby",
+      "component": "expander_discharge",
+      "endpoint": "state_out",
+      "previous": -0.9694369530359708,
+      "expected_060": 1.3548807193451213,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "ptes_turbo",
+      "point": "initial",
+      "component": "expander_charge",
+      "endpoint": "state_in",
+      "previous": 2.0000000000000093,
+      "expected_060": -1.0,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "ptes_turbo",
+      "point": "initial",
+      "component": "compressor_charge",
+      "endpoint": "state_in",
+      "previous": -0.9514967004030123,
+      "expected_060": 1.3288336675236532,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "ptes_turbo",
+      "point": "initial",
+      "component": "compressor_charge",
+      "endpoint": "state_out",
+      "previous": -0.6746131260433653,
+      "expected_060": 0.9094435115367345,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "ptes_turbo",
+      "point": "initial",
+      "component": "expander_discharge",
+      "endpoint": "state_in",
+      "previous": -0.7216895390350113,
+      "expected_060": 0.9057445196760014,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "ptes_turbo",
+      "point": "initial",
+      "component": "expander_discharge",
+      "endpoint": "state_out",
+      "previous": -0.9685218051259001,
+      "expected_060": 1.3519263178398935,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "ptes_turbo",
+      "point": "initial",
+      "component": "compressor_discharge",
+      "endpoint": "state_in",
+      "previous": -0.9999999999975412,
+      "expected_060": 1.999999995877758,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "ptes_turbo",
+      "point": "initial",
+      "component": "compressor_discharge",
+      "endpoint": "state_out",
+      "previous": -0.8426144826707833,
+      "expected_060": 0.3682710512615201,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "ptes_turbo",
+      "point": "nearby",
+      "component": "expander_charge",
+      "endpoint": "state_in",
+      "previous": 2.0000000000000093,
+      "expected_060": -1.0,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "ptes_turbo",
+      "point": "nearby",
+      "component": "compressor_charge",
+      "endpoint": "state_in",
+      "previous": -0.9514439427568584,
+      "expected_060": 1.3287346016063333,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "ptes_turbo",
+      "point": "nearby",
+      "component": "compressor_charge",
+      "endpoint": "state_out",
+      "previous": -0.6744691739817581,
+      "expected_060": 0.9093890815715697,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "ptes_turbo",
+      "point": "nearby",
+      "component": "expander_discharge",
+      "endpoint": "state_in",
+      "previous": -0.721608551153383,
+      "expected_060": 0.905724800786367,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "ptes_turbo",
+      "point": "nearby",
+      "component": "expander_discharge",
+      "endpoint": "state_out",
+      "previous": -0.9684778405996675,
+      "expected_060": 1.351805510308092,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "ptes_turbo",
+      "point": "nearby",
+      "component": "compressor_discharge",
+      "endpoint": "state_in",
+      "previous": -0.9999999999975696,
+      "expected_060": 1.9999999959591588,
+      "is_two_phase": 0.0
+    },
+    {
+      "kind": "quality",
+      "case": "ptes_turbo",
+      "point": "nearby",
+      "component": "compressor_discharge",
+      "endpoint": "state_out",
+      "previous": -0.8428393586789122,
+      "expected_060": 0.36879606065424864,
+      "is_two_phase": 0.0
+    }
+  ]
+}

@@ -18,15 +18,15 @@ from thermopt.components.basic_components import (
     isenthalpic_valve,
 )
 from thermopt.components.turbomachinery_nondimensional import (
-    CentrifugalCompressor,
-    RadialTurbine,
+    compressor_defaults,
+    turbine_defaults,
     friction_factor,
 )
 
 
 @pytest.fixture(scope="module")
 def air():
-    return props.Fluid("Air", "HEOS")
+    return props.Fluid("Air", backend="HEOS")
 
 
 def assert_finite_state(state):
@@ -123,7 +123,7 @@ def test_isentropic_efficiency_and_air_outlet_regression(air, process, p_in, t_i
     ids=["dense_CO2_compressor", "CO2_expander"],
 )
 def test_real_fluid_machinery_regression(process, p_in, t_in, p_out, temperature, work):
-    fluid = props.Fluid("CO2", "HEOS")
+    fluid = props.Fluid("CO2", backend="HEOS")
     inlet = fluid.get_state(props.PT_INPUTS, p_in, t_in)
     component = process(fluid, inlet.h, inlet.p, p_out, efficiency=0.85)
     assert_finite_state(component["state_out"])
@@ -182,7 +182,7 @@ def test_unknown_efficiency_model_raises(air, process, p_in, t_in, p_out):
     ("R134a", 1e6, 300, 2e5),
 ], ids=["gas", "flashing_refrigerant"])
 def test_valve_is_isenthalpic_and_irreversible(name, p_in, t_in, p_out):
-    fluid = props.Fluid(name, "HEOS")
+    fluid = props.Fluid(name, backend="HEOS")
     inlet = fluid.get_state(props.PT_INPUTS, p_in, t_in)
     path = isenthalpic_valve(inlet, p_out, fluid, N=7)
     assert_finite_state(path)
@@ -225,13 +225,14 @@ def test_cocurrent_total_heat_is_nonzero_and_balanced(air):
 
 
 @pytest.mark.parametrize("process,machine,p_in,t_in,p_out,temperature,work", [
-    (compression_process, CentrifugalCompressor, 1e5, 300, 2e5, 378.3483789342486, 78891.4204162287),
-    (expansion_process, RadialTurbine, 2e5, 600, 1e5, 507.55686502716463, 96219.04336119222),
+    # Compressor reference includes the Figure 4 correction to printed Eq. 23.
+    (compression_process, compressor_defaults, 1e5, 300, 2e5, 378.3336750060007, 78876.53049150406),
+    (expansion_process, turbine_defaults, 2e5, 600, 1e5, 507.55686502716463, 96219.04336119222),
 ], ids=["centrifugal_compressor", "radial_turbine"])
 def test_nondimensional_machine_outlet_and_design_regression(air, process, machine, p_in, t_in, p_out, temperature, work):
     inlet = air.get_state(props.PT_INPUTS, p_in, t_in)
     component = process(air, inlet.h, p_in, p_out, efficiency_type="non-dimensional",
-                        mass_flow=2.0, data_in=machine().data_in.copy())
+                        mass_flow=2.0, data_in=machine())
     assert_finite_state(component["state_out"])
     assert component["state_out"].T == pytest.approx(temperature, rel=2e-6)
     assert component["specific_work"] == pytest.approx(work, rel=2e-6)
@@ -245,9 +246,8 @@ def test_nondimensional_machine_outlet_and_design_regression(air, process, machi
     assert output["correlation_efficiency"] == pytest.approx(matched_efficiency, abs=1e-10)
 
 
-@pytest.mark.xfail(strict=True, raises=KeyError, reason="Existing shrouded compressor uses undefined K_stress_shrouded_phi1/phi2 reference keys.")
 def test_shrouded_compressor_can_evaluate_an_outlet(air):
-    data = CentrifugalCompressor().data_in.copy()
+    data = compressor_defaults()
     data["is_shrouded"] = True
     inlet = air.get_state(props.PT_INPUTS, 1e5, 300.0)
     component = compression_process(air, inlet.h, inlet.p, 2e5, efficiency_type="non-dimensional",

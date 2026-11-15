@@ -1,7 +1,6 @@
 
 import os
 import numpy as np
-import coolpropx as cpx
 
 # Detect if running in GitHub Actions
 IN_GITHUB_ACTIONS = os.environ.get("GITHUB_ACTIONS", "false").lower() == "true"

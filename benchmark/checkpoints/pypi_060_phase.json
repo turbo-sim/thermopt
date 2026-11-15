@@ -1,0 +1,2105 @@
+{
+  "schema": 1,
+  "started_at_utc": "2026-11-15T13:43:13.698986+00:00",
+  "profile": "phase",
+  "grid_size": 100,
+  "samples": 12,
+  "environment": {
+    "python": "3.13.2",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "machine": "AMD64",
+    "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+    "logical_cpus": 28,
+    "device": "TFRT_CPU_0",
+    "x64": true,
+    "dependencies": {
+      "jaxprop": "0.6.0",
+      "jax": "0.6.2",
+      "jaxlib": "0.6.2",
+      "CoolProp": "7.2.0",
+      "numpy": "2.4.4",
+      "scipy": "1.17.1",
+      "pysolver_view": "0.7.1",
+      "equinox": "0.12.2",
+      "diffrax": "0.7.1",
+      "optimistix": "0.0.10",
+      "jaxtyping": "0.3.9",
+      "lineax": "0.1.0",
+      "matplotlib": "3.10.8",
+      "pandas": "2.3.3"
+    }
+  },
+  "jaxprop_path": "C:\\Users\\roagr\\git_projects\\results\\thermopt_locked_060_20261115\\Lib\\site-packages\\jaxprop\\__init__.py",
+  "thermopt_root": "C:\\Users\\roagr\\git_projects\\thermopt",
+  "lock_sha256": "2be5c4ac0a7c9c26e09bffd94529f3ca67ef2d253a33e8992a8afa7a3c71e0d1",
+  "runner_sha256": "6d65c501eed35633e8ce4d7f3c28ba524b35704fcee8515a8fe4d8cf8273b4fc",
+  "workload_sha256": "0792b85c84f917e6106595bf8ff45d458fd8957afd49ea59d0f856b836f443e5",
+  "thermopt_source_sha256": "a0abd437d975e65a9103f0e12bd7bb2e7285606d17d79b426b7ef5d8b95552a6",
+  "warm_ratio_limit": 1.1,
+  "results": {
+    "recuperated_working": {
+      "exit_code": 0,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\results\\thermopt_locked_060_20261115\\Scripts\\python.exe",
+        "C:\\Users\\roagr\\git_projects\\thermopt\\development\\bicubic\\validate_060.py",
+        "--case",
+        "sco2_recuperated",
+        "--grids",
+        "100",
+        "--samples",
+        "12",
+        "--output",
+        "C:\\Users\\roagr\\git_projects\\thermopt\\benchmark\\results\\pypi_060_phase_checkpoint\\recuperated_working",
+        "--table-directory",
+        "C:\\Users\\roagr\\git_projects\\thermopt\\benchmark\\results\\tables"
+      ]
+    },
+    "recuperated_all": {
+      "exit_code": 0,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\results\\thermopt_locked_060_20261115\\Scripts\\python.exe",
+        "C:\\Users\\roagr\\git_projects\\thermopt\\development\\bicubic\\validate_060.py",
+        "--case",
+        "sco2_recuperated",
+        "--grids",
+        "100",
+        "--samples",
+        "12",
+        "--output",
+        "C:\\Users\\roagr\\git_projects\\thermopt\\benchmark\\results\\pypi_060_phase_checkpoint\\recuperated_all",
+        "--table-directory",
+        "C:\\Users\\roagr\\git_projects\\thermopt\\benchmark\\results\\tables",
+        "--all-fluids"
+      ]
+    },
+    "simple_polytropic": {
+      "exit_code": 0,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\results\\thermopt_locked_060_20261115\\Scripts\\python.exe",
+        "C:\\Users\\roagr\\git_projects\\thermopt\\development\\bicubic\\validate_060.py",
+        "--case",
+        "sco2_simple_polytropic",
+        "--grids",
+        "100",
+        "--samples",
+        "12",
+        "--output",
+        "C:\\Users\\roagr\\git_projects\\thermopt\\benchmark\\results\\pypi_060_phase_checkpoint\\simple_polytropic",
+        "--table-directory",
+        "C:\\Users\\roagr\\git_projects\\thermopt\\benchmark\\results\\tables"
+      ]
+    },
+    "recompression": {
+      "exit_code": 0,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\results\\thermopt_locked_060_20261115\\Scripts\\python.exe",
+        "C:\\Users\\roagr\\git_projects\\thermopt\\development\\bicubic\\validate_060.py",
+        "--case",
+        "sco2_recompression",
+        "--grids",
+        "100",
+        "--samples",
+        "12",
+        "--output",
+        "C:\\Users\\roagr\\git_projects\\thermopt\\benchmark\\results\\pypi_060_phase_checkpoint\\recompression",
+        "--table-directory",
+        "C:\\Users\\roagr\\git_projects\\thermopt\\benchmark\\results\\tables"
+      ]
+    },
+    "refrigeration": {
+      "exit_code": 0,
+      "command": [
+        "C:\\Users\\roagr\\git_projects\\results\\thermopt_locked_060_20261115\\Scripts\\python.exe",
+        "C:\\Users\\roagr\\git_projects\\thermopt\\development\\bicubic\\validate_060.py",
+        "--case",
+        "refrigeration_air",
+        "--grids",
+        "100",
+        "--samples",
+        "12",
+        "--output",
+        "C:\\Users\\roagr\\git_projects\\thermopt\\benchmark\\results\\pypi_060_phase_checkpoint\\refrigeration",
+        "--table-directory",
+        "C:\\Users\\roagr\\git_projects\\thermopt\\benchmark\\results\\tables",
+        "--all-fluids"
+      ]
+    }
+  },
+  "timings_seconds": {
+    "recuperated_working/100/source": 0.040235650001704926,
+    "recuperated_working/100/bicubic": 0.02742499999658321,
+    "recuperated_all/100/source": 0.03719229999842355,
+    "recuperated_all/100/bicubic": 0.020332799995230744,
+    "simple_polytropic/100/source": 0.14251375000094413,
+    "simple_polytropic/100/bicubic": 0.08943174999876646,
+    "recompression/100/source": 0.04569965000337106,
+    "recompression/100/bicubic": 0.032815949994983384,
+    "refrigeration/100/source": 0.02901775000646012,
+    "refrigeration/100/bicubic": 0.019174900000507478
+  },
+  "effective_inputs": {
+    "recuperated_working": [
+      {
+        "solver_options": {
+          "library": "scipy",
+          "method": "slsqp",
+          "derivative_method": "2-point",
+          "derivative_abs_step": 1e-06,
+          "problem_scale": 10,
+          "print_convergence": false,
+          "plot_convergence": false,
+          "logger": null,
+          "update_on": "gradient",
+          "tolerance": 1e-12,
+          "max_iterations": 200,
+          "extra_options": {},
+          "callbacks": {}
+        },
+        "problem_formulation": {
+          "cycle_topology": "recuperated",
+          "plot_settings": {
+            "pinch_point_diagram": false,
+            "fluid": {
+              "plot_saturation_line": true,
+              "plot_critical_point": true,
+              "plot_quality_isolines": false,
+              "plot_pseudocritical_line": false,
+              "plot_triple_point_liquid": false,
+              "plot_triple_point_vapor": false
+            },
+            "diagrams": [
+              {
+                "x_prop": "s",
+                "y_prop": "T",
+                "x_scale": "linear",
+                "y_scale": "linear"
+              }
+            ]
+          },
+          "fixed_parameters": {
+            "working_fluid": {
+              "name": "CO2",
+              "backend": "HEOS",
+              "method": "coolprop"
+            },
+            "heating_fluid": {
+              "name": "nitrogen",
+              "backend": "HEOS",
+              "method": "coolprop"
+            },
+            "cooling_fluid": {
+              "name": "water",
+              "backend": "HEOS",
+              "method": "coolprop"
+            },
+            "net_power": 1000000.0,
+            "special_points": {
+              "ambient_pressure": 101325,
+              "ambient_temperature": 298.15,
+              "maximum_temperature": 873.15
+            },
+            "heat_source": {
+              "inlet_temperature": 823.15,
+              "minimum_temperature": 298.15,
+              "inlet_pressure": 101325,
+              "exit_pressure": 101325
+            },
+            "heat_sink": {
+              "inlet_temperature": 293.15,
+              "inlet_pressure": 101325,
+              "exit_pressure": 101325
+            },
+            "heater": {
+              "pressure_drop_hot_side": 0.0,
+              "pressure_drop_cold_side": 0.01,
+              "num_elements": 25
+            },
+            "recuperator": {
+              "pressure_drop_hot_side": 0.01,
+              "pressure_drop_cold_side": 0.01,
+              "num_elements": 25
+            },
+            "cooler": {
+              "pressure_drop_hot_side": 0.01,
+              "pressure_drop_cold_side": 0.0,
+              "num_elements": 25
+            },
+            "expander": {
+              "efficiency": 0.9,
+              "efficiency_type": "isentropic"
+            },
+            "compressor": {
+              "efficiency": 0.85,
+              "efficiency_type": "isentropic"
+            },
+            "heat_source_pump": {
+              "efficiency": 0.8,
+              "efficiency_type": "isentropic"
+            },
+            "heat_sink_pump": {
+              "efficiency": 0.8,
+              "efficiency_type": "isentropic"
+            }
+          },
+          "design_variables": {
+            "heat_source_exit_temperature": {
+              "min": 523.15,
+              "max": 813.15,
+              "value": 723.15
+            },
+            "heat_sink_exit_temperature": {
+              "min": 298.15,
+              "max": 308.15,
+              "value": 303.15
+            },
+            "compressor_inlet_pressure": {
+              "min": "1.1*$working_fluid.critical_point.p",
+              "max": "5.00*$working_fluid.critical_point.p",
+              "value": "2.0*$working_fluid.critical_point.p"
+            },
+            "compressor_inlet_enthalpy": {
+              "min": "1.2*$working_fluid.triple_point_liquid.h",
+              "max": "2.0*$working_fluid.critical_point.h",
+              "value": "4.5*$working_fluid.triple_point_liquid.h"
+            },
+            "expander_inlet_pressure": {
+              "min": "1.1*$working_fluid.critical_point.p",
+              "max": "5.0*$working_fluid.critical_point.p",
+              "value": "4.0*$working_fluid.critical_point.p"
+            },
+            "expander_inlet_enthalpy": {
+              "min": "1.10*$working_fluid.critical_point.h",
+              "max": "1.00*$working_fluid.gas_at_maximum_temperature.h",
+              "value": "0.9*$working_fluid.gas_at_maximum_temperature.h"
+            },
+            "recuperator_effectiveness": {
+              "min": 0.0,
+              "max": 1.0,
+              "value": 1
+            }
+          },
+          "constraints": [
+            {
+              "variable": "$components.heater.temperature_difference",
+              "type": ">",
+              "value": 20.0,
+              "normalize": true
+            },
+            {
+              "variable": "$components.recuperator.temperature_difference",
+              "type": ">",
+              "value": 20.0,
+              "normalize": true
+            },
+            {
+              "variable": "$components.cooler.temperature_difference",
+              "type": ">",
+              "value": 10.0,
+              "normalize": true
+            }
+          ],
+          "objective_function": {
+            "variable": "$energy_analysis.cycle_efficiency",
+            "type": "maximize"
+          }
+        }
+      },
+      {
+        "solver_options": {
+          "library": "scipy",
+          "method": "slsqp",
+          "derivative_method": "2-point",
+          "derivative_abs_step": 1e-06,
+          "problem_scale": 10,
+          "print_convergence": false,
+          "plot_convergence": false,
+          "logger": null,
+          "update_on": "gradient",
+          "tolerance": 1e-12,
+          "max_iterations": 200,
+          "extra_options": {},
+          "callbacks": {}
+        },
+        "problem_formulation": {
+          "cycle_topology": "recuperated",
+          "plot_settings": {
+            "pinch_point_diagram": false,
+            "fluid": {
+              "plot_saturation_line": true,
+              "plot_critical_point": true,
+              "plot_quality_isolines": false,
+              "plot_pseudocritical_line": false,
+              "plot_triple_point_liquid": false,
+              "plot_triple_point_vapor": false
+            },
+            "diagrams": [
+              {
+                "x_prop": "s",
+                "y_prop": "T",
+                "x_scale": "linear",
+                "y_scale": "linear"
+              }
+            ]
+          },
+          "fixed_parameters": {
+            "working_fluid": {
+              "name": "CO2",
+              "backend": "HEOS",
+              "method": "bicubic",
+              "table_options": {
+                "h_min": 110000.0,
+                "h_max": 1300000.0,
+                "p_min": 8000000.0,
+                "p_max": 39000000.0,
+                "N_h": 100,
+                "N_p": 100,
+                "N_p_sat": 8,
+                "gradient_method": "central",
+                "coarse_step": 1
+              }
+            },
+            "heating_fluid": {
+              "name": "nitrogen",
+              "backend": "HEOS",
+              "method": "coolprop"
+            },
+            "cooling_fluid": {
+              "name": "water",
+              "backend": "HEOS",
+              "method": "coolprop"
+            },
+            "net_power": 1000000.0,
+            "special_points": {
+              "ambient_pressure": 101325,
+              "ambient_temperature": 298.15,
+              "maximum_temperature": 873.15
+            },
+            "heat_source": {
+              "inlet_temperature": 823.15,
+              "minimum_temperature": 298.15,
+              "inlet_pressure": 101325,
+              "exit_pressure": 101325
+            },
+            "heat_sink": {
+              "inlet_temperature": 293.15,
+              "inlet_pressure": 101325,
+              "exit_pressure": 101325
+            },
+            "heater": {
+              "pressure_drop_hot_side": 0.0,
+              "pressure_drop_cold_side": 0.01,
+              "num_elements": 25
+            },
+            "recuperator": {
+              "pressure_drop_hot_side": 0.01,
+              "pressure_drop_cold_side": 0.01,
+              "num_elements": 25
+            },
+            "cooler": {
+              "pressure_drop_hot_side": 0.01,
+              "pressure_drop_cold_side": 0.0,
+              "num_elements": 25
+            },
+            "expander": {
+              "efficiency": 0.9,
+              "efficiency_type": "isentropic"
+            },
+            "compressor": {
+              "efficiency": 0.85,
+              "efficiency_type": "isentropic"
+            },
+            "heat_source_pump": {
+              "efficiency": 0.8,
+              "efficiency_type": "isentropic"
+            },
+            "heat_sink_pump": {
+              "efficiency": 0.8,
+              "efficiency_type": "isentropic"
+            }
+          },
+          "design_variables": {
+            "heat_source_exit_temperature": {
+              "min": 523.15,
+              "max": 813.15,
+              "value": 723.15
+            },
+            "heat_sink_exit_temperature": {
+              "min": 298.15,
+              "max": 308.15,
+              "value": 303.15
+            },
+            "compressor_inlet_pressure": {
+              "min": "1.1*$working_fluid.critical_point.p",
+              "max": "5.00*$working_fluid.critical_point.p",
+              "value": "2.0*$working_fluid.critical_point.p"
+            },
+            "compressor_inlet_enthalpy": {
+              "min": "1.2*$working_fluid.triple_point_liquid.h",
+              "max": "2.0*$working_fluid.critical_point.h",
+              "value": "4.5*$working_fluid.triple_point_liquid.h"
+            },
+            "expander_inlet_pressure": {
+              "min": "1.1*$working_fluid.critical_point.p",
+              "max": "5.0*$working_fluid.critical_point.p",
+              "value": "4.0*$working_fluid.critical_point.p"
+            },
+            "expander_inlet_enthalpy": {
+              "min": "1.10*$working_fluid.critical_point.h",
+              "max": "1.00*$working_fluid.gas_at_maximum_temperature.h",
+              "value": "0.9*$working_fluid.gas_at_maximum_temperature.h"
+            },
+            "recuperator_effectiveness": {
+              "min": 0.0,
+              "max": 1.0,
+              "value": 1
+            }
+          },
+          "constraints": [
+            {
+              "variable": "$components.heater.temperature_difference",
+              "type": ">",
+              "value": 20.0,
+              "normalize": true
+            },
+            {
+              "variable": "$components.recuperator.temperature_difference",
+              "type": ">",
+              "value": 20.0,
+              "normalize": true
+            },
+            {
+              "variable": "$components.cooler.temperature_difference",
+              "type": ">",
+              "value": 10.0,
+              "normalize": true
+            }
+          ],
+          "objective_function": {
+            "variable": "$energy_analysis.cycle_efficiency",
+            "type": "maximize"
+          }
+        }
+      }
+    ],
+    "recuperated_all": [
+      {
+        "solver_options": {
+          "library": "scipy",
+          "method": "slsqp",
+          "derivative_method": "2-point",
+          "derivative_abs_step": 1e-06,
+          "problem_scale": 10,
+          "print_convergence": false,
+          "plot_convergence": false,
+          "logger": null,
+          "update_on": "gradient",
+          "tolerance": 1e-12,
+          "max_iterations": 200,
+          "extra_options": {},
+          "callbacks": {}
+        },
+        "problem_formulation": {
+          "cycle_topology": "recuperated",
+          "plot_settings": {
+            "pinch_point_diagram": false,
+            "fluid": {
+              "plot_saturation_line": true,
+              "plot_critical_point": true,
+              "plot_quality_isolines": false,
+              "plot_pseudocritical_line": false,
+              "plot_triple_point_liquid": false,
+              "plot_triple_point_vapor": false
+            },
+            "diagrams": [
+              {
+                "x_prop": "s",
+                "y_prop": "T",
+                "x_scale": "linear",
+                "y_scale": "linear"
+              }
+            ]
+          },
+          "fixed_parameters": {
+            "working_fluid": {
+              "name": "CO2",
+              "backend": "HEOS",
+              "method": "coolprop"
+            },
+            "heating_fluid": {
+              "name": "nitrogen",
+              "backend": "HEOS",
+              "method": "coolprop"
+            },
+            "cooling_fluid": {
+              "name": "water",
+              "backend": "HEOS",
+              "method": "coolprop"
+            },
+            "net_power": 1000000.0,
+            "special_points": {
+              "ambient_pressure": 101325,
+              "ambient_temperature": 298.15,
+              "maximum_temperature": 873.15
+            },
+            "heat_source": {
+              "inlet_temperature": 823.15,
+              "minimum_temperature": 298.15,
+              "inlet_pressure": 101325,
+              "exit_pressure": 101325
+            },
+            "heat_sink": {
+              "inlet_temperature": 293.15,
+              "inlet_pressure": 101325,
+              "exit_pressure": 101325
+            },
+            "heater": {
+              "pressure_drop_hot_side": 0.0,
+              "pressure_drop_cold_side": 0.01,
+              "num_elements": 25
+            },
+            "recuperator": {
+              "pressure_drop_hot_side": 0.01,
+              "pressure_drop_cold_side": 0.01,
+              "num_elements": 25
+            },
+            "cooler": {
+              "pressure_drop_hot_side": 0.01,
+              "pressure_drop_cold_side": 0.0,
+              "num_elements": 25
+            },
+            "expander": {
+              "efficiency": 0.9,
+              "efficiency_type": "isentropic"
+            },
+            "compressor": {
+              "efficiency": 0.85,
+              "efficiency_type": "isentropic"
+            },
+            "heat_source_pump": {
+              "efficiency": 0.8,
+              "efficiency_type": "isentropic"
+            },
+            "heat_sink_pump": {
+              "efficiency": 0.8,
+              "efficiency_type": "isentropic"
+            }
+          },
+          "design_variables": {
+            "heat_source_exit_temperature": {
+              "min": 523.15,
+              "max": 813.15,
+              "value": 723.15
+            },
+            "heat_sink_exit_temperature": {
+              "min": 298.15,
+              "max": 308.15,
+              "value": 303.15
+            },
+            "compressor_inlet_pressure": {
+              "min": "1.1*$working_fluid.critical_point.p",
+              "max": "5.00*$working_fluid.critical_point.p",
+              "value": "2.0*$working_fluid.critical_point.p"
+            },
+            "compressor_inlet_enthalpy": {
+              "min": "1.2*$working_fluid.triple_point_liquid.h",
+              "max": "2.0*$working_fluid.critical_point.h",
+              "value": "4.5*$working_fluid.triple_point_liquid.h"
+            },
+            "expander_inlet_pressure": {
+              "min": "1.1*$working_fluid.critical_point.p",
+              "max": "5.0*$working_fluid.critical_point.p",
+              "value": "4.0*$working_fluid.critical_point.p"
+            },
+            "expander_inlet_enthalpy": {
+              "min": "1.10*$working_fluid.critical_point.h",
+              "max": "1.00*$working_fluid.gas_at_maximum_temperature.h",
+              "value": "0.9*$working_fluid.gas_at_maximum_temperature.h"
+            },
+            "recuperator_effectiveness": {
+              "min": 0.0,
+              "max": 1.0,
+              "value": 1
+            }
+          },
+          "constraints": [
+            {
+              "variable": "$components.heater.temperature_difference",
+              "type": ">",
+              "value": 20.0,
+              "normalize": true
+            },
+            {
+              "variable": "$components.recuperator.temperature_difference",
+              "type": ">",
+              "value": 20.0,
+              "normalize": true
+            },
+            {
+              "variable": "$components.cooler.temperature_difference",
+              "type": ">",
+              "value": 10.0,
+              "normalize": true
+            }
+          ],
+          "objective_function": {
+            "variable": "$energy_analysis.cycle_efficiency",
+            "type": "maximize"
+          }
+        }
+      },
+      {
+        "solver_options": {
+          "library": "scipy",
+          "method": "slsqp",
+          "derivative_method": "2-point",
+          "derivative_abs_step": 1e-06,
+          "problem_scale": 10,
+          "print_convergence": false,
+          "plot_convergence": false,
+          "logger": null,
+          "update_on": "gradient",
+          "tolerance": 1e-12,
+          "max_iterations": 200,
+          "extra_options": {},
+          "callbacks": {}
+        },
+        "problem_formulation": {
+          "cycle_topology": "recuperated",
+          "plot_settings": {
+            "pinch_point_diagram": false,
+            "fluid": {
+              "plot_saturation_line": true,
+              "plot_critical_point": true,
+              "plot_quality_isolines": false,
+              "plot_pseudocritical_line": false,
+              "plot_triple_point_liquid": false,
+              "plot_triple_point_vapor": false
+            },
+            "diagrams": [
+              {
+                "x_prop": "s",
+                "y_prop": "T",
+                "x_scale": "linear",
+                "y_scale": "linear"
+              }
+            ]
+          },
+          "fixed_parameters": {
+            "working_fluid": {
+              "name": "CO2",
+              "backend": "HEOS",
+              "method": "bicubic",
+              "table_options": {
+                "h_min": 110000.0,
+                "h_max": 1300000.0,
+                "p_min": 8000000.0,
+                "p_max": 39000000.0,
+                "N_h": 100,
+                "N_p": 100,
+                "N_p_sat": 8,
+                "gradient_method": "central",
+                "coarse_step": 1
+              }
+            },
+            "heating_fluid": {
+              "name": "nitrogen",
+              "backend": "HEOS",
+              "method": "bicubic",
+              "table_options": {
+                "h_min": 150000.0,
+                "h_max": 1000000.0,
+                "p_min": 90000.0,
+                "p_max": 115000.0,
+                "N_h": 60,
+                "N_p": 8,
+                "N_p_sat": 8,
+                "gradient_method": "central",
+                "coarse_step": 1
+              }
+            },
+            "cooling_fluid": {
+              "name": "water",
+              "backend": "HEOS",
+              "method": "bicubic",
+              "table_options": {
+                "h_min": 60000.0,
+                "h_max": 180000.0,
+                "p_min": 90000.0,
+                "p_max": 115000.0,
+                "N_h": 60,
+                "N_p": 8,
+                "N_p_sat": 8,
+                "gradient_method": "central",
+                "coarse_step": 1
+              }
+            },
+            "net_power": 1000000.0,
+            "special_points": {
+              "ambient_pressure": 101325,
+              "ambient_temperature": 298.15,
+              "maximum_temperature": 873.15
+            },
+            "heat_source": {
+              "inlet_temperature": 823.15,
+              "minimum_temperature": 298.15,
+              "inlet_pressure": 101325,
+              "exit_pressure": 101325
+            },
+            "heat_sink": {
+              "inlet_temperature": 293.15,
+              "inlet_pressure": 101325,
+              "exit_pressure": 101325
+            },
+            "heater": {
+              "pressure_drop_hot_side": 0.0,
+              "pressure_drop_cold_side": 0.01,
+              "num_elements": 25
+            },
+            "recuperator": {
+              "pressure_drop_hot_side": 0.01,
+              "pressure_drop_cold_side": 0.01,
+              "num_elements": 25
+            },
+            "cooler": {
+              "pressure_drop_hot_side": 0.01,
+              "pressure_drop_cold_side": 0.0,
+              "num_elements": 25
+            },
+            "expander": {
+              "efficiency": 0.9,
+              "efficiency_type": "isentropic"
+            },
+            "compressor": {
+              "efficiency": 0.85,
+              "efficiency_type": "isentropic"
+            },
+            "heat_source_pump": {
+              "efficiency": 0.8,
+              "efficiency_type": "isentropic"
+            },
+            "heat_sink_pump": {
+              "efficiency": 0.8,
+              "efficiency_type": "isentropic"
+            }
+          },
+          "design_variables": {
+            "heat_source_exit_temperature": {
+              "min": 523.15,
+              "max": 813.15,
+              "value": 723.15
+            },
+            "heat_sink_exit_temperature": {
+              "min": 298.15,
+              "max": 308.15,
+              "value": 303.15
+            },
+            "compressor_inlet_pressure": {
+              "min": "1.1*$working_fluid.critical_point.p",
+              "max": "5.00*$working_fluid.critical_point.p",
+              "value": "2.0*$working_fluid.critical_point.p"
+            },
+            "compressor_inlet_enthalpy": {
+              "min": "1.2*$working_fluid.triple_point_liquid.h",
+              "max": "2.0*$working_fluid.critical_point.h",
+              "value": "4.5*$working_fluid.triple_point_liquid.h"
+            },
+            "expander_inlet_pressure": {
+              "min": "1.1*$working_fluid.critical_point.p",
+              "max": "5.0*$working_fluid.critical_point.p",
+              "value": "4.0*$working_fluid.critical_point.p"
+            },
+            "expander_inlet_enthalpy": {
+              "min": "1.10*$working_fluid.critical_point.h",
+              "max": "1.00*$working_fluid.gas_at_maximum_temperature.h",
+              "value": "0.9*$working_fluid.gas_at_maximum_temperature.h"
+            },
+            "recuperator_effectiveness": {
+              "min": 0.0,
+              "max": 1.0,
+              "value": 1
+            }
+          },
+          "constraints": [
+            {
+              "variable": "$components.heater.temperature_difference",
+              "type": ">",
+              "value": 20.0,
+              "normalize": true
+            },
+            {
+              "variable": "$components.recuperator.temperature_difference",
+              "type": ">",
+              "value": 20.0,
+              "normalize": true
+            },
+            {
+              "variable": "$components.cooler.temperature_difference",
+              "type": ">",
+              "value": 10.0,
+              "normalize": true
+            }
+          ],
+          "objective_function": {
+            "variable": "$energy_analysis.cycle_efficiency",
+            "type": "maximize"
+          }
+        }
+      }
+    ],
+    "simple_polytropic": [
+      {
+        "solver_options": {
+          "library": "scipy",
+          "method": "slsqp",
+          "derivative_method": "2-point",
+          "derivative_abs_step": 1e-06,
+          "problem_scale": 10,
+          "print_convergence": false,
+          "plot_convergence": false,
+          "logger": null,
+          "update_on": "gradient",
+          "tolerance": 1e-08,
+          "max_iterations": 200,
+          "extra_options": {},
+          "callbacks": {}
+        },
+        "problem_formulation": {
+          "cycle_topology": "simple",
+          "plot_settings": {
+            "pinch_point_diagram": false,
+            "fluid": {
+              "plot_saturation_line": true,
+              "plot_critical_point": true,
+              "plot_quality_isolines": false,
+              "plot_pseudocritical_line": false,
+              "plot_triple_point_liquid": false,
+              "plot_triple_point_vapor": false
+            },
+            "diagrams": [
+              {
+                "x_prop": "s",
+                "y_prop": "T",
+                "x_scale": "linear",
+                "y_scale": "linear"
+              }
+            ]
+          },
+          "fixed_parameters": {
+            "working_fluid": {
+              "name": "CO2",
+              "backend": "HEOS",
+              "method": "coolprop"
+            },
+            "heating_fluid": {
+              "name": "nitrogen",
+              "backend": "HEOS",
+              "method": "coolprop"
+            },
+            "cooling_fluid": {
+              "name": "water",
+              "backend": "HEOS",
+              "method": "coolprop"
+            },
+            "net_power": 1000000.0,
+            "special_points": {
+              "ambient_pressure": 101325,
+              "ambient_temperature": 298.15,
+              "maximum_temperature": 873.15
+            },
+            "heat_source": {
+              "inlet_temperature": 873.15,
+              "minimum_temperature": 473.15,
+              "inlet_pressure": 101325,
+              "exit_pressure": 101325
+            },
+            "heat_sink": {
+              "inlet_temperature": 293.15,
+              "inlet_pressure": 101325,
+              "exit_pressure": 101325
+            },
+            "heater": {
+              "pressure_drop_hot_side": 0.0,
+              "pressure_drop_cold_side": 0.01,
+              "num_elements": 20
+            },
+            "cooler": {
+              "pressure_drop_hot_side": 0.01,
+              "pressure_drop_cold_side": 0.0,
+              "num_elements": 20
+            },
+            "expander": {
+              "efficiency": 0.9,
+              "efficiency_type": "polytropic"
+            },
+            "compressor": {
+              "efficiency": 0.9,
+              "efficiency_type": "polytropic"
+            },
+            "heat_source_pump": {
+              "efficiency": 0.9,
+              "efficiency_type": "isentropic"
+            },
+            "heat_sink_pump": {
+              "efficiency": 0.9,
+              "efficiency_type": "isentropic"
+            }
+          },
+          "design_variables": {
+            "heat_source_exit_temperature": {
+              "min": 473.15,
+              "max": 823.15,
+              "value": 773.15
+            },
+            "heat_sink_exit_temperature": {
+              "min": 298.15,
+              "max": 308.15,
+              "value": 303.15
+            },
+            "compressor_inlet_pressure": {
+              "min": "1.1*$working_fluid.critical_point.p",
+              "max": "5.00*$working_fluid.critical_point.p",
+              "value": "2.0*$working_fluid.critical_point.p"
+            },
+            "compressor_inlet_enthalpy": {
+              "min": "1.2*$working_fluid.triple_point_liquid.h",
+              "max": "2.0*$working_fluid.critical_point.h",
+              "value": "4.5*$working_fluid.triple_point_liquid.h"
+            },
+            "expander_inlet_pressure": {
+              "min": "1.1*$working_fluid.critical_point.p",
+              "max": "5.0*$working_fluid.critical_point.p",
+              "value": "4.0*$working_fluid.critical_point.p"
+            },
+            "expander_inlet_enthalpy": {
+              "min": "1.10*$working_fluid.critical_point.h",
+              "max": "1.00*$working_fluid.gas_at_maximum_temperature.h",
+              "value": "0.9*$working_fluid.gas_at_maximum_temperature.h"
+            }
+          },
+          "constraints": [
+            {
+              "variable": "$components.heater.temperature_difference",
+              "type": ">",
+              "value": 20,
+              "normalize": true
+            },
+            {
+              "variable": "$components.cooler.temperature_difference",
+              "type": ">",
+              "value": 10,
+              "normalize": true
+            }
+          ],
+          "objective_function": {
+            "variable": "$energy_analysis.cycle_efficiency",
+            "type": "maximize"
+          }
+        }
+      },
+      {
+        "solver_options": {
+          "library": "scipy",
+          "method": "slsqp",
+          "derivative_method": "2-point",
+          "derivative_abs_step": 1e-06,
+          "problem_scale": 10,
+          "print_convergence": false,
+          "plot_convergence": false,
+          "logger": null,
+          "update_on": "gradient",
+          "tolerance": 1e-08,
+          "max_iterations": 200,
+          "extra_options": {},
+          "callbacks": {}
+        },
+        "problem_formulation": {
+          "cycle_topology": "simple",
+          "plot_settings": {
+            "pinch_point_diagram": false,
+            "fluid": {
+              "plot_saturation_line": true,
+              "plot_critical_point": true,
+              "plot_quality_isolines": false,
+              "plot_pseudocritical_line": false,
+              "plot_triple_point_liquid": false,
+              "plot_triple_point_vapor": false
+            },
+            "diagrams": [
+              {
+                "x_prop": "s",
+                "y_prop": "T",
+                "x_scale": "linear",
+                "y_scale": "linear"
+              }
+            ]
+          },
+          "fixed_parameters": {
+            "working_fluid": {
+              "name": "CO2",
+              "backend": "HEOS",
+              "method": "bicubic",
+              "table_options": {
+                "h_min": 110000.0,
+                "h_max": 1300000.0,
+                "p_min": 8000000.0,
+                "p_max": 39000000.0,
+                "N_h": 100,
+                "N_p": 100,
+                "N_p_sat": 8,
+                "gradient_method": "central",
+                "coarse_step": 1
+              }
+            },
+            "heating_fluid": {
+              "name": "nitrogen",
+              "backend": "HEOS",
+              "method": "coolprop"
+            },
+            "cooling_fluid": {
+              "name": "water",
+              "backend": "HEOS",
+              "method": "coolprop"
+            },
+            "net_power": 1000000.0,
+            "special_points": {
+              "ambient_pressure": 101325,
+              "ambient_temperature": 298.15,
+              "maximum_temperature": 873.15
+            },
+            "heat_source": {
+              "inlet_temperature": 873.15,
+              "minimum_temperature": 473.15,
+              "inlet_pressure": 101325,
+              "exit_pressure": 101325
+            },
+            "heat_sink": {
+              "inlet_temperature": 293.15,
+              "inlet_pressure": 101325,
+              "exit_pressure": 101325
+            },
+            "heater": {
+              "pressure_drop_hot_side": 0.0,
+              "pressure_drop_cold_side": 0.01,
+              "num_elements": 20
+            },
+            "cooler": {
+              "pressure_drop_hot_side": 0.01,
+              "pressure_drop_cold_side": 0.0,
+              "num_elements": 20
+            },
+            "expander": {
+              "efficiency": 0.9,
+              "efficiency_type": "polytropic"
+            },
+            "compressor": {
+              "efficiency": 0.9,
+              "efficiency_type": "polytropic"
+            },
+            "heat_source_pump": {
+              "efficiency": 0.9,
+              "efficiency_type": "isentropic"
+            },
+            "heat_sink_pump": {
+              "efficiency": 0.9,
+              "efficiency_type": "isentropic"
+            }
+          },
+          "design_variables": {
+            "heat_source_exit_temperature": {
+              "min": 473.15,
+              "max": 823.15,
+              "value": 773.15
+            },
+            "heat_sink_exit_temperature": {
+              "min": 298.15,
+              "max": 308.15,
+              "value": 303.15
+            },
+            "compressor_inlet_pressure": {
+              "min": "1.1*$working_fluid.critical_point.p",
+              "max": "5.00*$working_fluid.critical_point.p",
+              "value": "2.0*$working_fluid.critical_point.p"
+            },
+            "compressor_inlet_enthalpy": {
+              "min": "1.2*$working_fluid.triple_point_liquid.h",
+              "max": "2.0*$working_fluid.critical_point.h",
+              "value": "4.5*$working_fluid.triple_point_liquid.h"
+            },
+            "expander_inlet_pressure": {
+              "min": "1.1*$working_fluid.critical_point.p",
+              "max": "5.0*$working_fluid.critical_point.p",
+              "value": "4.0*$working_fluid.critical_point.p"
+            },
+            "expander_inlet_enthalpy": {
+              "min": "1.10*$working_fluid.critical_point.h",
+              "max": "1.00*$working_fluid.gas_at_maximum_temperature.h",
+              "value": "0.9*$working_fluid.gas_at_maximum_temperature.h"
+            }
+          },
+          "constraints": [
+            {
+              "variable": "$components.heater.temperature_difference",
+              "type": ">",
+              "value": 20,
+              "normalize": true
+            },
+            {
+              "variable": "$components.cooler.temperature_difference",
+              "type": ">",
+              "value": 10,
+              "normalize": true
+            }
+          ],
+          "objective_function": {
+            "variable": "$energy_analysis.cycle_efficiency",
+            "type": "maximize"
+          }
+        }
+      }
+    ],
+    "recompression": [
+      {
+        "solver_options": {
+          "library": "scipy",
+          "method": "slsqp",
+          "derivative_method": "2-point",
+          "derivative_abs_step": 1e-06,
+          "print_convergence": false,
+          "plot_convergence": false,
+          "logger": null,
+          "update_on": "gradient",
+          "tolerance": 1e-06,
+          "max_iterations": 200,
+          "problem_scale": 10,
+          "callbacks": {}
+        },
+        "problem_formulation": {
+          "cycle_topology": "recompression",
+          "plot_settings": {
+            "pinch_point_diagram": true,
+            "fluid": {
+              "plot_saturation_line": true,
+              "plot_critical_point": true,
+              "plot_quality_isolines": true,
+              "plot_pseudocritical_line": false,
+              "plot_triple_point_liquid": false,
+              "plot_triple_point_vapor": false
+            },
+            "diagrams": [
+              {
+                "x_prop": "s",
+                "y_prop": "T",
+                "x_scale": "linear",
+                "y_scale": "linear"
+              }
+            ]
+          },
+          "fixed_parameters": {
+            "net_power": 1000000.0,
+            "special_points": {
+              "ambient_pressure": 101325,
+              "ambient_temperature": 293.15,
+              "maximum_temperature": 773.15
+            },
+            "working_fluid": {
+              "name": "CO2",
+              "backend": "HEOS",
+              "method": "coolprop"
+            },
+            "heating_fluid": {
+              "name": "nitrogen",
+              "backend": "HEOS",
+              "method": "coolprop"
+            },
+            "cooling_fluid": {
+              "name": "water",
+              "backend": "HEOS",
+              "method": "coolprop"
+            },
+            "heat_source": {
+              "inlet_temperature": 823.15,
+              "minimum_temperature": 298.15,
+              "inlet_pressure": 101325,
+              "exit_pressure": 101325
+            },
+            "heat_sink": {
+              "inlet_temperature": 293.15,
+              "inlet_pressure": 101325,
+              "exit_pressure": 101325
+            },
+            "heater": {
+              "pressure_drop_hot_side": 0.01,
+              "pressure_drop_cold_side": 0.02,
+              "num_elements": 20
+            },
+            "recuperator_lowT": {
+              "pressure_drop_hot_side": 0.02,
+              "pressure_drop_cold_side": 0.02,
+              "num_elements": 20
+            },
+            "recuperator_highT": {
+              "pressure_drop_hot_side": 0.02,
+              "pressure_drop_cold_side": 0.02,
+              "num_elements": 20
+            },
+            "cooler": {
+              "pressure_drop_hot_side": 0.02,
+              "pressure_drop_cold_side": 0.02,
+              "num_elements": 20
+            },
+            "expander": {
+              "efficiency": 0.9,
+              "efficiency_type": "isentropic"
+            },
+            "main_compressor": {
+              "efficiency": 0.85,
+              "efficiency_type": "isentropic"
+            },
+            "split_compressor": {
+              "efficiency": 0.85,
+              "efficiency_type": "isentropic"
+            },
+            "heat_source_pump": {
+              "efficiency": 0.8,
+              "efficiency_type": "isentropic"
+            },
+            "heat_sink_pump": {
+              "efficiency": 0.8,
+              "efficiency_type": "isentropic"
+            }
+          },
+          "objective_function": {
+            "variable": "$energy_analysis.cycle_efficiency",
+            "type": "maximize"
+          },
+          "design_variables": {
+            "heat_source_exit_temperature": {
+              "min": 523.15,
+              "max": 813.15,
+              "value": 723.15
+            },
+            "heat_sink_exit_temperature": {
+              "min": 298.15,
+              "max": 308.15,
+              "value": 303.15
+            },
+            "main_compressor_inlet_pressure": {
+              "min": "1.1*$working_fluid.critical_point.p",
+              "max": "2.00*$working_fluid.critical_point.p",
+              "value": "1.25*$working_fluid.critical_point.p"
+            },
+            "main_compressor_inlet_enthalpy": {
+              "min": "0.9*$working_fluid.liquid_at_ambient_temperature.h",
+              "max": "2.0*$working_fluid.liquid_at_ambient_temperature.h",
+              "value": "1.2*$working_fluid.liquid_at_ambient_temperature.h"
+            },
+            "expander_inlet_pressure": {
+              "min": "1.5*$working_fluid.critical_point.p",
+              "max": "5.0*$working_fluid.critical_point.p",
+              "value": "3.0*$working_fluid.critical_point.p"
+            },
+            "expander_inlet_enthalpy": {
+              "min": "0.5*$working_fluid.gas_at_maximum_temperature.h",
+              "max": "1.0*$working_fluid.gas_at_maximum_temperature.h",
+              "value": "0.9*$working_fluid.gas_at_maximum_temperature.h"
+            },
+            "split_compressor_inlet_enthalpy": {
+              "min": "1.0*$working_fluid.liquid_at_ambient_temperature.h",
+              "max": "1.0*$working_fluid.gas_at_maximum_temperature.h",
+              "value": "0.30*($working_fluid.gas_at_maximum_temperature.h - $working_fluid.liquid_at_ambient_temperature.h) + $working_fluid.liquid_at_ambient_temperature.h"
+            },
+            "recuperator_intermediate_enthalpy": {
+              "min": "1.00*$working_fluid.critical_point.h",
+              "max": "1.00*$working_fluid.gas_at_maximum_temperature.h",
+              "value": "0.5*($working_fluid.gas_at_maximum_temperature.h - $working_fluid.critical_point.h) + $working_fluid.critical_point.h"
+            },
+            "mass_split_fraction": {
+              "min": 0.0,
+              "max": 0.8,
+              "value": 0.5
+            }
+          },
+          "constraints": [
+            {
+              "variable": "$components.heater.temperature_difference",
+              "type": ">",
+              "value": 15,
+              "normalize": true
+            },
+            {
+              "variable": "$components.recuperator_lowT.temperature_difference",
+              "type": ">",
+              "value": 10,
+              "normalize": true
+            },
+            {
+              "variable": "$components.recuperator_highT.temperature_difference",
+              "type": ">",
+              "value": 10,
+              "normalize": true
+            },
+            {
+              "variable": "$components.cooler.temperature_difference",
+              "type": ">",
+              "value": 10,
+              "normalize": true
+            }
+          ]
+        }
+      },
+      {
+        "solver_options": {
+          "library": "scipy",
+          "method": "slsqp",
+          "derivative_method": "2-point",
+          "derivative_abs_step": 1e-06,
+          "print_convergence": false,
+          "plot_convergence": false,
+          "logger": null,
+          "update_on": "gradient",
+          "tolerance": 1e-06,
+          "max_iterations": 200,
+          "problem_scale": 10,
+          "callbacks": {}
+        },
+        "problem_formulation": {
+          "cycle_topology": "recompression",
+          "plot_settings": {
+            "pinch_point_diagram": true,
+            "fluid": {
+              "plot_saturation_line": true,
+              "plot_critical_point": true,
+              "plot_quality_isolines": true,
+              "plot_pseudocritical_line": false,
+              "plot_triple_point_liquid": false,
+              "plot_triple_point_vapor": false
+            },
+            "diagrams": [
+              {
+                "x_prop": "s",
+                "y_prop": "T",
+                "x_scale": "linear",
+                "y_scale": "linear"
+              }
+            ]
+          },
+          "fixed_parameters": {
+            "net_power": 1000000.0,
+            "special_points": {
+              "ambient_pressure": 101325,
+              "ambient_temperature": 293.15,
+              "maximum_temperature": 773.15
+            },
+            "working_fluid": {
+              "name": "CO2",
+              "backend": "HEOS",
+              "method": "bicubic",
+              "table_options": {
+                "h_min": 110000.0,
+                "h_max": 1300000.0,
+                "p_min": 8000000.0,
+                "p_max": 39000000.0,
+                "N_h": 100,
+                "N_p": 100,
+                "N_p_sat": 8,
+                "gradient_method": "central",
+                "coarse_step": 1
+              }
+            },
+            "heating_fluid": {
+              "name": "nitrogen",
+              "backend": "HEOS",
+              "method": "coolprop"
+            },
+            "cooling_fluid": {
+              "name": "water",
+              "backend": "HEOS",
+              "method": "coolprop"
+            },
+            "heat_source": {
+              "inlet_temperature": 823.15,
+              "minimum_temperature": 298.15,
+              "inlet_pressure": 101325,
+              "exit_pressure": 101325
+            },
+            "heat_sink": {
+              "inlet_temperature": 293.15,
+              "inlet_pressure": 101325,
+              "exit_pressure": 101325
+            },
+            "heater": {
+              "pressure_drop_hot_side": 0.01,
+              "pressure_drop_cold_side": 0.02,
+              "num_elements": 20
+            },
+            "recuperator_lowT": {
+              "pressure_drop_hot_side": 0.02,
+              "pressure_drop_cold_side": 0.02,
+              "num_elements": 20
+            },
+            "recuperator_highT": {
+              "pressure_drop_hot_side": 0.02,
+              "pressure_drop_cold_side": 0.02,
+              "num_elements": 20
+            },
+            "cooler": {
+              "pressure_drop_hot_side": 0.02,
+              "pressure_drop_cold_side": 0.02,
+              "num_elements": 20
+            },
+            "expander": {
+              "efficiency": 0.9,
+              "efficiency_type": "isentropic"
+            },
+            "main_compressor": {
+              "efficiency": 0.85,
+              "efficiency_type": "isentropic"
+            },
+            "split_compressor": {
+              "efficiency": 0.85,
+              "efficiency_type": "isentropic"
+            },
+            "heat_source_pump": {
+              "efficiency": 0.8,
+              "efficiency_type": "isentropic"
+            },
+            "heat_sink_pump": {
+              "efficiency": 0.8,
+              "efficiency_type": "isentropic"
+            }
+          },
+          "objective_function": {
+            "variable": "$energy_analysis.cycle_efficiency",
+            "type": "maximize"
+          },
+          "design_variables": {
+            "heat_source_exit_temperature": {
+              "min": 523.15,
+              "max": 813.15,
+              "value": 723.15
+            },
+            "heat_sink_exit_temperature": {
+              "min": 298.15,
+              "max": 308.15,
+              "value": 303.15
+            },
+            "main_compressor_inlet_pressure": {
+              "min": "1.1*$working_fluid.critical_point.p",
+              "max": "2.00*$working_fluid.critical_point.p",
+              "value": "1.25*$working_fluid.critical_point.p"
+            },
+            "main_compressor_inlet_enthalpy": {
+              "min": "0.9*$working_fluid.liquid_at_ambient_temperature.h",
+              "max": "2.0*$working_fluid.liquid_at_ambient_temperature.h",
+              "value": "1.2*$working_fluid.liquid_at_ambient_temperature.h"
+            },
+            "expander_inlet_pressure": {
+              "min": "1.5*$working_fluid.critical_point.p",
+              "max": "5.0*$working_fluid.critical_point.p",
+              "value": "3.0*$working_fluid.critical_point.p"
+            },
+            "expander_inlet_enthalpy": {
+              "min": "0.5*$working_fluid.gas_at_maximum_temperature.h",
+              "max": "1.0*$working_fluid.gas_at_maximum_temperature.h",
+              "value": "0.9*$working_fluid.gas_at_maximum_temperature.h"
+            },
+            "split_compressor_inlet_enthalpy": {
+              "min": "1.0*$working_fluid.liquid_at_ambient_temperature.h",
+              "max": "1.0*$working_fluid.gas_at_maximum_temperature.h",
+              "value": "0.30*($working_fluid.gas_at_maximum_temperature.h - $working_fluid.liquid_at_ambient_temperature.h) + $working_fluid.liquid_at_ambient_temperature.h"
+            },
+            "recuperator_intermediate_enthalpy": {
+              "min": "1.00*$working_fluid.critical_point.h",
+              "max": "1.00*$working_fluid.gas_at_maximum_temperature.h",
+              "value": "0.5*($working_fluid.gas_at_maximum_temperature.h - $working_fluid.critical_point.h) + $working_fluid.critical_point.h"
+            },
+            "mass_split_fraction": {
+              "min": 0.0,
+              "max": 0.8,
+              "value": 0.5
+            }
+          },
+          "constraints": [
+            {
+              "variable": "$components.heater.temperature_difference",
+              "type": ">",
+              "value": 15,
+              "normalize": true
+            },
+            {
+              "variable": "$components.recuperator_lowT.temperature_difference",
+              "type": ">",
+              "value": 10,
+              "normalize": true
+            },
+            {
+              "variable": "$components.recuperator_highT.temperature_difference",
+              "type": ">",
+              "value": 10,
+              "normalize": true
+            },
+            {
+              "variable": "$components.cooler.temperature_difference",
+              "type": ">",
+              "value": 10,
+              "normalize": true
+            }
+          ]
+        }
+      }
+    ],
+    "refrigeration": [
+      {
+        "solver_options": {
+          "library": "scipy",
+          "method": "slsqp",
+          "derivative_method": "2-point",
+          "derivative_abs_step": 1e-06,
+          "print_convergence": false,
+          "plot_convergence": false,
+          "logger": null,
+          "update_on": "gradient",
+          "tolerance": 1e-06,
+          "max_iterations": 50,
+          "problem_scale": 10,
+          "callbacks": {}
+        },
+        "problem_formulation": {
+          "cycle_topology": "refrigeration_recuperated",
+          "plot_settings": {
+            "pinch_point_diagram": true,
+            "fluid": {
+              "plot_saturation_line": false,
+              "plot_critical_point": false,
+              "plot_quality_isolines": false,
+              "plot_pseudocritical_line": false,
+              "plot_triple_point_liquid": false,
+              "plot_triple_point_vapor": false
+            },
+            "diagrams": [
+              {
+                "x_prop": "s",
+                "y_prop": "T",
+                "x_scale": "linear",
+                "y_scale": "linear"
+              }
+            ]
+          },
+          "fixed_parameters": {
+            "working_fluid": {
+              "name": "nitrogen",
+              "backend": "HEOS",
+              "method": "coolprop"
+            },
+            "heating_fluid": {
+              "name": "nitrogen",
+              "backend": "HEOS",
+              "method": "coolprop"
+            },
+            "cooling_fluid": {
+              "name": "nitrogen",
+              "backend": "HEOS",
+              "method": "coolprop"
+            },
+            "heat_duty": 1000000.0,
+            "special_points": {
+              "ambient_pressure": 101325,
+              "ambient_temperature": 298.15,
+              "maximum_temperature": 873.15
+            },
+            "heat_source": {
+              "inlet_temperature": 200,
+              "inlet_pressure": 101325,
+              "exit_pressure": 101325
+            },
+            "heat_sink": {
+              "inlet_temperature": 300,
+              "inlet_pressure": 101325,
+              "exit_pressure": 101325
+            },
+            "heater": {
+              "pressure_drop_hot_side": 0.0,
+              "pressure_drop_cold_side": 0.0,
+              "num_elements": 25
+            },
+            "recuperator": {
+              "pressure_drop_hot_side": 0.0,
+              "pressure_drop_cold_side": 0.0,
+              "num_elements": 25
+            },
+            "cooler": {
+              "pressure_drop_hot_side": 0.0,
+              "pressure_drop_cold_side": 0.0,
+              "num_elements": 25
+            },
+            "expander": {
+              "efficiency": 0.9,
+              "efficiency_type": "isentropic"
+            },
+            "compressor": {
+              "efficiency": 0.9,
+              "efficiency_type": "isentropic"
+            },
+            "heat_source_pump": {
+              "efficiency": 0.9,
+              "efficiency_type": "isentropic"
+            },
+            "heat_sink_pump": {
+              "efficiency": 0.9,
+              "efficiency_type": "isentropic"
+            }
+          },
+          "design_variables": {
+            "heat_source_exit_temperature": {
+              "min": 150,
+              "max": 250,
+              "value": 180
+            },
+            "heat_sink_exit_temperature": {
+              "min": 301,
+              "max": 400,
+              "value": 350
+            },
+            "compressor_inlet_pressure": {
+              "min": 50000.0,
+              "max": 200000.0,
+              "value": 100000.0
+            },
+            "compressor_inlet_enthalpy": {
+              "min": 200000,
+              "max": 500000,
+              "value": 300000
+            },
+            "expander_inlet_pressure": {
+              "min": 100000.0,
+              "max": 1000000.0,
+              "value": 300000.0
+            },
+            "expander_inlet_enthalpy": {
+              "min": 200000,
+              "max": 300000,
+              "value": 220000
+            },
+            "recuperator_inlet_enthalpy_hot": {
+              "min": 200000,
+              "max": 500000,
+              "value": 330000
+            }
+          },
+          "constraints": [
+            {
+              "variable": "$components.heater.temperature_difference",
+              "type": ">",
+              "value": 5,
+              "normalize": true
+            },
+            {
+              "variable": "$components.cooler.temperature_difference",
+              "type": ">",
+              "value": 5,
+              "normalize": true
+            },
+            {
+              "variable": "$components.recuperator.temperature_difference",
+              "type": ">",
+              "value": 5,
+              "normalize": true
+            }
+          ],
+          "objective_function": {
+            "variable": "$energy_analysis.COP_refrigeration",
+            "type": "maximize"
+          }
+        }
+      },
+      {
+        "solver_options": {
+          "library": "scipy",
+          "method": "slsqp",
+          "derivative_method": "2-point",
+          "derivative_abs_step": 1e-06,
+          "print_convergence": false,
+          "plot_convergence": false,
+          "logger": null,
+          "update_on": "gradient",
+          "tolerance": 1e-06,
+          "max_iterations": 50,
+          "problem_scale": 10,
+          "callbacks": {}
+        },
+        "problem_formulation": {
+          "cycle_topology": "refrigeration_recuperated",
+          "plot_settings": {
+            "pinch_point_diagram": true,
+            "fluid": {
+              "plot_saturation_line": false,
+              "plot_critical_point": false,
+              "plot_quality_isolines": false,
+              "plot_pseudocritical_line": false,
+              "plot_triple_point_liquid": false,
+              "plot_triple_point_vapor": false
+            },
+            "diagrams": [
+              {
+                "x_prop": "s",
+                "y_prop": "T",
+                "x_scale": "linear",
+                "y_scale": "linear"
+              }
+            ]
+          },
+          "fixed_parameters": {
+            "working_fluid": {
+              "name": "nitrogen",
+              "backend": "HEOS",
+              "method": "bicubic",
+              "table_options": {
+                "h_min": 100000.0,
+                "h_max": 700000.0,
+                "p_min": 40000.0,
+                "p_max": 1200000.0,
+                "N_h": 100,
+                "N_p": 100,
+                "N_p_sat": 8,
+                "gradient_method": "central",
+                "coarse_step": 1
+              }
+            },
+            "heating_fluid": {
+              "name": "nitrogen",
+              "backend": "HEOS",
+              "method": "bicubic",
+              "table_options": {
+                "h_min": 150000.0,
+                "h_max": 1000000.0,
+                "p_min": 90000.0,
+                "p_max": 115000.0,
+                "N_h": 60,
+                "N_p": 8,
+                "N_p_sat": 8,
+                "gradient_method": "central",
+                "coarse_step": 1
+              }
+            },
+            "cooling_fluid": {
+              "name": "nitrogen",
+              "backend": "HEOS",
+              "method": "bicubic",
+              "table_options": {
+                "h_min": 150000.0,
+                "h_max": 1000000.0,
+                "p_min": 90000.0,
+                "p_max": 115000.0,
+                "N_h": 60,
+                "N_p": 8,
+                "N_p_sat": 8,
+                "gradient_method": "central",
+                "coarse_step": 1
+              }
+            },
+            "heat_duty": 1000000.0,
+            "special_points": {
+              "ambient_pressure": 101325,
+              "ambient_temperature": 298.15,
+              "maximum_temperature": 873.15
+            },
+            "heat_source": {
+              "inlet_temperature": 200,
+              "inlet_pressure": 101325,
+              "exit_pressure": 101325
+            },
+            "heat_sink": {
+              "inlet_temperature": 300,
+              "inlet_pressure": 101325,
+              "exit_pressure": 101325
+            },
+            "heater": {
+              "pressure_drop_hot_side": 0.0,
+              "pressure_drop_cold_side": 0.0,
+              "num_elements": 25
+            },
+            "recuperator": {
+              "pressure_drop_hot_side": 0.0,
+              "pressure_drop_cold_side": 0.0,
+              "num_elements": 25
+            },
+            "cooler": {
+              "pressure_drop_hot_side": 0.0,
+              "pressure_drop_cold_side": 0.0,
+              "num_elements": 25
+            },
+            "expander": {
+              "efficiency": 0.9,
+              "efficiency_type": "isentropic"
+            },
+            "compressor": {
+              "efficiency": 0.9,
+              "efficiency_type": "isentropic"
+            },
+            "heat_source_pump": {
+              "efficiency": 0.9,
+              "efficiency_type": "isentropic"
+            },
+            "heat_sink_pump": {
+              "efficiency": 0.9,
+              "efficiency_type": "isentropic"
+            }
+          },
+          "design_variables": {
+            "heat_source_exit_temperature": {
+              "min": 150,
+              "max": 250,
+              "value": 180
+            },
+            "heat_sink_exit_temperature": {
+              "min": 301,
+              "max": 400,
+              "value": 350
+            },
+            "compressor_inlet_pressure": {
+              "min": 50000.0,
+              "max": 200000.0,
+              "value": 100000.0
+            },
+            "compressor_inlet_enthalpy": {
+              "min": 200000,
+              "max": 500000,
+              "value": 300000
+            },
+            "expander_inlet_pressure": {
+              "min": 100000.0,
+              "max": 1000000.0,
+              "value": 300000.0
+            },
+            "expander_inlet_enthalpy": {
+              "min": 200000,
+              "max": 300000,
+              "value": 220000
+            },
+            "recuperator_inlet_enthalpy_hot": {
+              "min": 200000,
+              "max": 500000,
+              "value": 330000
+            }
+          },
+          "constraints": [
+            {
+              "variable": "$components.heater.temperature_difference",
+              "type": ">",
+              "value": 5,
+              "normalize": true
+            },
+            {
+              "variable": "$components.cooler.temperature_difference",
+              "type": ">",
+              "value": 5,
+              "normalize": true
+            },
+            {
+              "variable": "$components.recuperator.temperature_difference",
+              "type": ">",
+              "value": 5,
+              "normalize": true
+            }
+          ],
+          "objective_function": {
+            "variable": "$energy_analysis.COP_refrigeration",
+            "type": "maximize"
+          }
+        }
+      }
+    ]
+  },
+  "interpretation": "Shared-machine timing flags require fresh repeat cohorts; never silently relax limits.",
+  "source_and_protocol_unchanged_during_run": true,
+  "comparison_signature": "47c1238607c3c4b7e9f923df3f8387e699adade6eca45e1a29da8ed9cbb285a6",
+  "numerical_checks_passed": true,
+  "timing_flags": [],
+  "comparison_status": "baseline candidate; no between-phase performance acceptance claimed",
+  "finished_at_utc": "2026-11-15T13:44:03.617527+00:00",
+  "raw_samples_seconds": {
+    "recuperated_working/100": {
+      "source": [
+        0.03446290000283625,
+        0.03940319999674102,
+        0.037350699996750336,
+        0.036174799999571405,
+        0.03629650000220863,
+        0.040689300003577955,
+        0.042799499999091495,
+        0.04167909999523545,
+        0.04277939999883529,
+        0.040611900003568735,
+        0.039859399999841116,
+        0.04120439999678638
+      ],
+      "bicubic": [
+        0.024965800002973992,
+        0.02467649999744026,
+        0.026241299994580913,
+        0.0267768999983673,
+        0.0280440999995335,
+        0.02703789999941364,
+        0.031732700001157355,
+        0.03005039999698056,
+        0.02852809999603778,
+        0.029715000004216563,
+        0.0275197999944794,
+        0.02733019999868702
+      ]
+    },
+    "recuperated_all/100": {
+      "source": [
+        0.035845400001562666,
+        0.037109099997906014,
+        0.037275499998941086,
+        0.039955700005521066,
+        0.04065779999655206,
+        0.034937900003569666,
+        0.03548429999500513,
+        0.035993799996504094,
+        0.035112700003082864,
+        0.041383700001460966,
+        0.03957470000023022,
+        0.03879120000055991
+      ],
+      "bicubic": [
+        0.019760900002438575,
+        0.017477699999290053,
+        0.02238059999945108,
+        0.028669799998169765,
+        0.019369499997992534,
+        0.019368699999176897,
+        0.024007799998798873,
+        0.017854999998235144,
+        0.020951300000888295,
+        0.02428890000010142,
+        0.020385899995744694,
+        0.020279699994716793
+      ]
+    },
+    "simple_polytropic/100": {
+      "source": [
+        0.1760437000048114,
+        0.14633150000008754,
+        0.14597759999742266,
+        0.1418338000003132,
+        0.15599149999616202,
+        0.14319370000157505,
+        0.13404789999913191,
+        0.13435190000018338,
+        0.13804689999960829,
+        0.13309509999817237,
+        0.13765820000116946,
+        0.14351110000279732
+      ],
+      "bicubic": [
+        0.09704389999387786,
+        0.11048009999649366,
+        0.08850469999742927,
+        0.08693620000121882,
+        0.10018020000279648,
+        0.09666589999687858,
+        0.08028480000211857,
+        0.08361149999836925,
+        0.09035880000010366,
+        0.08588449999660952,
+        0.0824607999966247,
+        0.10119459999987157
+      ]
+    },
+    "recompression/100": {
+      "source": [
+        0.04675670000142418,
+        0.04122759999881964,
+        0.041824100000667386,
+        0.04506050000054529,
+        0.04192519999924116,
+        0.046338800006196834,
+        0.05857389999437146,
+        0.050667499999690335,
+        0.051766000004136004,
+        0.04689130000042496,
+        0.04312270000082208,
+        0.04393149999668822
+      ],
+      "bicubic": [
+        0.03192790000321111,
+        0.03237809999700403,
+        0.0371034999989206,
+        0.0337643000020762,
+        0.02885239999886835,
+        0.02924199999688426,
+        0.0359558999989531,
+        0.0395312999971793,
+        0.03372210000088671,
+        0.032071000001451466,
+        0.03321219999634195,
+        0.03241969999362482
+      ]
+    },
+    "refrigeration/100": {
+      "source": [
+        0.02988599999662256,
+        0.028556099998240825,
+        0.027985399996396154,
+        0.029076000006170943,
+        0.030103900004178286,
+        0.028959500006749295,
+        0.02768120000109775,
+        0.027604100003372878,
+        0.027944599998591002,
+        0.029548799997428432,
+        0.029893799997807946,
+        0.029632599995238706
+      ],
+      "bicubic": [
+        0.020540199999231845,
+        0.018465900000592228,
+        0.01896370000031311,
+        0.01826460000302177,
+        0.019386100000701845,
+        0.01823539999895729,
+        0.01814590000140015,
+        0.017391400004271418,
+        0.020039600000018254,
+        0.01978959999541985,
+        0.019942599996284116,
+        0.020029100000101607
+      ]
+    }
+  },
+  "numerical_agreement": {
+    "recuperated_working/100": {
+      "maximum_temperature_error_K": 3.232487279092311e-05,
+      "maximum_density_relative_error": 5.501691704434819e-07,
+      "maximum_residual_error": 3.2324872791811288e-06,
+      "efficiency_absolute_error": 3.009933324804592e-08
+    },
+    "recuperated_all/100": {
+      "maximum_temperature_error_K": 3.232488626281338e-05,
+      "maximum_density_relative_error": 5.501691704434819e-07,
+      "maximum_residual_error": 3.2324886261037022e-06,
+      "efficiency_absolute_error": 3.010108273748813e-08
+    },
+    "simple_polytropic/100": {
+      "maximum_temperature_error_K": 2.948781286704616e-05,
+      "maximum_density_relative_error": 8.720349531365912e-08,
+      "maximum_residual_error": 2.948781286704616e-06,
+      "efficiency_absolute_error": 5.082070320128196e-10
+    },
+    "recompression/100": {
+      "maximum_temperature_error_K": 0.00016176445433302433,
+      "maximum_density_relative_error": 2.6634790164514754e-06,
+      "maximum_residual_error": 1.617644543339125e-05,
+      "efficiency_absolute_error": 2.462242298939543e-09
+    },
+    "refrigeration/100": {
+      "maximum_temperature_error_K": 3.146290254107953e-06,
+      "maximum_density_relative_error": 2.3234942275740522e-06,
+      "maximum_residual_error": 5.952797721420211e-07,
+      "efficiency_absolute_error": 8.302577958474444e-09
+    }
+  },
+  "retention_note": "Initial single-cohort reference for matching future phases; no between-phase regression acceptance claimed."
+}

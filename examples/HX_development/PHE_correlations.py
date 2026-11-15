@@ -157,9 +157,7 @@ def get_amalfi_nondimensional_groups(geometry, mass_flow, p, h, Fluid):
     mass_flow : float
         Mass flow rate [kg/s]
     Fluid : object
-        CoolProp AbstractState object (or equivalent) with .get_state(...)
-    th : module
-        Thermodynamic input key (e.g., CoolProp wrapper with PHmass_inputs)
+        jaxprop fluid object with .get_state(...)
 
     Returns
     -------
@@ -179,23 +177,14 @@ def get_amalfi_nondimensional_groups(geometry, mass_flow, p, h, Fluid):
 
     # --- Thermodynamic states ---
     # Saturated liquid and vapor
-    Fluid.update(th.PQ_INPUTS, p, 0)
-    rho_l = Fluid.rhomass()
-    mu_l = Fluid.viscosity()
-    h_l = Fluid.hmass()
-
-    Fluid.update(th.PQ_INPUTS, p, 1)
-    rho_v = Fluid.rhomass()
-    mu_v = Fluid.viscosity()
-    h_v = Fluid.hmass()
-
-    sigma = Fluid.surface_tension()  # [N/m]
-
-    # Mixture (inlet) properties
-    Fluid.update(th.PHmass_INPUTS, p, h)
-    rho_m = Fluid.rhomass()
-    k_l = Fluid.conductivity()  # Use liquid for Pr
-    cp_l = Fluid.cpmass()
+    import jaxprop as props
+    liquid = Fluid.get_state(props.PQ_INPUTS, p, 0)
+    vapor = Fluid.get_state(props.PQ_INPUTS, p, 1)
+    rho_l, mu_l, h_l = liquid.rho, liquid.mu, liquid.h
+    rho_v, mu_v, h_v = vapor.rho, vapor.mu, vapor.h
+    sigma = vapor.surface_tension
+    mixture = Fluid.get_state(props.HmassP_INPUTS, h, p)
+    rho_m, k_l, cp_l = mixture.rho, mixture.k, mixture.cp
     Pr_l = mu_l * cp_l / k_l
 
     # --- Mean velocity ---

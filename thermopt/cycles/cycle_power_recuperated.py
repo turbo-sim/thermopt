@@ -14,21 +14,16 @@ def evaluate_cycle(
     constraints,
     objective_function,
     recuperated=True,
+    fluids=None,
 ):
     # Create copies to not change the originals
     variables = copy.deepcopy(variables)
     parameters = copy.deepcopy(parameters)
 
     # Initialize fluid objects
-    working_fluid = cpx.Fluid(
-        **parameters.pop("working_fluid"), identifier="working_fluid"
-    )
-    heating_fluid = cpx.Fluid(
-        **parameters.pop("heating_fluid"), identifier="heating_fluid"
-    )
-    cooling_fluid = cpx.Fluid(
-        **parameters.pop("cooling_fluid"), identifier="cooling_fluid"
-    )
+    working_fluid = utilities.get_cycle_fluid(parameters, "working_fluid", fluids)
+    heating_fluid = utilities.get_cycle_fluid(parameters, "heating_fluid", fluids)
+    cooling_fluid = utilities.get_cycle_fluid(parameters, "cooling_fluid", fluids)
 
     # Extract special points
     special_points = parameters.pop("special_points")
@@ -100,7 +95,6 @@ def evaluate_cycle(
     p_in_cold = compressor["state_out"].p
     h_in_cold = compressor["state_out"].h
     p_out_cold = p_in_cold * (1.0 - dp_recup_c)
-    h_out_cold_ideal = working_fluid.get_state(cpx.PT_INPUTS, p_out_cold, T_in_hot).h
     h_out_cold_ideal = working_fluid.get_state(cpx.PT_INPUTS, p_out_cold, T_in_hot).h
     h_out_cold_actual = h_in_cold + eps * (h_out_cold_ideal - h_in_cold)
     p_in_hot = expander["state_out"].p

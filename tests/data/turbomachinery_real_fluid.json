@@ -1,0 +1,116 @@
+[
+  {
+    "kind": "compressor",
+    "fluid": "Air",
+    "p_in": 100000.0,
+    "T_in": 300.0,
+    "p_out": 600000.0,
+    "mass_flow": 2.0,
+    "outlet": {
+      "T": 549.7181912166802,
+      "p": 600000.0,
+      "hmass": 680696.1072393621,
+      "smass": 3991.7198647006207,
+      "rhomass": 3.794281153406196,
+      "viscosity": 2.9002756669692088e-05,
+      "speed_sound": 468.27384851224866
+    },
+    "performance": {
+      "correlation_efficiency": 0.835941698969584,
+      "polytropic_efficiency": 0.8359416989695843,
+      "isentropic_efficiency": 0.7916005757894183,
+      "power": 508790.6627309129,
+      "diameter": 0.20115488211472338,
+      "peripheral_speed": 607.8750757818907,
+      "angular_speed": 6043.851080235828,
+      "mechanical_stress": 1181699720.6063724
+    },
+    "model_corrections": [
+      "Compressor relative inlet velocity follows Figure 4: w/U = 0.38 + 3*phi - 7.8*phi**2; corrects the printed Equation 23 error."
+    ]
+  },
+  {
+    "kind": "compressor",
+    "fluid": "CO2",
+    "p_in": 9000000.0,
+    "T_in": 320.0,
+    "p_out": 18000000.0,
+    "mass_flow": 2.0,
+    "outlet": {
+      "T": 369.22266068069484,
+      "p": 18000000.000000045,
+      "hmass": 429518.58114499925,
+      "smass": 1655.3853253927232,
+      "rhomass": 443.32832020551314,
+      "viscosity": 3.384245273545726e-05,
+      "speed_sound": 295.98034283072076
+    },
+    "performance": {
+      "correlation_efficiency": 0.8140716895432099,
+      "polytropic_efficiency": 0.8140716895432047,
+      "isentropic_efficiency": 0.801091931524335,
+      "power": 57918.61889164953,
+      "diameter": 0.021081637967481963,
+      "peripheral_speed": 205.0944315089459,
+      "angular_speed": 19457.162847146912,
+      "mechanical_stress": 134519795.22345668
+    },
+    "model_corrections": [
+      "Compressor relative inlet velocity follows Figure 4: w/U = 0.38 + 3*phi - 7.8*phi**2; corrects the printed Equation 23 error."
+    ]
+  },
+  {
+    "kind": "turbine",
+    "fluid": "Air",
+    "p_in": 600000.0,
+    "T_in": 800.0,
+    "p_out": 100000.0,
+    "mass_flow": 2.0,
+    "outlet": {
+      "T": 528.7281736096543,
+      "p": 99999.99978390025,
+      "hmass": 659062.6019668761,
+      "smass": 4466.421451932327,
+      "rhomass": 0.6586610695429597,
+      "viscosity": 2.8178932396021838e-05,
+      "speed_sound": 458.4927221191915
+    },
+    "performance": {
+      "correlation_efficiency": 0.8848861446493885,
+      "polytropic_efficiency": 0.856905768095603,
+      "isentropic_efficiency": 0.8848861446493893,
+      "power": 579012.4807892377,
+      "diameter": 0.24610838519640324,
+      "peripheral_speed": 561.4624906702991,
+      "angular_speed": 4562.725404274479,
+      "mechanical_stress": 368830950.26274395
+    }
+  },
+  {
+    "kind": "turbine",
+    "fluid": "CO2",
+    "p_in": 18000000.0,
+    "T_in": 650.0,
+    "p_out": 9000000.0,
+    "mass_flow": 2.0,
+    "outlet": {
+      "T": 577.6355063572513,
+      "p": 8999999.999999998,
+      "hmass": 755641.7205696721,
+      "smass": 2490.6107064009734,
+      "rhomass": 84.53265204746003,
+      "viscosity": 2.832691813913301e-05,
+      "speed_sound": 366.78308687129356
+    },
+    "performance": {
+      "correlation_efficiency": 0.8848861446493885,
+      "polytropic_efficiency": 0.8779409834890517,
+      "isentropic_efficiency": 0.8848861446493848,
+      "power": 138732.8704230592,
+      "diameter": 0.030704679014279757,
+      "peripheral_speed": 274.8314766610002,
+      "angular_speed": 17901.60232798297,
+      "mechanical_stress": 88372838.45948909
+    }
+  }
+]

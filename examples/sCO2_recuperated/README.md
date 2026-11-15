@@ -1,5 +1,16 @@
 # Recuperated sCO2 cycle examples
 
+The current checkout targets JaxProp 0.6. For the prepared-wheel compatibility
+checks and native bicubic configuration, see
+[the backend workflow](../../development/bicubic/README.md). ThermOpt's cycle
+code remains eager NumPy/SciPy. Select `method: bicubic` and `table_options` in
+the existing `working_fluid` YAML section; no fluid adapter or JAX cycle port
+is required. The comparison runner saves complete ordinary YAML inputs for
+working-fluid-only and all-stream table cases.
+
+JaxProp 0.6.0 is now published and `poetry.lock` selects it. The installation
+command below uses that released dependency; no prepared-wheel override is needed.
+
 Install the checkout with `poetry install`. From the repository root, compare
 the SLSQP configurations with:
 
