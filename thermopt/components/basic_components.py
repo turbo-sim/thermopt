@@ -338,21 +338,28 @@ def compression_process(
     elif efficiency_type == "polytropic":
         # Differential equation defining the polytropic compression
         def odefun(p, h):
-            state = fluid.get_state(props.HmassP_INPUTS, np.asarray(h).item(), p, **state_options)
+            # The ODE uses density only. Request a complete core state without
+            # optional saturation diagnostics on these discarded trial points.
+            state = fluid.get_state(props.HmassP_INPUTS, np.asarray(h).item(), p)
             dhdp = 1.0 / (efficiency * state.density)
-            return dhdp, state
+            return dhdp
 
         # Solve polytropic compression differential equation
         sol = solve_ivp(
-            lambda p, h: odefun(p, h)[0],
+            odefun,
             [state_in.pressure, p_out],
             [state_in.enthalpy],
             t_eval=np.linspace(state_in.pressure, p_out, num_steps),
             method="RK45",
         )
 
-        # Evaluate fluid properties at intermediate states
-        states = postprocess_ode(sol.t, sol.y, odefun)
+        if not sol.success:
+            raise RuntimeError(f"Polytropic compression integration failed: {sol.message}")
+
+        # Reconstruct the complete reporting path in one native batch call.
+        # Reporting diagnostics and quality conventions match the scalar path;
+        # integration equations, RK45 tolerances and sampling are unchanged.
+        states = fluid.get_state(props.HmassP_INPUTS, sol.y[0], sol.t, **state_options)
         state_in, state_out = states.at_index(0), states.at_index(-1)
         data_out = {"polytropic_efficiency": efficiency}
         
@@ -435,21 +442,26 @@ def expansion_process(
     elif efficiency_type == "polytropic":
         # Differential equation defining the polytropic expansion
         def odefun(p, h):
-            state = fluid.get_state(props.HmassP_INPUTS, np.asarray(h).item(), p, **state_options)
+            # The ODE uses density only; optional reporting diagnostics are
+            # evaluated once on the returned path after successful integration.
+            state = fluid.get_state(props.HmassP_INPUTS, np.asarray(h).item(), p)
             dhdp = efficiency / state.density
-            return dhdp, state
+            return dhdp
 
         # Solve polytropic expansion differential equation
         sol = solve_ivp(
-            lambda p, h: odefun(p, h)[0],
+            odefun,
             [state_in.pressure, p_out],
             [state_in.enthalpy],
             t_eval=np.linspace(state_in.pressure, p_out, num_steps),
             method="RK45",
         )
 
-        # Evaluate fluid properties at intermediate states
-        states = postprocess_ode(sol.t, sol.y, odefun)
+        if not sol.success:
+            raise RuntimeError(f"Polytropic expansion integration failed: {sol.message}")
+
+        # Preserve all reporting fields using the public full-state batch API.
+        states = fluid.get_state(props.HmassP_INPUTS, sol.y[0], sol.t, **state_options)
         state_in, state_out = states.at_index(0), states.at_index(-1)
         data_out = {"polytropic_efficiency": efficiency}
         

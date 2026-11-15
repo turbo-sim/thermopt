@@ -19,6 +19,12 @@ records an [artifact-specific checkpoint](checkpoints/metadata_fix.json) for the
 next phase. Its historical flags and targeted follow-up remain visible; use the
 recorded environment/artifact when comparing it.
 
+The [Phase 4 assessment](PHASE4.md) verifies component physics across the three
+native models, complete-return polytropic speedups, the full test suite and the
+200x200 release profile. Its [checkpoint](checkpoints/phase4.json) uses the same
+local JaxProp artifact. First-use compilation observations and older absolute
+timing flags remain documented follow-ups.
+
 This is the canonical benchmark entry point for the
 [JaxProp 0.6 migration plan](../z_JAXPROP_060_IMPLEMENTATION_PLAN.md).
 ThermOpt stays eager NumPy/SciPy. Current workload code is reused from
@@ -70,6 +76,26 @@ model arguments to isolate application changes from metadata-identity cache cost
 That mode excludes the problem object's bookkeeping; keep full `run.py` and
 `state_paths.py` measurements as lifecycle/end-to-end evidence too. No fluid
 backend or numerical implementation is patched by these helpers.
+
+For full component returns across CoolProp, perfect-gas and bicubic models:
+
+```powershell
+python benchmark/compare_components.py --reference-root PATH_TO_REFERENCE_TREE --cpu-affinity 0xffff --output benchmark/results/components_before_first
+python benchmark/compare_components.py --reference-root PATH_TO_REFERENCE_TREE --first-version current --cpu-affinity 0xffff --output benchmark/results/components_after_first
+```
+
+This covers both machines with isentropic, polytropic and nondimensional
+efficiencies, plus exchanger and valve controls: 24 workloads. Each version
+owns independent reusable native models. It compares every returned property,
+optional NaN, validity mask, status and identity outside timing, retaining raw
+samples for three balanced cohorts. Output data use the public state serializer;
+backend models are never replaced. New output directories are required.
+
+Model setup and the first component invocation are recorded separately. That
+first invocation follows inlet evaluation and earlier workloads in the same
+process; it is **not** an isolated cold-JIT measurement. Reverse construction
+order and retain both observations. New batch shapes can incur one-time JIT
+compilation even when sustained evaluation is faster.
 
 First-time property-table generation can take several minutes. The shared
 `benchmark/results/tables/` cache is reused only after JaxProp validation.

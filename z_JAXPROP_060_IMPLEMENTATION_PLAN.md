@@ -199,25 +199,40 @@ typed informative failures elsewhere, and no new per-property validation work.
 
 ## Phase 4 — Verify eager component physics across applicable models
 
-**Status: planned; source regressions and initial bicubic checks exist.**
+**Status: complete locally on 15 November 2026 for the recorded CPU/x64 profile.**
+The full suite passes 461 tests plus the four unchanged strict expected failures;
+65 new cases cover the supplied native models and independent physical identities.
+Three phase timing cohorts, twelve paired cycle comparisons and both balanced
+24-workload component runs pass their warm limits. All five 200x200 release
+profiles and both recuperated optimization modes pass their numerical checks.
+The JaxProp metadata fix is still an unpublished local wheel; first-use batch
+compilation is a Phase 5 follow-up and earlier absolute timing observations remain
+Phase 8 work. See [verification and timings](benchmark/PHASE4.md),
+[raw evidence](benchmark/PHASE4.json) and the artifact-specific
+[checkpoint](benchmark/checkpoints/phase4.json).
 
-- [ ] Test compressor/expander isentropic and polytropic paths, heat exchangers,
+- [x] Test compressor/expander isentropic and polytropic paths, heat exchangers,
   valves and functional nondimensional machinery using actual supplied models.
-- [ ] Preserve SciPy ODE/root solving, scalar states, energy identities,
+- [x] Preserve SciPy ODE/root solving, scalar states, energy identities,
   endpoint recovery, finite physical outputs and input/model reuse. Keep the
   numerical solver tolerances and acceptance checks unless a defect is proven.
-- [ ] Expand bicubic component coverage at realistic table boundaries and
+- [x] Expand bicubic component coverage at realistic table boundaries and
   applicable HP/PT/PS/HS routes. Require explicit failure for unavailable paths.
-- [ ] Add perfect-gas component and applicable eager cycle checks against its
+- [x] Add perfect-gas component and applicable eager cycle checks against its
   own ideal-gas identities; do not require it to reproduce real-fluid physics.
-- [ ] Verify saturation-node placement only with a saturation-capable model.
+- [x] Verify saturation-node placement only with a saturation-capable model.
   Test real two-phase source cases and explicit rejection for unsupported
   PG/table configurations. Do not infer universal phase interchangeability.
-- [ ] Benchmark complete component returns and cycles, not exposed individual
+- [x] Benchmark complete component returns and cycles, not exposed individual
   property projections. Keep diagnostics/output costs visible.
-- [ ] Assess whether optional source diagnostics can be deferred from polytropic
+- [x] Assess whether optional source diagnostics can be deferred from polytropic
   ODE trial states to reporting states, preserving identical returned diagnostics,
   generalized-quality meaning and solver behavior. Measure before changing it.
+  The verified implementation defers diagnostics and reconstructs reporting with
+  one native full-state batch, retaining finite diagnostic values and optional NaNs.
+- [x] Reject failed SciPy integrations explicitly instead of returning partial
+  paths as complete components. Add a pre-fix failing regression; check solver
+  success once after integration, outside thermodynamic state evaluation.
 
 Acceptance: independent physical tests, full source regressions, model-specific
 cross-checks and matched complete-consumer performance pass.
@@ -238,6 +253,18 @@ cross-checks and matched complete-consumer performance pass.
 - [ ] Cover independent problems, interleaved designs, configuration reloads,
   copy/worker lifecycle where used and source-reference changes. Do not cache
   mutable provider identity globally without defined invalidation.
+- [ ] Define standalone polytropic output-count and zero-pressure-span contracts.
+  With `num_steps=1`, the requested ODE output contains only the inlet, so it
+  cannot supply a distinct outlet. Reject unsupported requests clearly at the
+  component boundary, with endpoint/failure tests and no new property-call checks.
+- [ ] Measure whether unreturned isentropic reference states can omit optional
+  source diagnostics when only their enthalpy contributes to work. Preserve
+  all public inlet/outlet/path annotations; do not change real-fluid equations.
+- [ ] Isolate first-use compilation of new polytropic batch shapes in fresh
+  processes. Phase 4's warm gains coexist with order-sensitive first calls;
+  record model setup, inlet warmup, shape compilation and sustained evaluation
+  separately. Assess explicit orchestration warmup if useful, without hidden
+  flashes or changing the fluid constructor's behavior.
 - [ ] Confirm initial designs, bounds, objectives and residual ordering across
   the 14 cycle cases; rerun three standard optimizations plus native bicubic
   recuperated optimization and source cross-evaluation.
@@ -303,6 +330,10 @@ works; maintain an explicit execution inventory.
   cache signatures or relabel saved results as current-library evaluations.
 - [ ] Consolidate active comparison code under `benchmark/`, retaining dated
   evidence under `development/`. Keep tests independent of result generation.
+- [ ] Scope the property-access AST inventory to project-owned source, excluding
+  ignored generated benchmark artifacts and frozen comparison trees. Preserve
+  coverage of real examples/studies. Phase 4's retained reference tree currently
+  causes the same historical example SyntaxWarning to be reported twice.
 
 Acceptance: every maintained program has a documented successful profile or a
 clear external-input/research classification; no blanket "all examples pass".
@@ -326,6 +357,11 @@ clear external-input/research classification; no blanket "all examples pass".
   follow-up separate; matched fix acceptance does not erase earlier ratios.
 - [ ] Once separately released, update the dependency/lock to the JaxProp patch
   containing `52c98b8`. The verified local wheel is not an official PyPI artifact.
+- [ ] Report the existing direct-JaxProp construction warning for NumPy-valued
+  static table options upstream. ThermOpt's configuration boundary already
+  normalizes these once; direct `jp.Fluid` tests still reproduce the Equinox
+  warning. Prefer constructor normalization in JaxProp, with warning/regression
+  coverage, over any checks in thermodynamic calculations.
 - [ ] Update package/API/example docs and migration notes to the supported 0.6
   interface. Remove obsolete compatibility branches and installation caveats
   only when the corresponding checks actually pass.
@@ -358,3 +394,5 @@ numerical agreement and performance gates pass or have explicit scoped decisions
 | Phase baseline benchmarks | Five source/bicubic case or stream modes recorded with 12 samples per backend. [Checkpoint](benchmark/checkpoints/pypi_060_phase.json). One starting cohort, not a between-phase performance acceptance claim. |
 | Phase 2 configuration | Complete locally: 36 YAML inputs / 108 stream declarations migrated; native objects and read-only configuration supported; obsolete fields rejected. 319 passed plus four unchanged strict expected failures. All ten aggregate warm comparisons meet 1.10 after three matched cohorts; individual flags remain retained. [Assessment](benchmark/PHASE2.md), [checkpoint](benchmark/checkpoints/phase2.json). |
 | Phase 3 state access | Implementation and numerical verification complete: 396 passed plus four unchanged expected failures. Twelve controlled functional consumer comparisons pass 1.10; three historical bicubic flags leave the strict gate open. Metadata/cache-order controls and an identical-source false positive are retained. [Assessment](benchmark/PHASE3.md). |
+| Packaged metadata fix | JaxProp `52c98b8` passes 3,046 distinct library tests; its verified local wheel passes ThermOpt's full suite and paired application gates. Historical observations remain separate. [Assessment](benchmark/METADATA_FIX.md), [artifact checkpoint](benchmark/checkpoints/metadata_fix.json). |
+| Phase 4 component physics | 461 passed, four unchanged expected failures; 65 new native-model/physical cases. Three phase cohorts, twelve paired cycle cases and both balanced 24-component runs pass warm limits. Five 200x200 release profiles and four complete recuperated solves pass numerical/source cross-evaluation checks. First-use shape compilation and historical observations remain assigned follow-ups. [Assessment](benchmark/PHASE4.md), [checkpoint](benchmark/checkpoints/phase4.json). |
