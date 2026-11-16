@@ -140,6 +140,10 @@ class ThermodynamicCycleOptimization:
         solver_options = {
             k: v for k, v in self.config["solver_options"].items() if k != "callbacks"
         }
+        # YAML numeric normalization uses NumPy integers; the controlled SLSQP
+        # backend requires its iteration limit to be a native Python integer.
+        if isinstance(solver_options.get("max_iterations"), np.integer):
+            solver_options["max_iterations"] = int(solver_options["max_iterations"])
         self.solver = psv.OptimizationSolver(
             self.problem,
             **solver_options,  # Pass all options except "callbacks"

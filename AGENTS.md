@@ -30,6 +30,9 @@ port or replace host solvers without a new instruction.
 - Follow the phase checklist in `z_JAXPROP_060_IMPLEMENTATION_PLAN.md`. Verify
   changes with meaningful tests and complete-consumer benchmarks. Record timing
   flags and numerical/model changes honestly; do not relax gates silently.
+- Group generated example/case-study outputs under that example's `results/`
+  directory, including figures, histories, table caches and diagnostic logs.
+  Use subdirectories there instead of sibling `results_*` directories or files.
 
 ## Markdown mathematics
 

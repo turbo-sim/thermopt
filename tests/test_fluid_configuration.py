@@ -77,8 +77,14 @@ def test_maintained_case_schema_and_physical_values_are_preserved(filename):
     formulation = data.get("problem_formulation", data)
     streams = {k: v for k, v in formulation["fixed_parameters"].items() if k in ROLES}
     assert set(streams) == set(BASELINES["cases"][filename]["streams"])
-    for settings in streams.values():
-        assert settings["method"] == "coolprop"
+    recompression = (
+        filename == "examples/sCO2_recompression/case_sCO2_recompression.yaml"
+    )
+    for role, settings in streams.items():
+        expected_method = (
+            "bicubic" if recompression and role == "working_fluid" else "coolprop"
+        )
+        assert settings["method"] == expected_method
         assert settings["backend"] == "HEOS"
         assert "exceptions" not in settings
         assert set(settings) <= {
@@ -89,8 +95,37 @@ def test_maintained_case_schema_and_physical_values_are_preserved(filename):
             "table_options",
             "model_options",
         }
+    compared = deepcopy(data)
+    if recompression:
+        # Explicit user-requested evaluator/optimizer migration, 16 November 2026.
+        # Keep the original physical hash: only these reviewed setup changes
+        # are normalized; all design bounds, fluids and cycle physics stay checked.
+        fluid = compared["problem_formulation"]["fixed_parameters"]["working_fluid"]
+        assert fluid.pop("table_options") == dict(
+            h_min="150e3",
+            h_max="1.3e6",
+            p_min="8e6",
+            p_max="42e6",
+            N_h=200,
+            N_p=200,
+            N_p_sat=8,
+            gradient_method="central",
+            coarse_step=1,
+            table_dir="./results/property_tables",
+        )
+        fluid["method"] = "coolprop"
+        options = compared["solver_options"]
+        assert options["library"] == "pysolver"
+        assert options.pop("extra_options") == dict(
+            first_step_fraction=0.2,
+            max_step_fraction=1.0,
+            step_growth_factor=1.5,
+            feasibility_tol="1e-6",
+            optimality_tol="1e-4",
+        )
+        options["library"] = "scipy"
     digest = hashlib.sha256(
-        json.dumps(physical_values(data), sort_keys=True, allow_nan=False).encode()
+        json.dumps(physical_values(compared), sort_keys=True, allow_nan=False).encode()
     ).hexdigest()
     assert digest == BASELINES["cases"][filename]["physical_sha256"]
 

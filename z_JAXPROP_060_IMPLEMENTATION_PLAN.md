@@ -320,6 +320,12 @@ or table loading, and setup/warm/whole-solve timing costs are recorded separatel
   exported inspection metadata must not be mistaken for a universal fluid recipe.
 - [ ] Verify normal callbacks, reports and headless launchers in addition to
   callback-disabled benchmark runs. Time reporting separately from core fitness.
+- [ ] Define a consistent optimizer boundary for recognized JaxProp invalid-state
+  failures when using controlled SLSQP/Pounce. The recompression comparison
+  translates those failures to PySolverView `DomainError` locally for line-search
+  recovery; ordinary state/problem calls retain their native typed errors.
+  Unsupported capabilities and programming errors must continue to propagate.
+  Assess a shared orchestration solution without per-property validation.
 - [ ] If exchanger diagnostics are needed in constraints, design explicit setup
   opt-in and enable only the required paths. Plain exchanger profiles currently
   reject disabled diagnostic constraints; do not silently add source flashes.
@@ -341,6 +347,11 @@ works; maintain an explicit execution inventory.
 - [ ] Give the four validated native table studies convenient ordinary YAML
   configurations with justified table domains; source-only phase cases remain
   explicit. Reuse validated caches and configured models.
+  Recompression now has an explicit CO2 bicubic/controlled-SLSQP YAML and a
+  runner-defined 128x128 comparison of SLSQP, Pounce interior point and Pounce
+  SQP. See `examples/sCO2_recompression/README.md`; the broader inventory remains
+  open. PySolverView 0.8.2 with Pounce 0.13.0 is a new dependency context:
+  previous phase timings remain historical, not automatically comparable.
 - [ ] Run bounded representative studies/headless figures and full declared
   scientific profiles separately. Label missing inputs, research limits and
   unexecuted full sweeps honestly. Larger redesigns get their own checklist item.

@@ -1,5 +1,5 @@
 solver_options: 
-  library: scipy
+  library: pysolver
   method: slsqp
   derivative_method: 2-point 
   derivative_abs_step: 1e-6
@@ -10,6 +10,12 @@ solver_options:
   tolerance: 1e-6 
   max_iterations: 200
   problem_scale: 10
+  extra_options:
+    first_step_fraction: 0.2
+    max_step_fraction: 1.0
+    step_growth_factor: 1.5
+    feasibility_tol: 1e-6
+    optimality_tol: 1e-4
   callbacks:
     save_plot: True
     save_config: True
@@ -54,7 +60,20 @@ problem_formulation:
     working_fluid:
       name: CO2
       backend: HEOS
-      method: coolprop
+      method: bicubic
+      # Single-phase HP domain covering the cycle and pressure-drop margins.
+      # Source-EOS critical/saturation references remain separate from this table.
+      table_options:
+        h_min: 150e3
+        h_max: 1.3e6
+        p_min: 8e6
+        p_max: 42e6
+        N_h: 200
+        N_p: 200
+        N_p_sat: 8
+        gradient_method: central
+        coarse_step: 1
+        table_dir: ./results/property_tables
 
     heating_fluid:
         name: nitrogen
