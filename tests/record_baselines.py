@@ -35,7 +35,7 @@ def main():
         if not destination.exists():
             if name == "orc_wet_expansion":
                 raise FileNotFoundError("Restore the explicit wet-expansion test fixture; it is not the dry example.")
-            shutil.copyfile(ROOT / "examples" / source, destination)
+            shutil.copyfile(ROOT / "case_studies" / source, destination)
     record = {
         "schema": 1,
         "description": "Current HEOS characterization, not a proof of physical correctness or feasibility.",

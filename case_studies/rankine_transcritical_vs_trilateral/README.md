@@ -5,7 +5,7 @@ simple n-butane cycles whose expander inlet state is free. Neither cycle has a
 recuperator. Both fluids may optimize to either side of their critical pressure.
 The results and discussion are in [report.md](report.md).
 
-The conditions follow `examples/rankine_wet2dry`: water source at 140°C and 10 bar,
+The conditions follow `case_studies/rankine_wet2dry`: water source at 140°C and 10 bar,
 20°C cooling water warmed to approximately 25°C, 5 K minimum exchanger approaches
 at 100 locations, 1% exchanger pressure losses, at least 1 K pump-inlet subcooling,
 and 1 MW net cycle output before the external-water pumps.
@@ -30,8 +30,8 @@ isentropic efficiency: `h(p) = hin − ηt × [hin − h(p,sin)]`.
 Run from the repository root with an environment containing the project dependencies:
 
 ```console
-python examples/comparison_transcritical_two_phase/run_sensitivity.py
-python examples/comparison_transcritical_two_phase/build_report.py
+python case_studies/comparison_transcritical_two_phase/run_sensitivity.py
+python case_studies/comparison_transcritical_two_phase/build_report.py
 ```
 
 Configuration is in the globals of `run_sensitivity.py` and `case_template.yaml`.

@@ -15,9 +15,9 @@ Install the checkout with `poetry install`. From the repository root, compare
 the SLSQP configurations with:
 
 ```bash
-poetry run python examples/sCO2_recuperated/compare_slsqp.py
+poetry run python case_studies/sCO2_recuperated/compare_slsqp.py
 # Save the comparison without opening a window:
-poetry run python examples/sCO2_recuperated/compare_slsqp.py --no-show
+poetry run python case_studies/sCO2_recuperated/compare_slsqp.py --no-show
 ```
 
 The script runs six independent optimizations from the same physical initial

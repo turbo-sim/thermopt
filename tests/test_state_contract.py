@@ -376,7 +376,7 @@ def test_bicubic_diagnostic_constraint_fails_before_reference_preparation(
 def test_blended_heat_transfer_example_uses_public_state_stack(tmp_path, monkeypatch):
     script = (
         Path(__file__).resolve().parents[1]
-        / "examples/HX_development/blended_calculation.py"
+        / "case_studies/HX_development/blended_calculation.py"
     )
     monkeypatch.chdir(tmp_path)
     result = runpy.run_path(str(script), run_name="__main__")

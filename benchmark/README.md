@@ -1,5 +1,12 @@
 # ThermOpt phase benchmarks
 
+Maintained cycle programs now live under `case_studies/`. Active workload
+builders and test entry points use those locations. Dated reports, checkpoints
+and frozen comparison trees retain their original paths and hashes; they are
+historical evidence, not rewritten results. The path relocation and updated
+solver dependency change the current workload/environment identity, so earlier
+timing checkpoints are not automatically comparable to a fresh run.
+
 The [published 0.6 adoption record](RELEASE_060.md) describes the verified
 installation and tests. The [first phase checkpoint](checkpoints/pypi_060_phase.json)
 is available as a reference for a matching subsequent phase run.

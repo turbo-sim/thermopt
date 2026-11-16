@@ -333,10 +333,20 @@ or table loading, and setup/warm/whole-solve timing costs are recorded separatel
 Acceptance: graphical/data round trips reflect actual evaluated states and the
 ordinary user workflow works with the same native objects as the timed cases.
 
-## Phase 7 — Audit and migrate maintained examples/case studies
+## Phase 7 — Audit and migrate maintained case_studies/case studies
 
 **Status: planned.** Tests of frozen inputs do not prove every standalone script
 works; maintain an explicit execution inventory.
+
+- [x] Consolidate the former examples directory into `case_studies/`, retaining
+  its layout, tracked research inputs and local results. Update active runner,
+  test, benchmark and documentation paths; keep historical hashes/records intact.
+  This directory migration does not close the remaining study execution audit.
+  Verification: 660 tracked renames, all original local files retained, 543 tests
+  passed plus four unchanged strict expected failures, and the maintained
+  source/bicubic smoke profile passed from the new layout. Explicitly remove
+  stale table options when the benchmark selects CoolProp from a bicubic YAML;
+  two regression cases cover those source/table routes.
 
 - [ ] Catalogue runnable examples, scientific studies, input-dependent figure
   scripts and historical research material. Record commands, inputs, models,
@@ -349,7 +359,7 @@ works; maintain an explicit execution inventory.
   explicit. Reuse validated caches and configured models.
   Recompression now has an explicit CO2 bicubic/controlled-SLSQP YAML and a
   runner-defined 128x128 comparison of SLSQP, Pounce interior point and Pounce
-  SQP. See `examples/sCO2_recompression/README.md`; the broader inventory remains
+  SQP. See `case_studies/sCO2_recompression/README.md`; the broader inventory remains
   open. PySolverView 0.8.2 with Pounce 0.13.0 is a new dependency context:
   previous phase timings remain historical, not automatically comparable.
 - [ ] Run bounded representative studies/headless figures and full declared
@@ -373,7 +383,7 @@ works; maintain an explicit execution inventory.
   probes to those studies' hot loops before their Phase 7 migration.
 - [ ] Scope the property-access AST inventory to project-owned source, excluding
   ignored generated benchmark artifacts and frozen comparison trees. Preserve
-  coverage of real examples/studies. Phase 4's retained reference tree currently
+  coverage of real case_studies/studies. Phase 4's retained reference tree currently
   causes the same historical example SyntaxWarning to be reported twice.
 
 Acceptance: every maintained program has a documented successful profile or a

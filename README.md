@@ -82,9 +82,9 @@ This guide walks you through installation for development using `Poetry`, which 
    ```
 
 
-## 📂 Examples
+## 📂 Case studies
 
-The [examples](examples) directory contains a variety of ready-to-run thermodynamic cycle cases, covering different working fluids and applications.
+The [case_studies/](case_studies/README.md) directory contains thermodynamic cycle configurations, runners and research studies for different working fluids and applications. It replaces the former examples directory. Consult each study's instructions for its supported workflow and required inputs.
 
 Each example:
 - Is defined in a `.yaml` input file

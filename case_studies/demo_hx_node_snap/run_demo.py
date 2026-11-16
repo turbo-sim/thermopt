@@ -186,7 +186,7 @@ def write_readme(table):
         "snaps nodes to the liquid/vapor saturation boundaries.\n",
         "## Run\n",
         "From the repository root, with ThermoOpt and its dependencies installed:\n",
-        "```console\npython examples/demo_hx_node_snap/run_demo.py\n```\n",
+        "```console\npython case_studies/demo_hx_node_snap/run_demo.py\n```\n",
         "`case.yaml` contains the cycle, solver settings, initial guesses and inlet constraints. "
         "Edit `UNIFORM_NODES`, `SNAP_NODES` or `CHECK_NODES` at the top of `run_demo.py` to change "
         "the comparison. Each run performs all optimizations again and updates this README and the figures.\n",

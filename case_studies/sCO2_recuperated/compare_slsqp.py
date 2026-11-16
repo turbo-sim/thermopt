@@ -1,7 +1,7 @@
 """Compare native and controlled SLSQP on the same recuperated CO2 cycle.
 
 Run from the repository root with ``poetry run python
-examples/sCO2_recuperated/compare_slsqp.py``. Add ``--no-show`` for a headless
+case_studies/sCO2_recuperated/compare_slsqp.py``. Add ``--no-show`` for a headless
 run. The YAML configuration and physical initial guess are shared by all runs.
 """
 

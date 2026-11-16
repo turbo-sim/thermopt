@@ -32,13 +32,13 @@ To compare all three algorithms with both CoolProp and bicubic, run from the
 repository root:
 
 ```powershell
-poetry run python examples/sCO2_recompression/compare_solvers.py
+poetry run python case_studies/sCO2_recompression/compare_solvers.py
 ```
 
 For a headless run:
 
 ```powershell
-poetry run python examples/sCO2_recompression/compare_solvers.py --no-show
+poetry run python case_studies/sCO2_recompression/compare_solvers.py --no-show
 ```
 
 The comparison includes controlled SLSQP, Pounce interior point (`ipm`) and

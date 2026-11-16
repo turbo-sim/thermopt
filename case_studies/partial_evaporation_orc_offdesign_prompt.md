@@ -18,11 +18,11 @@ Inspect the current code before choosing APIs. Useful reference locations, verif
 
 | Purpose | Reference |
 | --- | --- |
-| Native partial-evaporation design configuration | `thermopt/examples/rankine_organic/case_butane_PEORC.yaml` |
+| Native partial-evaporation design configuration | `thermopt/case_studies/rankine_organic/case_butane_PEORC.yaml` |
 | Native design optimizer and problem interface | `thermopt/thermopt/optimize_cycle.py` |
 | Simple-cycle evaluator | `thermopt/thermopt/cycles/cycle_power_simple.py`, delegating to `cycle_power_recuperated.py` with recuperation disabled |
 | Component and HX discretization functions | `thermopt/thermopt/components/basic_components.py` |
-| Controlled SLSQP integration | `thermopt/examples/sCO2_recuperated/compare_slsqp.py` |
+| Controlled SLSQP integration | `thermopt/case_studies/sCO2_recuperated/compare_slsqp.py` |
 | Choked-flow calculation | `flashing_nozzle_design/src/flashing_nozzle_design/functions.py`, function `find_choked_state` |
 
 The original repositories declared incompatible JaxProp requirements: ThermoOpt required `^0.5.7`, while the nozzle repository pinned `0.5.6`. Resolve imports and verify the needed nozzle function in a compatible, reproducible case environment. Do not blindly install both editable projects with dependency resolution or silently downgrade ThermoOpt's dependencies. A documented case-local source-path adapter is acceptable after compatibility checks. Record actual import locations, package versions, repository commits, and dirty-tree status. Verify solver capabilities rather than relying on a version label alone.

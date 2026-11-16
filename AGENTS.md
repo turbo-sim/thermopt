@@ -33,6 +33,9 @@ port or replace host solvers without a new instruction.
 - Group generated example/case-study outputs under that example's `results/`
   directory, including figures, histories, table caches and diagnostic logs.
   Use subdirectories there instead of sibling `results_*` directories or files.
+- Keep maintained runnable cases under `case_studies/`. Update active entry
+  points and documentation when moving them; preserve dated benchmark and
+  physical-reference records as historical evidence.
 
 ## Markdown mathematics
 

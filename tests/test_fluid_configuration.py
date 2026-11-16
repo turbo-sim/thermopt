@@ -18,6 +18,16 @@ ROOT = Path(__file__).resolve().parents[1]
 BASELINES = json.loads(
     (ROOT / "tests/data/fluid_configuration_phase2.json").read_text(encoding="utf-8")
 )
+# The dated baseline retains its original paths and physical hashes. Remap only
+# lookup locations after the examples-to-case_studies directory migration.
+BASELINES["cases"] = {
+    (
+        "case_studies/" + name[len("examples/") :]
+        if name.startswith("examples/")
+        else name
+    ): record
+    for name, record in BASELINES["cases"].items()
+}
 ROLES = {
     "working_fluid",
     "heating_fluid",
@@ -33,9 +43,8 @@ def test_all_maintained_cycle_inputs_are_in_the_reviewed_inventory():
     for directory in (
         "assignments",
         "docs/dev",
-        "examples",
-        "tests/data/cases",
         "case_studies",
+        "tests/data/cases",
     ):
         for path in (ROOT / directory).rglob("*.yaml"):
             parts = path.relative_to(ROOT).parts
@@ -78,7 +87,7 @@ def test_maintained_case_schema_and_physical_values_are_preserved(filename):
     streams = {k: v for k, v in formulation["fixed_parameters"].items() if k in ROLES}
     assert set(streams) == set(BASELINES["cases"][filename]["streams"])
     recompression = (
-        filename == "examples/sCO2_recompression/case_sCO2_recompression.yaml"
+        filename == "case_studies/sCO2_recompression/case_sCO2_recompression.yaml"
     )
     for role, settings in streams.items():
         expected_method = (

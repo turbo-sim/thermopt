@@ -13,7 +13,7 @@ from regression_support import load_case
 
 RUNNER = (
     Path(__file__).resolve().parents[1]
-    / "examples/sCO2_recompression/compare_solvers.py"
+    / "case_studies/sCO2_recompression/compare_solvers.py"
 )
 spec = importlib.util.spec_from_file_location("recompression_comparison", RUNNER)
 comparison = importlib.util.module_from_spec(spec)

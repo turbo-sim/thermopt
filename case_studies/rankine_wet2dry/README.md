@@ -86,13 +86,13 @@ environment provides the following command. An activated equivalent environment
 can use `python` in its place.
 
 ```console
-.venv/Scripts/python.exe examples/rankine_wet2dry/scripts/run_all.py
+.venv/Scripts/python.exe case_studies/rankine_wet2dry/scripts/run_all.py
 ```
 
 To rebuild only the reports from existing tables and figures:
 
 ```console
-.venv/Scripts/python.exe examples/rankine_wet2dry/scripts/run_all.py --report-only
+.venv/Scripts/python.exe case_studies/rankine_wet2dry/scripts/run_all.py --report-only
 ```
 
 Paths are resolved relative to the study, so individual scripts also work from
@@ -110,7 +110,7 @@ runtime is used as a fallback when these are absent from the active environment.
 To compare existing output with the versioned v2 tables independently, run
 
 ```console
-.venv/Scripts/python.exe examples/rankine_wet2dry/scripts/compare_results.py
+.venv/Scripts/python.exe case_studies/rankine_wet2dry/scripts/compare_results.py
 ```
 
 The comparator checks all 484 finite-heat sweep cases, 20 unavailable endpoints

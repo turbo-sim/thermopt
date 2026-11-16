@@ -68,3 +68,17 @@ def test_affinity_accepts_nonempty_subsets(requested):
 
 def test_default_affinity_observation_does_not_change_scheduling():
     assert protocol.cpu_affinity() == protocol.cpu_affinity()
+
+
+@pytest.mark.parametrize("method", ["coolprop", "bicubic"])
+def test_benchmark_can_select_source_or_table_from_bicubic_case_yaml(method, tmp_path):
+    from development.bicubic.validate_060 import configuration
+
+    config, source = configuration("sco2_recompression", method, 100, False, tmp_path)
+    assert source.is_file() and source.parent.parent.name == "case_studies"
+    fluid = config["problem_formulation"]["fixed_parameters"]["working_fluid"]
+    assert fluid["method"] == method
+    if method == "coolprop":
+        assert "table_options" not in fluid
+    else:
+        assert fluid["table_options"]["N_h"] == fluid["table_options"]["N_p"] == 100

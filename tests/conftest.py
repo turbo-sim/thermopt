@@ -1,4 +1,4 @@
-"""Headless, isolated test execution; do not write results into examples/."""
+"""Headless, isolated test execution; do not write results into case_studies/."""
 
 import os
 from pathlib import Path

@@ -60,7 +60,7 @@ def save(path, value):
 
 
 def configuration(case, method, grid, all_fluids, directory, table_directory=None):
-    path = ROOT / "examples" / EXAMPLE_CASES[case]
+    path = ROOT / "case_studies" / EXAMPLE_CASES[case]
     config = th.read_configuration_file(str(path))
     config["solver_options"].update(
         callbacks={}, plot_convergence=False, print_convergence=False
@@ -73,6 +73,9 @@ def configuration(case, method, grid, all_fluids, directory, table_directory=Non
     for role in ("working_fluid", "heating_fluid", "cooling_fluid"):
         settings = fixed[role]
         settings.pop("exceptions", None)
+        # A case YAML can itself select bicubic. Rebuild each requested recipe
+        # explicitly so source runs never inherit interpolation-only options.
+        settings.pop("table_options", None)
         settings["method"] = "coolprop"
         if method != "bicubic" or (role != "working_fluid" and not all_fluids):
             continue

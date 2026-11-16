@@ -12,9 +12,9 @@ ROOT = Path(__file__).resolve().parents[1]
 @pytest.mark.parametrize(
     "folder,comparison,seed",
     [
-        ("examples/rankine_transcritical_vs_trilateral", True, "independent"),
-        ("examples/rankine_wet2dry/scripts", False, "independent"),
-        ("examples/rankine_wet2dry/scripts", False, "saved"),
+        ("case_studies/rankine_transcritical_vs_trilateral", True, "independent"),
+        ("case_studies/rankine_wet2dry/scripts", False, "independent"),
+        ("case_studies/rankine_wet2dry/scripts", False, "saved"),
     ],
 )
 def test_study_configuration_and_property_evaluation(
