@@ -1,0 +1,416 @@
+{
+  "reference_commit": "87b9cf4e72bfd158ed4edd1860698488f9a147a3",
+  "policy": "Controlled SLSQP: initial fraction 0.2, maximum 1, growth 1.5, accepted-iteration reporting. Preserve native tolerance for feasibility; explicit finite-difference KKT tolerance 1e-4.",
+  "reviewed_numerical_overrides": {
+    "case_studies/PTES_CO2/case_PTES_CO2_turbo.yaml": {
+      "tolerance": "1e-8"
+    },
+    "case_studies/refrigeration_R134a/case_R134a_refrigeration.yaml": {
+      "derivative_method": "3-point"
+    }
+  },
+  "cases": {
+    "case_studies/PTES_CO2/case_PTES_CO2.yaml": {
+      "previous_solver_options": {
+        "library": "scipy",
+        "method": "slsqp",
+        "derivative_method": "2-point",
+        "derivative_abs_step": "1e-6",
+        "print_convergence": true,
+        "plot_convergence": false,
+        "logger": "None",
+        "update_on": "gradient",
+        "tolerance": "1e-6",
+        "max_iterations": 200,
+        "problem_scale": 10,
+        "callbacks": {
+          "save_plot": false,
+          "save_config": false,
+          "save_report": true,
+          "plot_cycle": false,
+          "plot_convergence": false
+        }
+      },
+      "problem_formulation_sha256": "a896f2f79316b106a06efc7e992ca118dadfc11c5d210eeb656f8791f9a244cf"
+    },
+    "case_studies/PTES_CO2/case_PTES_CO2_turbo.yaml": {
+      "previous_solver_options": {
+        "library": "scipy",
+        "method": "slsqp",
+        "derivative_method": "2-point",
+        "derivative_abs_step": "1e-6",
+        "print_convergence": true,
+        "plot_convergence": false,
+        "logger": "None",
+        "update_on": "gradient",
+        "tolerance": "1e-6",
+        "max_iterations": 200,
+        "problem_scale": 10,
+        "callbacks": {
+          "save_plot": false,
+          "save_config": false,
+          "save_report": true,
+          "plot_cycle": false,
+          "plot_convergence": false
+        }
+      },
+      "problem_formulation_sha256": "670768abdd7b4aa54495359bd9143db9085f3999c14c90d87030b3e5b3e9abab"
+    },
+    "case_studies/demo_hx_node_snap/case.yaml": {
+      "previous_solver_options": {
+        "library": "scipy",
+        "method": "slsqp",
+        "derivative_method": "2-point",
+        "derivative_abs_step": 1e-06,
+        "tolerance": 1e-06,
+        "max_iterations": 250,
+        "problem_scale": 20,
+        "update_on": "function",
+        "print_convergence": true,
+        "plot_convergence": false
+      },
+      "problem_formulation_sha256": "fcab398fe7745dbdf0ea61b3d018176fbc61e0a2ff440df232cf87f85b8ce95c"
+    },
+    "case_studies/heat_pump_CO2/case_sCO2_heat_pump_turbine.yaml": {
+      "previous_solver_options": {
+        "library": "scipy",
+        "method": "slsqp",
+        "derivative_method": "2-point",
+        "derivative_abs_step": "1e-6",
+        "print_convergence": true,
+        "plot_convergence": false,
+        "logger": "None",
+        "update_on": "gradient",
+        "tolerance": "1e-6",
+        "max_iterations": 200,
+        "problem_scale": 10,
+        "callbacks": {
+          "save_plot": true,
+          "save_config": true,
+          "save_report": true,
+          "plot_cycle": true,
+          "plot_convergence": false
+        }
+      },
+      "problem_formulation_sha256": "3cfdd6b515420c1cd0fe5d76be1e3ac396e30cf70460ab3d2838fe96ace7919e"
+    },
+    "case_studies/heat_pump_CO2/case_sCO2_heat_pump_valve.yaml": {
+      "previous_solver_options": {
+        "library": "scipy",
+        "method": "slsqp",
+        "derivative_method": "2-point",
+        "derivative_abs_step": "1e-6",
+        "print_convergence": true,
+        "plot_convergence": false,
+        "logger": "None",
+        "update_on": "gradient",
+        "tolerance": "1e-6",
+        "max_iterations": 200,
+        "problem_scale": 10,
+        "callbacks": {
+          "save_plot": true,
+          "save_config": true,
+          "save_report": true,
+          "plot_cycle": true,
+          "plot_convergence": false
+        }
+      },
+      "problem_formulation_sha256": "653dae26366a8f51409282a16943b231b4cb8358df9c80108d598507c9af75fe"
+    },
+    "case_studies/rankine_organic/case_butane_ORC.yaml": {
+      "previous_solver_options": {
+        "library": "scipy",
+        "method": "slsqp",
+        "derivative_method": "2-point",
+        "derivative_abs_step": "1e-6",
+        "print_convergence": true,
+        "plot_convergence": false,
+        "logger": "None",
+        "update_on": "gradient",
+        "tolerance": "1e-6",
+        "max_iterations": 200,
+        "problem_scale": 20,
+        "callbacks": {
+          "save_plot": true,
+          "save_config": true,
+          "save_report": true,
+          "plot_cycle": true,
+          "plot_convergence": false
+        }
+      },
+      "problem_formulation_sha256": "d2833a80edf594febb702f20b6d33a3f2fc5d12de553ce75c7eb073a5920e25f"
+    },
+    "case_studies/rankine_organic/case_butane_PEORC.yaml": {
+      "previous_solver_options": {
+        "library": "scipy",
+        "method": "slsqp",
+        "derivative_method": "2-point",
+        "derivative_abs_step": "1e-6",
+        "print_convergence": true,
+        "plot_convergence": false,
+        "logger": "None",
+        "update_on": "gradient",
+        "tolerance": "1e-6",
+        "max_iterations": 200,
+        "problem_scale": 20,
+        "callbacks": {
+          "save_plot": true,
+          "save_config": true,
+          "save_report": true,
+          "plot_cycle": true,
+          "plot_convergence": false
+        }
+      },
+      "problem_formulation_sha256": "4bfe01558e8c06f54f6a0da2dfdddbe127d9dbd3b319b28ac3600aaf850f07f1"
+    },
+    "case_studies/rankine_organic/case_butane_transcritical.yaml": {
+      "previous_solver_options": {
+        "library": "scipy",
+        "method": "slsqp",
+        "derivative_method": "2-point",
+        "derivative_abs_step": "1e-6",
+        "print_convergence": true,
+        "plot_convergence": false,
+        "logger": "None",
+        "update_on": "gradient",
+        "tolerance": "1e-6",
+        "max_iterations": 200,
+        "problem_scale": 20,
+        "callbacks": {
+          "save_plot": true,
+          "save_config": true,
+          "save_report": true,
+          "plot_cycle": true,
+          "plot_convergence": false
+        }
+      },
+      "problem_formulation_sha256": "74dff3a03c03138892d7ab0b936bc60f54b01f4d7b1e051c453a56ade0dd6d37"
+    },
+    "case_studies/rankine_steam/case_water.yaml": {
+      "previous_solver_options": {
+        "library": "scipy",
+        "method": "slsqp",
+        "derivative_method": "2-point",
+        "derivative_abs_step": "1e-6",
+        "print_convergence": true,
+        "plot_convergence": false,
+        "logger": "None",
+        "update_on": "gradient",
+        "tolerance": "1e-6",
+        "max_iterations": 200,
+        "problem_scale": 10,
+        "callbacks": {
+          "save_plot": true,
+          "save_config": true,
+          "save_report": true,
+          "plot_cycle": true,
+          "plot_convergence": false
+        }
+      },
+      "problem_formulation_sha256": "2569b843149f10ae194a743f0c17076ff8e7b1b601fcd9407fb207b4452ff619"
+    },
+    "case_studies/rankine_transcritical_vs_trilateral/case_template.yaml": {
+      "previous_solver_options": {
+        "library": "scipy",
+        "method": "slsqp",
+        "derivative_method": "2-point",
+        "derivative_abs_step": 1e-06,
+        "print_convergence": false,
+        "plot_convergence": false,
+        "logger": null,
+        "update_on": "function",
+        "tolerance": 1e-06,
+        "max_iterations": 200,
+        "problem_scale": 20
+      },
+      "problem_formulation_sha256": "8d5332190b1482b7b72548fe20e817bde51d21a12aeb19060f6270bbc0775f1a"
+    },
+    "case_studies/rankine_wet2dry/case_template.yaml": {
+      "previous_solver_options": {
+        "library": "scipy",
+        "method": "slsqp",
+        "derivative_method": "2-point",
+        "derivative_abs_step": "1e-6",
+        "print_convergence": false,
+        "plot_convergence": false,
+        "logger": null,
+        "update_on": "function",
+        "tolerance": "1e-6",
+        "max_iterations": 250,
+        "problem_scale": 20
+      },
+      "problem_formulation_sha256": "500d8f201940619f999b4681569cf19c6bcab5c1edcbaa66b03f12c6e5021169"
+    },
+    "case_studies/refrigeration_R134a/case_R134a_refrigeration.yaml": {
+      "previous_solver_options": {
+        "library": "scipy",
+        "method": "slsqp",
+        "derivative_method": "2-point",
+        "derivative_abs_step": "1e-6",
+        "print_convergence": true,
+        "plot_convergence": false,
+        "logger": "None",
+        "update_on": "gradient",
+        "tolerance": "1e-6",
+        "max_iterations": 200,
+        "problem_scale": 10,
+        "callbacks": {
+          "save_plot": true,
+          "save_config": true,
+          "save_report": true,
+          "plot_cycle": true,
+          "plot_convergence": false
+        }
+      },
+      "problem_formulation_sha256": "998ad827c388f1fe18499254c4a74b3bbb27f6877b11c214d2497604ec235955"
+    },
+    "case_studies/refrigeration_air/case_air_refrigeration_recuperated.yaml": {
+      "previous_solver_options": {
+        "library": "scipy",
+        "method": "slsqp",
+        "derivative_method": "2-point",
+        "derivative_abs_step": "1e-6",
+        "print_convergence": true,
+        "plot_convergence": false,
+        "logger": "None",
+        "update_on": "gradient",
+        "tolerance": "1e-6",
+        "max_iterations": 50,
+        "problem_scale": 10,
+        "callbacks": {
+          "save_plot": true,
+          "save_config": true,
+          "save_report": true,
+          "plot_cycle": true,
+          "plot_convergence": false
+        }
+      },
+      "problem_formulation_sha256": "ca6f7eb64612ba11b34406b656bbd57f76c4ecf8ae70f7a2f0a87bc26a6e0dce"
+    },
+    "case_studies/sCO2_comparison/case_sCO2_recompression.yaml": {
+      "previous_solver_options": {
+        "library": "scipy",
+        "method": "slsqp",
+        "derivative_method": "2-point",
+        "derivative_abs_step": "1e-6",
+        "print_convergence": true,
+        "plot_convergence": false,
+        "logger": "None",
+        "update_on": "gradient",
+        "tolerance": "1e-8",
+        "max_iterations": 200,
+        "problem_scale": 10,
+        "callbacks": {
+          "save_plot": false,
+          "save_config": true,
+          "save_report": true,
+          "plot_cycle": false,
+          "plot_convergence": false
+        }
+      },
+      "problem_formulation_sha256": "fc923b929b954815a16b242be3b450ba9783885c09a204c1a9e2614588f4b3ad"
+    },
+    "case_studies/sCO2_comparison/case_sCO2_recuperated.yaml": {
+      "previous_solver_options": {
+        "library": "scipy",
+        "method": "slsqp",
+        "derivative_method": "2-point",
+        "derivative_abs_step": "1e-6",
+        "problem_scale": 10,
+        "print_convergence": true,
+        "plot_convergence": false,
+        "logger": "None",
+        "update_on": "gradient",
+        "tolerance": "1e-8",
+        "max_iterations": 200,
+        "extra_options": {},
+        "callbacks": {
+          "save_plot": false,
+          "save_config": false,
+          "save_report": false,
+          "plot_cycle": false,
+          "plot_convergence": false
+        }
+      },
+      "problem_formulation_sha256": "370541e77cd0999f23908ea298fba7082039ed0ae72faf73b3f5e6317b70c4a6"
+    },
+    "case_studies/sCO2_comparison/case_sCO2_simple.yaml": {
+      "previous_solver_options": {
+        "library": "scipy",
+        "method": "slsqp",
+        "derivative_method": "2-point",
+        "derivative_abs_step": "1e-6",
+        "problem_scale": 10,
+        "print_convergence": true,
+        "plot_convergence": false,
+        "logger": "None",
+        "update_on": "gradient",
+        "tolerance": "1e-8",
+        "max_iterations": 200,
+        "extra_options": {},
+        "callbacks": {
+          "save_plot": false,
+          "save_config": false,
+          "save_report": true,
+          "plot_cycle": false,
+          "plot_convergence": false
+        }
+      },
+      "problem_formulation_sha256": "810d5eb8d8de13429c30f7e20c4e2dbcb544188f9dee19f83fb29a97f7fca834"
+    },
+    "case_studies/sCO2_recompression/case_sCO2_recompression.yaml": {
+      "previous_solver_options": {
+        "library": "pysolver",
+        "method": "slsqp",
+        "derivative_method": "2-point",
+        "derivative_abs_step": "1e-6",
+        "print_convergence": true,
+        "plot_convergence": false,
+        "logger": "None",
+        "update_on": "gradient",
+        "tolerance": "1e-6",
+        "max_iterations": 200,
+        "problem_scale": 10,
+        "extra_options": {
+          "first_step_fraction": 0.2,
+          "max_step_fraction": 1.0,
+          "step_growth_factor": 1.5,
+          "feasibility_tol": "1e-6",
+          "optimality_tol": "1e-4"
+        },
+        "callbacks": {
+          "save_plot": true,
+          "save_config": true,
+          "save_report": true,
+          "plot_cycle": true,
+          "plot_convergence": false
+        }
+      },
+      "problem_formulation_sha256": "39d8c0a6a94ea1351ec339b0b9cdb90134d45db4dd7b8fd1a08e56ead2b111eb"
+    },
+    "case_studies/sCO2_recuperated/case_sCO2_recuperated.yaml": {
+      "previous_solver_options": {
+        "library": "scipy",
+        "method": "slsqp",
+        "derivative_method": "2-point",
+        "derivative_abs_step": "1e-6",
+        "problem_scale": 10,
+        "print_convergence": true,
+        "plot_convergence": false,
+        "logger": "None",
+        "update_on": "gradient",
+        "tolerance": "1e-12",
+        "max_iterations": 200,
+        "extra_options": {},
+        "callbacks": {
+          "save_plot": false,
+          "save_config": false,
+          "save_report": false,
+          "plot_cycle": true,
+          "plot_convergence": false
+        }
+      },
+      "problem_formulation_sha256": "9ef96f310ea5123d3b7efdd2c2bd427419e785d8701297e165bc061821d897d8"
+    }
+  }
+}

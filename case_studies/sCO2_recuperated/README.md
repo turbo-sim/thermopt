@@ -62,7 +62,7 @@ calls are reported separately as `optimality_model_calls` in `summary.json`;
 the original optimization call counts and trajectories are retained. Unavailable
 optimality values appear as gaps. `history.csv` includes the optimality column.
 
-Outputs are saved beside the script in `results_slsqp_comparison/`:
+Outputs are saved beside the script in `results/slsqp_comparison/`:
 
 - `slsqp_comparison.png`, `.svg`, and `.pdf`: the three-panel comparison.
 - One directory per run, containing `history.csv` and `summary.json`.

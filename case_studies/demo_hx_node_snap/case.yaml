@@ -1,13 +1,19 @@
 # SI units: temperature [K], pressure [Pa], enthalpy [J/kg], power [W].
 solver_options:
-  library: scipy
+  library: pysolver
   method: slsqp
   derivative_method: 2-point
   derivative_abs_step: 1.0e-6
   tolerance: 1.0e-6
   max_iterations: 250
   problem_scale: 20
-  update_on: function
+  extra_options:
+    first_step_fraction: 0.2
+    max_step_fraction: 1.0
+    step_growth_factor: 1.5
+    feasibility_tol: 1e-06
+    optimality_tol: 1e-4
+  update_on: iteration
   print_convergence: true
   plot_convergence: false
 

@@ -18,6 +18,42 @@ historical figure preparation and input-dependent programs have different
 requirements; relocating them does not establish that every full study runs.
 Keep generated outputs, tables and logs inside the case's `results/` directory.
 
+Standard SLSQP cases and study templates use PySolverView's controlled backend:
+
+```yaml
+solver_options:
+  library: pysolver
+  method: slsqp
+  update_on: iteration
+  extra_options:
+    first_step_fraction: 0.2
+    max_step_fraction: 1.0
+    step_growth_factor: 1.5
+    feasibility_tol: 1e-6
+    optimality_tol: 1e-4
+```
+
+Each case retains its physical inputs, scaling and iteration budget. Feasibility
+tolerances are explicit (some cases use `1e-8` or `1e-12` rather than the
+illustrative `1e-6`). Native stopping can be stricter: the PTES turbomachinery
+case uses `1e-8` native stopping with its original `1e-6` feasibility gate.
+R134a uses three-point derivatives to avoid false small-step termination near
+saturation; the other standard cases keep their configured derivative method.
+The optimality threshold is `1e-4` for finite-difference KKT checks. Accepted
+iterations drive reporting. Study runners inherit these settings from their
+templates. The named IPOPT configuration and deliberate SciPy/Pounce solver
+comparisons remain explicit alternatives, rather than default SLSQP runs.
+
+Study cache signatures include solver settings. Preserve results produced with
+older settings as historical runs and choose a fresh results location when
+rerunning those sweeps; do not edit saved signatures to reuse them as new solves.
+
+The default-solver migration passed 564 tests with four unchanged strict expected
+failures, including complete controlled solves of recuperated sCO2, R134a
+refrigeration and a butane ORC. A separate two-iteration check exercised all six
+intentional SciPy/controlled comparison configurations; those bounded runs are
+not claimed as converged optimizations or full research sweeps.
+
 For the verified six-way recompression solver/backend comparison, run from the
 repository root after installing the locked dependencies:
 

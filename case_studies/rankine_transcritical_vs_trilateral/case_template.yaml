@@ -1,15 +1,21 @@
 solver_options:
-  library: scipy
+  library: pysolver
   method: slsqp
   derivative_method: 2-point
   derivative_abs_step: 0.000001
   print_convergence: false
   plot_convergence: false
   logger: null
-  update_on: function
+  update_on: iteration
   tolerance: 0.000001
   max_iterations: 200
   problem_scale: 20
+  extra_options:
+    first_step_fraction: 0.2
+    max_step_fraction: 1.0
+    step_growth_factor: 1.5
+    feasibility_tol: 1e-06
+    optimality_tol: 1e-4
 
 problem_formulation:
   cycle_topology: simple

@@ -36,6 +36,9 @@ port or replace host solvers without a new instruction.
 - Keep maintained runnable cases under `case_studies/`. Update active entry
   points and documentation when moving them; preserve dated benchmark and
   physical-reference records as historical evidence.
+- Standard case YAMLs use PySolverView controlled SLSQP (`library: pysolver`,
+  `method: slsqp`) with explicit initial-step controls; see `case_studies/README.md`.
+  Keep intentionally named alternative-solver configurations and comparisons explicit.
 
 ## Markdown mathematics
 

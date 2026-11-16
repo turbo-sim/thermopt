@@ -354,6 +354,15 @@ works; maintain an explicit execution inventory.
 - [ ] Make minimal new-interface edits in maintained programs. Replace old
   `thermopt.Fluid`, positional backend, `exceptions`, state mutation and state
   collection calls. Preserve useful explanations and physical assumptions.
+  All 18 standard SLSQP case/template configurations now explicitly select the
+  controlled PySolverView backend with a 0.2 initial fraction, 1.5 growth, and
+  accepted-iteration reporting. Preserve per-case tolerances and physical inputs;
+  keep named IPOPT and solver-comparison alternatives explicit. Clear inherited
+  backend-specific controls before running the deliberate SciPy comparison.
+  Verified 564 passing tests plus four unchanged strict expected failures,
+  including three complete default-controlled cycle solves and a bounded
+  six-configuration SciPy/controlled comparison. The broader research sweeps
+  remain outside this verification scope.
 - [ ] Give the four validated native table studies convenient ordinary YAML
   configurations with justified table domains; source-only phase cases remain
   explicit. Reuse validated caches and configured models.

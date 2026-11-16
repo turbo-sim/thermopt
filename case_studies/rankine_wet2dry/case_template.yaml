@@ -1,19 +1,24 @@
 # Shared inputs. Fluid, topology, property-based bounds and inlet constraints
 # are supplied by scripts/study.py after loading this file.
 solver_options:
-  library: scipy
+  library: pysolver
   method: slsqp
   derivative_method: 2-point
   derivative_abs_step: 1e-6
   print_convergence: false
   plot_convergence: false
   logger: null
-  # Track function evaluations so the native solver retains the final SLSQP
-  # point even when convergence occurs without another gradient evaluation.
-  update_on: function
+  # Report the controlled solver's accepted points, including its final point.
+  update_on: iteration
   tolerance: 1e-6
   max_iterations: 250
   problem_scale: 20
+  extra_options:
+    first_step_fraction: 0.2
+    max_step_fraction: 1.0
+    step_growth_factor: 1.5
+    feasibility_tol: 1e-6
+    optimality_tol: 1e-4
 
 problem_formulation:
   cycle_topology: null

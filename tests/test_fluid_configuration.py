@@ -28,6 +28,10 @@ BASELINES["cases"] = {
     ): record
     for name, record in BASELINES["cases"].items()
 }
+SOLVER_POLICY = json.loads(
+    (ROOT / "tests/data/case_solver_defaults_20261116.json").read_text(encoding="utf-8")
+)
+SOLVER_DEFAULTS = SOLVER_POLICY["cases"]
 ROLES = {
     "working_fluid",
     "heating_fluid",
@@ -105,6 +109,44 @@ def test_maintained_case_schema_and_physical_values_are_preserved(filename):
             "model_options",
         }
     compared = deepcopy(data)
+    if filename in SOLVER_DEFAULTS:
+        # Review only the requested solver policy; compare all other setup and
+        # physical values against their original, unchanged historical record.
+        options = compared["solver_options"]
+        previous = SOLVER_DEFAULTS[filename]["previous_solver_options"]
+        # Actual launcher checks exposed order-sensitive finite differences.
+        # Review explicit numerical fixes separately from immutable physics.
+        for key, expected in (
+            SOLVER_POLICY.get("reviewed_numerical_overrides", {})
+            .get(filename, {})
+            .items()
+        ):
+            assert options[key] == expected
+            options[key] = previous[key]
+        assert options["library"] == "pysolver" and options["method"] == "slsqp"
+        assert options["update_on"] == "iteration"
+        extra = options["extra_options"]
+        assert set(extra) == {
+            "first_step_fraction",
+            "max_step_fraction",
+            "step_growth_factor",
+            "feasibility_tol",
+            "optimality_tol",
+        }
+        assert (
+            extra["first_step_fraction"],
+            extra["max_step_fraction"],
+            extra["step_growth_factor"],
+        ) == (0.2, 1.0, 1.5)
+        assert float(extra["feasibility_tol"]) == float(previous["tolerance"])
+        assert float(extra["optimality_tol"]) == 1e-4
+        unchanged_keys = set(options) - {"library", "update_on", "extra_options"}
+        assert {key: options[key] for key in unchanged_keys} == {
+            key: value
+            for key, value in previous.items()
+            if key not in {"library", "update_on", "extra_options"}
+        }
+        compared["solver_options"] = deepcopy(previous)
     if recompression:
         # Explicit user-requested evaluator/optimizer migration, 16 November 2026.
         # Keep the original physical hash: only these reviewed setup changes

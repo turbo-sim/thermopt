@@ -12,6 +12,7 @@ import json
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+import jaxprop as jp
 import numpy as np
 import pysolver_view as psv
 import thermopt as th
@@ -26,12 +27,10 @@ class ComparisonCycleProblem(th.ThermodynamicCycleProblem):
     """Expose property-domain failures to the custom solver's backtracking."""
 
     def fitness(self, x):
-        """Evaluate the cycle, translating JaxProp's property-failure wrapper."""
+        """Translate recognized native JaxProp trial failures, preserving causes."""
         try:
             return super().fitness(x)
-        except RuntimeError as error:
-            if not str(error).startswith("Thermodynamic property calculations failed:"):
-                raise
+        except (jp.InvalidStateError, jp.CalculationError) as error:
             raise psv.DomainError(str(error)) from error
 
 
@@ -123,6 +122,9 @@ def run_case(case, config, output_dir, max_iterations=None, verbose=False):
         options["max_iterations"] = max_iterations
     # The YAML reader uses NumPy integers; custom SLSQP expects a Python int.
     options["max_iterations"] = int(options["max_iterations"])
+    # The ordinary YAML now selects controlled SLSQP. Native SciPy comparison
+    # runs must not inherit its step-fraction or independent KKT options.
+    options["extra_options"] = {}
     if library == "pysolver":
         options["extra_options"].update(
             first_step_fraction=fraction,
@@ -254,7 +256,7 @@ def main():
         "--config", type=Path, default=EXAMPLE_DIR / "case_sCO2_recuperated.yaml"
     )
     parser.add_argument(
-        "--output", type=Path, default=EXAMPLE_DIR / "results_slsqp_comparison"
+        "--output", type=Path, default=EXAMPLE_DIR / "results" / "slsqp_comparison"
     )
     parser.add_argument("--max-iterations", type=int, default=None)
     parser.add_argument("--verbose", action="store_true")
