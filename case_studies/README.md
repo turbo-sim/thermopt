@@ -18,6 +18,11 @@ historical figure preparation and input-dependent programs have different
 requirements; relocating them does not establish that every full study runs.
 Keep generated outputs, tables and logs inside the case's `results/` directory.
 
+The [small-demo execution report](SMALL_DEMOS.md) lists the one/two-case
+launchers verified on 16 November 2026, their fresh outputs, numerical fixes
+and headless invocation. Scientific sweeps and benchmark suites have a separate
+verification scope.
+
 Standard SLSQP cases and study templates use PySolverView's controlled backend:
 
 ```yaml

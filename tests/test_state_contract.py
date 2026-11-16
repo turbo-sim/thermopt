@@ -379,6 +379,7 @@ def test_blended_heat_transfer_example_uses_public_state_stack(tmp_path, monkeyp
         / "case_studies/HX_development/blended_calculation.py"
     )
     monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("THERMOPT_RESULTS_DIR", str(tmp_path / "results"))
     result = runpy.run_path(str(script), run_name="__main__")
     assert isinstance(result["states"], jp.FluidState)
     assert result["states"].shape == (300,)
@@ -387,4 +388,4 @@ def test_blended_heat_transfer_example_uses_public_state_stack(tmp_path, monkeyp
         (np.asarray(result["htc_blend_list"]) >= 500.0)
         & (np.asarray(result["htc_blend_list"]) <= 5000.0)
     )
-    assert len(list(tmp_path.glob("*.png"))) == 2
+    assert len(list((tmp_path / "results").glob("*.png"))) == 2

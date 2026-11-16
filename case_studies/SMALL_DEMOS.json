@@ -1,0 +1,894 @@
+{
+  "date": "2026-11-16",
+  "scope": "Actual one/two-case small demonstration scripts; no sweeps or timing comparisons",
+  "totals": {
+    "scripts_passed": 14,
+    "optimized_cycle_runs_passed": 15,
+    "plotting_only_scripts": 2
+  },
+  "profile": {
+    "MPLBACKEND": "Agg",
+    "DISABLE_PLOTS": "1",
+    "THERMOPT_RESULTS_DIR": "fresh per script/run",
+    "JAX_ENABLE_X64": "true",
+    "OMP_NUM_THREADS": "1",
+    "workers": 2,
+    "per_script_budget_seconds": 480,
+    "callbacks": "Actual configured reporting/plot/export callbacks, no replacement of numerical functions",
+    "acceptance": "Native solver success, finite final objective/residuals and native feasibility/first-order gates",
+    "not_exercised": [
+      "Interactive GUI/file watcher",
+      "Optional animation/movie encoding"
+    ]
+  },
+  "environment": {
+    "python": "3.13.2",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "packages": {
+      "jaxprop": "0.6.0",
+      "pysolver-view": "0.8.2",
+      "pounce-solver": "0.13.0",
+      "jax": "0.6.2",
+      "jaxlib": "0.6.2",
+      "scipy": "1.17.1",
+      "numpy": "2.4.4",
+      "matplotlib": "3.10.8"
+    },
+    "jaxprop_artifact": {
+      "wheel_sha256": "0a8dfb68ca4d21cf97b7483e1da776b946cec108a94d50ebb770bb9848127d3c",
+      "checked_installed_source_files": 43,
+      "reference": "benchmark/RELEASE_060.md",
+      "provenance": "Official PyPI 0.6.0 wheel, all installed Python package files match"
+    },
+    "jaxprop_note": "Official PyPI 0.6.0 sources; separate historical metadata-fix candidate was not used in these demo runs"
+  },
+  "tests": {
+    "passed": 564,
+    "strict_expected_failures": 4,
+    "junit": "benchmark/results/small_demos/full_tests.xml",
+    "raw_xml_counts": {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "4",
+      "tests": "568",
+      "time": "136.822",
+      "timestamp": "2026-11-16T21:04:13.757418+01:00",
+      "hostname": "CME-EL-ROAGR1"
+    }
+  },
+  "cases": {
+    "HX_development/PHE_correlations.py": {
+      "script": "case_studies/HX_development/PHE_correlations.py",
+      "output": "case_studies/HX_development/results/demo_checks/20261116_204354/PHE_correlations",
+      "status": "passed",
+      "solves": [],
+      "error": null,
+      "exit_code": 0,
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_204354.json",
+      "source_sha256": "067f3e241f24a26ab16812b4defc6840a785e7f64837b4862d2470d3bb646cc8",
+      "cwd": "case_studies/HX_development",
+      "command": "<repository>/.venv/Scripts/python.exe PHE_correlations.py",
+      "inputs": {},
+      "generated_artifact_counts": {
+        ".json": 1,
+        ".log": 1,
+        ".png": 3
+      }
+    },
+    "HX_development/blended_calculation.py": {
+      "script": "case_studies/HX_development/blended_calculation.py",
+      "output": "case_studies/HX_development/results/demo_checks/20261116_204354/blended_calculation",
+      "status": "passed",
+      "solves": [],
+      "error": null,
+      "exit_code": 0,
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_204354.json",
+      "source_sha256": "3e151e888657fc244ff877f2733501cf6a22e4f25f15887ee1b28ff7c2044108",
+      "cwd": "case_studies/HX_development",
+      "command": "<repository>/.venv/Scripts/python.exe blended_calculation.py",
+      "inputs": {},
+      "generated_artifact_counts": {
+        ".json": 1,
+        ".log": 1,
+        ".png": 4
+      }
+    },
+    "PTES_CO2/case_baseline/run_optimization.py": {
+      "script": "case_studies/PTES_CO2/case_baseline/run_optimization.py",
+      "output": "case_studies/PTES_CO2/case_baseline/results/demo_checks/20261116_204354/run_optimization",
+      "status": "passed",
+      "solves": [
+        {
+          "name": "cycle",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 35,
+          "finite": true,
+          "violation": 1.2017710560030536e-08,
+          "objective": -0.4747252286506522
+        }
+      ],
+      "error": null,
+      "exit_code": 0,
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_204354.json",
+      "source_sha256": "2f3e40dc1a30d7a5d556f882e686deedcba8dcf9cb5147714b49061ccaf6367d",
+      "cwd": "case_studies/PTES_CO2/case_baseline",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "inputs": {
+        "case_studies/PTES_CO2/case_PTES_CO2.yaml": "661ca7e5505279755d72216a0bb99ff945bd11d8eda77b2bd2ae86987fa5f827"
+      },
+      "generated_artifact_counts": {
+        ".eps": 1,
+        ".json": 1,
+        ".log": 1,
+        ".pkl": 1,
+        ".png": 38,
+        ".svg": 2,
+        ".txt": 37,
+        ".xlsx": 1,
+        ".yaml": 1
+      }
+    },
+    "PTES_CO2/case_ideal/run_optimization.py": {
+      "script": "case_studies/PTES_CO2/case_ideal/run_optimization.py",
+      "output": "case_studies/PTES_CO2/case_ideal/results/demo_checks/20261116_205718/run_optimization",
+      "status": "passed",
+      "solves": [
+        {
+          "name": "cycle",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 109,
+          "finite": true,
+          "violation": 9.755539736033824e-08,
+          "objective": -0.9669453334164464
+        }
+      ],
+      "error": null,
+      "exit_code": 0,
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_205718.json",
+      "source_sha256": "5f5e80ba6ed3062755e0a01ca35dcf240e8489669a210f1450b31654e45065b5",
+      "cwd": "case_studies/PTES_CO2/case_ideal",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "inputs": {
+        "case_studies/PTES_CO2/case_PTES_CO2.yaml": "661ca7e5505279755d72216a0bb99ff945bd11d8eda77b2bd2ae86987fa5f827"
+      },
+      "generated_artifact_counts": {
+        ".eps": 1,
+        ".json": 1,
+        ".log": 1,
+        ".png": 4,
+        ".svg": 2,
+        ".txt": 111,
+        ".xlsx": 1,
+        ".yaml": 1
+      }
+    },
+    "PTES_CO2/case_shaft_constraint/run_optimization.py": {
+      "script": "case_studies/PTES_CO2/case_shaft_constraint/run_optimization.py",
+      "output": "case_studies/PTES_CO2/case_shaft_constraint/results/demo_checks/20261116_210351/run_optimization",
+      "status": "passed",
+      "solves": [
+        {
+          "name": "cycle_unconstrained",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 82,
+          "finite": true,
+          "violation": 4.598200575856026e-09,
+          "objective": -0.44908305970035045
+        },
+        {
+          "name": "cycle_constrained",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 41,
+          "finite": true,
+          "violation": 3.292097972007468e-09,
+          "objective": -0.4472964894806291
+        }
+      ],
+      "error": null,
+      "exit_code": 0,
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_210351.json",
+      "source_sha256": "74d2b798b57d4fe7b5445ba50aff74b9ea756836411ee7a9b7225511e8ed1db9",
+      "cwd": "case_studies/PTES_CO2/case_shaft_constraint",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "inputs": {
+        "case_studies/PTES_CO2/case_PTES_CO2_turbo.yaml": "e2b7710fc5323bf5a9e2a49eaa95271d8e30f239fe71eeda62290ecdba98479f"
+      },
+      "generated_artifact_counts": {
+        ".json": 1,
+        ".log": 1,
+        ".pkl": 1,
+        ".png": 4,
+        ".svg": 2,
+        ".txt": 129,
+        ".xlsx": 2,
+        ".yaml": 2
+      }
+    },
+    "PTES_CO2/case_turbo_model/run_optimization.py": {
+      "script": "case_studies/PTES_CO2/case_turbo_model/run_optimization.py",
+      "output": "case_studies/PTES_CO2/case_turbo_model/results/demo_checks/20261116_210351/run_optimization",
+      "status": "passed",
+      "solves": [
+        {
+          "name": "cycle_turbo",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 82,
+          "finite": true,
+          "violation": 4.598200575856026e-09,
+          "objective": -0.44908305970035045
+        },
+        {
+          "name": "cycle_fixed",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 33,
+          "finite": true,
+          "violation": 2.1904907043790445e-08,
+          "objective": -0.4493447872003958
+        }
+      ],
+      "error": null,
+      "exit_code": 0,
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_210351.json",
+      "source_sha256": "0057dbabedaab225df6d3bb28d48995027fd4b2d06812d7f6e1253d195b84420",
+      "cwd": "case_studies/PTES_CO2/case_turbo_model",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "inputs": {
+        "case_studies/PTES_CO2/case_PTES_CO2_turbo.yaml": "e2b7710fc5323bf5a9e2a49eaa95271d8e30f239fe71eeda62290ecdba98479f",
+        "case_studies/PTES_CO2/case_PTES_CO2.yaml": "661ca7e5505279755d72216a0bb99ff945bd11d8eda77b2bd2ae86987fa5f827"
+      },
+      "generated_artifact_counts": {
+        ".json": 1,
+        ".log": 1,
+        ".pkl": 1,
+        ".png": 4,
+        ".svg": 2,
+        ".txt": 121,
+        ".xlsx": 2,
+        ".yaml": 2
+      }
+    },
+    "heat_pump_CO2/run_comparison.py": {
+      "script": "case_studies/heat_pump_CO2/run_comparison.py",
+      "output": "case_studies/heat_pump_CO2/results/demo_checks/20261116_210910/run_comparison",
+      "status": "passed",
+      "solves": [
+        {
+          "name": "cycle_1",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 13,
+          "finite": true,
+          "violation": 5.7411853049416095e-12,
+          "objective": -2.3836908512180583
+        },
+        {
+          "name": "cycle_2",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 13,
+          "finite": true,
+          "violation": 1.745092959026806e-12,
+          "objective": -2.9690755356469274
+        }
+      ],
+      "error": null,
+      "exit_code": 0,
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_210910.json",
+      "source_sha256": "8e07037ccb1957581456c5e438260adf70e1b2f9484e3a08cb7a7e19e7c81c5e",
+      "cwd": "case_studies/heat_pump_CO2",
+      "command": "<repository>/.venv/Scripts/python.exe run_comparison.py",
+      "inputs": {
+        "case_studies/heat_pump_CO2/case_sCO2_heat_pump_valve.yaml": "f5be493e4bd0ba9693557703a084054693755ef797876c6f85421574f2733b9b",
+        "case_studies/heat_pump_CO2/case_sCO2_heat_pump_turbine.yaml": "7ea2ba3c62f76d3636f317813d3fca04e1483eb4650abe2c80ce16aa1056856c"
+      },
+      "generated_artifact_counts": {
+        ".eps": 3,
+        ".json": 1,
+        ".log": 1,
+        ".png": 38,
+        ".svg": 5,
+        ".txt": 32,
+        ".xlsx": 2,
+        ".yaml": 30
+      }
+    },
+    "heat_pump_CO2/run_optimization.py": {
+      "script": "case_studies/heat_pump_CO2/run_optimization.py",
+      "output": "case_studies/heat_pump_CO2/results/demo_checks/20261116_204354/run_optimization",
+      "status": "passed",
+      "solves": [
+        {
+          "name": "cycle",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 13,
+          "finite": true,
+          "violation": 5.7411853049416095e-12,
+          "objective": -2.3836908512180583
+        }
+      ],
+      "error": null,
+      "exit_code": 0,
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_204354.json",
+      "source_sha256": "2ae805f4ef6be4f211609d36b2ab733d412ee1afc3806d8e6dad85881c4b4aa8",
+      "cwd": "case_studies/heat_pump_CO2",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "inputs": {
+        "case_studies/heat_pump_CO2/case_sCO2_heat_pump_valve.yaml": "f5be493e4bd0ba9693557703a084054693755ef797876c6f85421574f2733b9b"
+      },
+      "generated_artifact_counts": {
+        ".json": 1,
+        ".log": 1,
+        ".png": 16,
+        ".svg": 1,
+        ".txt": 16,
+        ".xlsx": 1,
+        ".yaml": 15
+      }
+    },
+    "rankine_organic/run_optimization.py": {
+      "script": "case_studies/rankine_organic/run_optimization.py",
+      "output": "case_studies/rankine_organic/results/demo_checks/20261116_204354/run_optimization",
+      "status": "passed",
+      "solves": [
+        {
+          "name": "cycle",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 24,
+          "finite": true,
+          "violation": 1.1674842426145914e-09,
+          "objective": -0.06153814900136652
+        }
+      ],
+      "error": null,
+      "exit_code": 0,
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_204354.json",
+      "source_sha256": "6842aa92b80d092aaf9ee0c9a6d227db9099e621257cb5c1a9af4b8dfc17e3c4",
+      "cwd": "case_studies/rankine_organic",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "inputs": {
+        "case_studies/rankine_organic/case_butane_ORC.yaml": "03364188461ea650693483c12999073652b262fcd0c1278a6879e32f53ef9213"
+      },
+      "generated_artifact_counts": {
+        ".json": 1,
+        ".log": 1,
+        ".png": 27,
+        ".svg": 1,
+        ".txt": 27,
+        ".xlsx": 1,
+        ".yaml": 26
+      }
+    },
+    "rankine_steam/run_optimization.py": {
+      "script": "case_studies/rankine_steam/run_optimization.py",
+      "output": "case_studies/rankine_steam/results/demo_checks/20261116_204354/run_optimization",
+      "status": "passed",
+      "solves": [
+        {
+          "name": "cycle",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 33,
+          "finite": true,
+          "violation": 2.7137048164149745e-11,
+          "objective": -0.18814065761272775
+        }
+      ],
+      "error": null,
+      "exit_code": 0,
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_204354.json",
+      "source_sha256": "74ff85d59bb2e903ecae3ae7cd9a6d239f6a39b14bfd1189059d9f97fc72c687",
+      "cwd": "case_studies/rankine_steam",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "inputs": {
+        "case_studies/rankine_steam/case_water.yaml": "32370fc2f83587c699864d0da437c91291e3aa1337dcaf58cf288c2aed1b1f6a"
+      },
+      "generated_artifact_counts": {
+        ".json": 1,
+        ".log": 1,
+        ".png": 36,
+        ".svg": 1,
+        ".txt": 36,
+        ".xlsx": 1,
+        ".yaml": 35
+      }
+    },
+    "refrigeration_R134a/run_optimization.py": {
+      "script": "case_studies/refrigeration_R134a/run_optimization.py",
+      "output": "case_studies/refrigeration_R134a/results/demo_checks/20261116_205718/run_optimization",
+      "status": "passed",
+      "solves": [
+        {
+          "name": "cycle",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 23,
+          "finite": true,
+          "violation": 3.4114057712031354e-07,
+          "objective": -2.392832225804561
+        }
+      ],
+      "error": null,
+      "exit_code": 0,
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_205718.json",
+      "source_sha256": "39362e552dcf6c7e2713f7e33ae7471f132239c559e2b18d5392bfe78342721a",
+      "cwd": "case_studies/refrigeration_R134a",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "inputs": {
+        "case_studies/refrigeration_R134a/case_R134a_refrigeration.yaml": "8da1625756cf56c104b82ee1a0ca03923370d2ad38448b5c731f882ec8005730"
+      },
+      "generated_artifact_counts": {
+        ".json": 1,
+        ".log": 1,
+        ".png": 25,
+        ".svg": 1,
+        ".txt": 25,
+        ".xlsx": 1,
+        ".yaml": 24
+      }
+    },
+    "refrigeration_air/run_optimization.py": {
+      "script": "case_studies/refrigeration_air/run_optimization.py",
+      "output": "case_studies/refrigeration_air/results/demo_checks/20261116_204354/run_optimization",
+      "status": "passed",
+      "solves": [
+        {
+          "name": "cycle",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 18,
+          "finite": true,
+          "violation": 1.8733637716650264e-07,
+          "objective": -0.6968641973143544
+        }
+      ],
+      "error": null,
+      "exit_code": 0,
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_204354.json",
+      "source_sha256": "24aa1d6a0640399e4a7edf49061c2c29d7cc6f1b93208fdb72e93d07c7cd6b05",
+      "cwd": "case_studies/refrigeration_air",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "inputs": {
+        "case_studies/refrigeration_air/case_air_refrigeration_recuperated.yaml": "be66264d16d9d9393a56a09bc7e14dde7aa4d796668aecbca1b363ce8ae037f2"
+      },
+      "generated_artifact_counts": {
+        ".json": 1,
+        ".log": 1,
+        ".png": 21,
+        ".svg": 1,
+        ".txt": 21,
+        ".xlsx": 1,
+        ".yaml": 20
+      }
+    },
+    "sCO2_recompression/run_optimization.py": {
+      "script": "case_studies/sCO2_recompression/run_optimization.py",
+      "output": "case_studies/sCO2_recompression/results/demo_checks/20261116_204354/run_optimization",
+      "status": "passed",
+      "solves": [
+        {
+          "name": "cycle",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 29,
+          "finite": true,
+          "violation": 7.64520488398072e-09,
+          "objective": -0.4138198737052636
+        }
+      ],
+      "error": null,
+      "exit_code": 0,
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_204354.json",
+      "source_sha256": "0b8585bac192fef74d4cc248f315613ca3d79f3263ddf415a0ada8e6f604213c",
+      "cwd": "case_studies/sCO2_recompression",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "inputs": {
+        "case_studies/sCO2_recompression/case_sCO2_recompression.yaml": "6a5ccec467c169250cf456455902477f78189b0319129bf68138064754482710"
+      },
+      "generated_artifact_counts": {
+        ".json": 1,
+        ".log": 1,
+        ".png": 32,
+        ".svg": 1,
+        ".txt": 32,
+        ".xlsx": 1,
+        ".yaml": 31
+      }
+    },
+    "sCO2_recuperated/run_optimization.py": {
+      "script": "case_studies/sCO2_recuperated/run_optimization.py",
+      "output": "case_studies/sCO2_recuperated/results/demo_checks/20261116_204354/run_optimization",
+      "status": "passed",
+      "solves": [
+        {
+          "name": "cycle",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 24,
+          "finite": true,
+          "violation": 1.7053025658242404e-14,
+          "objective": -0.3826892513412005
+        }
+      ],
+      "error": null,
+      "exit_code": 0,
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_204354.json",
+      "source_sha256": "6b01ac92d3c55a6cb5b05f82fa153ddd70f9d505298bdfec7f82e589f68b728f",
+      "cwd": "case_studies/sCO2_recuperated",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "inputs": {
+        "case_studies/sCO2_recuperated/case_sCO2_recuperated.yaml": "9bec48810afcc7104d3dc0b887d7f2496d045052b1bf9a9f3efeacc4b885a9ed"
+      },
+      "generated_artifact_counts": {
+        ".json": 1,
+        ".log": 1,
+        ".png": 1
+      }
+    }
+  },
+  "observations_before_and_after_repairs": [
+    {
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_204354.json",
+      "script": "sCO2_recuperated/run_optimization.py",
+      "status": "passed",
+      "error": null,
+      "solves": [
+        {
+          "name": "cycle",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 24,
+          "finite": true,
+          "violation": 1.7053025658242404e-14,
+          "objective": -0.3826892513412005
+        }
+      ]
+    },
+    {
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_204354.json",
+      "script": "rankine_steam/run_optimization.py",
+      "status": "passed",
+      "error": null,
+      "solves": [
+        {
+          "name": "cycle",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 33,
+          "finite": true,
+          "violation": 2.7137048164149745e-11,
+          "objective": -0.18814065761272775
+        }
+      ]
+    },
+    {
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_204354.json",
+      "script": "rankine_organic/run_optimization.py",
+      "status": "passed",
+      "error": null,
+      "solves": [
+        {
+          "name": "cycle",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 24,
+          "finite": true,
+          "violation": 1.1674842426145914e-09,
+          "objective": -0.06153814900136652
+        }
+      ]
+    },
+    {
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_204354.json",
+      "script": "refrigeration_R134a/run_optimization.py",
+      "status": "unconverged",
+      "error": null,
+      "solves": [
+        {
+          "name": "cycle",
+          "success": false,
+          "message": "Optimization terminated successfully; final first-order residual 0.208895 exceeds 0.0001 (small steps alone do not establish convergence).",
+          "iterations": 29,
+          "finite": true,
+          "violation": 9.610254096514837e-07,
+          "objective": -2.3920874747890006
+        }
+      ]
+    },
+    {
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_204354.json",
+      "script": "refrigeration_air/run_optimization.py",
+      "status": "passed",
+      "error": null,
+      "solves": [
+        {
+          "name": "cycle",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 18,
+          "finite": true,
+          "violation": 1.8733637716650264e-07,
+          "objective": -0.6968641973143544
+        }
+      ]
+    },
+    {
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_204354.json",
+      "script": "heat_pump_CO2/run_optimization.py",
+      "status": "passed",
+      "error": null,
+      "solves": [
+        {
+          "name": "cycle",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 13,
+          "finite": true,
+          "violation": 5.7411853049416095e-12,
+          "objective": -2.3836908512180583
+        }
+      ]
+    },
+    {
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_204354.json",
+      "script": "heat_pump_CO2/run_comparison.py",
+      "status": "failed",
+      "error": "KeyError: 's'",
+      "solves": []
+    },
+    {
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_204354.json",
+      "script": "PTES_CO2/case_baseline/run_optimization.py",
+      "status": "passed",
+      "error": null,
+      "solves": [
+        {
+          "name": "cycle",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 35,
+          "finite": true,
+          "violation": 1.2017710560030536e-08,
+          "objective": -0.4747252286506522
+        }
+      ]
+    },
+    {
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_204354.json",
+      "script": "sCO2_recompression/run_optimization.py",
+      "status": "passed",
+      "error": null,
+      "solves": [
+        {
+          "name": "cycle",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 29,
+          "finite": true,
+          "violation": 7.64520488398072e-09,
+          "objective": -0.4138198737052636
+        }
+      ]
+    },
+    {
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_204354.json",
+      "script": "PTES_CO2/case_turbo_model/run_optimization.py",
+      "status": "unconverged",
+      "error": null,
+      "solves": [
+        {
+          "name": "cycle_turbo",
+          "success": false,
+          "message": "Optimization terminated successfully; final first-order residual 0.000291806 exceeds 0.0001 (small steps alone do not establish convergence).",
+          "iterations": 57,
+          "finite": true,
+          "violation": 7.074606230617064e-07,
+          "objective": -0.4487563816574691
+        },
+        {
+          "name": "cycle_fixed",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 32,
+          "finite": true,
+          "violation": 8.553229235985782e-10,
+          "objective": -0.4490522714345364
+        }
+      ]
+    },
+    {
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_204354.json",
+      "script": "PTES_CO2/case_shaft_constraint/run_optimization.py",
+      "status": "unconverged",
+      "error": null,
+      "solves": [
+        {
+          "name": "cycle_unconstrained",
+          "success": false,
+          "message": "Optimization terminated successfully; final first-order residual 0.000291806 exceeds 0.0001 (small steps alone do not establish convergence).",
+          "iterations": 57,
+          "finite": true,
+          "violation": 7.074606230617064e-07,
+          "objective": -0.4487563816574691
+        },
+        {
+          "name": "cycle_constrained",
+          "success": false,
+          "message": "Optimization terminated successfully; final first-order residual 0.000297652 exceeds 0.0001 (small steps alone do not establish convergence).",
+          "iterations": 18,
+          "finite": true,
+          "violation": 6.763895044059609e-09,
+          "objective": -0.447055136861017
+        }
+      ]
+    },
+    {
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_204354.json",
+      "script": "HX_development/blended_calculation.py",
+      "status": "passed",
+      "error": null,
+      "solves": []
+    },
+    {
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_204354.json",
+      "script": "HX_development/PHE_correlations.py",
+      "status": "passed",
+      "error": null,
+      "solves": []
+    },
+    {
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_205718.json",
+      "script": "refrigeration_R134a/run_optimization.py",
+      "status": "passed",
+      "error": null,
+      "solves": [
+        {
+          "name": "cycle",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 23,
+          "finite": true,
+          "violation": 3.4114057712031354e-07,
+          "objective": -2.392832225804561
+        }
+      ]
+    },
+    {
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_205718.json",
+      "script": "heat_pump_CO2/run_comparison.py",
+      "status": "passed",
+      "error": null,
+      "solves": [
+        {
+          "name": "cycle_1",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 13,
+          "finite": true,
+          "violation": 5.7411853049416095e-12,
+          "objective": -2.3836908512180583
+        },
+        {
+          "name": "cycle_2",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 13,
+          "finite": true,
+          "violation": 1.745092959026806e-12,
+          "objective": -2.9690755356469274
+        }
+      ]
+    },
+    {
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_205718.json",
+      "script": "PTES_CO2/case_ideal/run_optimization.py",
+      "status": "passed",
+      "error": null,
+      "solves": [
+        {
+          "name": "cycle",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 109,
+          "finite": true,
+          "violation": 9.755539736033824e-08,
+          "objective": -0.9669453334164464
+        }
+      ]
+    },
+    {
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_210351.json",
+      "script": "PTES_CO2/case_turbo_model/run_optimization.py",
+      "status": "passed",
+      "error": null,
+      "solves": [
+        {
+          "name": "cycle_turbo",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 82,
+          "finite": true,
+          "violation": 4.598200575856026e-09,
+          "objective": -0.44908305970035045
+        },
+        {
+          "name": "cycle_fixed",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 33,
+          "finite": true,
+          "violation": 2.1904907043790445e-08,
+          "objective": -0.4493447872003958
+        }
+      ]
+    },
+    {
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_210351.json",
+      "script": "PTES_CO2/case_shaft_constraint/run_optimization.py",
+      "status": "passed",
+      "error": null,
+      "solves": [
+        {
+          "name": "cycle_unconstrained",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 82,
+          "finite": true,
+          "violation": 4.598200575856026e-09,
+          "objective": -0.44908305970035045
+        },
+        {
+          "name": "cycle_constrained",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 41,
+          "finite": true,
+          "violation": 3.292097972007468e-09,
+          "objective": -0.4472964894806291
+        }
+      ]
+    },
+    {
+      "summary": "benchmark\\results\\small_demos\\summary_20261116_210910.json",
+      "script": "heat_pump_CO2/run_comparison.py",
+      "status": "passed",
+      "error": null,
+      "solves": [
+        {
+          "name": "cycle_1",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 13,
+          "finite": true,
+          "violation": 5.7411853049416095e-12,
+          "objective": -2.3836908512180583
+        },
+        {
+          "name": "cycle_2",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 13,
+          "finite": true,
+          "violation": 1.745092959026806e-12,
+          "objective": -2.9690755356469274
+        }
+      ]
+    }
+  ],
+  "excluded": [
+    "Six-way solver/backend comparisons",
+    "Ten-case HX node/mesh comparison",
+    "Scientific sensitivity sweeps",
+    "Full Rankine research/report pipelines",
+    "Historical figure preparation",
+    "Saved-input table exporters"
+  ]
+}

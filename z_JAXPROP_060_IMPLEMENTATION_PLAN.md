@@ -310,7 +310,8 @@ or table loading, and setup/warm/whole-solve timing costs are recorded separatel
 
 ## Phase 6 — Finish plotting, exports and normal example workflows
 
-**Status: planned; native phase plotting and numeric Excel cells are verified.**
+**Status: in progress; native phase plotting, numeric Excel cells and the small
+demonstration execution profile are verified.**
 
 - [ ] Cover source and bicubic cycle/process/pinch diagrams, reused artists,
   closed figures, optional-field gaps and source-EOS backgrounds explicitly.
@@ -320,6 +321,13 @@ or table loading, and setup/warm/whole-solve timing costs are recorded separatel
   exported inspection metadata must not be mistaken for a universal fluid recipe.
 - [ ] Verify normal callbacks, reports and headless launchers in addition to
   callback-disabled benchmark runs. Time reporting separately from core fitness.
+- [x] Execute the 14 small one/two-case demonstration scripts with fresh outputs
+  and their configured report/plot/export callbacks. All 15 optimized cycle runs
+  pass native success, feasibility and first-order gates; two property/correlation
+  demonstrations also pass. The profile includes the ordinary 200x200 bicubic
+  recompression YAML and the ideal/turbomachinery/shaft-constrained PTES cases.
+  Interactive watchers and optional movie encoding remain outside this headless
+  check. See [the execution inventory](case_studies/SMALL_DEMOS.md).
 - [ ] Define a consistent optimizer boundary for recognized JaxProp invalid-state
   failures when using controlled SLSQP/Pounce. The recompression comparison
   translates those failures to PySolverView `DomainError` locally for line-search
@@ -333,10 +341,12 @@ or table loading, and setup/warm/whole-solve timing costs are recorded separatel
 Acceptance: graphical/data round trips reflect actual evaluated states and the
 ordinary user workflow works with the same native objects as the timed cases.
 
-## Phase 7 — Audit and migrate maintained case_studies/case studies
+## Phase 7 — Audit and migrate maintained case studies
 
-**Status: planned.** Tests of frozen inputs do not prove every standalone script
-works; maintain an explicit execution inventory.
+**Status: in progress.** The small demonstration profile is verified; full
+scientific studies and input-dependent tools retain separate open checks.
+Tests of frozen inputs do not prove every standalone script works; maintain an
+explicit execution inventory.
 
 - [x] Consolidate the former examples directory into `case_studies/`, retaining
   its layout, tracked research inputs and local results. Update active runner,
@@ -351,6 +361,18 @@ works; maintain an explicit execution inventory.
 - [ ] Catalogue runnable examples, scientific studies, input-dependent figure
   scripts and historical research material. Record commands, inputs, models,
   expected outputs, execution budget and numerical acceptance criteria.
+- [x] Inventory and run the small demonstration subset, preserving initial
+  failures and final successful outcomes in `case_studies/SMALL_DEMOS.json`.
+  Fix obsolete PHE fluid construction, heat-pump metadata/property-label access
+  and plot legends, plus launcher output/headless paths. The complete run found
+  two numerical stopping problems: R134a now uses central three-point derivatives;
+  turbomachinery PTES uses tighter native stopping (`1e-8`). Original feasibility
+  and first-order acceptance gates remain unchanged. Preserve YAML variable order
+  in default-solver regression tests; alphabetical dumping had concealed R134a's
+  failure. Physical hashes and reference optima remain unchanged. All 43 installed
+  JaxProp Python files match the official PyPI 0.6.0 artifact for this profile.
+  The full regression suite passes 564 tests plus four unchanged strict expected
+  failures. This does not verify full sweeps, interactive watchers or movie encoding.
 - [ ] Make minimal new-interface edits in maintained programs. Replace old
   `thermopt.Fluid`, positional backend, `exceptions`, state mutation and state
   collection calls. Preserve useful explanations and physical assumptions.
@@ -464,3 +486,4 @@ numerical agreement and performance gates pass or have explicit scoped decisions
 | Packaged metadata fix | JaxProp `52c98b8` passes 3,046 distinct library tests; its verified local wheel passes ThermOpt's full suite and paired application gates. Historical observations remain separate. [Assessment](benchmark/METADATA_FIX.md), [artifact checkpoint](benchmark/checkpoints/metadata_fix.json). |
 | Phase 4 component physics | 461 passed, four unchanged expected failures; 65 new native-model/physical cases. Three phase cohorts, twelve paired cycle cases and both balanced 24-component runs pass warm limits. Five 200x200 release profiles and four complete recuperated solves pass numerical/source cross-evaluation checks. First-use shape compilation and historical observations remain assigned follow-ups. [Assessment](benchmark/PHASE4.md), [checkpoint](benchmark/checkpoints/phase4.json). |
 | Phase 5 lifecycle | 534 passed, four unchanged strict expected failures; 73 added cases plus 19 focused protocol/audit checks. Unchanged reloads are about 35%/85%/50% faster for source/bicubic/perfect gas. Three matched protocol-2 profiles, twelve paired cycle cases, four balanced 24-component runs and the release profile pass scoped gates. Initial setup, first reporting-shape compilation and older flags remain explicit. [Assessment](benchmark/PHASE5.md), [checkpoint](benchmark/checkpoints/phase5.json). |
+| Small demonstration workflows | 14 scripts and all 15 optimized cycle runs pass with fresh outputs and normal configured callbacks; two property/correlation scripts also pass. Actual variable order is preserved in default-solver tests. Minimal API/plot repairs and two explicit numerical stopping fixes retain physical inputs and acceptance gates. Official PyPI JaxProp 0.6.0 sources verified; 564 tests plus four unchanged strict expected failures. [Execution inventory](case_studies/SMALL_DEMOS.md). No broad sweep or performance acceptance claim. |

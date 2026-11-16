@@ -6,7 +6,7 @@ import thermopt as th
 th.print_package_info()
 
 CONFIG_FILE = "../case_PTES_CO2_turbo.yaml"
-OUT_DIR_BASE = "results"
+OUT_DIR_BASE = os.getenv("THERMOPT_RESULTS_DIR", "results")
 os.makedirs(OUT_DIR_BASE, exist_ok=True)
 
 DATA_FILE = "simulation_data.pkl"

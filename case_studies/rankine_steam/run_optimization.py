@@ -7,7 +7,7 @@ th.print_package_info()
 
 # Initialize cycle problem
 CONFIG_FILE = "./case_water.yaml"
-cycle = th.ThermodynamicCycleOptimization(CONFIG_FILE)
+cycle = th.ThermodynamicCycleOptimization(CONFIG_FILE, out_dir=os.getenv("THERMOPT_RESULTS_DIR"))
 
 # Only show interactive plots when not in test mode
 if os.getenv("DISABLE_PLOTS", "0") != "1":
@@ -18,7 +18,8 @@ cycle.run_optimization()
 cycle.save_results()
 
 # Create an animation of the optimization progress
-cycle.create_animation(format="mp4", fps=1)
+if os.getenv("DISABLE_PLOTS", "0") != "1":
+    cycle.create_animation(format="mp4", fps=1)
 
 # Show figures
 if os.getenv("DISABLE_PLOTS", "0") != "1":

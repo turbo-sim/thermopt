@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import thermopt as th
+import jaxprop as jp
 
 
 
@@ -387,11 +388,11 @@ def evaluate_plate_hex(state, geometry, mass_flow):
 
 
 
-fluid = th.Fluid(name="water")
+fluid = jp.Fluid(name="water", method="coolprop", backend="HEOS")
 pressure=2e5
 temperature=293.15
 mass_flow = 1.5
-state = fluid.get_state(th.PT_INPUTS, pressure, temperature)
+state = fluid.get_state(jp.PT_INPUTS, pressure, temperature)
 
 geometry = {
     "L_p": 0.25,               # Plate length in flow direction [m]

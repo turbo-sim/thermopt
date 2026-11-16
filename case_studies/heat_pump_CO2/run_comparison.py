@@ -98,11 +98,11 @@ def _get_process_data(name, cycle_data, prop_x, prop_y):
         is_heat_exchanger = False
 
     # Retrieve data
-    if data["states"]["identifier"][0] == "working_fluid":
+    if data["states"].identifier == "working_fluid":
         # Components of the cycle
         x_data = data["states"][prop_x]
         y_data = data["states"][prop_y]
-    elif is_heat_exchanger and prop_y == "T" and prop_x in ["h", "s"]:
+    elif is_heat_exchanger and prop_y == "temperature" and prop_x in ["enthalpy", "entropy"]:
         # Special case for heat exchangers
         x_data = data_other_side["states"][prop_x]
         y_data = data["states"][prop_y]
@@ -116,33 +116,40 @@ def _get_process_data(name, cycle_data, prop_x, prop_y):
     return x_data, y_data, color
 
 
+OUT_DIR_BASE = os.getenv("THERMOPT_RESULTS_DIR", "results")
+os.makedirs(OUT_DIR_BASE, exist_ok=True)
+
 # Optimize cycle with JT-valve
 CONFIG_FILE = "./case_sCO2_heat_pump_valve.yaml"
-cycle_1 = th.ThermodynamicCycleOptimization(CONFIG_FILE)
+cycle_1 = th.ThermodynamicCycleOptimization(CONFIG_FILE, out_dir=os.path.join(OUT_DIR_BASE, "valve"))
 cycle_1.run_optimization()
 cycle_1.save_results()
-cycle_1.create_animation(format="mp4", fps=1)
+if os.getenv("DISABLE_PLOTS", "0") != "1":
+    cycle_1.create_animation(format="mp4", fps=1)
 
 # Optimize cycle with two-phase expander
 CONFIG_FILE = "./case_sCO2_heat_pump_turbine.yaml"
-cycle_2 = th.ThermodynamicCycleOptimization(CONFIG_FILE)
+cycle_2 = th.ThermodynamicCycleOptimization(CONFIG_FILE, out_dir=os.path.join(OUT_DIR_BASE, "turbine"))
 cycle_2.run_optimization()
 cycle_2.save_results()
-cycle_2.create_animation(format="mp4", fps=1)
+if os.getenv("DISABLE_PLOTS", "0") != "1":
+    cycle_2.create_animation(format="mp4", fps=1)
 
 # Define custom legend entries
 from matplotlib.lines import Line2D
 custom_legend = [
-    Line2D([0], [0], linestyle="-", marker="o", linewidth=1.25, color=th.COLORS_MATLAB[1], 
+    Line2D([0], [0], linestyle="-", marker="o", linewidth=1.25,
+           color=cycle_1.problem.cycle_data["components"]["compressor"]["color"],
            markerfacecolor="white", label="Joule-Thomson valve"),
-    Line2D([0], [0], linestyle="--", marker="o", linewidth=1.25, color=th.COLORS_MATLAB[1], 
+    Line2D([0], [0], linestyle="--", marker="o", linewidth=1.25,
+           color=cycle_2.problem.cycle_data["components"]["compressor"]["color"],
            markerfacecolor="white", label="Two-phase turbine")
 ]
 
 # Plot results
 fig, ax = plt.subplots(figsize=(5.2, 4.8))
-x_prop = "s"
-y_prop = "T"
+x_prop = "entropy"
+y_prop = "temperature"
 x_scale = "linear"
 y_scale = "linear"
 ax.set_xlabel(th.LABEL_MAPPING[x_prop])
@@ -154,13 +161,13 @@ plot_cycle_data(ax, cycle_1.problem.cycle_data, x_prop, y_prop, linestyle="-")
 cycle_2.problem.fluid.plot_phase_diagram(x_prop=x_prop, y_prop=y_prop, axes=ax)
 # ax.legend(handles=custom_legend, loc="upper left")
 fig.tight_layout(pad=1)
-th.savefig_in_formats(fig, os.path.join("results", "valve_sCO2_heat_pump_Ts"))
+th.savefig_in_formats(fig, os.path.join(OUT_DIR_BASE, "valve_sCO2_heat_pump_Ts"))
 
 
 # Plot results
 fig, ax = plt.subplots(figsize=(5.2, 4.8))
-x_prop = "s"
-y_prop = "T"
+x_prop = "entropy"
+y_prop = "temperature"
 x_scale = "linear"
 y_scale = "linear"
 ax.set_xlabel(th.LABEL_MAPPING[x_prop])
@@ -172,12 +179,12 @@ plot_cycle_data(ax, cycle_2.problem.cycle_data, x_prop, y_prop, linestyle="--")
 cycle_2.problem.fluid.plot_phase_diagram(x_prop=x_prop, y_prop=y_prop, axes=ax)
 ax.legend(handles=custom_legend, loc="upper left")
 fig.tight_layout(pad=1)
-th.savefig_in_formats(fig, os.path.join("results", "comparison_sCO2_heat_pump_Ts"))
+th.savefig_in_formats(fig, os.path.join(OUT_DIR_BASE, "comparison_sCO2_heat_pump_Ts"))
 
 # Plot results
 fig, ax = plt.subplots(figsize=(5.2, 4.8))
-x_prop = "h"
-y_prop = "p"
+x_prop = "enthalpy"
+y_prop = "pressure"
 x_scale = "linear"
 y_scale = "log"
 ax.set_xlabel(th.LABEL_MAPPING[x_prop])
@@ -189,10 +196,11 @@ plot_cycle_data(ax, cycle_2.problem.cycle_data, x_prop, y_prop, linestyle="--")
 cycle_2.problem.fluid.plot_phase_diagram(x_prop=x_prop, y_prop=y_prop, axes=ax)
 ax.legend(handles=custom_legend, loc="lower right")
 fig.tight_layout(pad=1)
-th.savefig_in_formats(fig, os.path.join("results", "comparison_sCO2_heat_pump_ph"))
+th.savefig_in_formats(fig, os.path.join(OUT_DIR_BASE, "comparison_sCO2_heat_pump_ph"))
 
 
 # Keep plots open
-plt.show()
+if os.getenv("DISABLE_PLOTS", "0") != "1":
+    plt.show()
 
 

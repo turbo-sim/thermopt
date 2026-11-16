@@ -1,3 +1,4 @@
+import os
 import thermopt as th
 import matplotlib.pyplot as plt
 
@@ -15,8 +16,9 @@ config_files = ["./case_butane_ORC.yaml"]
 for config in config_files:
 
     # Initialize Brayton cycle problem
-    cycle = th.ThermodynamicCycleOptimization(config)
-    cycle.problem.plot_cycle_realtime(config, update_interval=0.1)
+    cycle = th.ThermodynamicCycleOptimization(config, out_dir=os.getenv("THERMOPT_RESULTS_DIR"))
+    if os.getenv("DISABLE_PLOTS", "0") != "1":
+        cycle.problem.plot_cycle_realtime(config, update_interval=0.1)
 
     # Perform cycle optimization
     cycle.run_optimization()
@@ -26,6 +28,7 @@ for config in config_files:
     # cycle.create_animation(format="mp4", fps=1)
 
 # Keep plots open
-plt.show()
+if os.getenv("DISABLE_PLOTS", "0") != "1":
+    plt.show()
 
 

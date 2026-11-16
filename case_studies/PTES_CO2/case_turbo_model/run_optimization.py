@@ -4,7 +4,7 @@ import thermopt as th
 
 CONFIG_FILE_TURBO = "../case_PTES_CO2_turbo.yaml"
 CONFIG_FILE_FIXED = "../case_PTES_CO2.yaml"
-OUT_DIR_BASE = "results"
+OUT_DIR_BASE = os.getenv("THERMOPT_RESULTS_DIR", "results")
 os.makedirs(OUT_DIR_BASE, exist_ok=True)
 DATA_FILE = "simulation_data.pkl"
 DATA_FULLPATH = os.path.join(OUT_DIR_BASE, DATA_FILE)
@@ -107,8 +107,8 @@ for comp in components:
     # Pressure and temperature at inlet/outlet
     for var_key, (label, unit, convert) in STATE_VARS.items():
         for loc, turbo_val_raw, fixed_val_raw in [
-            ("Inlet", turbo_state_in.get(var_key), fixed_state_in.get(var_key)),
-            ("Outlet", turbo_state_out.get(var_key), fixed_state_out.get(var_key)),
+            ("Inlet", turbo_state_in[var_key], fixed_state_in[var_key]),
+            ("Outlet", turbo_state_out[var_key], fixed_state_out[var_key]),
         ]:
             turbo_val = convert(turbo_val_raw) if turbo_val_raw is not None else None
             fixed_val = convert(fixed_val_raw) if fixed_val_raw is not None else None

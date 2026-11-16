@@ -5,7 +5,7 @@ import thermopt as th
 th.set_plot_options(fontsize=16)
 
 CONFIG_FILE = "../case_PTES_CO2.yaml"
-OUT_DIR_BASE = "results"
+OUT_DIR_BASE = os.getenv("THERMOPT_RESULTS_DIR", "results")
 os.makedirs(OUT_DIR_BASE, exist_ok=True)
 
 # Set up cycle and config
@@ -58,4 +58,4 @@ cycle.set_constraint(
 cycle.run_optimization()
 cycle.save_results()
 cycle.problem.plot_cycle()
-th.savefig_in_formats(cycle.problem.figure, "ideal_ptes_cycle")
+th.savefig_in_formats(cycle.problem.figure, os.path.join(OUT_DIR_BASE, "ideal_ptes_cycle"))

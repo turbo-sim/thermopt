@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
@@ -29,6 +30,8 @@ def get_htc_blend(state, Q_start=0.0, Q_end=0.05):
 
 
 # Create the folder to save figures
+OUTPUT_DIR = Path(os.environ.get("THERMOPT_RESULTS_DIR", Path(__file__).resolve().parent / "results"))
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 th.set_plot_options()
 
 
@@ -96,7 +99,7 @@ fig, ax = fluid.plot_phase_diagram(
 ax.plot(state_1[prop_x], state_1[prop_y], marker="o", color=th.COLORS_MATLAB[0]) 
 ax.plot(state_2[prop_x], state_2[prop_y], marker="o", color=th.COLORS_MATLAB[0]) 
 ax.plot(states[prop_x], states[prop_y], color=th.COLORS_MATLAB[0]) 
-th.savefig_in_formats(fig, "Ts_diagram", formats=[".png"])
+th.savefig_in_formats(fig, OUTPUT_DIR / "Ts_diagram", formats=[".png"])
 fig.tight_layout(pad=1)
 
 
@@ -117,7 +120,7 @@ ax2.plot(states["enthalpy"], htc_blend_list, color="k", linestyle="--", label="B
 ax2.axvline(x=states["enthalpy"][np.argmin(np.abs(states["quality_mass"]))], color="k", linestyle=":", label="Q ≈ 0")
 ax2.legend(loc="upper right", fontsize=11)
 fig2.tight_layout(pad=1)
-th.savefig_in_formats(fig2, "heat_transfer_coefficient", formats=[".png"])
+th.savefig_in_formats(fig2, OUTPUT_DIR / "heat_transfer_coefficient", formats=[".png"])
 
 # Show figures
 plt.show()

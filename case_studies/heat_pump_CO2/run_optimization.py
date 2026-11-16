@@ -1,3 +1,4 @@
+import os
 import thermopt as th
 import matplotlib.pyplot as plt
 
@@ -9,17 +10,20 @@ CONFIG_FILE = "./case_sCO2_heat_pump_valve.yaml"
 # CONFIG_FILE = "./case_sCO2_heat_pump_turbine.yaml"
 
 # Initialize cycle problem
-cycle = th.ThermodynamicCycleOptimization(CONFIG_FILE)
-cycle.problem.plot_cycle_realtime(CONFIG_FILE, update_interval=0.1)
+cycle = th.ThermodynamicCycleOptimization(CONFIG_FILE, out_dir=os.getenv("THERMOPT_RESULTS_DIR"))
+if os.getenv("DISABLE_PLOTS", "0") != "1":
+    cycle.problem.plot_cycle_realtime(CONFIG_FILE, update_interval=0.1)
 
 # Perform cycle optimization
 cycle.run_optimization()
 cycle.save_results()
 
 # Create an animation of the optimization progress
-cycle.create_animation(format="mp4", fps=1)
+if os.getenv("DISABLE_PLOTS", "0") != "1":
+    cycle.create_animation(format="mp4", fps=1)
 
 # Keep plots open
-plt.show()
+if os.getenv("DISABLE_PLOTS", "0") != "1":
+    plt.show()
 
 

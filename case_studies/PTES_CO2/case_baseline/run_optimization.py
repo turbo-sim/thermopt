@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import thermopt as th
 import matplotlib.pyplot as plt
@@ -8,10 +9,14 @@ th.print_package_info()
 # Initialize cycle problem
 CONFIG_FILE = "../case_PTES_CO2.yaml"
 # CONFIG_FILE = "./case_PTES_CO2_turbo.yaml"
-cycle = th.ThermodynamicCycleOptimization(CONFIG_FILE, out_dir="results_baseline")
-cycle.problem.plot_cycle_realtime(CONFIG_FILE, update_interval=0.1, write_report=True)
+cycle = th.ThermodynamicCycleOptimization(CONFIG_FILE, out_dir=os.getenv("THERMOPT_RESULTS_DIR", "results/baseline"))
+if os.getenv("DISABLE_PLOTS", "0") != "1":
+    cycle.problem.plot_cycle_realtime(CONFIG_FILE, update_interval=0.1, write_report=True)
+else:
+    # Keep the initial figure available for export during headless execution.
+    cycle.problem.plot_cycle()
 
-th.savefig_in_formats(cycle.problem.figure, "results_baseline/initial_configuration")
+th.savefig_in_formats(cycle.problem.figure, os.path.join(cycle.out_dir, "initial_configuration"))
 
 cycle.set_config_value("solver_options.callbacks.plot_cycle", True)
 cycle.set_config_value("solver_options.callbacks.save_plot", True)
@@ -23,14 +28,16 @@ cycle.run_optimization()
 cycle.save_results()
 
 # Save solver object
-th.save_to_pickle(cycle.solver, "results_baseline/solver.pkl", timestamp=False)
+th.save_to_pickle(cycle.solver, os.path.join(cycle.out_dir, "solver.pkl"), timestamp=False)
 
 
 # Create an animation of the optimization progress
-cycle.create_animation(format="mp4", fps=1)
+if os.getenv("DISABLE_PLOTS", "0") != "1":
+    cycle.create_animation(format="mp4", fps=1)
 
 # Keep plots open
-plt.show()
+if os.getenv("DISABLE_PLOTS", "0") != "1":
+    plt.show()
 
 
 # # Hardcoded turbomachinery parameters
