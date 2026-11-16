@@ -239,33 +239,52 @@ cross-checks and matched complete-consumer performance pass.
 
 ## Phase 5 — Make cycle/model lifecycle reliable and inexpensive
 
-**Status: planned; configured model reuse and separate source setup exist.**
+**Status: complete locally on 16 November 2026 for the recorded CPU/x64 profile.**
+Phase 4 is committed as `d573638`. The full suite passes 534 tests plus the four
+unchanged strict expected failures, including 73 new lifecycle/boundary/cache
+cases and the available REFPROP route. Models and source
+references are problem-owned; unchanged reloads reuse them after setup-only source
+provenance checks. Manager reloads retain their problem identity, rebuild the
+solver and roll back rejected updates. Existing workflow identity assertions
+are deliberately updated to this documented lifecycle; numerical expectations
+and physical reference fixtures are preserved. Three matched full profiles,
+twelve paired cycle comparisons and four balanced component runs pass their
+aggregate warm budgets. Earlier individual/historical flags remain visible.
+Initial setup and new reporting-shape compilation costs remain explicit; this
+does not close the historical absolute timing gate. See the
+[assessment](benchmark/PHASE5.md), [evidence](benchmark/PHASE5.json) and
+[protocol-2 checkpoint](benchmark/checkpoints/phase5.json).
 
-- [ ] Verify every maintained topology owns reusable stream models with correct
+- [x] Verify every maintained topology owns reusable stream models with correct
   identifiers. Repeated fitness calls must not rebuild/load tables or recheck
   source metadata.
-- [ ] Define invalidation when configuration, model method, table domain,
+- [x] Define invalidation when configuration, model method, table domain,
   reference convention or backend changes; rebuilding once on a real setup
   change is correct. Unchanged configuration reloads should avoid needless work.
-- [ ] Keep source-only critical/triple/saturation/dilute initialization and phase
+- [x] Keep source-only critical/triple/saturation/dilute initialization and phase
   plotting explicit, outside a table's evaluation domain. Handle pseudo-pure
   references honestly and reject models lacking the needed setup physics.
-- [ ] Cover independent problems, interleaved designs, configuration reloads,
+- [x] Cover independent problems, interleaved designs, configuration reloads,
   copy/worker lifecycle where used and source-reference changes. Do not cache
   mutable provider identity globally without defined invalidation.
-- [ ] Define standalone polytropic output-count and zero-pressure-span contracts.
+- [x] Define standalone polytropic output-count and zero-pressure-span contracts.
   With `num_steps=1`, the requested ODE output contains only the inlet, so it
   cannot supply a distinct outlet. Reject unsupported requests clearly at the
   component boundary, with endpoint/failure tests and no new property-call checks.
-- [ ] Measure whether unreturned isentropic reference states can omit optional
+- [x] Measure whether unreturned isentropic reference states can omit optional
   source diagnostics when only their enthalpy contributes to work. Preserve
   all public inlet/outlet/path annotations; do not change real-fluid equations.
-- [ ] Isolate first-use compilation of new polytropic batch shapes in fresh
+- [x] Isolate first-use compilation of new polytropic batch shapes in fresh
   processes. Phase 4's warm gains coexist with order-sensitive first calls;
   record model setup, inlet warmup, shape compilation and sustained evaluation
   separately. Assess explicit orchestration warmup if useful, without hidden
   flashes or changing the fluid constructor's behavior.
-- [ ] Confirm initial designs, bounds, objectives and residual ordering across
+  Normalize SciPy scalar representations once at its boundary to avoid redundant
+  JIT signatures. Prepared scalar/reporting shapes are covered by two deterministic
+  compilation-reuse tests. A new bicubic batch shape still compiles on first use;
+  scalar-only warmup can leave a higher first reporting-call cost than legacy
+  scalar stacking. Explicit batch warmup moves this work into setup, not away.
+- [x] Confirm initial designs, bounds, objectives and residual ordering across
   the 14 cycle cases; rerun three standard optimizations plus native bicubic
   recuperated optimization and source cross-evaluation.
 - [x] Assess and fix the released JaxProp 0.6 bicubic static-metadata equality/cache cost
@@ -279,6 +298,12 @@ cross-checks and matched complete-consumer performance pass.
   The aligned equality fix is committed as `52c98b8` with 17 new tests, 3,046
   distinct library tests and packaged ThermOpt verification. The local artifact
   and all residual observations are recorded in `benchmark/METADATA_FIX.md`.
+- [x] Record worker hash seed zero in benchmark protocol 2, including schema,
+  environment and comparison identity. Verify 19 focused protocol/audit tests
+  and capture three matched full profiles with the identical harness on both
+  source trees. Protocol-1 checkpoints are historical and incompatible with
+  this new baseline; their raw flags are retained. The fixed-seed follow-up
+  does not establish hash randomization as the sole cause of previous shifts.
 
 Acceptance: lifecycle tests pass, repeated evaluations contain no construction
 or table loading, and setup/warm/whole-solve timing costs are recorded separately.
@@ -330,6 +355,11 @@ works; maintain an explicit execution inventory.
   cache signatures or relabel saved results as current-library evaluations.
 - [ ] Consolidate active comparison code under `benchmark/`, retaining dated
   evidence under `development/`. Keep tests independent of result generation.
+- [ ] Replace the legacy `get_property_fluid` process-global cache in the two
+  Rankine study families with explicitly study-owned models and source-change
+  handling. Phase 5 removes that helper from configured cycle/reference setup;
+  retaining its existing study behavior avoids adding construction or provenance
+  probes to those studies' hot loops before their Phase 7 migration.
 - [ ] Scope the property-access AST inventory to project-owned source, excluding
   ignored generated benchmark artifacts and frozen comparison trees. Preserve
   coverage of real examples/studies. Phase 4's retained reference tree currently
@@ -384,6 +414,13 @@ numerical agreement and performance gates pass or have explicit scoped decisions
 - [ ] In that later sweep, consider preparing expression/residual functions and
   fixed result schemas at setup rather than evaluating configuration strings
   inside numerical calls. Benchmark the design before replacing existing logic.
+- [ ] Assess JaxProp complete-state concatenation/reversal in a separate library
+  optimization. Phase 5 profiling attributes about 40% of an all-stream cycle
+  profile to per-field collection operations; the matched versions perform the
+  same 1,728 property calls over 72 cycles. Consider whole-PyTree batching/fusion,
+  preserving identities, masks, statuses, optional fields and the NumPy path.
+  Require library regressions and cold/warm complete-consumer measurements;
+  do not replace full states with property projections.
 
 ## Evidence log
 
@@ -396,3 +433,4 @@ numerical agreement and performance gates pass or have explicit scoped decisions
 | Phase 3 state access | Implementation and numerical verification complete: 396 passed plus four unchanged expected failures. Twelve controlled functional consumer comparisons pass 1.10; three historical bicubic flags leave the strict gate open. Metadata/cache-order controls and an identical-source false positive are retained. [Assessment](benchmark/PHASE3.md). |
 | Packaged metadata fix | JaxProp `52c98b8` passes 3,046 distinct library tests; its verified local wheel passes ThermOpt's full suite and paired application gates. Historical observations remain separate. [Assessment](benchmark/METADATA_FIX.md), [artifact checkpoint](benchmark/checkpoints/metadata_fix.json). |
 | Phase 4 component physics | 461 passed, four unchanged expected failures; 65 new native-model/physical cases. Three phase cohorts, twelve paired cycle cases and both balanced 24-component runs pass warm limits. Five 200x200 release profiles and four complete recuperated solves pass numerical/source cross-evaluation checks. First-use shape compilation and historical observations remain assigned follow-ups. [Assessment](benchmark/PHASE4.md), [checkpoint](benchmark/checkpoints/phase4.json). |
+| Phase 5 lifecycle | 534 passed, four unchanged strict expected failures; 73 added cases plus 19 focused protocol/audit checks. Unchanged reloads are about 35%/85%/50% faster for source/bicubic/perfect gas. Three matched protocol-2 profiles, twelve paired cycle cases, four balanced 24-component runs and the release profile pass scoped gates. Initial setup, first reporting-shape compilation and older flags remain explicit. [Assessment](benchmark/PHASE5.md), [checkpoint](benchmark/checkpoints/phase5.json). |

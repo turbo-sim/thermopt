@@ -35,7 +35,7 @@ def cycle_manager(tmp_path):
     return th.ThermodynamicCycleOptimization(str(path), out_dir=str(tmp_path / "results"))
 
 
-def test_single_configuration_update_rebuilds_problem_and_changes_compressor(cycle_manager):
+def test_single_configuration_update_reuses_problem_and_changes_compressor(cycle_manager):
     manager = cycle_manager
     previous_problem, previous_solver = manager.problem, manager.solver
     previous_outlet = float(previous_problem.cycle_data["components"]["compressor"]["state_out"].h)
@@ -43,7 +43,7 @@ def test_single_configuration_update_rebuilds_problem_and_changes_compressor(cyc
 
     manager.set_config_value("problem_formulation.fixed_parameters.compressor.efficiency", 0.80)
 
-    assert manager.problem is not previous_problem
+    assert manager.problem is previous_problem
     assert manager.solver is not previous_solver
     assert manager.solver.problem is manager.problem
     compressor = manager.problem.cycle_data["components"]["compressor"]
@@ -66,7 +66,7 @@ def test_deferred_configuration_update_requires_reload_to_change_cycle(cycle_man
     manager.problem.fitness(manager.problem.x0)
     assert manager.problem.cycle_data["energy_analysis"]["net_cycle_power"] == pytest.approx(original_power)
     manager.load_config(manager.config)
-    assert manager.problem is not previous_problem
+    assert manager.problem is previous_problem
     assert manager.problem.cycle_data["energy_analysis"]["net_cycle_power"] == pytest.approx(2 * original_power)
     assert manager.problem.cycle_data["energy_analysis"]["mass_flow_working_fluid"] == pytest.approx(2 * original_flow)
 
@@ -93,6 +93,41 @@ def test_batch_configuration_updates_are_applied_with_one_reload(cycle_manager, 
     assert data["components"]["compressor"]["efficiency"] == pytest.approx(0.82)
     assert data["components"]["expander"]["efficiency"] == pytest.approx(0.88)
     assert np.all(np.isfinite(manager.problem.fitness(manager.problem.x0)))
+
+
+@pytest.mark.parametrize("path,value", [
+    ("problem_formulation.fixed_parameters.working_fluid.backend", "invalid-backend"),
+    ("problem_formulation.design_variables.compressor_inlet_pressure.value", -1.),
+])
+def test_failed_manager_reload_keeps_configuration_solver_and_physics(cycle_manager, path, value):
+    from copy import deepcopy
+
+    manager = cycle_manager
+    problem, solver = manager.problem, manager.solver
+    config = deepcopy(manager.config)
+    models = dict(problem.fluids)
+    expected = snapshot(problem, problem.x0)
+    with pytest.raises(jp.JaxPropError):
+        manager.set_config_value(path, value)
+    assert manager.problem is problem and manager.solver is solver
+    np.testing.assert_equal(manager.config, config)
+    assert all(problem.fluids[role] is fluid for role,fluid in models.items())
+    assert_snapshot(snapshot(problem, problem.x0), expected)
+
+
+def test_failed_batch_update_does_not_publish_partial_configuration(cycle_manager):
+    from copy import deepcopy
+
+    manager = cycle_manager
+    config = deepcopy(manager.config)
+    expected = snapshot(manager.problem, manager.problem.x0)
+    with pytest.raises(jp.InvalidConfigurationError):
+        manager.set_config_values({
+            "problem_formulation.fixed_parameters.net_power": 2e6,
+            "problem_formulation.fixed_parameters.working_fluid.backend": "invalid-backend",
+        })
+    np.testing.assert_equal(manager.config, config)
+    assert_snapshot(snapshot(manager.problem, manager.problem.x0), expected)
 
 
 def test_constraint_update_changes_every_heater_node_without_adding_duplicates(cycle_manager):

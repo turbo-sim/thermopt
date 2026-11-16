@@ -32,7 +32,15 @@ def test_project_property_access_uses_jaxprop():
                 modules = [alias.name for alias in node.names]
             elif isinstance(node, ast.ImportFrom):
                 modules = [node.module or ""]
-            if any(module.split(".")[0].lower() in {"coolprop", "coolpropx"} for module in modules):
+            # This one test-only configuration control does not evaluate
+            # properties. No package/example or other test import is exempt.
+            reference_control = (
+                path == ROOT / "tests/source_reference_control.py"
+                and isinstance(node, ast.ImportFrom)
+                and node.module == "CoolProp.CoolProp"
+                and [(alias.name, alias.asname) for alias in node.names] == [("set_reference_state", None)]
+            )
+            if not reference_control and any(module.split(".")[0].lower() in {"coolprop", "coolpropx"} for module in modules):
                 violations.append(f"{path.relative_to(ROOT)}:{node.lineno}: direct backend import")
             if isinstance(node, ast.Attribute) and node.attr in {"abstract_state", "PropsSI", "AbstractState"}:
                 violations.append(f"{path.relative_to(ROOT)}:{node.lineno}: raw backend access")

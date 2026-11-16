@@ -25,6 +25,12 @@ native models, complete-return polytropic speedups, the full test suite and the
 local JaxProp artifact. First-use compilation observations and older absolute
 timing flags remain documented follow-ups.
 
+The [Phase 5 assessment](PHASE5.md) verifies problem-owned model/reference reuse,
+atomic reloads and first-use host-solver compilation. Its
+[checkpoint](checkpoints/phase5.json) starts benchmark protocol 2 with the same
+unpublished local JaxProp artifact. Matched complete-cycle and balanced component
+gates pass; earlier raw flags and one-time setup/compilation costs remain recorded.
+
 This is the canonical benchmark entry point for the
 [JaxProp 0.6 migration plan](../z_JAXPROP_060_IMPLEMENTATION_PLAN.md).
 ThermOpt stays eager NumPy/SciPy. Current workload code is reused from
@@ -102,6 +108,51 @@ First-time property-table generation can take several minutes. The shared
 Construction/table setup, warmed evaluations and complete solves remain
 separate measurements. Never compare fresh generation against cached loading.
 
+`lifecycle.py` measures complete configuration reloads and cycle evaluations
+across source, bicubic and an independently specified perfect-gas Air cycle:
+
+```powershell
+python benchmark/lifecycle.py --reference-root PATH_TO_REFERENCE_TREE --cpu-affinity 0xffff --output benchmark/results/lifecycle
+```
+
+It includes every source-provenance/rendering operation in reload setup time,
+records first construction/evaluation separately, and checks complete native
+state data through the public serializer. Unchanged and nonfluid configuration
+updates retain the current problem's stream-model identities. It does not request
+quality from models that do not support it.
+
+`first_use.py` separates first-use compilation from sustained component timings:
+
+```powershell
+python benchmark/first_use.py --reference-root PATH_TO_REFERENCE_TREE --cpu-affinity 0xffff --output benchmark/results/first_use
+```
+
+Each version/model/machine/warmup/cohort runs in its own process, using installed
+JaxProp, CPU/x64, hash seed zero and disabled persistent compilation caching.
+Import, construction, inlet evaluation, explicit warmup, the first complete
+component and twelve warm returns are recorded separately. Default paths contain
+10 compressor or 50 expander nodes. All returned fields, masks and identities
+are compared; no property projection or replacement backend is used.
+
+- `none`: only the inlet PT evaluation precedes the component.
+- `scalar`: explicitly prepare HP/PS scalar representations used by both source
+  versions (Python and NumPy scalar types); no reporting batch is warmed.
+- `path`: additionally prepare a complete HP batch at the reporting shape.
+
+This is protocol 2. Earlier protocol-1 investigations warmed fewer scalar
+representations; their scalar/path results are retained as diagnostics and are
+not interchangeable checkpoints. `--log-compiles` records a separate diagnostic
+run with compiler logging overhead. Explicit warmup moves compilation into setup;
+it does not eliminate that work or happen automatically in the fluid constructor.
+
+When assessing independent-model component comparisons, use both construction
+orders with equal weight. Run each order twice in fresh processes if a flag
+changes direction with the order. Retain individual flags and use the median of
+those four per-run medians for a balanced aggregate; the 1.10 budget is unchanged.
+An unchanged valve/exchanger control helps detect native JIT metadata/cache
+identity effects. Do not treat an order-dependent control as a measured code
+speedup, or share mutable models globally to mask its cost.
+
 Each run writes a new directory containing `manifest.json`, full workload JSON,
 effective YAML inputs and logs. Raw synchronized timing samples and scientific
 comparison results are in each workload's summary. Existing runs are never
@@ -115,7 +166,14 @@ python benchmark/run.py --profile phase --baseline benchmark/results/ACCEPTED_RU
 ```
 
 The runner rejects incompatible protocols, effective physical/solver inputs or
-environments. CPU affinity is observed and included in that signature. On Windows
+environments. Main-runner protocol 2 sets `PYTHONHASHSEED=0` for each workload
+subprocess and records it in the schema, environment and comparison identity.
+Protocol-1 checkpoints are incompatible; retain them as historical evidence.
+Both source versions must use the same harness when capturing a new matched
+baseline. This improves reproducibility without proving that hash randomization
+caused any prior timing flag.
+
+CPU affinity is observed and included in that signature. On Windows
 or Linux, an optional mask constrains only the benchmark process and its children,
 before numerical libraries create worker threads:
 

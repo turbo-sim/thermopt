@@ -366,7 +366,7 @@ def test_bicubic_diagnostic_constraint_fails_before_reference_preparation(
             "unsupported constraint must fail before preparing source references"
         )
 
-    monkeypatch.setattr(th.utilities, "get_property_fluid", unexpected)
+    monkeypatch.setattr("thermopt.optimize_cycle.prepare_cycle_references", unexpected)
     with pytest.raises(jp.UnsupportedPropertyError) as caught:
         th.ThermodynamicCycleProblem(config, out_dir=str(tmp_path))
     assert caught.value.provider == "bicubic"

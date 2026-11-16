@@ -295,6 +295,12 @@ def heat_transfer_process(fluid, h_1, p_1, h_2, p_2, num_steps=25):
 
 
 
+def _validate_polytropic_steps(num_steps):
+    """Require enough output nodes for both endpoints, once per component."""
+    if isinstance(num_steps, (bool, np.bool_)) or not isinstance(num_steps, (int, np.integer)) or num_steps < 2:
+        raise ValueError("Polytropic num_steps must be an integer greater than or equal to 2.")
+
+
 def compression_process(
     fluid, h_in, p_in, p_out, efficiency=None, efficiency_type="isentropic", mass_flow=None, data_in=None, num_steps=10
 ):
@@ -308,6 +314,8 @@ def compression_process(
     model instead requires mass_flow [kg/s] and accepts partial design
     parameters in data_in; it solves for outlet enthalpy as in Section 4.
     num_steps controls the polytropic path resolution (default 10).
+    Polytropic paths require an integer num_steps >= 2. Equal inlet/outlet
+    pressures return a constant full-state path without integration.
 
     Returns a component dictionary with inlet/outlet FluidStates, the state
     path, positive specific_work and isentropic_work [J/kg], pressure ratio,
@@ -318,6 +326,12 @@ def compression_process(
     validates flow, pressure direction and design inputs.
     """
 
+    if efficiency_type == "polytropic":
+        _validate_polytropic_steps(num_steps)
+        # SciPy uses NumPy scalars. Keep one representation from the inlet
+        # through its trial calls, avoiding extra weak-type JIT specializations.
+        # Preserve dtype so JaxProp still rejects bool/string/complex inputs.
+        h_in, p_in, p_out = (np.asarray(value) for value in (h_in, p_in, p_out))
     data_in = {} if data_in is None else data_in
     # Resolve optional reporting capabilities once, outside property calls.
     state_options = process_state_options(fluid, generalize_quality=(efficiency_type == "non-dimensional"))
@@ -326,7 +340,8 @@ def compression_process(
         props.HmassP_INPUTS, h_in, p_in, **state_options,
     )
     if efficiency_type != "non-dimensional":
-        state_out_is = fluid.get_state(props.PSmass_INPUTS, p_out, state_in.entropy, **state_options)
+        # Only its enthalpy contributes to work; it is not a reporting state.
+        state_out_is = fluid.get_state(props.PSmass_INPUTS, p_out, state_in.entropy)
 
     # Evaluate compression process
     if efficiency_type == "isentropic":
@@ -340,26 +355,35 @@ def compression_process(
         def odefun(p, h):
             # The ODE uses density only. Request a complete core state without
             # optional saturation diagnostics on these discarded trial points.
-            state = fluid.get_state(props.HmassP_INPUTS, np.asarray(h).item(), p)
-            dhdp = 1.0 / (efficiency * state.density)
+            # SciPy's initial p is a Python float, later values are NumPy
+            # scalars. Keep that distinction out of the property JIT cache.
+            state = fluid.get_state(props.HmassP_INPUTS, h[0], np.float64(p))
+            # The host solver needs a scalar derivative. Avoid launching tiny
+            # device arithmetic operations between already synchronized calls.
+            density = float(state.density)
+            dhdp = 1.0 / (efficiency * density)
             return dhdp
 
-        # Solve polytropic compression differential equation
-        sol = solve_ivp(
-            odefun,
-            [state_in.pressure, p_out],
-            [state_in.enthalpy],
-            t_eval=np.linspace(state_in.pressure, p_out, num_steps),
-            method="RK45",
-        )
-
-        if not sol.success:
-            raise RuntimeError(f"Polytropic compression integration failed: {sol.message}")
+        if p_in == p_out:
+            pressures = np.full(num_steps, p_in)
+            enthalpies = np.full(num_steps, state_in.enthalpy)
+        else:
+            # Solve polytropic compression differential equation
+            sol = solve_ivp(
+                odefun,
+                [state_in.pressure, p_out],
+                [state_in.enthalpy],
+                t_eval=np.linspace(state_in.pressure, p_out, num_steps),
+                method="RK45",
+            )
+            if not sol.success:
+                raise RuntimeError(f"Polytropic compression integration failed: {sol.message}")
+            pressures, enthalpies = sol.t, sol.y[0]
 
         # Reconstruct the complete reporting path in one native batch call.
         # Reporting diagnostics and quality conventions match the scalar path;
         # integration equations, RK45 tolerances and sampling are unchanged.
-        states = fluid.get_state(props.HmassP_INPUTS, sol.y[0], sol.t, **state_options)
+        states = fluid.get_state(props.HmassP_INPUTS, enthalpies, pressures, **state_options)
         state_in, state_out = states.at_index(0), states.at_index(-1)
         data_out = {"polytropic_efficiency": efficiency}
         
@@ -416,6 +440,8 @@ def expansion_process(
     model instead requires mass_flow [kg/s] and accepts partial design
     parameters in data_in; it solves for outlet enthalpy as in Section 4.
     num_steps controls the polytropic path resolution (default 50).
+    Polytropic paths require an integer num_steps >= 2. Equal inlet/outlet
+    pressures return a constant full-state path without integration.
 
     Returns a component dictionary with inlet/outlet FluidStates, the state
     path, positive specific_work and isentropic_work [J/kg], pressure ratio,
@@ -425,13 +451,19 @@ def expansion_process(
     Invalid efficiency selectors raise ValueError; the radial solver also
     validates flow, pressure direction and design inputs.
     """
+    if efficiency_type == "polytropic":
+        _validate_polytropic_steps(num_steps)
+        # Normalize once at the host-solver boundary without changing input
+        # dtype validation or requesting a projected property API.
+        h_in, p_in, p_out = (np.asarray(value) for value in (h_in, p_in, p_out))
     data_in = {} if data_in is None else data_in
     # Resolve optional reporting capabilities once, outside property calls.
     state_options = process_state_options(fluid, generalize_quality=True)
     # Compute inlet state
     state_in = fluid.get_state(props.HmassP_INPUTS, h_in, p_in, **state_options)
     if efficiency_type != "non-dimensional":
-        state_out_is = fluid.get_state(props.PSmass_INPUTS, p_out, state_in.entropy, **state_options)
+        # Only its enthalpy contributes to work; it is not a reporting state.
+        state_out_is = fluid.get_state(props.PSmass_INPUTS, p_out, state_in.entropy)
     if efficiency_type == "isentropic":
         # Compute outlet state according to the definition of isentropic efficiency
         h_out = state_in.enthalpy - efficiency * (state_in.enthalpy - state_out_is.enthalpy)
@@ -444,24 +476,29 @@ def expansion_process(
         def odefun(p, h):
             # The ODE uses density only; optional reporting diagnostics are
             # evaluated once on the returned path after successful integration.
-            state = fluid.get_state(props.HmassP_INPUTS, np.asarray(h).item(), p)
-            dhdp = efficiency / state.density
+            state = fluid.get_state(props.HmassP_INPUTS, h[0], np.float64(p))
+            density = float(state.density)
+            dhdp = efficiency / density
             return dhdp
 
-        # Solve polytropic expansion differential equation
-        sol = solve_ivp(
-            odefun,
-            [state_in.pressure, p_out],
-            [state_in.enthalpy],
-            t_eval=np.linspace(state_in.pressure, p_out, num_steps),
-            method="RK45",
-        )
-
-        if not sol.success:
-            raise RuntimeError(f"Polytropic expansion integration failed: {sol.message}")
+        if p_in == p_out:
+            pressures = np.full(num_steps, p_in)
+            enthalpies = np.full(num_steps, state_in.enthalpy)
+        else:
+            # Solve polytropic expansion differential equation
+            sol = solve_ivp(
+                odefun,
+                [state_in.pressure, p_out],
+                [state_in.enthalpy],
+                t_eval=np.linspace(state_in.pressure, p_out, num_steps),
+                method="RK45",
+            )
+            if not sol.success:
+                raise RuntimeError(f"Polytropic expansion integration failed: {sol.message}")
+            pressures, enthalpies = sol.t, sol.y[0]
 
         # Preserve all reporting fields using the public full-state batch API.
-        states = fluid.get_state(props.HmassP_INPUTS, sol.y[0], sol.t, **state_options)
+        states = fluid.get_state(props.HmassP_INPUTS, enthalpies, pressures, **state_options)
         state_in, state_out = states.at_index(0), states.at_index(-1)
         data_out = {"polytropic_efficiency": efficiency}
         

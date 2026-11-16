@@ -19,6 +19,9 @@ from . import cycles
 from . import utilities as utils
 from .config import read_configuration_file
 from .cycles.state_requirements import validate_cycle_state_requirements
+from .cycles.setup import (
+    prepare_cycle_models, prepare_cycle_references, calculate_reference_points,
+)
 
 COLORS_MATLAB = utils.COLORS_MATLAB
 LABEL_MAPPING = {
@@ -80,29 +83,53 @@ class ThermodynamicCycleOptimization:
         """
         Loads configuration from a YAML file.
         """
-        self.config = read_configuration_file(config_file)
-        self.load_config(self.config)
+        config = read_configuration_file(config_file)
+        self.load_config(config)
         return self.config
 
     def load_config(self, config_dict):
         """
         Load a new configuration and update the problem and solver objects.
 
+        Reuse this manager's problem and unchanged native models; reconstruct
+        the solver so current constraint dimensions apply. Configuration is
+        copied. If preparation, initial evaluation or solver setup fails, keep
+        the previous configured problem, solver and numerical results.
+
         Parameters:
             config_obj (dict): A dictionary-like configuration object.
         """
-        self.config = config_dict
-        self.problem = self.setup_problem()
-        self.solver = self.setup_solver()
+        # Configuration and solver changes are orchestration transactions. A
+        # failed reload must leave the last evaluated problem usable. Native
+        # flash cursors are transient; immutable returned states remain valid.
+        previous_config = getattr(self, "config", None)
+        previous_problem = getattr(self, "problem", None)
+        previous_solver = getattr(self, "solver", None)
+        previous_state = None if previous_problem is None else previous_problem.__dict__.copy()
+        try:
+            self.config = copy.deepcopy(config_dict)
+            self.problem = self.setup_problem()
+            self.solver = self.setup_solver()
+        except Exception:
+            if previous_state is not None:
+                previous_problem.__dict__.clear()
+                previous_problem.__dict__.update(previous_state)
+            self.config, self.problem, self.solver = previous_config, previous_problem, previous_solver
+            raise
         return self.config
 
     def setup_problem(self):
         """
         Sets up the ThermodynamicCycleProblem based on the loaded configuration.
         """
-        self.problem = ThermodynamicCycleProblem(
-            self.config["problem_formulation"], out_dir=self.out_dir
-        )
+        # Keep this manager's configured problem and its native models. Solver
+        # objects are rebuilt so changed constraint dimensions are respected.
+        if getattr(self, "problem", None) is None:
+            self.problem = ThermodynamicCycleProblem(
+                self.config["problem_formulation"], out_dir=self.out_dir
+            )
+        else:
+            self.problem.update_problem(self.config["problem_formulation"])
         self.problem.fitness(self.problem.x0)
         return self.problem
 
@@ -131,21 +158,29 @@ class ThermodynamicCycleOptimization:
             set_config_value("problem_formulation.fixed_parameters.expander.efficiency", 0.8)
         """
         keys = path.split(".")
-        cfg = self.config
+        candidate = copy.deepcopy(self.config)
+        cfg = candidate
         for key in keys[:-1]:
             cfg = cfg[key]
         cfg[keys[-1]] = value
 
         if reload:
-            self.load_config(self.config)
+            self.load_config(candidate)
+        else:
+            self.config = candidate
 
     def set_config_values(self, updates: dict):
         """
         Updates multiple config values in one call, triggering a single reload.
         """
+        candidate = copy.deepcopy(self.config)
         for path, value in updates.items():
-            self.set_config_value(path, value, reload=False)
-        self.load_config(self.config)
+            keys = path.split(".")
+            target = candidate
+            for key in keys[:-1]:
+                target = target[key]
+            target[keys[-1]] = value
+        self.load_config(candidate)
 
     def set_constraint(self, variable, type=None, value=None, normalize=None):
         """
@@ -157,7 +192,8 @@ class ThermodynamicCycleOptimization:
             value (float, optional): Target value
             normalize (bool or float, optional): Normalization value or flag
         """
-        constraints = self.config["problem_formulation"].get("constraints", [])
+        candidate = copy.deepcopy(self.config)
+        constraints = candidate["problem_formulation"].get("constraints", [])
         if not isinstance(constraints, list):
             constraints = list(constraints)
         
@@ -182,8 +218,8 @@ class ThermodynamicCycleOptimization:
                 new_constraint["normalize"] = normalize
             constraints.append(new_constraint)
 
-        self.config["problem_formulation"]["constraints"] = constraints
-        self.load_config(self.config)
+        candidate["problem_formulation"]["constraints"] = constraints
+        self.load_config(candidate)
 
 
     def run_optimization(self, x0=None):
@@ -451,50 +487,63 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         """
         Update the problem's configuration based on the provided dictionary.
 
+        Prepare a private candidate and apply it only after setup succeeds.
+        Unchanged stream models and reference points are reused within this
+        problem; source-provenance checks occur here, never during fitness.
+        A successful update invalidates previously evaluated cycle results.
+
         Parameters
         ----------
         config : dict
             Dictionary containing the new configuration for the thermodynamic cycle problem.
         """
-        conf = configuration
-        self.cycle_topology = conf["cycle_topology"]
-        self.plot_settings = conf["plot_settings"]
-        self.constraints = conf["constraints"]
-        self.fixed_parameters = conf["fixed_parameters"]
-        self.objective_function = conf["objective_function"]
-        self.variable_names = list(conf["design_variables"].keys())
-        self.lb_dict = {k: v["min"] for k, v in conf["design_variables"].items()}
-        self.ub_dict = {k: v["max"] for k, v in conf["design_variables"].items()}
-        self.x0_dict = {k: v["value"] for k, v in conf["design_variables"].items()}
-
-        # Reuse native JaxProp evaluators throughout this configured problem.
-        roles = ("working_fluid", "heating_fluid", "cooling_fluid",
-                 "hot_storage_fluid", "cold_storage_fluid")
-        self.fluids = {
-            role: utils.fluid_from_configuration(self.fixed_parameters[role], identifier=role)
-            for role in roles if role in self.fixed_parameters
-        }
-        self.fluid = self.fluids["working_fluid"]
+        # Build a candidate using explicit setup functions; publish it only
+        # after model validation, reference preparation and rendering succeed.
+        conf = copy.deepcopy(configuration)
+        parameters = conf["fixed_parameters"]
+        fluids, settings, sources = prepare_cycle_models(
+            parameters, getattr(self, "fluids", None),
+            getattr(self, "_fluid_settings", None), getattr(self, "_fluid_sources", None),
+        )
         validate_cycle_state_requirements(
-            self.cycle_topology, self.fixed_parameters, self.fluids,
-            self.constraints, self.objective_function,
+            conf["cycle_topology"], parameters, fluids,
+            conf["constraints"], conf["objective_function"],
         )
         # Reference-only setup queries can lie outside a table's declared domain.
         # Evaluate those through the same source EOS, never through interpolation.
-        self.reference_fluid = utils.get_property_fluid(self.fluid.name, self.fluid.backend)
-
-        # Calculate special points before rendering
-        self._calculate_special_points()
+        reference, reference_key, points, params = prepare_cycle_references(
+            parameters, fluids["working_fluid"], sources["working_fluid"],
+            getattr(self, "reference_fluid", None), getattr(self, "_reference_key", None),
+            getattr(self, "_reference_points", None),
+        )
+        names = list(conf["design_variables"])
+        lower = {k: v["min"] for k, v in conf["design_variables"].items()}
+        upper = {k: v["max"] for k, v in conf["design_variables"].items()}
+        initial = {k: v["value"] for k, v in conf["design_variables"].items()}
 
         # Evaluate symbolic expressions using data in "params" dict
-        self.lb = []
-        self.ub = []
-        self.x0 = []
-        for k in self.variable_names:
-            self.lb.append(utils.render_and_evaluate(self.lb_dict[k], self.params))
-            self.ub.append(utils.render_and_evaluate(self.ub_dict[k], self.params))
-            self.x0.append(utils.render_and_evaluate(self.x0_dict[k], self.params))
-        self.x0 = np.array(self.x0)
+        lb = [utils.render_and_evaluate(lower[k], params) for k in names]
+        ub = [utils.render_and_evaluate(upper[k], params) for k in names]
+        x0 = np.array([utils.render_and_evaluate(initial[k], params) for k in names])
+        plots = conf["plot_settings"]
+        plot_signature = (
+            conf["cycle_topology"], bool(plots.get("pinch_point_diagram", False)),
+            tuple(tuple(diagram.get(key) for key in ("x_prop", "y_prop", "x_scale", "y_scale"))
+                  for diagram in plots["diagrams"]), sources["working_fluid"],
+        )
+        self.__dict__.update(
+            configuration=conf, cycle_topology=conf["cycle_topology"], plot_settings=plots,
+            constraints=conf["constraints"], fixed_parameters=parameters,
+            objective_function=conf["objective_function"], variable_names=names,
+            lb_dict=lower, ub_dict=upper, x0_dict=initial, lb=lb, ub=ub, x0=x0,
+            fluids=fluids, fluid=fluids["working_fluid"], reference_fluid=reference, params=params,
+            _fluid_settings=settings, _fluid_sources=sources, _reference_key=reference_key,
+            _reference_points=points, _plot_signature=plot_signature,
+        )
+        # Results describe a particular evaluated configuration. A successful
+        # reload requires a new fitness evaluation before those results exist.
+        for name in ("cycle_data", "f", "c_eq", "c_ineq", "constraint_data"):
+            self.__dict__.pop(name, None)
 
     def _calculate_special_points(self):
         """
@@ -505,62 +554,41 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         2. Dilute gas state at the heat source inlet temperature.
 
         If the heat sink inlet temperature is below the fluid's critical temperature,
-        the saturated liquid state is calculated at this temperature. If it is above
-        the critical temperature, the state is calculated along the pseudocritical line.
+        the saturated liquid state is calculated at this temperature. Above the
+        critical temperature, the established initialization uses the critical-
+        density isochore, rather than a heat-capacity-maximum pseudocritical curve.
 
         The dilute gas state is calculated at the heat source inlet temperature and at
-        very low pressure (slightly above the triple pressure)
+        very low pressure (slightly above the liquid lower-endpoint pressure,
+        which is the triple pressure for a pure fluid).
 
         The calculated states, along with the fluid's critical and triple point properties,
-        are stored in the `fixed_parameters` dictionary under the 'fluid' key.
+        are stored separately in `params['working_fluid']` for bound rendering.
+        Fluid construction recipes in `fixed_parameters` are not overwritten.
+        Pseudo-pure endpoint records retain their source interpretation.
 
         These states are intended to define the bounds of the design variables specified
         in the YAML configuration file, for example:
 
             compressor_inlet_enthalpy:
-            min: 0.9*$fluid.liquid_sink_temperature.h
-            max: 2.0*$fluid.liquid_sink_temperature.h
-            value: 0.2
-            turbine_inlet_pressure:
-            min: 0.75*$fluid.critical_point.p
-            max: 5.00*$fluid.critical_point.p
-            value: 0.5
-            turbine_inlet_enthalpy:
-            min: 1.10*$fluid.critical_point.h
-            max: 1.00*$fluid.gas_source_temperature.h
-            value: 0.90
+            min: 0.9*$working_fluid.liquid_at_ambient_temperature.h
+            max: 2.0*$working_fluid.liquid_at_ambient_temperature.h
+            value: 1.1*$working_fluid.liquid_at_ambient_temperature.h
+            expander_inlet_pressure:
+            min: 0.75*$working_fluid.critical_point.p
+            max: 5.00*$working_fluid.critical_point.p
+            value: 2.0*$working_fluid.critical_point.p
+            expander_inlet_enthalpy:
+            min: 1.10*$working_fluid.critical_point.h
+            max: 1.00*$working_fluid.gas_at_maximum_temperature.h
+            value: 0.90*$working_fluid.gas_at_maximum_temperature.h
 
         """
-        # Compute saturated liquid state at sink temperature
-        # Use pseudocritical line if heat sink is above critical temperature
-        T_sink = self.fixed_parameters["special_points"]["ambient_temperature"]
-        crit = self.reference_fluid.critical_point
-        if T_sink < crit.temperature:
-            state_sat = self.reference_fluid.get_state(cpx.QT_INPUTS, 0.0, T_sink)
-        else:
-            state_sat = self.reference_fluid.get_state(cpx.DmassT_INPUTS, crit.density, T_sink)
-
-        # Compute dilute gas state at heat source temperature
-        T_source = self.fixed_parameters["special_points"]["maximum_temperature"]
-        p_triple = 1.01 * self.reference_fluid.triple_point_liquid.pressure
-        state_dilute = self.reference_fluid.get_state(cpx.PT_INPUTS, p_triple, T_source)
-
-        # Save states in the fixed parameters dictionary
+        # Explicit recalculation remains available for callers of this helper;
+        # ordinary reloads reuse source points through prepare_cycle_references.
+        self._reference_points = calculate_reference_points(self.fixed_parameters, self.reference_fluid)
         self.params = copy.deepcopy(self.fixed_parameters)
-        # self.params["working_fluid"] = {
-        #     "critical_point": self.reference_fluid.critical_point.to_dict(),
-        #     "triple_point_liquid": self.reference_fluid.triple_point_liquid.to_dict(),
-        #     "triple_point_vapor": self.reference_fluid.triple_point_vapor.to_dict(),
-        #     "liquid_at_ambient_temperature": state_sat.to_dict(),
-        #     "gas_at_maximum_temperature": state_dilute.to_dict(),
-        # }
-        self.params["working_fluid"] = {
-            "critical_point": self.reference_fluid.critical_point,
-            "triple_point_liquid": self.reference_fluid.triple_point_liquid,
-            "triple_point_vapor": self.reference_fluid.triple_point_vapor,
-            "liquid_at_ambient_temperature": state_sat,
-            "gas_at_maximum_temperature": state_dilute,
-        }
+        self.params["working_fluid"] = dict(self._reference_points)
 
     def fitness(self, x):
         """
@@ -648,6 +676,18 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
 
         """
 
+        if "cycle_data" not in self.__dict__:
+            raise RuntimeError("Evaluate fitness after configuring or updating the problem before plotting cycle results.")
+
+        # Rebuild source backgrounds/layout only when the next plot is drawn.
+        # A failed manager reload therefore cannot destroy the last valid plot.
+        if getattr(self, "_rendered_plot_signature", None) != self._plot_signature:
+            for figure in (self.figure, self.figure_TQ):
+                if figure is not None:
+                    plt.close(figure)
+            self.figure = self.figure_TQ = None
+            self.graphics = copy.deepcopy(GRAPHICS_PLACEHOLDER)
+
         # Determine the number of subplots
         include_pinch_diagram = self.plot_settings.get("pinch_point_diagram", False)
         ncols = len(self.plot_settings["diagrams"]) + int(include_pinch_diagram)
@@ -677,6 +717,7 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         self.figure.tight_layout(pad=1)
         plt.draw()
         plt.pause(0.01)
+        self._rendered_plot_signature = self._plot_signature
 
     def plot_cycle_realtime(
         self, configuration_file, update_interval=0.1, write_report=False
@@ -1155,6 +1196,9 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         """
         Exports the cycle performance data to Excel file
         """
+
+        if "cycle_data" not in self.__dict__:
+            raise RuntimeError("Evaluate fitness after configuring or updating the problem before exporting cycle results.")
 
         # Define variable map
         variable_map = {

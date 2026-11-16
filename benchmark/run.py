@@ -175,6 +175,7 @@ def main():
         "JAX_PLATFORM_NAME": "cpu",
         "MPLBACKEND": "Agg",
         "OMP_NUM_THREADS": "1",
+        "PYTHONHASHSEED": "0",
     }.items():
         os.environ[name] = value
     import jax
@@ -211,6 +212,7 @@ def main():
         cpu_affinity=affinity,
         device=str(jax.devices()[0]),
         x64=jax.config.x64_enabled,
+        worker_python_hash_seed=0,
         dependencies={
             n: metadata.version(n)
             for n in (
@@ -232,7 +234,7 @@ def main():
         },
     )
     manifest = dict(
-        schema=1,
+        schema=2,
         started_at_utc=datetime.now(timezone.utc).isoformat(),
         profile=args.profile,
         grid_size=grid,
