@@ -189,10 +189,12 @@ See the [inventory](tests/STATE_ACCESS_060.md) and [assessment](benchmark/PHASE3
   example's obsolete state-collection call; verify its isolated headless run.
 - [ ] Close the historical absolute checkpoint gate in final verification
   (carried to Phase 8 while the matched fix is verified and Phase 4 proceeds).
-  Current flags: all-stream recuperated bicubic +10.7%, recompression bicubic
+  Original flags: all-stream recuperated bicubic +10.7%, recompression bicubic
   +13.6%, refrigeration bicubic +22.8%. Preserve the fresh-process and cache-order
   controls; controlled shared-native-model comparisons isolate application changes
   within 4.1%, rather than establishing that those absolute flags have vanished.
+  The Phase 8 matched follow-up passes fresh comparisons; its advisory all-stream
+  ratio to the stored clock remains +16.2%. See [the current assessment](benchmark/PHASE8_FOLLOWUP.md).
 
 Acceptance: same complete state/property behavior through supported routes,
 typed informative failures elsewhere, and no new per-property validation work.
@@ -476,6 +478,11 @@ failures. Final focused checks cover later CLI/restart/provenance assertions.
 The installed ThermOpt wheel and full native release numerical profile pass.
 Hosted CI, visible GUI, historical timing closure and upstream publication/reporting
 remain pending; this is not a declaration that the entire migration is closed.
+Phase 7/8 is committed as `746f146`. The subsequent
+[matched timing follow-up](benchmark/PHASE8_FOLLOWUP.md) passes all six targeted
+workloads in four production-style workers and both control families. Numerical
+source remains unchanged; one historical absolute flag and the external gates
+remain open.
 
 - [x] Run full source tests locally on Python 3.11/3.13 with the declared
   dependencies, including an isolated clean locked main-dependency installation.
@@ -502,9 +509,21 @@ remain pending; this is not a declaration that the entire migration is closed.
   Five 200x200 profiles and both recuperated optimization modes pass. Sources,
   harness and lock remain fixed. This establishes a recorded baseline candidate;
   incompatible historical checkpoints cannot supply a timing acceptance claim.
-- [ ] Reassess the carried absolute Phase 2/3 timing flags with stable matched
+- [x] Reassess the carried absolute Phase 2/3 timing flags with stable matched
   artifact/context controls. Keep the original flags and successful metadata-fix
   follow-up separate; matched fix acceptance does not erase earlier ratios.
+- [x] Complete the fresh matched Phase 2/current reassessment on the official
+  PyPI 0.6.0 artifact: three flagged bicubic workloads plus their source controls,
+  both orders twice, three 36-sample bursts per worker. Two identical-code and
+  two explicit shared-model controls also pass. All 48 worker/workload pairs meet
+  1.10, with exact physical snapshots; largest production-style aggregate 1.064
+  and functional-control aggregate 1.016. Retain the 1.005 median paired ratio
+  alongside the 1.064 ratio of per-version medians for all-stream bicubic.
+  This is scoped matched acceptance, not historical absolute closure.
+- [ ] Close the remaining all-stream historical absolute observation. The current
+  advisory ratio to the stored Phase 2 median is 1.162; the fresh old-source rerun
+  is itself 1.092. Recompression/refrigeration advisory ratios are 0.941/1.040.
+  Original raw checkpoints remain unchanged; no budget waiver is implied.
 - [ ] Once separately released, update the dependency/lock to the JaxProp patch
   containing `52c98b8`. The verified local wheel is not an official PyPI artifact.
 - [ ] Report the existing direct-JaxProp construction warning for NumPy-valued
@@ -516,6 +535,13 @@ remain pending; this is not a declaration that the entire migration is closed.
   locally; external submission and the upstream fix remain pending.
 - [ ] Manually observe visible GUI/window behavior. Headless live-control and
   real animation encoding tests are complete; no manual display coverage claimed.
+  The Tk/bicubic attempt opened a native window, but Computer Use app access timed
+  out and recovery found no target. Its harness ended before the planned edit;
+  visible/reload acceptance remains unverified, not a thermodynamic regression.
+- [x] Preserve retired adapter byte hashes under Windows checkout conversion.
+  Reproduce three `core.autocrlf=true` hash mismatches, add scoped `*.py -text`
+  attributes, and verify all original hashes after filtering without changing
+  the archived scripts or adding numerical runtime checks.
 - [x] Update package/API/example docs and migration notes to the supported 0.6
   interface. Remove obsolete compatibility branches and installation caveats
   only when the corresponding checks actually pass.
@@ -566,3 +592,4 @@ numerical agreement and performance gates pass or have explicit scoped decisions
 | Phase 6 output boundaries | 598 tests plus four unchanged strict expected failures; 34 added cases. Rerunnable manager YAML, numeric bicubic energy cells, accepted-design callbacks, native phase backgrounds and shared solver-domain handling pass. Both ordinary CO2 demos retain objective/iteration results; the saved 200x200 bicubic solution reloads. Normalized-input 60-sample ratios 1.012/1.043 meet 1.10; initial 1.113 bicubic flag remains recorded. [Assessment](benchmark/PHASE6.md), [evidence](benchmark/PHASE6.json). |
 | Phase 7 study migration | Complete for the declared bounded profile: 47 programs classified, five additional real launcher runs converge, native study-owned models/cache invalidation and saved-input readers pass. Full study evaluation ratio 0.980 vs Phase 6 in the matched 60-sample ABBA check. Full research grids remain unexecuted. [Assessment](benchmark/PHASE7_8.md), [evidence](benchmark/PHASE7_8.json). |
 | Phase 8 local gates | Python 3.13: 623 passed; clean locked Python 3.11: 622 passed, one optional REFPROP skip; four unchanged strict expected failures in both. Final focused tests cover later CLI/cache/restart assertions. Installed-wheel QA, optional media/live controls and all five protocol-3 release numerical profiles pass. CI prepared, not executed remotely; upstream patch/report, visible GUI and historical timing gates remain open. [Assessment](benchmark/PHASE7_8.md). |
+| Phase 8 matched follow-up | Committed implementation `746f146` compared with fresh Phase 2 source using the official PyPI artifact. Four matched workers, two identical-code controls and two functional controls pass all 48 worker/workload pairs; 10,368 full evaluations, exact physical snapshots. Largest matched/functional aggregates 1.064/1.016. Historical all-stream absolute ratio 1.162 and external/visible-GUI gates remain open. Archive byte hashes now survive Windows checkout filtering. [Assessment](benchmark/PHASE8_FOLLOWUP.md), [samples/identities](benchmark/PHASE8_FOLLOWUP.json). |

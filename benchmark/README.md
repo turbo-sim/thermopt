@@ -61,6 +61,10 @@ thin case-local launchers preserving their documented commands.
 The [Phase 7/8 assessment](PHASE7_8.md) records study-owned models, five additional
 complete case runs, local Python 3.11/3.13 verification and installed-wheel QA.
 Hosted CI and older absolute timing gates remain explicitly open.
+The [Phase 8 matched follow-up](PHASE8_FOLLOWUP.md) reassesses the three historical
+bicubic flags against a fresh Phase 2 rerun, including source, identical-code and
+explicit shared-model controls. All six matched workloads meet 1.10; the older
+all-stream absolute observation remains open rather than erased.
 
 Use the environment containing the released JaxProp 0.6 package, with no
 checkout or `PYTHONPATH` substitution:

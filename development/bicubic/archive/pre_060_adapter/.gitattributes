@@ -1,0 +1,2 @@
+# Preserve original script bytes and their recorded hashes across checkouts.
+*.py -text
