@@ -7,17 +7,21 @@ import logging
 import pickle
 from datetime import datetime
 import numpy as np
+import jax
 
 
 
 def convert_numpy_to_python(data, precision=10):
     """
-    Recursively converts numpy arrays, scalars, and other numpy types to their Python counterparts
+    Recursively converts NumPy/JAX arrays, scalars, and other NumPy types to their Python counterparts
     and rounds numerical values to the specified precision.
 
     Parameters:
     - data: The numpy data to convert.
     - precision: The decimal precision to which float values should be rounded.
+      Use None to preserve the full float precision, for example in a rerunnable
+      solver configuration. Concrete JAX arrays are materialized only here at
+      the output boundary; this helper is not intended for traced calculations.
 
     Returns:
     - The converted data with all numpy types replaced by native Python types and float values rounded.
@@ -32,7 +36,8 @@ def convert_numpy_to_python(data, precision=10):
     elif isinstance(data, (list, tuple)):
         return [convert_numpy_to_python(item, precision) for item in data]
     
-    elif isinstance(data, np.ndarray):
+    elif isinstance(data, (np.ndarray, jax.Array)):
+        data = np.asarray(data)
         # If the numpy array has more than one element, it is iterable.
         if data.ndim > 0:
             return [convert_numpy_to_python(item, precision) for item in data.tolist()]
@@ -43,7 +48,7 @@ def convert_numpy_to_python(data, precision=10):
     elif isinstance(data, np.generic):
         scalar = data.item()
         if np.issubdtype(type(data), np.floating):
-            return round(float(scalar), precision)
+            return float(scalar) if precision is None else round(float(scalar), precision)
         elif np.issubdtype(type(data), np.integer):
             return int(scalar)
         elif np.issubdtype(type(data), np.bool_):
@@ -53,7 +58,7 @@ def convert_numpy_to_python(data, precision=10):
         return scalar  # fallback for other np.generic types
 
     elif isinstance(data, float):
-        return round(data, precision)
+        return data if precision is None else round(data, precision)
 
     elif isinstance(data, (int, str, bool)):
         return data

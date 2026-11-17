@@ -310,17 +310,33 @@ or table loading, and setup/warm/whole-solve timing costs are recorded separatel
 
 ## Phase 6 — Finish plotting, exports and normal example workflows
 
-**Status: in progress; native phase plotting, numeric Excel cells and the small
-demonstration execution profile are verified.**
+**Status: complete locally on 16 November 2026 for the recorded CPU/x64,
+headless native-model profile.** The suite passes 598 tests plus the four
+unchanged strict expected failures, with 34 new output/boundary cases. Both
+ordinary CO2 launchers retain their final objectives and iteration counts.
+The actual 200x200 bicubic solution reloads directly through the manager;
+source and bicubic snapshot round trips are independently tested. The source
+launcher's default does not request YAML exports. A 60-sample balanced check
+meets the 1.10 warm limit (ratios 1.012 source, 1.043 bicubic); the initial
+12-sample bicubic flag of 1.113 is retained. Reporting costs are separate.
+Physical fitness is AST-identical to `bbdfaa3`; no state/property hot-loop checks
+were added. See [assessment](benchmark/PHASE6.md) and [evidence](benchmark/PHASE6.json).
 
-- [ ] Cover source and bicubic cycle/process/pinch diagrams, reused artists,
+- [x] Cover source and bicubic cycle/process/pinch diagrams, reused artists,
   closed figures, optional-field gaps and source-EOS backgrounds explicitly.
-- [ ] Standardize numeric Excel/CSV/JSON outputs for NumPy/JAX scalar storage;
+- [x] Standardize numeric Excel/CSV/JSON outputs for NumPy/JAX scalar storage;
   preserve units, labels, identities and unavailable values without new flashes.
-- [ ] Test saved configurations and reloaded cases under the new schema;
+  The existing conversion helper supports concrete JAX arrays and full precision;
+  numeric/boolean/missing-value round trips cover CSV/JSON consumers without
+  adding an unsolicited public cycle writer. Excel JAX energy cells are numeric.
+- [x] Test saved configurations and reloaded cases under the new schema;
   exported inspection metadata must not be mistaken for a universal fluid recipe.
-- [ ] Verify normal callbacks, reports and headless launchers in addition to
+  Manager/iteration/final YAML is rerunnable; the problem-level writer retains
+  formulation-only output. Preserve small tolerances and variable order.
+- [x] Verify normal callbacks, reports and headless launchers in addition to
   callback-disabled benchmark runs. Time reporting separately from core fitness.
+  Restore accepted designs at output callbacks when probes displaced them;
+  save-only plotting creates its required figure. Final exports use x_final.
 - [x] Execute the 14 small one/two-case demonstration scripts with fresh outputs
   and their configured report/plot/export callbacks. All 15 optimized cycle runs
   pass native success, feasibility and first-order gates; two property/correlation
@@ -328,15 +344,16 @@ demonstration execution profile are verified.**
   recompression YAML and the ideal/turbomachinery/shaft-constrained PTES cases.
   Interactive watchers and optional movie encoding remain outside this headless
   check. See [the execution inventory](case_studies/SMALL_DEMOS.md).
-- [ ] Define a consistent optimizer boundary for recognized JaxProp invalid-state
-  failures when using controlled SLSQP/Pounce. The recompression comparison
-  translates those failures to PySolverView `DomainError` locally for line-search
-  recovery; ordinary state/problem calls retain their native typed errors.
-  Unsupported capabilities and programming errors must continue to propagate.
-  Assess a shared orchestration solution without per-property validation.
-- [ ] If exchanger diagnostics are needed in constraints, design explicit setup
-  opt-in and enable only the required paths. Plain exchanger profiles currently
-  reject disabled diagnostic constraints; do not silently add source flashes.
+- [x] Define a consistent optimizer boundary for recognized JaxProp invalid-state
+  failures when using controlled SLSQP/Pounce. The shared normalized-input
+  boundary preserves native causes/context; direct physical fitness retains
+  native errors. Remove the two local comparison subclasses. Unsupported
+  capabilities and programming errors propagate; no per-property validation.
+- [x] Assess whether maintained constraints need additional exchanger diagnostics.
+  None currently requires a new profile opt-in. Existing setup tests reject
+  disabled/unsupported diagnostics before reference preparation; retain this
+  explicit behavior instead of adding source flashes. A future study requiring
+  them must define and measure an explicit setup opt-in.
 
 Acceptance: graphical/data round trips reflect actual evaluated states and the
 ordinary user workflow works with the same native objects as the timed cases.
@@ -396,6 +413,8 @@ explicit execution inventory.
 - [ ] Run bounded representative studies/headless figures and full declared
   scientific profiles separately. Label missing inputs, research limits and
   unexecuted full sweeps honestly. Larger redesigns get their own checklist item.
+- [ ] Verify interactive file-watcher and optional movie-encoding workflows
+  separately from the completed headless profiles, with declared dependencies.
 - [ ] Retire/archive the old 0.5 bicubic adapter and monkey-patching experiment
   after its useful provenance is retained and the native workflow replaces it.
 - [ ] Remove the historical benchmark input's `exceptions` normalization when
@@ -487,3 +506,4 @@ numerical agreement and performance gates pass or have explicit scoped decisions
 | Phase 4 component physics | 461 passed, four unchanged expected failures; 65 new native-model/physical cases. Three phase cohorts, twelve paired cycle cases and both balanced 24-component runs pass warm limits. Five 200x200 release profiles and four complete recuperated solves pass numerical/source cross-evaluation checks. First-use shape compilation and historical observations remain assigned follow-ups. [Assessment](benchmark/PHASE4.md), [checkpoint](benchmark/checkpoints/phase4.json). |
 | Phase 5 lifecycle | 534 passed, four unchanged strict expected failures; 73 added cases plus 19 focused protocol/audit checks. Unchanged reloads are about 35%/85%/50% faster for source/bicubic/perfect gas. Three matched protocol-2 profiles, twelve paired cycle cases, four balanced 24-component runs and the release profile pass scoped gates. Initial setup, first reporting-shape compilation and older flags remain explicit. [Assessment](benchmark/PHASE5.md), [checkpoint](benchmark/checkpoints/phase5.json). |
 | Small demonstration workflows | 14 scripts and all 15 optimized cycle runs pass with fresh outputs and normal configured callbacks; two property/correlation scripts also pass. Actual variable order is preserved in default-solver tests. Minimal API/plot repairs and two explicit numerical stopping fixes retain physical inputs and acceptance gates. Official PyPI JaxProp 0.6.0 sources verified; 564 tests plus four unchanged strict expected failures. [Execution inventory](case_studies/SMALL_DEMOS.md). No broad sweep or performance acceptance claim. |
+| Phase 6 output boundaries | 598 tests plus four unchanged strict expected failures; 34 added cases. Rerunnable manager YAML, numeric bicubic energy cells, accepted-design callbacks, native phase backgrounds and shared solver-domain handling pass. Both ordinary CO2 demos retain objective/iteration results; the saved 200x200 bicubic solution reloads. Normalized-input 60-sample ratios 1.012/1.043 meet 1.10; initial 1.113 bicubic flag remains recorded. [Assessment](benchmark/PHASE6.md), [evidence](benchmark/PHASE6.json). |

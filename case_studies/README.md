@@ -75,6 +75,13 @@ Most `run_optimization.py` launchers expect their case directory as the working
 directory. Standalone comparison runners resolve their own input paths; their
 case README documents the supported invocation.
 
+Manager-saved `optimal_solution.yaml` and iteration YAML files contain a complete
+configuration, including solver settings and the evaluated design, and can be
+passed directly to `ThermodynamicCycleOptimization`. Calling
+`problem.save_current_configuration(...)` instead saves a formulation for
+`ThermodynamicCycleProblem`. Both preserve native fluid recipes and variable
+order. See the [Phase 6 output assessment](../benchmark/PHASE6.md).
+
 Tests keep their frozen physical inputs under `tests/data/cases/`. Historical
 benchmark JSON, checkpoints and audits retain the original `examples/` paths
 and numerical hashes. Those records describe the run that produced them; active

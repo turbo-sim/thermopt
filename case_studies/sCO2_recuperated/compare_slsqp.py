@@ -12,7 +12,6 @@ import json
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-import jaxprop as jp
 import numpy as np
 import pysolver_view as psv
 import thermopt as th
@@ -21,17 +20,6 @@ EXAMPLE_DIR = Path(__file__).resolve().parent
 FIRST_STEP_FRACTIONS = (1.0, 0.3, 0.2, 0.1)
 FEASIBILITY_TOL = 1e-6
 OPTIMALITY_TOL = 1e-4
-
-
-class ComparisonCycleProblem(th.ThermodynamicCycleProblem):
-    """Expose property-domain failures to the custom solver's backtracking."""
-
-    def fitness(self, x):
-        """Translate recognized native JaxProp trial failures, preserving causes."""
-        try:
-            return super().fitness(x)
-        except (jp.InvalidStateError, jp.CalculationError) as error:
-            raise psv.DomainError(str(error)) from error
 
 
 def comparison_cases(current_scale):
@@ -71,7 +59,7 @@ def evaluate_optimality_history(history, config, scale, run_dir):
     shared KKT multiplier fit. These postprocessing calls do not enter the
     optimization histories or their model-call totals.
     """
-    problem = ComparisonCycleProblem(
+    problem = th.ThermodynamicCycleProblem(
         copy.deepcopy(config["problem_formulation"]), out_dir=str(run_dir)
     )
     problem.fitness(problem.x0)
@@ -103,7 +91,7 @@ def run_case(case, config, output_dir, max_iterations=None, verbose=False):
     """Solve a fresh problem and save actual recorded observations and status."""
     name, label, library, scale, fraction, _, _ = case
     run_dir = output_dir / name
-    problem = ComparisonCycleProblem(
+    problem = th.ThermodynamicCycleProblem(
         copy.deepcopy(config["problem_formulation"]), out_dir=str(run_dir)
     )
     # Initialize the constraint counts before constructing the solver.

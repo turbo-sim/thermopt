@@ -243,7 +243,8 @@ def test_iteration_callbacks_export_the_evaluated_design(cycle_manager):
     manager.save_config_callback(normalized, 4)
     saved = th.read_configuration_file(str(Path(manager.optimization_dir) / "iteration_004.yaml"))
     np.testing.assert_allclose(
-        [saved["design_variables"][name]["value"] for name in manager.problem.variable_names],
+        [saved["problem_formulation"]["design_variables"][name]["value"]
+         for name in manager.problem.variable_names],
         point, rtol=0, atol=1e-8,
     )
 

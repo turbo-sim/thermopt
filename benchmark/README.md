@@ -40,6 +40,18 @@ gates pass; earlier raw flags and one-time setup/compilation costs remain record
 
 This is the canonical benchmark entry point for the
 [JaxProp 0.6 migration plan](../z_JAXPROP_060_IMPLEMENTATION_PLAN.md).
+
+The focused [Phase 6 reporting check](PHASE6.md) separates complete cycle
+evaluation from YAML/Excel/plot/KKT-report costs:
+
+```powershell
+python benchmark/output_workflows.py --output benchmark/results/output_check
+```
+
+It compares the normalized-input exception boundary with its inherited
+PySolverView route on the same configured native model. It is not a new release
+benchmark or a substitute for the full phase/release profiles below.
+
 ThermOpt stays eager NumPy/SciPy. Current workload code is reused from
 `development/bicubic/validate_060.py`; consolidating shared implementations here
 is a later checklist item, not a second copy of the thermodynamic equations.

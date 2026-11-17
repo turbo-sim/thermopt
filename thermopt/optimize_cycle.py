@@ -243,7 +243,12 @@ class ThermodynamicCycleOptimization:
 
         # Plot convergence callback is treated as a special case
         for key, func in callback_registry.items():
-            if callback_flags.get(key, False):
+            enabled = callback_flags.get(key, False)
+            # Saving a cycle figure requires its plotting callback even when
+            # the user did not independently request interactive cycle plots.
+            if key == "plot_cycle":
+                enabled = enabled or callback_flags.get("save_plot", False)
+            if enabled:
                 func() if key == "plot_convergence" else self.solver.callback_functions.append(func)
 
         # Run the optimization for the specified or default initial guess
@@ -256,10 +261,15 @@ class ThermodynamicCycleOptimization:
         """
         Saves the results of the optimization, including configurations and output files.
         """
+        if self.solver.x_final is None:
+            raise RuntimeError("Run optimization before saving final results.")
+        # Reports and derivative probes may leave a different last evaluation.
+        # Refresh once at this output boundary so every artifact describes the
+        # solver's final physical design, including unsuccessful diagnostic runs.
+        self.problem.fitness(self.solver.x_final)
         filename = os.path.join(self.out_dir, "optimal_solution")
         self.problem.save_data_to_excel(filename=filename + ".xlsx")
-        print("hey")
-        self.problem.save_current_configuration(filename=filename + ".yaml")
+        self.save_current_configuration(filename=filename + ".yaml")
         self.print_convergence_history(savefile=True)
         self.print_optimization_report(savefile=True)
         self.plot_convergence_history(savefile=True, showfig=False)
@@ -272,6 +282,19 @@ class ThermodynamicCycleOptimization:
         self.problem.figure.savefig(filename, dpi=500)
         plt.close(self.problem.figure)
         # self.save_solver_pickle()
+
+    def save_current_configuration(self, filename):
+        """Save a rerunnable manager configuration with the evaluated design.
+
+        Keep solver options and the original native fluid construction recipes.
+        Design values come from the current problem, without changing this
+        manager's configured initial design or rounding small solver tolerances.
+        The problem-level writer remains available for formulation-only exports.
+        """
+        config_data = dict(self.config, problem_formulation=self.problem.configuration)
+        config_data = utils.convert_numpy_to_python(config_data, precision=None)
+        with open(filename, "w", encoding="utf-8") as file:
+            yaml.safe_dump(config_data, file, sort_keys=False)
 
 
     def save_solver_pickle(self):
@@ -343,6 +366,17 @@ class ThermodynamicCycleOptimization:
     # ------------------------------------------------------------------------- #
     # -------------------------- Callback functions --------------------------- #
     # ------------------------------------------------------------------------- #
+    def _restore_callback_design(self, x):
+        """Synchronize reported state only when a probe displaced the design.
+
+        This comparison belongs to output callbacks, never to fitness or state
+        evaluation. The first observer restores the accepted physical design;
+        later observers reuse it without redundant cycle evaluations.
+        """
+        physical = self.problem.scale_normalized_to_physical(x)
+        if not np.array_equal(list(self.problem.x0_dict.values()), physical):
+            self.problem.fitness(physical)
+
     def save_config_callback(self, x, iter):
         """
         A callback function to save the current configuration during optimization iterations.
@@ -355,8 +389,9 @@ class ThermodynamicCycleOptimization:
         existing `save_current_configuration` function.
         """
         # Call the existing function to save the configuration
+        self._restore_callback_design(x)
         filename = os.path.join(self.optimization_dir, f"iteration_{iter:03d}.yaml")
-        self.problem.save_current_configuration(filename)
+        self.save_current_configuration(filename)
 
     def save_report_callback(self, x, iter):
         """
@@ -369,19 +404,25 @@ class ThermodynamicCycleOptimization:
         This function acts as a bridge between the optimizer callback requirements and the
         existing `save_current_configuration` function.
         """
-        self.solver.print_optimization_report(
-            self.problem.scale_normalized_to_physical(x),
-            include_kkt_conditions=True,
-            savefile=True,
-            filename=f"iteration_{iter:03d}.txt",
-            output_dir=self.optimization_dir,
-            to_console=False
-        )
+        self._restore_callback_design(x)
+        try:
+            self.solver.print_optimization_report(
+                self.problem.scale_normalized_to_physical(x),
+                include_kkt_conditions=True,
+                savefile=True,
+                filename=f"iteration_{iter:03d}.txt",
+                output_dir=self.optimization_dir,
+                to_console=False
+            )
+        finally:
+            # KKT diagnostics may themselves evaluate derivative probes.
+            self._restore_callback_design(x)
 
     def plot_cycle_callback(self, x, iter):
         """
         Plot the thermodynamic cycle during optimization.
         """
+        self._restore_callback_design(x)
         self.problem.plot_cycle()
         self.problem.figure.suptitle(
             f"Optimization iteration: {iter:03d}", fontsize=14, y=0.95
@@ -637,6 +678,25 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
 
         return out
 
+    def fitness_normalized_input(self, x_norm):
+        """Expose recognized fluid-domain failures at the solver boundary.
+
+        PySolverView's controlled SLSQP and Pounce can reject a trial marked by
+        ``DomainError``. Translate only invalid states and failed calculations,
+        keeping the native cause and context. Unsupported requests, configuration
+        errors and application defects propagate. Direct ``fitness`` calls keep
+        their native JaxProp errors. There are no per-property checks or adapters.
+        Other solvers may propagate DomainError without backtracking recovery.
+        """
+        try:
+            return super().fitness_normalized_input(x_norm)
+        except (cpx.InvalidStateError, cpx.CalculationError) as error:
+            raise psv.DomainError(
+                str(error),
+                metadata=dict(fluid_name=error.fluid_name, provider=error.provider,
+                              model=error.model, request=error.request),
+            ) from error
+
     def get_bounds(self):
         return self.lb, self.ub
 
@@ -647,11 +707,15 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         return psv.count_constraints(self.c_ineq)
 
     def save_current_configuration(self, filename):
-        """Save the current configuration to a YAML file."""
+        """Save the current problem formulation, preserving native fluid recipes.
+
+        This file can initialize ``ThermodynamicCycleProblem``. Use the manager's
+        writer for a complete configuration including solver options.
+        """
         config_data = {k: v for k, v in self.configuration.items()}
-        config_data = utils.convert_numpy_to_python(config_data, precision=12)
-        with open(filename, "w") as file:
-            yaml.dump(config_data, file, default_flow_style=False, sort_keys=False)
+        config_data = utils.convert_numpy_to_python(config_data, precision=None)
+        with open(filename, "w", encoding="utf-8") as file:
+            yaml.safe_dump(config_data, file, default_flow_style=False, sort_keys=False)
 
     def plot_cycle(self):
         """
@@ -1287,7 +1351,10 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
 
         # Prepare energy_analysis data
         df_2 = pd.DataFrame(
-            list(self.cycle_data["energy_analysis"].items()),
+            # Match state cells: JAX zero-dimensional arrays must become host
+            # numbers here, otherwise spreadsheet writers store them as text.
+            [(name, np.asarray(value).item())
+             for name, value in self.cycle_data["energy_analysis"].items()],
             columns=["Parameter", "Value"],
         )
 

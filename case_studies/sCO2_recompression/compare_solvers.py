@@ -16,7 +16,6 @@ from pathlib import Path
 import time
 
 import jax
-import jaxprop as jp
 import matplotlib.pyplot as plt
 import numpy as np
 import pysolver_view as psv
@@ -32,22 +31,6 @@ SOLVERS = (
     ("pounce_ipm", "Pounce interior point", "pounce", "ipm"),
     ("pounce_sqp", "Pounce SQP", "pounce", "sqp"),
 )
-
-
-class ComparisonProblem(th.ThermodynamicCycleProblem):
-    """Translate recognized invalid thermodynamic trials for solver recovery.
-
-    This is only an optimizer error boundary. Native JaxProp fluid objects,
-    property equations and exception causes are preserved; no state is clipped
-    or substituted. Unsupported requests and programming errors still propagate.
-    """
-
-    def fitness(self, x):
-        """Let line searches backtrack after an invalid thermodynamic trial."""
-        try:
-            return super().fitness(x)
-        except (jp.InvalidStateError, jp.CalculationError) as error:
-            raise psv.DomainError(str(error)) from error
 
 
 def comparison_configuration(config, table_directory, backend="bicubic"):
@@ -131,7 +114,7 @@ def assess_optimality(history, config, directory):
     trajectories. Pounce native observations are not certified accepted steps.
     Restoration observations without a user-space point remain in raw events.
     """
-    problem = ComparisonProblem(
+    problem = th.ThermodynamicCycleProblem(
         copy.deepcopy(config["problem_formulation"]), out_dir=str(directory)
     )
     problem.fitness(problem.x0)
@@ -165,7 +148,7 @@ def run_case(case, config, output, max_iterations=None, verbose=False):
     directory = output / backend / name
     directory.mkdir(parents=True, exist_ok=True)
     started = time.perf_counter()
-    problem = ComparisonProblem(
+    problem = th.ThermodynamicCycleProblem(
         copy.deepcopy(config["problem_formulation"]), out_dir=str(directory)
     )
     initial = problem.x0.copy()

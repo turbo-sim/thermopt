@@ -1,0 +1,673 @@
+{
+  "baseline_commit": "bbdfaa3",
+  "tests": {
+    "passed": 598,
+    "strict_expected_failures": 4,
+    "new_output_cases": 34,
+    "junit": "benchmark/results/small_demos/phase6_final_tests.xml"
+  },
+  "physical_fitness_ast_unchanged": true,
+  "jaxprop_artifact": {
+    "version": "0.6.0",
+    "wheel_sha256": "0a8dfb68ca4d21cf97b7483e1da776b946cec108a94d50ebb770bb9848127d3c",
+    "installed_package_files_verified": 43,
+    "provenance": "Official PyPI wheel"
+  },
+  "normal_demos": {
+    "sCO2_recuperated/run_optimization.py": {
+      "script": "case_studies/sCO2_recuperated/run_optimization.py",
+      "output": "case_studies/sCO2_recuperated/results/demo_checks/20261116_214204/run_optimization",
+      "status": "passed",
+      "solves": [
+        {
+          "name": "cycle",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 24,
+          "finite": true,
+          "violation": 1.7053025658242404e-14,
+          "objective": -0.3826892513412005
+        }
+      ],
+      "error": null,
+      "exit_code": 0,
+      "snapshot_reload": "Not requested by this launcher's default callbacks; source manager snapshots verified in test_output_workflows.py"
+    },
+    "sCO2_recompression/run_optimization.py": {
+      "script": "case_studies/sCO2_recompression/run_optimization.py",
+      "output": "case_studies/sCO2_recompression/results/demo_checks/20261116_214204/run_optimization",
+      "status": "passed",
+      "solves": [
+        {
+          "name": "cycle",
+          "success": true,
+          "message": "Optimization terminated successfully",
+          "iterations": 29,
+          "finite": true,
+          "violation": 7.64520488398072e-09,
+          "objective": -0.4138198737052636
+        }
+      ],
+      "error": null,
+      "exit_code": 0,
+      "reloaded_objective": -0.4138198737052636,
+      "snapshot": "case_studies/sCO2_recompression/results/demo_checks/20261116_214204/run_optimization/optimal_solution.yaml",
+      "numeric_energy_cells": 20
+    }
+  },
+  "normal_demo_summary": "benchmark\\results\\small_demos\\summary_20261116_214204.json",
+  "timing": {
+    "scope": "Phase 6 whole-cycle normalized-input exception boundary and reporting",
+    "baseline": "Inherited PySolverView OptimizationProblem.fitness_normalized_input",
+    "control": "One problem/model instance per provider; alternate route order; full cycle evaluated",
+    "packages": {
+      "jaxprop": "0.6.0",
+      "pysolver-view": "0.8.2",
+      "pounce-solver": "0.13.0",
+      "jax": "0.6.2",
+      "jaxlib": "0.6.2",
+      "numpy": "2.4.4",
+      "scipy": "1.17.1"
+    },
+    "source_sha256": {
+      "thermopt\\__init__.py": "2a603ce2fb392ed489f715ed923fc649a69092e17e9ef7f37dbb16ef80667bea",
+      "thermopt\\components\\__init__.py": "b5088579d3730612e6626f2f032fd01031f3da8994e9c996d54086948aae22d9",
+      "thermopt\\components\\basic_components.py": "0a94c5e84d9bae9574bf96777deb78c079fae7cadda8f13d5a7f77ecd95874cd",
+      "thermopt\\components\\turbomachinery_nondimensional.py": "84eecd2c9d494c4999c637ddf4d3a9ea19e4192908415ec5dc74d029864d41f1",
+      "thermopt\\config.py": "55b5986eeb6737628d98d670c3e88da8607a8f1e75ced245df4d3249c9ab572d",
+      "thermopt\\cycles\\__init__.py": "2bd515b3842e2c808a718cd2ba14c7a7d5e9f3e3da0053df8d59fd549d78c5b8",
+      "thermopt\\cycles\\cycle_power_recuperated.py": "bb6aa80e0a39a5f1d58384064c2972ce7eae1c6d4610f431ab2e8a5dc5d2b637",
+      "thermopt\\cycles\\cycle_power_simple.py": "754b532685cb5bf82c201f350ac1c4004b286ed50a878d1d3c43c48ebbbd929b",
+      "thermopt\\cycles\\cycle_power_split_compression.py": "c90aa65e441485dc39453e1acb25cf3147762c066d0af906f81a8e7233db9763",
+      "thermopt\\cycles\\cycle_PTES_recuperated.py": "bd08b861113bdc4685f656eebd44e6509ce6b05a203d0ba61203e672ed993905",
+      "thermopt\\cycles\\cycle_PTES_recuperated_turbo.py": "071749daa48c064a986d25ee0394ab3e73e7dabcd27dfe4ed4cf8f707e8baff0",
+      "thermopt\\cycles\\cycle_refrigeration_recuperated.py": "19c1e2597f38694e466890aea6cb9070cab78799aec1cd4cba92bf2638a839c3",
+      "thermopt\\cycles\\cycle_refrigeration_simple.py": "3b02a2a74ebd619f41f369b64a29ecd7d69ee4039ed14daf1f0f5c8d9ee2aad6",
+      "thermopt\\cycles\\setup.py": "5c717cb684d9113f9ee0dadffcddd6bdc39e8983d1315b7b0e735df7b9a1f9c5",
+      "thermopt\\cycles\\state_requirements.py": "4abcf4e5ef6710943aa63ad291aa6feba0ec8f74a1b0592d0f7433fc3f07931c",
+      "thermopt\\math.py": "868092b76a17fc59a03f880594153441553bb1ab739a5d21557c4c367f940fce",
+      "thermopt\\optimize_cycle.py": "2fd5e92ce84f73411078453efeea6ec7425ffc32d555460c6fc3d35832d0a8db",
+      "thermopt\\utilities\\__init__.py": "ccb09fa26f51cd23dda26e32e43a31beed719532fdee0eed8c19c337b771f585",
+      "thermopt\\utilities\\file_utils.py": "af81c1c0289c5c1d04a93cc27994365a34e8f3720a1a3e0b69b3e9a4cb1ca54e",
+      "thermopt\\utilities\\fluid_utils.py": "8a6ce4e3469361a2029452f1d8eadca41b1fa5c9b82c29a8b282b4c4936f9cde",
+      "thermopt\\utilities\\graphics.py": "58fc2a59248dd7b233d40ca71d2def860c5bc1ced9542ba40483ce6ce42ccf2f",
+      "thermopt\\utilities\\numerics.py": "40f814ce155d5c6b5c0c63b815a9783662cad490abe0ba1feab6b091d8ec3157",
+      "thermopt\\utilities\\optimization_utils.py": "ee3a14f9587accb29a1a001f9777201d09372e57c82db174bf58b84378ab6eaf"
+    },
+    "harness_sha256": "a7fa1a748cf371eeb7c442d9f23b5fcfca0dacfcbf12451fc1daf02c26fbe502",
+    "samples": 60,
+    "reporting_samples": 4,
+    "grid": 32,
+    "warm_ratio_limit": 1.1,
+    "environment": {
+      "python": "3.13.2",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "cpu_affinity": {
+        "requested_mask": null,
+        "actual_mask": "0xfffffff",
+        "system_mask": "0xfffffff"
+      },
+      "hash_seed": null
+    },
+    "workloads": {
+      "coolprop": {
+        "native_provider": "coolprop",
+        "samples_seconds": {
+          "inherited": [
+            0.03743120000581257,
+            0.03812149999430403,
+            0.036286799993831664,
+            0.059386300010373816,
+            0.05759730000863783,
+            0.03511969998362474,
+            0.055312100012088194,
+            0.043779100000392646,
+            0.04358110000612214,
+            0.04511150001781061,
+            0.04970390000380576,
+            0.0465431000047829,
+            0.039363299991237,
+            0.056445499998517334,
+            0.037605299992719665,
+            0.035237800009781495,
+            0.03792899998370558,
+            0.05491830001119524,
+            0.0633815000182949,
+            0.062475399987306446,
+            0.03954969998449087,
+            0.035451300005661324,
+            0.03505489998497069,
+            0.04327589998138137,
+            0.05961500000557862,
+            0.03626239998266101,
+            0.046252200001617894,
+            0.04485679999925196,
+            0.03457269998034462,
+            0.042856200016103685,
+            0.060510800016345456,
+            0.044543700001668185,
+            0.04034300000057556,
+            0.03947700001299381,
+            0.034882400010246783,
+            0.05229310001595877,
+            0.04984069999773055,
+            0.03697759998613037,
+            0.04121560000930913,
+            0.04197949997615069,
+            0.03785389999393374,
+            0.040780299983453006,
+            0.06446679998771288,
+            0.04671220001182519,
+            0.046820899995509535,
+            0.038949300011154264,
+            0.04286109999520704,
+            0.06021080000209622,
+            0.06370659999083728,
+            0.03747239999938756,
+            0.04603520000819117,
+            0.04165880000800826,
+            0.041750800010049716,
+            0.056797900004312396,
+            0.03474780000397004,
+            0.059826400014571846,
+            0.04938069998752326,
+            0.03556269998080097,
+            0.044500499992864206,
+            0.03869899999699555
+          ],
+          "current": [
+            0.03784810000797734,
+            0.08728000000701286,
+            0.034114499983843416,
+            0.059313900012057275,
+            0.053417199989780784,
+            0.037778600002638996,
+            0.0589777999848593,
+            0.03991260001203045,
+            0.04177509999135509,
+            0.06774160001077689,
+            0.04099559999303892,
+            0.057421700010308996,
+            0.05741670000134036,
+            0.05955430000904016,
+            0.03545650001615286,
+            0.03576140000950545,
+            0.03543449999415316,
+            0.04630879999604076,
+            0.039500200015027076,
+            0.05957209999905899,
+            0.04375640000216663,
+            0.03523589999531396,
+            0.03652429999783635,
+            0.035381400026381016,
+            0.04219010000815615,
+            0.03470199997536838,
+            0.049622500024270266,
+            0.05331240000668913,
+            0.04052640000008978,
+            0.03897100000176579,
+            0.04751499998383224,
+            0.04962330000125803,
+            0.06167460000142455,
+            0.043983700015814975,
+            0.0339520999987144,
+            0.03437720000511035,
+            0.033363299997290596,
+            0.03426839999156073,
+            0.0404487999912817,
+            0.06474570001591928,
+            0.05314370000269264,
+            0.03548599997884594,
+            0.03933790000155568,
+            0.04912690000492148,
+            0.06445889998576604,
+            0.05600189999677241,
+            0.038634900003671646,
+            0.03808779999963008,
+            0.04798730000038631,
+            0.036569700023392215,
+            0.06558550000772811,
+            0.04390429999330081,
+            0.06142089999048039,
+            0.04597749997628853,
+            0.03443509998032823,
+            0.05216829999699257,
+            0.04340190000948496,
+            0.03586249999352731,
+            0.058561199984978884,
+            0.05621229999815114
+          ]
+        },
+        "medians_seconds": {
+          "inherited": 0.04306849998829421,
+          "current": 0.043579150005825795
+        },
+        "ratio": 1.0118566938173,
+        "timing_flag": false,
+        "numerical_equal": true,
+        "reporting_samples_seconds": {
+          "yaml": [
+            0.004725999984657392,
+            0.004295999999158084,
+            0.004844499984756112,
+            0.0034712000051513314
+          ],
+          "excel": [
+            0.3007307999941986,
+            0.054771099996287376,
+            0.049918800010345876,
+            0.06821659998968244
+          ],
+          "plot_update": [
+            0.06831289999536239,
+            0.04717729997355491,
+            0.07045129998004995,
+            0.0600925000035204
+          ],
+          "cached_report": [
+            0.0037976999883539975,
+            0.005340100004104897,
+            0.00289060000795871,
+            0.0066319000034127384
+          ]
+        },
+        "first_report_seconds": 0.5022984999814071,
+        "first_report_solver_tracked_calls": 8,
+        "reporting_note": "Elapsed report time includes I/O-only design synchronization; solver counters exclude those direct refreshes",
+        "reporting_medians_seconds": {
+          "yaml": 0.004510999991907738,
+          "excel": 0.061493849992984906,
+          "plot_update": 0.06420269999944139,
+          "cached_report": 0.004568899996229447
+        }
+      },
+      "bicubic": {
+        "native_provider": "bicubic",
+        "samples_seconds": {
+          "inherited": [
+            0.029426399996737018,
+            0.039412699989043176,
+            0.04219940002076328,
+            0.02216469999984838,
+            0.021425099985208362,
+            0.022684499999741092,
+            0.02551010000752285,
+            0.024085900018690154,
+            0.028195899998536333,
+            0.03615420000278391,
+            0.026180799992289394,
+            0.04336500001954846,
+            0.03552050000871532,
+            0.023744799982523546,
+            0.024489800009177998,
+            0.0279887999931816,
+            0.024816099990857765,
+            0.024402399983955547,
+            0.022356300003593788,
+            0.022002600017003715,
+            0.022622400021646172,
+            0.032743999996455386,
+            0.021521199989365414,
+            0.0232642000191845,
+            0.03273169999010861,
+            0.0236270000168588,
+            0.024915299989515916,
+            0.02229379999334924,
+            0.024585200008004904,
+            0.03910090000135824,
+            0.03682569999364205,
+            0.02887639999971725,
+            0.02347879999433644,
+            0.02869410000857897,
+            0.05018770002061501,
+            0.024930599989602342,
+            0.024412099999608472,
+            0.030239900021115318,
+            0.042352599994046614,
+            0.024993800005177036,
+            0.023454600013792515,
+            0.034184099989943206,
+            0.03696709999348968,
+            0.02442269999301061,
+            0.022507299989229068,
+            0.03621520000160672,
+            0.033861400006571785,
+            0.024707900010980666,
+            0.03201920000719838,
+            0.029930399992736056,
+            0.024434199993265793,
+            0.04504190001171082,
+            0.032539700012421235,
+            0.02710590002243407,
+            0.028856899996753782,
+            0.03939249998074956,
+            0.03579739999258891,
+            0.02672799999709241,
+            0.023096299992175773,
+            0.03934210000443272
+          ],
+          "current": [
+            0.02464499999769032,
+            0.03030789998592809,
+            0.03045590000692755,
+            0.026884800026891753,
+            0.030338199983816594,
+            0.029035499988822266,
+            0.040621799998916686,
+            0.03305349999573082,
+            0.025204699981259182,
+            0.03202049998799339,
+            0.030926300009014085,
+            0.034219699999084696,
+            0.02553260000422597,
+            0.02334690000861883,
+            0.022636799985775724,
+            0.024474200006807223,
+            0.03762089999509044,
+            0.03476539999246597,
+            0.03056870002183132,
+            0.023927000002004206,
+            0.025645599991548806,
+            0.02603019998059608,
+            0.028936299990164116,
+            0.028426799981389195,
+            0.029356200015172362,
+            0.02338140000938438,
+            0.034022899984847754,
+            0.030748899996979162,
+            0.03473909999593161,
+            0.02641570000560023,
+            0.028556699980981648,
+            0.0344457000028342,
+            0.022590499982470647,
+            0.026884199993219227,
+            0.04543649998959154,
+            0.02688099999795668,
+            0.024239499995019287,
+            0.024643899989314377,
+            0.043619400006718934,
+            0.023666099994443357,
+            0.03021890000673011,
+            0.03150680000544526,
+            0.04231039999285713,
+            0.0332940999942366,
+            0.020950900012394413,
+            0.02440180000849068,
+            0.04512989998329431,
+            0.040418999997200444,
+            0.02316340000834316,
+            0.02229500000248663,
+            0.023048099974403158,
+            0.047031199996126816,
+            0.02548949999618344,
+            0.025911200005793944,
+            0.02772519999416545,
+            0.03598960000090301,
+            0.02308469999115914,
+            0.02751200000056997,
+            0.02261520002502948,
+            0.02493529999628663
+          ]
+        },
+        "medians_seconds": {
+          "inherited": 0.02691695000976324,
+          "current": 0.028075999987777323
+        },
+        "ratio": 1.0430602270165703,
+        "timing_flag": false,
+        "numerical_equal": true,
+        "reporting_samples_seconds": {
+          "yaml": [
+            0.010687300004065037,
+            0.007083100004820153,
+            0.006326800008537248,
+            0.010593199986033142
+          ],
+          "excel": [
+            0.06848009998793714,
+            0.06009359998279251,
+            0.04404609999619424,
+            0.0566357999923639
+          ],
+          "plot_update": [
+            0.1466923999832943,
+            0.0513890000001993,
+            0.05004820000613108,
+            0.055202399991685525
+          ],
+          "cached_report": [
+            0.005064900004072115,
+            0.012729100009892136,
+            0.0033404999994672835,
+            0.004803099989658222
+          ]
+        },
+        "first_report_seconds": 0.30891789999441244,
+        "first_report_solver_tracked_calls": 8,
+        "reporting_note": "Elapsed report time includes I/O-only design synchronization; solver counters exclude those direct refreshes",
+        "reporting_medians_seconds": {
+          "yaml": 0.008838149995426647,
+          "excel": 0.058364699987578206,
+          "plot_update": 0.053295699995942414,
+          "cached_report": 0.004933999996865168
+        }
+      }
+    }
+  },
+  "initial_timing": {
+    "scope": "Phase 6 whole-cycle normalized-input exception boundary and reporting",
+    "baseline": "Inherited PySolverView OptimizationProblem.fitness_normalized_input",
+    "control": "One problem/model instance per provider; alternate route order; full cycle evaluated",
+    "packages": {
+      "jaxprop": "0.6.0",
+      "pysolver-view": "0.8.2",
+      "pounce-solver": "0.13.0",
+      "jax": "0.6.2",
+      "jaxlib": "0.6.2",
+      "numpy": "2.4.4",
+      "scipy": "1.17.1"
+    },
+    "source_sha256": {
+      "thermopt\\__init__.py": "2a603ce2fb392ed489f715ed923fc649a69092e17e9ef7f37dbb16ef80667bea",
+      "thermopt\\components\\__init__.py": "b5088579d3730612e6626f2f032fd01031f3da8994e9c996d54086948aae22d9",
+      "thermopt\\components\\basic_components.py": "0a94c5e84d9bae9574bf96777deb78c079fae7cadda8f13d5a7f77ecd95874cd",
+      "thermopt\\components\\turbomachinery_nondimensional.py": "84eecd2c9d494c4999c637ddf4d3a9ea19e4192908415ec5dc74d029864d41f1",
+      "thermopt\\config.py": "55b5986eeb6737628d98d670c3e88da8607a8f1e75ced245df4d3249c9ab572d",
+      "thermopt\\cycles\\__init__.py": "2bd515b3842e2c808a718cd2ba14c7a7d5e9f3e3da0053df8d59fd549d78c5b8",
+      "thermopt\\cycles\\cycle_power_recuperated.py": "bb6aa80e0a39a5f1d58384064c2972ce7eae1c6d4610f431ab2e8a5dc5d2b637",
+      "thermopt\\cycles\\cycle_power_simple.py": "754b532685cb5bf82c201f350ac1c4004b286ed50a878d1d3c43c48ebbbd929b",
+      "thermopt\\cycles\\cycle_power_split_compression.py": "c90aa65e441485dc39453e1acb25cf3147762c066d0af906f81a8e7233db9763",
+      "thermopt\\cycles\\cycle_PTES_recuperated.py": "bd08b861113bdc4685f656eebd44e6509ce6b05a203d0ba61203e672ed993905",
+      "thermopt\\cycles\\cycle_PTES_recuperated_turbo.py": "071749daa48c064a986d25ee0394ab3e73e7dabcd27dfe4ed4cf8f707e8baff0",
+      "thermopt\\cycles\\cycle_refrigeration_recuperated.py": "19c1e2597f38694e466890aea6cb9070cab78799aec1cd4cba92bf2638a839c3",
+      "thermopt\\cycles\\cycle_refrigeration_simple.py": "3b02a2a74ebd619f41f369b64a29ecd7d69ee4039ed14daf1f0f5c8d9ee2aad6",
+      "thermopt\\cycles\\setup.py": "5c717cb684d9113f9ee0dadffcddd6bdc39e8983d1315b7b0e735df7b9a1f9c5",
+      "thermopt\\cycles\\state_requirements.py": "4abcf4e5ef6710943aa63ad291aa6feba0ec8f74a1b0592d0f7433fc3f07931c",
+      "thermopt\\math.py": "868092b76a17fc59a03f880594153441553bb1ab739a5d21557c4c367f940fce",
+      "thermopt\\optimize_cycle.py": "2fd5e92ce84f73411078453efeea6ec7425ffc32d555460c6fc3d35832d0a8db",
+      "thermopt\\utilities\\__init__.py": "ccb09fa26f51cd23dda26e32e43a31beed719532fdee0eed8c19c337b771f585",
+      "thermopt\\utilities\\file_utils.py": "af81c1c0289c5c1d04a93cc27994365a34e8f3720a1a3e0b69b3e9a4cb1ca54e",
+      "thermopt\\utilities\\fluid_utils.py": "8a6ce4e3469361a2029452f1d8eadca41b1fa5c9b82c29a8b282b4c4936f9cde",
+      "thermopt\\utilities\\graphics.py": "58fc2a59248dd7b233d40ca71d2def860c5bc1ced9542ba40483ce6ce42ccf2f",
+      "thermopt\\utilities\\numerics.py": "40f814ce155d5c6b5c0c63b815a9783662cad490abe0ba1feab6b091d8ec3157",
+      "thermopt\\utilities\\optimization_utils.py": "ee3a14f9587accb29a1a001f9777201d09372e57c82db174bf58b84378ab6eaf"
+    },
+    "harness_sha256": "a7fa1a748cf371eeb7c442d9f23b5fcfca0dacfcbf12451fc1daf02c26fbe502",
+    "samples": 12,
+    "reporting_samples": 4,
+    "grid": 32,
+    "warm_ratio_limit": 1.1,
+    "environment": {
+      "python": "3.13.2",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "cpu_affinity": {
+        "requested_mask": null,
+        "actual_mask": "0xfffffff",
+        "system_mask": "0xfffffff"
+      },
+      "hash_seed": null
+    },
+    "workloads": {
+      "coolprop": {
+        "native_provider": "coolprop",
+        "samples_seconds": {
+          "inherited": [
+            0.04111710001598112,
+            0.03620570001658052,
+            0.046811899985186756,
+            0.03918979997979477,
+            0.03532840000116266,
+            0.03386019999743439,
+            0.05875419999938458,
+            0.0630249000096228,
+            0.036704500002088025,
+            0.05526179997832514,
+            0.04838049999671057,
+            0.045210499985842034
+          ],
+          "current": [
+            0.06669569999212399,
+            0.040091400005621836,
+            0.06360180000774562,
+            0.06276790000265464,
+            0.03506959998048842,
+            0.03885529999388382,
+            0.03846660000272095,
+            0.04030239998246543,
+            0.03860450000502169,
+            0.06280980000155978,
+            0.034771200007526204,
+            0.035870599996997043
+          ]
+        },
+        "medians_seconds": {
+          "inherited": 0.04316380000091158,
+          "current": 0.03947334999975283
+        },
+        "ratio": 0.9145012718740979,
+        "timing_flag": false,
+        "numerical_equal": true,
+        "reporting_samples_seconds": {
+          "yaml": [
+            0.006589800002984703,
+            0.003523399995174259,
+            0.006615599995711818,
+            0.006839199981186539
+          ],
+          "excel": [
+            0.36063090001698583,
+            0.05489299999317154,
+            0.05700060000526719,
+            0.054172800009837374
+          ],
+          "plot_update": [
+            0.050044699979480356,
+            0.05170010001165792,
+            0.047279999998863786,
+            0.06614919999265112
+          ],
+          "cached_report": [
+            0.002850299992132932,
+            0.005522699997527525,
+            0.0027900999994017184,
+            0.0027074000099673867
+          ]
+        },
+        "first_report_seconds": 0.38415729999542236,
+        "first_report_solver_tracked_calls": 8,
+        "reporting_note": "Elapsed report time includes I/O-only design synchronization; solver counters exclude those direct refreshes",
+        "reporting_medians_seconds": {
+          "yaml": 0.0066026999993482605,
+          "excel": 0.055946799999219365,
+          "plot_update": 0.05087239999556914,
+          "cached_report": 0.002820199995767325
+        }
+      },
+      "bicubic": {
+        "native_provider": "bicubic",
+        "samples_seconds": {
+          "inherited": [
+            0.02279000001726672,
+            0.0242405999742914,
+            0.024965900025563315,
+            0.023614400008227676,
+            0.04882159997941926,
+            0.02176800000597723,
+            0.025435299990931526,
+            0.023484599980292842,
+            0.04121070000110194,
+            0.02613559999736026,
+            0.021500400005606934,
+            0.02330239998991601
+          ],
+          "current": [
+            0.03423650001059286,
+            0.03141629998572171,
+            0.023474099987652153,
+            0.02354130000458099,
+            0.04150680001475848,
+            0.024611900007585064,
+            0.024167399998987094,
+            0.030306700005894527,
+            0.04326130001572892,
+            0.028658299997914582,
+            0.024469399999361485,
+            0.02218709999579005
+          ]
+        },
+        "medians_seconds": {
+          "inherited": 0.023927499991259538,
+          "current": 0.026635100002749823
+        },
+        "ratio": 1.1131585001558602,
+        "timing_flag": true,
+        "numerical_equal": true,
+        "reporting_samples_seconds": {
+          "yaml": [
+            0.0034525999799370766,
+            0.007050700020045042,
+            0.0048504000005777925,
+            0.005866899999091402
+          ],
+          "excel": [
+            0.09240439999848604,
+            0.05462480001733638,
+            0.04910370000288822,
+            0.06350079999538139
+          ],
+          "plot_update": [
+            0.14297369998530485,
+            0.05171130000962876,
+            0.07195469998987392,
+            0.049504199996590614
+          ],
+          "cached_report": [
+            0.004978799988748506,
+            0.011281099985353649,
+            0.0030447000171989202,
+            0.004622699983883649
+          ]
+        },
+        "first_report_seconds": 0.26827440000488423,
+        "first_report_solver_tracked_calls": 8,
+        "reporting_note": "Elapsed report time includes I/O-only design synchronization; solver counters exclude those direct refreshes",
+        "reporting_medians_seconds": {
+          "yaml": 0.005358649999834597,
+          "excel": 0.059062800006358884,
+          "plot_update": 0.06183299999975134,
+          "cached_report": 0.004800749986316077
+        }
+      }
+    }
+  },
+  "timing_assessment": "Initial 12-sample bicubic flag retained; both native routes meet 1.10 in the 60-sample balanced follow-up",
+  "limits": {
+    "scope": "CPU/x64, eager cycle, native CoolProp and bicubic; local bounded output profile",
+    "not_claimed": [
+      "Different JaxProp release comparison",
+      "Historical absolute timing gate closure",
+      "Full scientific sweeps",
+      "Interactive watcher/movie checks"
+    ]
+  }
+}
