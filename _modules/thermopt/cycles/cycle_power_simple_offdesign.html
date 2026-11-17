@@ -1,0 +1,670 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>thermopt.cycles.cycle_power_simple_offdesign &#8212; thermopt v0.2.5 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=33f7ea79"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/thermopt/cycles/cycle_power_simple_offdesign';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">thermopt v0.2.5 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/cycle_optimization.html">Cycle optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/developer_guide.html">Developer guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/bibliography.html">Bibliography</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../source/api/thermopt.html">API Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/thermopt.optimize_cycle.html">thermopt.optimize_cycle module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/thermopt.config.html">thermopt.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/api/thermopt.math.html">thermopt.math module</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/api/thermopt.cycles.html">thermopt.cycles package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.cycles.cycle_PTES_recuperated.html">thermopt.cycles.cycle_PTES_recuperated module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.cycles.cycle_PTES_recuperated_turbo.html">thermopt.cycles.cycle_PTES_recuperated_turbo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.cycles.cycle_power_recuperated.html">thermopt.cycles.cycle_power_recuperated module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.cycles.cycle_power_simple.html">thermopt.cycles.cycle_power_simple module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.cycles.cycle_power_split_compression.html">thermopt.cycles.cycle_power_split_compression module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.cycles.cycle_refrigeration_recuperated.html">thermopt.cycles.cycle_refrigeration_recuperated module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.cycles.cycle_refrigeration_simple.html">thermopt.cycles.cycle_refrigeration_simple module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/api/thermopt.components.html">thermopt.components package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.components.basic_components.html">thermopt.components.basic_components module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.components.heat_exchanger_plates.html">thermopt.components.heat_exchanger_plates module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.components.turbomachinery_nondimensional.html">thermopt.components.turbomachinery_nondimensional module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/api/thermopt.utilities.html">thermopt.utilities package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.utilities.file_utils.html">thermopt.utilities.file_utils module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.utilities.graphics.html">thermopt.utilities.graphics module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.utilities.numerics.html">thermopt.utilities.numerics module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/api/thermopt.utilities.optimization_utils.html">thermopt.utilities.optimization_utils module</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for thermopt.cycles.cycle_power_simple_offdesign</h1><div class="highlight"><pre>
+<span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Simple power cycle with partial evaporation, off design on fixed hardware.</span>
+
+<span class="sd">States: 1 pump inlet, 2 pump outlet, 3 turbine inlet, 4 turbine outlet.</span>
+
+<span class="sd">Variables: p1, p3, h3, T_h,out, plus the controls ``pump_speed`` and</span>
+<span class="sd">``heat_sink_mass_flow`` (optimized if in ``design_variables``, fixed if in</span>
+<span class="sd">``fixed_parameters.controls``).</span>
+
+<span class="sd">Equalities (set to 0 in the YAML): ``heater.UA_residual``,</span>
+<span class="sd">``cooler.UA_residual``, ``compressor.head_residual``,</span>
+<span class="sd">``heater.energy_balance_residual``.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">jaxprop</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jxp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pysolver_view</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">psv</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">utilities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..components</span><span class="w"> </span><span class="kn">import</span> <span class="n">compression_process</span><span class="p">,</span> <span class="n">compute_component_energy_flows</span><span class="p">,</span> <span class="n">expansion_process</span><span class="p">,</span> <span class="n">heat_exchanger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..components</span><span class="w"> </span><span class="kn">import</span> <span class="n">components_offdesign</span> <span class="k">as</span> <span class="n">cod</span>
+
+<span class="n">COLORS_MATLAB</span> <span class="o">=</span> <span class="n">utilities</span><span class="o">.</span><span class="n">COLORS_MATLAB</span>
+<span class="n">CONTROL_NAMES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;heat_sink_mass_flow&quot;</span><span class="p">,</span> <span class="s2">&quot;pump_speed&quot;</span><span class="p">)</span>
+<span class="n">Z_NAMES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;compressor_inlet_pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;expander_inlet_pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;expander_inlet_enthalpy&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;heat_source_exit_temperature&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="saturation_quality">
+<a class="viewcode-back" href="../../../source/api/thermopt.cycles.cycle_power_simple_offdesign.html#thermopt.cycles.cycle_power_simple_offdesign.saturation_quality">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">saturation_quality</span><span class="p">(</span><span class="n">fluid</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Quality from saturation enthalpies (also outside the dome); returns (Q, h_l, h_v).&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">p</span> <span class="o">&gt;=</span> <span class="n">_f</span><span class="p">(</span><span class="n">fluid</span><span class="o">.</span><span class="n">critical_point</span><span class="o">.</span><span class="n">p</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">psv</span><span class="o">.</span><span class="n">DomainError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pressure </span><span class="si">{</span><span class="n">p</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2"> Pa at or above critical&quot;</span><span class="p">)</span>
+    <span class="n">hl</span> <span class="o">=</span> <span class="n">_f</span><span class="p">(</span><span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">PQ_INPUTS</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+    <span class="n">hv</span> <span class="o">=</span> <span class="n">_f</span><span class="p">(</span><span class="n">fluid</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">PQ_INPUTS</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="n">hl</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">hv</span> <span class="o">-</span> <span class="n">hl</span><span class="p">),</span> <span class="n">hl</span><span class="p">,</span> <span class="n">hv</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_exchanger</span><span class="p">(</span><span class="n">fluid_hot</span><span class="p">,</span> <span class="n">h_in_hot</span><span class="p">,</span> <span class="n">h_out_hot</span><span class="p">,</span> <span class="n">p_in_hot</span><span class="p">,</span> <span class="n">p_out_hot</span><span class="p">,</span>
+               <span class="n">fluid_cold</span><span class="p">,</span> <span class="n">h_in_cold</span><span class="p">,</span> <span class="n">h_out_cold</span><span class="p">,</span> <span class="n">p_in_cold</span><span class="p">,</span> <span class="n">p_out_cold</span><span class="p">,</span> <span class="n">spec</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">heat_exchanger</span><span class="p">(</span><span class="n">fluid_hot</span><span class="p">,</span> <span class="n">h_in_hot</span><span class="p">,</span> <span class="n">h_out_hot</span><span class="p">,</span> <span class="n">p_in_hot</span><span class="p">,</span> <span class="n">p_out_hot</span><span class="p">,</span>
+                          <span class="n">fluid_cold</span><span class="p">,</span> <span class="n">h_in_cold</span><span class="p">,</span> <span class="n">h_out_cold</span><span class="p">,</span> <span class="n">p_in_cold</span><span class="p">,</span> <span class="n">p_out_cold</span><span class="p">,</span>
+                          <span class="n">counter_current</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_steps</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">spec</span><span class="p">[</span><span class="s2">&quot;num_elements&quot;</span><span class="p">]),</span>
+                          <span class="n">include_saturation_nodes</span><span class="o">=</span><span class="nb">bool</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;include_saturation_nodes&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)))</span>
+
+
+<div class="viewcode-block" id="evaluate_cycle">
+<a class="viewcode-back" href="../../../source/api/thermopt.cycles.cycle_power_simple_offdesign.html#thermopt.cycles.cycle_power_simple_offdesign.evaluate_cycle">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">evaluate_cycle</span><span class="p">(</span><span class="n">variables</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">constraints</span><span class="p">,</span> <span class="n">objective_function</span><span class="p">):</span>
+    <span class="n">variables</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+    <span class="n">parameters</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+
+    <span class="c1"># Controls: optimized or fixed</span>
+    <span class="n">controls</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;controls&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{})</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">CONTROL_NAMES</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
+            <span class="n">controls</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="n">variables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">Z_NAMES</span><span class="p">]</span>
+    <span class="n">utilities</span><span class="o">.</span><span class="n">check_for_unused_keys</span><span class="p">(</span><span class="n">variables</span><span class="p">,</span> <span class="s2">&quot;variables&quot;</span><span class="p">,</span> <span class="n">raise_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">output</span> <span class="o">=</span> <span class="n">evaluate_offdesign</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">controls</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">utilities</span><span class="o">.</span><span class="n">evaluate_objective_function</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">objective_function</span><span class="p">)</span>
+    <span class="n">c_eq</span><span class="p">,</span> <span class="n">c_ineq</span><span class="p">,</span> <span class="n">constraint_report</span> <span class="o">=</span> <span class="n">utilities</span><span class="o">.</span><span class="n">evaluate_constraints</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
+
+    <span class="c1"># Set colors for plotting</span>
+    <span class="n">orange</span><span class="p">,</span> <span class="n">blue</span><span class="p">,</span> <span class="n">red</span> <span class="o">=</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">COLORS_MATLAB</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+    <span class="n">comps</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="s2">&quot;components&quot;</span><span class="p">]</span>
+    <span class="n">comps</span><span class="p">[</span><span class="s2">&quot;heater&quot;</span><span class="p">][</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;plot_params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">red</span><span class="p">,</span> <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">}</span>
+    <span class="n">comps</span><span class="p">[</span><span class="s2">&quot;heater&quot;</span><span class="p">][</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;plot_params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">orange</span><span class="p">,</span> <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">}</span>
+    <span class="n">comps</span><span class="p">[</span><span class="s2">&quot;cooler&quot;</span><span class="p">][</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;plot_params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">orange</span><span class="p">,</span> <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">}</span>
+    <span class="n">comps</span><span class="p">[</span><span class="s2">&quot;cooler&quot;</span><span class="p">][</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;plot_params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">blue</span><span class="p">,</span> <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">}</span>
+    <span class="n">comps</span><span class="p">[</span><span class="s2">&quot;expander&quot;</span><span class="p">][</span><span class="s2">&quot;plot_params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">orange</span><span class="p">,</span> <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">}</span>
+    <span class="n">comps</span><span class="p">[</span><span class="s2">&quot;compressor&quot;</span><span class="p">][</span><span class="s2">&quot;plot_params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">orange</span><span class="p">,</span> <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">}</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="o">**</span><span class="n">output</span><span class="p">,</span>
+        <span class="s2">&quot;objective_function&quot;</span><span class="p">:</span> <span class="n">f</span><span class="p">,</span>
+        <span class="s2">&quot;equality_constraints&quot;</span><span class="p">:</span> <span class="n">c_eq</span><span class="p">,</span>
+        <span class="s2">&quot;inequality_constraints&quot;</span><span class="p">:</span> <span class="n">c_ineq</span><span class="p">,</span>
+        <span class="s2">&quot;constraints_report&quot;</span><span class="p">:</span> <span class="n">constraint_report</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="evaluate_offdesign">
+<a class="viewcode-back" href="../../../source/api/thermopt.cycles.cycle_power_simple_offdesign.html#thermopt.cycles.cycle_power_simple_offdesign.evaluate_offdesign">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">evaluate_offdesign</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">controls</span><span class="p">,</span> <span class="n">sizing</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluate the cycle at z = [p1, p3, h3, T_h,out] on ``parameters[&quot;hardware&quot;]``.</span>
+
+<span class="sd">    With ``sizing={&quot;working_fluid_mass_flow&quot;: m}`` (design point), z is</span>
+<span class="sd">    [p1, p3, h3], the hardware is sized and returned under ``&quot;hardware&quot;``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">wf</span> <span class="o">=</span> <span class="n">jxp</span><span class="o">.</span><span class="n">Fluid</span><span class="p">(</span><span class="o">**</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;working_fluid&quot;</span><span class="p">],</span> <span class="n">identifier</span><span class="o">=</span><span class="s2">&quot;working_fluid&quot;</span><span class="p">)</span>
+    <span class="n">src</span> <span class="o">=</span> <span class="n">jxp</span><span class="o">.</span><span class="n">Fluid</span><span class="p">(</span><span class="o">**</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heating_fluid&quot;</span><span class="p">],</span> <span class="n">identifier</span><span class="o">=</span><span class="s2">&quot;heating_fluid&quot;</span><span class="p">)</span>
+    <span class="n">snk</span> <span class="o">=</span> <span class="n">jxp</span><span class="o">.</span><span class="n">Fluid</span><span class="p">(</span><span class="o">**</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;cooling_fluid&quot;</span><span class="p">],</span> <span class="n">identifier</span><span class="o">=</span><span class="s2">&quot;cooling_fluid&quot;</span><span class="p">)</span>
+    <span class="n">source</span><span class="p">,</span> <span class="n">sink</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_source&quot;</span><span class="p">],</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_sink&quot;</span><span class="p">]</span>
+    <span class="n">heater_par</span><span class="p">,</span> <span class="n">cooler_par</span><span class="p">,</span> <span class="n">noz</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heater&quot;</span><span class="p">],</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;cooler&quot;</span><span class="p">],</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;nozzle&quot;</span><span class="p">]</span>
+    <span class="n">design</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;design&quot;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">hw</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hardware&quot;</span><span class="p">)</span>
+
+    <span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">z</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">sizing</span><span class="p">:</span>
+        <span class="n">p1</span><span class="p">,</span> <span class="n">p3</span><span class="p">,</span> <span class="n">h3</span> <span class="o">=</span> <span class="n">z</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">p1</span><span class="p">,</span> <span class="n">p3</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">T_h_out</span> <span class="o">=</span> <span class="n">z</span>
+    <span class="n">m_h</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">source</span><span class="p">[</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">])</span>
+    <span class="n">m_k</span><span class="p">,</span> <span class="n">omega</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">controls</span><span class="p">[</span><span class="s2">&quot;heat_sink_mass_flow&quot;</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">controls</span><span class="p">[</span><span class="s2">&quot;pump_speed&quot;</span><span class="p">])</span>
+
+    <span class="c1"># Pressures</span>
+    <span class="n">p2</span> <span class="o">=</span> <span class="n">p3</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">heater_par</span><span class="p">[</span><span class="s2">&quot;pressure_drop_cold_side&quot;</span><span class="p">]))</span>
+    <span class="n">p4</span> <span class="o">=</span> <span class="n">p1</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">cooler_par</span><span class="p">[</span><span class="s2">&quot;pressure_drop_hot_side&quot;</span><span class="p">]))</span>
+
+    <span class="c1"># State 1 (fixed subcooling) and state 3</span>
+    <span class="n">T_sat1</span> <span class="o">=</span> <span class="n">_f</span><span class="p">(</span><span class="n">wf</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">PQ_INPUTS</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">st1</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">T_sat1</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;closure&quot;</span><span class="p">][</span><span class="s2">&quot;subcooling&quot;</span><span class="p">]))</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">_f</span><span class="p">(</span><span class="n">st1</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+    <span class="n">st3</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">HmassP_INPUTS</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">p3</span><span class="p">,</span> <span class="n">generalize_quality</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">q3</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">saturation_quality</span><span class="p">(</span><span class="n">wf</span><span class="p">,</span> <span class="n">p3</span><span class="p">,</span> <span class="n">h3</span><span class="p">)</span>
+
+    <span class="c1"># Turbine map: velocity ratio relative to design x = nu / nu_d = c0_d / c0, with the</span>
+    <span class="c1"># spouting velocity c0 = sqrt(2 dh_s) (the blade speed is fixed, so it cancels)</span>
+    <span class="n">st4s</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">PSmass_INPUTS</span><span class="p">,</span> <span class="n">p4</span><span class="p">,</span> <span class="n">st3</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">supersaturation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">generalize_quality</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">dh_s</span> <span class="o">=</span> <span class="n">h3</span> <span class="o">-</span> <span class="n">_f</span><span class="p">(</span><span class="n">st4s</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dh_s</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">psv</span><span class="o">.</span><span class="n">DomainError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nonpositive turbine isentropic enthalpy drop (</span><span class="si">{</span><span class="n">dh_s</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2"> J/kg)&quot;</span><span class="p">)</span>
+    <span class="n">c0</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">dh_s</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sizing</span><span class="p">:</span>
+        <span class="n">c0_d</span> <span class="o">=</span> <span class="n">c0</span>
+        <span class="n">eta_td</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">design</span><span class="p">[</span><span class="s2">&quot;turbine_efficiency&quot;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">c0_d</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">hw</span><span class="p">[</span><span class="s2">&quot;turbine&quot;</span><span class="p">][</span><span class="s2">&quot;design_spouting_velocity&quot;</span><span class="p">])</span>
+        <span class="n">eta_td</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">hw</span><span class="p">[</span><span class="s2">&quot;turbine&quot;</span><span class="p">][</span><span class="s2">&quot;design_efficiency&quot;</span><span class="p">])</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">c0_d</span> <span class="o">/</span> <span class="n">c0</span>
+    <span class="n">eta_t</span> <span class="o">=</span> <span class="n">cod</span><span class="o">.</span><span class="n">turbine_efficiency</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">eta_td</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mf">2.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">psv</span><span class="o">.</span><span class="n">DomainError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Turbine velocity ratio relative to design </span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2"> outside (0, 2)&quot;</span><span class="p">)</span>
+    <span class="n">expander</span> <span class="o">=</span> <span class="n">expansion_process</span><span class="p">(</span><span class="n">wf</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">p3</span><span class="p">,</span> <span class="n">p4</span><span class="p">,</span> <span class="n">eta_t</span><span class="p">,</span> <span class="s2">&quot;isentropic&quot;</span><span class="p">)</span>
+    <span class="n">h4</span> <span class="o">=</span> <span class="n">_f</span><span class="p">(</span><span class="n">expander</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+
+    <span class="c1"># Equivalent nozzle</span>
+    <span class="n">flow</span> <span class="o">=</span> <span class="n">cod</span><span class="o">.</span><span class="n">nozzle_flow</span><span class="p">(</span><span class="n">wf</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">_f</span><span class="p">(</span><span class="n">st3</span><span class="o">.</span><span class="n">s</span><span class="p">),</span> <span class="n">p4</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">noz</span><span class="p">[</span><span class="s2">&quot;search_minimum_temperature&quot;</span><span class="p">]))</span>
+    <span class="n">Cd</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">noz</span><span class="p">[</span><span class="s2">&quot;discharge_coefficient&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">sizing</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">flow</span><span class="p">[</span><span class="s2">&quot;choked&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">psv</span><span class="o">.</span><span class="n">DomainError</span><span class="p">(</span><span class="s2">&quot;Design point is not choked; the throat area cannot be sized&quot;</span><span class="p">)</span>
+        <span class="n">m_wf</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">sizing</span><span class="p">[</span><span class="s2">&quot;working_fluid_mass_flow&quot;</span><span class="p">])</span>
+        <span class="n">A_t</span> <span class="o">=</span> <span class="n">m_wf</span> <span class="o">/</span> <span class="p">(</span><span class="n">Cd</span> <span class="o">*</span> <span class="n">flow</span><span class="p">[</span><span class="s2">&quot;G&quot;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">A_t</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">hw</span><span class="p">[</span><span class="s2">&quot;nozzle&quot;</span><span class="p">][</span><span class="s2">&quot;throat_area&quot;</span><span class="p">])</span>
+        <span class="n">m_wf</span> <span class="o">=</span> <span class="n">Cd</span> <span class="o">*</span> <span class="n">A_t</span> <span class="o">*</span> <span class="n">flow</span><span class="p">[</span><span class="s2">&quot;G&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Pump map</span>
+    <span class="n">rho1</span> <span class="o">=</span> <span class="n">_f</span><span class="p">(</span><span class="n">st1</span><span class="o">.</span><span class="n">d</span><span class="p">)</span>
+    <span class="n">Qv</span> <span class="o">=</span> <span class="n">m_wf</span> <span class="o">/</span> <span class="n">rho1</span>
+    <span class="n">H_req</span> <span class="o">=</span> <span class="p">(</span><span class="n">_f</span><span class="p">(</span><span class="n">wf</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">PSmass_INPUTS</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">st1</span><span class="o">.</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="n">h1</span><span class="p">)</span> <span class="o">/</span> <span class="n">cod</span><span class="o">.</span><span class="n">GRAVITY</span>
+    <span class="k">if</span> <span class="n">sizing</span><span class="p">:</span>
+        <span class="n">pd</span> <span class="o">=</span> <span class="n">design</span><span class="p">[</span><span class="s2">&quot;pump&quot;</span><span class="p">]</span>
+        <span class="n">pump</span> <span class="o">=</span> <span class="n">cod</span><span class="o">.</span><span class="n">PumpMap</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">pd</span><span class="p">[</span><span class="s2">&quot;design_speed&quot;</span><span class="p">]),</span> <span class="n">Qv</span><span class="p">,</span> <span class="n">H_req</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">pd</span><span class="p">[</span><span class="s2">&quot;shutoff_head_ratio&quot;</span><span class="p">]),</span>
+                           <span class="nb">float</span><span class="p">(</span><span class="n">pd</span><span class="p">[</span><span class="s2">&quot;design_efficiency&quot;</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pump</span> <span class="o">=</span> <span class="n">cod</span><span class="o">.</span><span class="n">PumpMap</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">hw</span><span class="p">[</span><span class="s2">&quot;pump&quot;</span><span class="p">])</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">pump</span><span class="o">.</span><span class="n">flow_coefficient</span><span class="p">(</span><span class="n">Qv</span><span class="p">,</span> <span class="n">omega</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;</span> <span class="n">phi</span> <span class="o">&lt;</span> <span class="n">pump</span><span class="o">.</span><span class="n">phi0</span> <span class="ow">or</span> <span class="n">omega</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">psv</span><span class="o">.</span><span class="n">DomainError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pump flow coefficient </span><span class="si">{</span><span class="n">phi</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2"> outside (0, phi0)&quot;</span><span class="p">)</span>
+    <span class="n">eta_p</span> <span class="o">=</span> <span class="n">pump</span><span class="o">.</span><span class="n">efficiency</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+    <span class="n">compressor</span> <span class="o">=</span> <span class="n">compression_process</span><span class="p">(</span><span class="n">wf</span><span class="p">,</span> <span class="n">h1</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">eta_p</span><span class="p">,</span> <span class="s2">&quot;isentropic&quot;</span><span class="p">)</span>
+    <span class="n">h2</span> <span class="o">=</span> <span class="n">_f</span><span class="p">(</span><span class="n">compressor</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+
+    <span class="c1"># Evaporator</span>
+    <span class="n">p_h_in</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">source</span><span class="p">[</span><span class="s2">&quot;inlet_pressure&quot;</span><span class="p">])</span>
+    <span class="n">p_h_out</span> <span class="o">=</span> <span class="n">p_h_in</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">heater_par</span><span class="p">[</span><span class="s2">&quot;pressure_drop_hot_side&quot;</span><span class="p">]))</span>
+    <span class="n">h_h_in</span> <span class="o">=</span> <span class="n">_f</span><span class="p">(</span><span class="n">src</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p_h_in</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">source</span><span class="p">[</span><span class="s2">&quot;inlet_temperature&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+    <span class="n">Q_e</span> <span class="o">=</span> <span class="n">m_wf</span> <span class="o">*</span> <span class="p">(</span><span class="n">h3</span> <span class="o">-</span> <span class="n">h2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">Q_e</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">psv</span><span class="o">.</span><span class="n">DomainError</span><span class="p">(</span><span class="s2">&quot;Nonpositive evaporator duty&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sizing</span><span class="p">:</span>
+        <span class="n">h_h_out</span> <span class="o">=</span> <span class="n">h_h_in</span> <span class="o">-</span> <span class="n">Q_e</span> <span class="o">/</span> <span class="n">m_h</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">h_h_out</span> <span class="o">=</span> <span class="n">_f</span><span class="p">(</span><span class="n">src</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p_h_out</span><span class="p">,</span> <span class="n">T_h_out</span><span class="p">)</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+    <span class="n">heater</span> <span class="o">=</span> <span class="n">_exchanger</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">h_h_in</span><span class="p">,</span> <span class="n">h_h_out</span><span class="p">,</span> <span class="n">p_h_in</span><span class="p">,</span> <span class="n">p_h_out</span><span class="p">,</span> <span class="n">wf</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">p3</span><span class="p">,</span> <span class="n">heater_par</span><span class="p">)</span>
+    <span class="n">ua_e</span> <span class="o">=</span> <span class="n">cod</span><span class="o">.</span><span class="n">integrate_ua</span><span class="p">(</span><span class="n">heater</span><span class="p">,</span> <span class="n">m_wf</span><span class="p">)</span>
+
+    <span class="c1"># Sink pump and condenser</span>
+    <span class="n">p_k_in</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">sink</span><span class="p">[</span><span class="s2">&quot;inlet_pressure&quot;</span><span class="p">])</span>
+    <span class="n">p_k_out</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">sink</span><span class="p">[</span><span class="s2">&quot;exit_pressure&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">cooler_par</span><span class="p">[</span><span class="s2">&quot;pressure_drop_cold_side&quot;</span><span class="p">]))</span>
+    <span class="n">h_k_in</span> <span class="o">=</span> <span class="n">_f</span><span class="p">(</span><span class="n">snk</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">p_k_in</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">sink</span><span class="p">[</span><span class="s2">&quot;inlet_temperature&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+    <span class="n">heat_sink_pump</span> <span class="o">=</span> <span class="n">compression_process</span><span class="p">(</span><span class="n">snk</span><span class="p">,</span> <span class="n">h_k_in</span><span class="p">,</span> <span class="n">p_k_in</span><span class="p">,</span> <span class="n">p_k_out</span><span class="p">,</span>
+                                         <span class="nb">float</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_sink_pump&quot;</span><span class="p">][</span><span class="s2">&quot;efficiency&quot;</span><span class="p">]),</span> <span class="s2">&quot;isentropic&quot;</span><span class="p">)</span>
+    <span class="n">p_k_c_in</span><span class="p">,</span> <span class="n">h_k_c_in</span> <span class="o">=</span> <span class="n">_f</span><span class="p">(</span><span class="n">heat_sink_pump</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span><span class="p">),</span> <span class="n">_f</span><span class="p">(</span><span class="n">heat_sink_pump</span><span class="p">[</span><span class="s2">&quot;state_out&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+    <span class="n">p_k_c_out</span> <span class="o">=</span> <span class="n">p_k_c_in</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">cooler_par</span><span class="p">[</span><span class="s2">&quot;pressure_drop_cold_side&quot;</span><span class="p">]))</span>
+    <span class="n">Q_c</span> <span class="o">=</span> <span class="n">m_wf</span> <span class="o">*</span> <span class="p">(</span><span class="n">h4</span> <span class="o">-</span> <span class="n">h1</span><span class="p">)</span>
+    <span class="n">cooler</span> <span class="o">=</span> <span class="n">_exchanger</span><span class="p">(</span><span class="n">wf</span><span class="p">,</span> <span class="n">h4</span><span class="p">,</span> <span class="n">h1</span><span class="p">,</span> <span class="n">p4</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">snk</span><span class="p">,</span> <span class="n">h_k_c_in</span><span class="p">,</span> <span class="n">h_k_c_in</span> <span class="o">+</span> <span class="n">Q_c</span> <span class="o">/</span> <span class="n">m_k</span><span class="p">,</span> <span class="n">p_k_c_in</span><span class="p">,</span> <span class="n">p_k_c_out</span><span class="p">,</span>
+                        <span class="n">cooler_par</span><span class="p">)</span>
+    <span class="n">ua_c</span> <span class="o">=</span> <span class="n">cod</span><span class="o">.</span><span class="n">integrate_ua</span><span class="p">(</span><span class="n">cooler</span><span class="p">,</span> <span class="n">m_k</span><span class="p">)</span>
+
+    <span class="c1"># Source pump downstream of the evaporator</span>
+    <span class="n">heat_source_pump</span> <span class="o">=</span> <span class="n">compression_process</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">h_h_out</span><span class="p">,</span> <span class="n">p_h_out</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">source</span><span class="p">[</span><span class="s2">&quot;exit_pressure&quot;</span><span class="p">]),</span>
+                                           <span class="nb">float</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_source_pump&quot;</span><span class="p">][</span><span class="s2">&quot;efficiency&quot;</span><span class="p">]),</span> <span class="s2">&quot;isentropic&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Hardware (sized at design) and available conductance</span>
+    <span class="k">if</span> <span class="n">sizing</span><span class="p">:</span>
+        <span class="n">hw</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;evaporator&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;UA_design&quot;</span><span class="p">:</span> <span class="n">ua_e</span><span class="p">[</span><span class="s2">&quot;UA&quot;</span><span class="p">],</span> <span class="s2">&quot;ua_exponent&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">design</span><span class="p">[</span><span class="s2">&quot;evaporator&quot;</span><span class="p">][</span><span class="s2">&quot;ua_exponent&quot;</span><span class="p">]),</span>
+                           <span class="s2">&quot;source_mass_flow_design&quot;</span><span class="p">:</span> <span class="n">m_h</span><span class="p">},</span>
+            <span class="s2">&quot;condenser&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;UA_design&quot;</span><span class="p">:</span> <span class="n">ua_c</span><span class="p">[</span><span class="s2">&quot;UA&quot;</span><span class="p">],</span> <span class="s2">&quot;ua_exponent&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">design</span><span class="p">[</span><span class="s2">&quot;condenser&quot;</span><span class="p">][</span><span class="s2">&quot;ua_exponent&quot;</span><span class="p">]),</span>
+                          <span class="s2">&quot;sink_mass_flow_design&quot;</span><span class="p">:</span> <span class="n">m_k</span><span class="p">},</span>
+            <span class="s2">&quot;nozzle&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;throat_area&quot;</span><span class="p">:</span> <span class="n">A_t</span><span class="p">},</span>
+            <span class="s2">&quot;turbine&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;design_spouting_velocity&quot;</span><span class="p">:</span> <span class="n">c0_d</span><span class="p">,</span> <span class="s2">&quot;design_efficiency&quot;</span><span class="p">:</span> <span class="n">eta_td</span><span class="p">},</span>
+            <span class="s2">&quot;pump&quot;</span><span class="p">:</span> <span class="n">pump</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
+        <span class="p">}</span>
+    <span class="n">UA_e_av</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">hw</span><span class="p">[</span><span class="s2">&quot;evaporator&quot;</span><span class="p">][</span><span class="s2">&quot;UA_design&quot;</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span>
+        <span class="n">m_h</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">hw</span><span class="p">[</span><span class="s2">&quot;evaporator&quot;</span><span class="p">][</span><span class="s2">&quot;source_mass_flow_design&quot;</span><span class="p">]))</span> <span class="o">**</span> <span class="nb">float</span><span class="p">(</span><span class="n">hw</span><span class="p">[</span><span class="s2">&quot;evaporator&quot;</span><span class="p">][</span><span class="s2">&quot;ua_exponent&quot;</span><span class="p">])</span>
+    <span class="n">UA_c_av</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">hw</span><span class="p">[</span><span class="s2">&quot;condenser&quot;</span><span class="p">][</span><span class="s2">&quot;UA_design&quot;</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span>
+        <span class="n">m_k</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">hw</span><span class="p">[</span><span class="s2">&quot;condenser&quot;</span><span class="p">][</span><span class="s2">&quot;sink_mass_flow_design&quot;</span><span class="p">]))</span> <span class="o">**</span> <span class="nb">float</span><span class="p">(</span><span class="n">hw</span><span class="p">[</span><span class="s2">&quot;condenser&quot;</span><span class="p">][</span><span class="s2">&quot;ua_exponent&quot;</span><span class="p">])</span>
+    <span class="n">Q_ref</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">hw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reference_duty&quot;</span><span class="p">,</span> <span class="n">Q_e</span><span class="p">))</span>
+    <span class="n">dh_ref</span> <span class="o">=</span> <span class="n">Q_ref</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">hw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reference_working_fluid_mass_flow&quot;</span><span class="p">,</span> <span class="n">m_wf</span><span class="p">))</span>
+
+    <span class="c1"># Components</span>
+    <span class="n">heater</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">],</span> <span class="n">heater</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_h</span><span class="p">,</span> <span class="n">m_wf</span>
+    <span class="n">cooler</span><span class="p">[</span><span class="s2">&quot;hot_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">],</span> <span class="n">cooler</span><span class="p">[</span><span class="s2">&quot;cold_side&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_wf</span><span class="p">,</span> <span class="n">m_k</span>
+    <span class="n">expander</span><span class="p">[</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compressor</span><span class="p">[</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_wf</span>
+    <span class="n">heat_source_pump</span><span class="p">[</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">],</span> <span class="n">heat_sink_pump</span><span class="p">[</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_h</span><span class="p">,</span> <span class="n">m_k</span>
+    <span class="n">heater</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+        <span class="s2">&quot;UA_required&quot;</span><span class="p">:</span> <span class="n">ua_e</span><span class="p">[</span><span class="s2">&quot;UA&quot;</span><span class="p">],</span> <span class="s2">&quot;UA_available&quot;</span><span class="p">:</span> <span class="n">UA_e_av</span><span class="p">,</span>
+        <span class="s2">&quot;UA_residual&quot;</span><span class="p">:</span> <span class="n">ua_e</span><span class="p">[</span><span class="s2">&quot;ln_UA&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">UA_e_av</span><span class="p">),</span>
+        <span class="s2">&quot;energy_balance_residual&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">m_h</span> <span class="o">*</span> <span class="p">(</span><span class="n">h_h_in</span> <span class="o">-</span> <span class="n">h_h_out</span><span class="p">)</span> <span class="o">-</span> <span class="n">Q_e</span><span class="p">)</span> <span class="o">/</span> <span class="n">Q_ref</span><span class="p">,</span>
+        <span class="s2">&quot;specific_duty_ratio&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">h3</span> <span class="o">-</span> <span class="n">h2</span><span class="p">)</span> <span class="o">/</span> <span class="n">dh_ref</span><span class="p">,</span>
+        <span class="s2">&quot;min_approach&quot;</span><span class="p">:</span> <span class="n">ua_e</span><span class="p">[</span><span class="s2">&quot;min_approach&quot;</span><span class="p">],</span>
+    <span class="p">})</span>
+    <span class="n">cooler</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+        <span class="s2">&quot;UA_required&quot;</span><span class="p">:</span> <span class="n">ua_c</span><span class="p">[</span><span class="s2">&quot;UA&quot;</span><span class="p">],</span> <span class="s2">&quot;UA_available&quot;</span><span class="p">:</span> <span class="n">UA_c_av</span><span class="p">,</span>
+        <span class="s2">&quot;UA_residual&quot;</span><span class="p">:</span> <span class="n">ua_c</span><span class="p">[</span><span class="s2">&quot;ln_UA&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">UA_c_av</span><span class="p">),</span>
+        <span class="s2">&quot;min_approach&quot;</span><span class="p">:</span> <span class="n">ua_c</span><span class="p">[</span><span class="s2">&quot;min_approach&quot;</span><span class="p">],</span>
+    <span class="p">})</span>
+    <span class="n">expander</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+        <span class="s2">&quot;inlet_quality&quot;</span><span class="p">:</span> <span class="n">q3</span><span class="p">,</span> <span class="s2">&quot;velocity_ratio_relative&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s2">&quot;isentropic_efficiency&quot;</span><span class="p">:</span> <span class="n">eta_t</span><span class="p">,</span>
+        <span class="s2">&quot;nozzle&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;throat_area&quot;</span><span class="p">:</span> <span class="n">A_t</span><span class="p">,</span> <span class="s2">&quot;mass_flux&quot;</span><span class="p">:</span> <span class="n">flow</span><span class="p">[</span><span class="s2">&quot;G&quot;</span><span class="p">],</span> <span class="s2">&quot;choked&quot;</span><span class="p">:</span> <span class="n">flow</span><span class="p">[</span><span class="s2">&quot;choked&quot;</span><span class="p">],</span>
+                   <span class="s2">&quot;critical_pressure&quot;</span><span class="p">:</span> <span class="n">flow</span><span class="p">[</span><span class="s2">&quot;critical_pressure&quot;</span><span class="p">]},</span>
+    <span class="p">})</span>
+    <span class="n">compressor</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+        <span class="s2">&quot;speed&quot;</span><span class="p">:</span> <span class="n">omega</span><span class="p">,</span> <span class="s2">&quot;flow_coefficient&quot;</span><span class="p">:</span> <span class="n">phi</span><span class="p">,</span> <span class="s2">&quot;isentropic_efficiency&quot;</span><span class="p">:</span> <span class="n">eta_p</span><span class="p">,</span>
+        <span class="s2">&quot;head_residual&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">H_req</span> <span class="o">-</span> <span class="n">pump</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">Qv</span><span class="p">,</span> <span class="n">omega</span><span class="p">))</span> <span class="o">/</span> <span class="n">pump</span><span class="o">.</span><span class="n">H_d</span><span class="p">,</span>
+    <span class="p">})</span>
+    <span class="n">components</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;expander&quot;</span><span class="p">:</span> <span class="n">expander</span><span class="p">,</span> <span class="s2">&quot;compressor&quot;</span><span class="p">:</span> <span class="n">compressor</span><span class="p">,</span> <span class="s2">&quot;heater&quot;</span><span class="p">:</span> <span class="n">heater</span><span class="p">,</span> <span class="s2">&quot;cooler&quot;</span><span class="p">:</span> <span class="n">cooler</span><span class="p">,</span>
+        <span class="s2">&quot;heat_source_pump&quot;</span><span class="p">:</span> <span class="n">heat_source_pump</span><span class="p">,</span> <span class="s2">&quot;heat_sink_pump&quot;</span><span class="p">:</span> <span class="n">heat_sink_pump</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">compute_component_energy_flows</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
+
+    <span class="c1"># Energy analysis</span>
+    <span class="n">W_t</span><span class="p">,</span> <span class="n">W_p</span> <span class="o">=</span> <span class="n">expander</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">],</span> <span class="n">compressor</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span>
+    <span class="n">W_aux</span> <span class="o">=</span> <span class="n">heat_source_pump</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">heat_sink_pump</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">]</span>
+    <span class="n">W_net</span> <span class="o">=</span> <span class="n">W_t</span> <span class="o">-</span> <span class="n">W_p</span> <span class="o">-</span> <span class="n">W_aux</span>
+    <span class="n">h_min</span> <span class="o">=</span> <span class="n">_f</span><span class="p">(</span><span class="n">src</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">jxp</span><span class="o">.</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">source</span><span class="p">[</span><span class="s2">&quot;exit_pressure&quot;</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">source</span><span class="p">[</span><span class="s2">&quot;minimum_temperature&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+    <span class="n">Q_max</span> <span class="o">=</span> <span class="n">m_h</span> <span class="o">*</span> <span class="p">(</span><span class="n">h_h_in</span> <span class="o">-</span> <span class="n">h_min</span><span class="p">)</span>
+    <span class="n">energy_analysis</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;heater_heat_flow&quot;</span><span class="p">:</span> <span class="n">Q_e</span><span class="p">,</span>
+        <span class="s2">&quot;heater_heat_flow_max&quot;</span><span class="p">:</span> <span class="n">Q_max</span><span class="p">,</span>
+        <span class="s2">&quot;cooler_heat_flow&quot;</span><span class="p">:</span> <span class="n">Q_c</span><span class="p">,</span>
+        <span class="s2">&quot;expander_power&quot;</span><span class="p">:</span> <span class="n">W_t</span><span class="p">,</span>
+        <span class="s2">&quot;compressor_power&quot;</span><span class="p">:</span> <span class="n">W_p</span><span class="p">,</span>
+        <span class="s2">&quot;heat_source_pump_power&quot;</span><span class="p">:</span> <span class="n">heat_source_pump</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;heat_sink_pump_power&quot;</span><span class="p">:</span> <span class="n">heat_sink_pump</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;net_cycle_power&quot;</span><span class="p">:</span> <span class="n">W_net</span><span class="p">,</span>
+        <span class="s2">&quot;net_system_power&quot;</span><span class="p">:</span> <span class="n">W_net</span><span class="p">,</span>
+        <span class="s2">&quot;net_system_power_normalized&quot;</span><span class="p">:</span> <span class="n">W_net</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">hw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reference_net_power&quot;</span><span class="p">,</span> <span class="n">W_net</span><span class="p">)),</span>
+        <span class="s2">&quot;mass_flow_heating_fluid&quot;</span><span class="p">:</span> <span class="n">m_h</span><span class="p">,</span>
+        <span class="s2">&quot;mass_flow_working_fluid&quot;</span><span class="p">:</span> <span class="n">m_wf</span><span class="p">,</span>
+        <span class="s2">&quot;mass_flow_cooling_fluid&quot;</span><span class="p">:</span> <span class="n">m_k</span><span class="p">,</span>
+        <span class="s2">&quot;cycle_efficiency&quot;</span><span class="p">:</span> <span class="n">W_net</span> <span class="o">/</span> <span class="n">Q_e</span><span class="p">,</span>
+        <span class="s2">&quot;system_efficiency&quot;</span><span class="p">:</span> <span class="n">W_net</span> <span class="o">/</span> <span class="n">Q_max</span><span class="p">,</span>
+        <span class="s2">&quot;backwork_ratio&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">W_p</span> <span class="o">+</span> <span class="n">W_aux</span><span class="p">)</span> <span class="o">/</span> <span class="n">W_t</span><span class="p">,</span>
+        <span class="s2">&quot;energy_balance&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">Q_e</span> <span class="o">+</span> <span class="n">W_p</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">W_t</span> <span class="o">+</span> <span class="n">Q_c</span><span class="p">),</span>
+    <span class="p">}</span>
+
+    <span class="n">output</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;components&quot;</span><span class="p">:</span> <span class="n">components</span><span class="p">,</span>
+        <span class="s2">&quot;energy_analysis&quot;</span><span class="p">:</span> <span class="n">energy_analysis</span><span class="p">,</span>
+        <span class="s2">&quot;working_fluid&quot;</span><span class="p">:</span> <span class="n">wf</span><span class="p">,</span>
+        <span class="s2">&quot;heating_fluid&quot;</span><span class="p">:</span> <span class="n">src</span><span class="p">,</span>
+        <span class="s2">&quot;cooling_fluid&quot;</span><span class="p">:</span> <span class="n">snk</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">sizing</span><span class="p">:</span>
+        <span class="n">hw</span><span class="p">[</span><span class="s2">&quot;reference_duty&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q_e</span>
+        <span class="n">hw</span><span class="p">[</span><span class="s2">&quot;reference_working_fluid_mass_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_wf</span>
+        <span class="n">hw</span><span class="p">[</span><span class="s2">&quot;reference_net_power&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">W_net</span>
+        <span class="n">output</span><span class="p">[</span><span class="s2">&quot;hardware&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hw</span>
+    <span class="k">return</span> <span class="n">output</span></div>
+
+
+
+<div class="viewcode-block" id="size_hardware">
+<a class="viewcode-back" href="../../../source/api/thermopt.cycles.cycle_power_simple_offdesign.html#thermopt.cycles.cycle_power_simple_offdesign.size_hardware">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">size_hardware</span><span class="p">(</span><span class="n">design_output</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Size the hardware from a converged ``simple`` design output.</span>
+
+<span class="sd">    Flows are scaled to ``heat_source.mass_flow``. Returns</span>
+<span class="sd">    (hardware, design_output, design_controls).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">comps</span> <span class="o">=</span> <span class="n">design_output</span><span class="p">[</span><span class="s2">&quot;components&quot;</span><span class="p">]</span>
+    <span class="n">ea</span> <span class="o">=</span> <span class="n">design_output</span><span class="p">[</span><span class="s2">&quot;energy_analysis&quot;</span><span class="p">]</span>
+    <span class="n">lam</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;heat_source&quot;</span><span class="p">][</span><span class="s2">&quot;mass_flow&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">ea</span><span class="p">[</span><span class="s2">&quot;mass_flow_heating_fluid&quot;</span><span class="p">])</span>
+    <span class="n">controls</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;heat_sink_mass_flow&quot;</span><span class="p">:</span> <span class="n">lam</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">ea</span><span class="p">[</span><span class="s2">&quot;mass_flow_cooling_fluid&quot;</span><span class="p">]),</span>
+                <span class="s2">&quot;pump_speed&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;design&quot;</span><span class="p">][</span><span class="s2">&quot;pump&quot;</span><span class="p">][</span><span class="s2">&quot;design_speed&quot;</span><span class="p">])}</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="n">_f</span><span class="p">(</span><span class="n">comps</span><span class="p">[</span><span class="s2">&quot;compressor&quot;</span><span class="p">][</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span><span class="p">),</span> <span class="n">_f</span><span class="p">(</span><span class="n">comps</span><span class="p">[</span><span class="s2">&quot;expander&quot;</span><span class="p">][</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">p</span><span class="p">),</span>
+         <span class="n">_f</span><span class="p">(</span><span class="n">comps</span><span class="p">[</span><span class="s2">&quot;expander&quot;</span><span class="p">][</span><span class="s2">&quot;state_in&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">h</span><span class="p">)]</span>
+    <span class="n">sizing</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;working_fluid_mass_flow&quot;</span><span class="p">:</span> <span class="n">lam</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">ea</span><span class="p">[</span><span class="s2">&quot;mass_flow_working_fluid&quot;</span><span class="p">])}</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">evaluate_offdesign</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">&quot;hardware&quot;</span><span class="p">},</span> <span class="n">z</span><span class="p">,</span> <span class="n">controls</span><span class="p">,</span> <span class="n">sizing</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output</span><span class="p">[</span><span class="s2">&quot;hardware&quot;</span><span class="p">],</span> <span class="n">output</span><span class="p">,</span> <span class="n">controls</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Roberto Agromayor
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Sustainable Thermal Power DTU.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
