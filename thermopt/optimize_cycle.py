@@ -35,6 +35,7 @@ LABEL_MAPPING = {
 CYCLE_TOPOLOGIES = {
     "simple": cycles.cycle_power_simple.evaluate_cycle,
     "power_simple": cycles.cycle_power_simple.evaluate_cycle,
+    "power_simple_offdesign": cycles.cycle_power_simple_offdesign.evaluate_cycle,
     "recuperated": cycles.cycle_power_recuperated.evaluate_cycle,
     "power_recuperated": cycles.cycle_power_recuperated.evaluate_cycle,
     "power_split_compression": cycles.cycle_power_split_compression.evaluate_cycle,

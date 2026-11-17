@@ -1,0 +1,174 @@
+# Off-design template (fixed hardware). run_offdesign.py fills in hardware,
+# boundary conditions, controls and design_variables.
+
+solver_options:
+  library: pysolver
+  method: slsqp
+  derivative_method: 2-point
+  derivative_abs_step: 1e-6
+  tolerance: 1e-8
+  max_iterations: 100
+  problem_scale: 1.0
+  print_convergence: False
+  plot_convergence: False
+  update_on: iteration
+  extra_options:
+    first_step_fraction: 0.2
+    max_step_fraction: 1.0
+    step_growth_factor: 1.5
+    domain_backtracking: True
+    feasibility_tol: 1e-6
+    optimality_tol: 1e-4
+  callbacks:
+    save_plot: False
+    save_config: False
+    save_report: False
+    plot_cycle: False
+    plot_convergence: False
+
+
+problem_formulation:
+
+  cycle_topology: power_simple_offdesign
+
+  plot_settings:
+    pinch_point_diagram: False
+    fluid:
+      plot_saturation_line: True
+      plot_critical_point: True
+    diagrams:
+      - x_prop: s
+        y_prop: T
+
+  fixed_parameters:
+
+    working_fluid:
+      name: Novec649
+      backend: HEOS
+      exceptions: True
+
+    heating_fluid:
+      name: water
+      backend: HEOS
+      exceptions: True
+
+    cooling_fluid:
+      name: water
+      backend: HEOS
+      exceptions: True
+
+    special_points:
+      ambient_pressure: 3.0e5
+      ambient_temperature: 293.15
+      maximum_temperature: 413.15
+
+    heat_source:                     # boundary conditions at the evaporator inlet
+      mass_flow: 10.0
+      inlet_temperature: 413.15
+      inlet_pressure: 10.0e5
+      exit_pressure: 10.0e5          # after the source pump
+      minimum_temperature: 298.15    # available-heat denominator only
+
+    heat_sink:                       # boundary conditions at the sink-pump inlet
+      inlet_temperature: 293.15
+      inlet_pressure: 3.0e5
+      exit_pressure: 3.0e5
+
+    heater:                          # evaporator
+      pressure_drop_hot_side: 0.03
+      pressure_drop_cold_side: 0.01
+      num_elements: 31               # nodes, as in the design cycles
+      include_saturation_nodes: True
+
+    cooler:                          # condenser
+      pressure_drop_hot_side: 0.01
+      pressure_drop_cold_side: 0.10
+      num_elements: 31
+      include_saturation_nodes: True
+
+    heat_source_pump:
+      efficiency: 0.80
+
+    heat_sink_pump:
+      efficiency: 0.80
+
+    nozzle:                          # equivalent turbine nozzle (choked or unchoked)
+      discharge_coefficient: 1.0
+      search_minimum_temperature: 200.0
+
+    closure:
+      subcooling: 1.0                # K at the pump inlet
+
+    design:                          # used only for sizing
+      turbine_efficiency: 0.90
+      pump:
+        design_speed: 314.159        # rad/s (3000 rpm)
+        shutoff_head_ratio: 1.20
+        design_efficiency: 0.85
+      evaporator:
+        ua_exponent: 0.8
+      condenser:
+        ua_exponent: 0.8
+
+    hardware: null                   # filled in by run_offdesign.py
+
+  # Filled in by run_offdesign.py. Fixed controls go to fixed_parameters.controls instead.
+  design_variables:
+    compressor_inlet_pressure: null
+    expander_inlet_pressure: null
+    expander_inlet_enthalpy: null
+    heat_source_exit_temperature: null
+    heat_sink_mass_flow: null
+    pump_speed: null
+
+  constraints:
+    # Hardware equalities (already scaled)
+    - variable: $components.heater.UA_residual
+      type: "="
+      value: 0.0
+      normalize: False
+    - variable: $components.cooler.UA_residual
+      type: "="
+      value: 0.0
+      normalize: False
+    - variable: $components.compressor.head_residual
+      type: "="
+      value: 0.0
+      normalize: False
+    - variable: $components.heater.energy_balance_residual
+      type: "="
+      value: 0.0
+      normalize: False
+    # Operating limits
+    - variable: $components.expander.inlet_quality
+      type: ">"
+      value: 0.02
+      normalize: False
+    - variable: $components.expander.inlet_quality
+      type: "<"
+      value: 0.98
+      normalize: False
+    - variable: $components.compressor.flow_coefficient
+      type: ">"
+      value: 0.30
+      normalize: True
+    - variable: $components.compressor.flow_coefficient
+      type: "<"
+      value: 1.80
+      normalize: True
+    - variable: $components.expander.velocity_ratio_relative
+      type: ">"
+      value: 0.3
+      normalize: True
+    - variable: $components.expander.velocity_ratio_relative
+      type: "<"
+      value: 1.7
+      normalize: True
+    - variable: $components.heater.specific_duty_ratio
+      type: ">"
+      value: 0.05
+      normalize: False
+
+  objective_function:
+    variable: $energy_analysis.net_system_power_normalized
+    type: maximize
