@@ -31,7 +31,11 @@ rankine_wet2dry/
     render_report_pdf.py
     paths.py
     web_assets/                     CSS and JavaScript sources
-  output/                           Generated/local files; ignored by Git
+  results/                          New runs; ignored by Git
+    studies/                        Native cases, tables, figures and JSON
+    logs/                           Run and report-generation logs
+    report/                         Intermediate multipage HTML build
+  output/                           Preserved historical/local files; ignored by Git
     results/                        Native cases, tables, figures and JSON
     logs/                           Run and report-generation logs
     report/                         Intermediate multipage HTML build
@@ -44,8 +48,9 @@ rankine_wet2dry/
 ```
 
 The case definition, code, initializers, v2 reference tables, README and final
-reports can be committed. Everything
-under `output/` is excluded by this directory's `.gitignore`.
+reports can be committed. Generated `results/` and historical `output/` contents
+are excluded by Git. Existing reports below describe the historical dataset;
+their figures, paths, inputs and recorded hashes have not been rewritten.
 
 ## Sharing the report
 
@@ -96,10 +101,29 @@ To rebuild only the reports from existing tables and figures:
 ```
 
 Paths are resolved relative to the study, so individual scripts also work from
-another current directory. Console output from the full pipeline is saved under
-`output/logs/`. Completed cases are reused only when their physical configuration,
-native backend and source-code signature match. Use a separate results directory
-for changed physical assumptions.
+another current directory. New console output goes under `results/logs/`, and
+new study data under `results/studies/`. Set `THERMOPT_RESULTS_DIR` to an absolute
+path to choose another output root. Historical inputs under
+`output/reference_inputs/` and `output/archive/` remain readable in place.
+
+Each problem owns its native JaxProp models. Setup and report operations create
+or receive explicit models; no process-global fluid cache is used. Cache
+signatures cover the configuration, template, study/core code, numerical
+dependencies, source reference state, solver/retry policies and the bytes of any
+saved initializer. Current design values are excluded intentionally to permit
+warm-start continuation. Changed provenance rejects an old result without
+rewriting it. Recoverable property failures are recorded as failed attempts;
+typed JaxProp configuration errors and unsupported requests still propagate.
+
+Both complete manager YAML snapshots and formulation-only problem exports are
+read at the file boundary. Fluid options still use the strict native 0.6 schema.
+These Rankine phase-change cases retain the source EOS. Use a separate results
+directory after migration; do not relabel old cache records as current solves.
+
+The migration verifies these boundaries and bounded real-model evaluations.
+The complete 484-point scientific sweep, supplied-input comparison and report/PDF
+pipeline have not been rerun. See the [execution inventory](../EXECUTION_INVENTORY.json)
+and [Phase 7/8 assessment](../../benchmark/PHASE7_8.md) for the exact scope.
 
 The full pipeline runs optimization, targeted recovery, validation, Matplotlib
 figure generation, the equal-efficiency comparison, comparison against the saved

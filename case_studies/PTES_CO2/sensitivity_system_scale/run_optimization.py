@@ -8,12 +8,15 @@ import thermopt as th
 th.set_plot_options(fontsize=16)
 
 CONFIG_FILE = "../case_PTES_CO2_turbo.yaml"
-OUT_DIR_BASE = "results"
+OUT_DIR_BASE = os.getenv("THERMOPT_RESULTS_DIR", "results")
 DATA_FILE = "simulation_data.pkl"
 DATA_FULLPATH = os.path.join(OUT_DIR_BASE, DATA_FILE)
 
 # Charging power sweep from 1 MW to 1 GW (log scale)
 power_values = np.logspace(6, 9, num=21)  # in watts (1e6 to 1e9)
+if os.getenv("THERMOPT_SMOKE", "0") == "1":
+    # One complete physical solve for interface/output verification.
+    power_values = power_values[:1]
 
 # --------------------------------------------------------------------- #
 # Step 1: Run simulations if data file does not exist

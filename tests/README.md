@@ -155,4 +155,12 @@ Inspect diffs and version changes before accepting new references. The cycle rec
 
 The machinery API is functional: `solve_compressor(fluid, inlet, p_out, mass_flow, design)` and `solve_turbine(...)` use the supplied jaxprop model, reuse the inlet and solve only in outlet enthalpy. The shrouded stress-key defect is fixed and now has passing interpolation/endpoint checks. Separate performance functions support JAX arithmetic; `test_turbomachinery_functional.py` checks JIT, derivatives, batching, equal-temperature limits and invalid inputs. The SciPy root solvers remain host operations. See the [functional API and JAX boundary](../development/turbomachinery/README.md).
 
-This is a regression foundation, not a claim of 100% line coverage or thermodynamic certification. It does not test full optimization for every topology, REFPROP/IPOPT/SNOPT, interactive live-update loops, video encoders/animations, every plotting aesthetic, every correlation option or optional JAX backends. The first backend changes should run the complete suite; dedicated cross-backend and derivative checks can then be added without changing these HEOS references.
+This is a regression foundation, not a claim of 100% line coverage or thermodynamic
+certification. Native model/component/cycle coverage and the latest totals are
+recorded in the [migration plan](../z_JAXPROP_060_IMPLEMENTATION_PLAN.md) and
+[Phase 7/8 assessment](../benchmark/PHASE7_8.md). REFPROP is exercised when installed
+and skips explicitly otherwise. Live file reload, EOF, reports and serialization
+are tested headlessly; short GIF/MP4 files are actually encoded and decoded to
+check frame order/rate. Visible GUI behavior, long movies, full research grids,
+every plotting aesthetic/correlation option and external IPOPT/SNOPT installations
+remain outside this profile. Original HEOS physical references are retained.

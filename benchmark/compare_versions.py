@@ -99,7 +99,7 @@ def main():
     current_package = reference if args.identical_source_control else current
     sys.path.insert(0, str(ROOT))
     sys.path.insert(0, str(ROOT / "tests"))
-    from development.bicubic.validate_060 import configuration, plain
+    from benchmark.native_backends import configuration, plain
     from regression_support import load_case, snapshot
 
     def output_signature(value):
@@ -149,7 +149,7 @@ def main():
         source_sha256=identities,
         harness_sha256=sha(__file__),
         protocol_sha256=sha(ROOT / "benchmark/run.py"),
-        workload_sha256=sha(ROOT / "development/bicubic/validate_060.py"),
+        workload_sha256=sha(ROOT / "benchmark/native_backends.py"),
         helper_sha256=sha(ROOT / "tests/regression_support.py"),
         lock_sha256=sha(ROOT / "poetry.lock"),
         environment=dict(

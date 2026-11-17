@@ -120,7 +120,7 @@ def cycles(table):
             rows = selected.loc[selected.family.eq(family)].sort_values("pump_efficiency", ascending=False)
             for index, row in enumerate(rows.itertuples(index=False)):
                 directory = run.RESULTS / row.case
-                config = run.th.read_configuration_file(directory / "optimal_solution.yaml")
+                config = run.read_formulation(directory / "optimal_solution.yaml")
                 problem = run.ComparisonProblem(config, out_dir=str(directory))
                 problem.fitness(problem.x0)
                 # Reconstruct the assumed expansion trajectory for the T-s curve.

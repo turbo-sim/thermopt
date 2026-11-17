@@ -72,7 +72,7 @@ def test_default_affinity_observation_does_not_change_scheduling():
 
 @pytest.mark.parametrize("method", ["coolprop", "bicubic"])
 def test_benchmark_can_select_source_or_table_from_bicubic_case_yaml(method, tmp_path):
-    from development.bicubic.validate_060 import configuration
+    from benchmark.native_backends import configuration
 
     config, source = configuration("sco2_recompression", method, 100, False, tmp_path)
     assert source.is_file() and source.parent.parent.name == "case_studies"
@@ -82,3 +82,35 @@ def test_benchmark_can_select_source_or_table_from_bicubic_case_yaml(method, tmp
         assert "table_options" not in fluid
     else:
         assert fluid["table_options"]["N_h"] == fluid["table_options"]["N_p"] == 100
+
+
+def test_linux_affinity_keeps_the_inherited_worker_mask(monkeypatch):
+    # Exercise the Linux branch on any host, including explicit inherited masks.
+    from types import SimpleNamespace
+    mask = {2, 5}
+    def change(pid, requested):
+        mask.clear()
+        mask.update(requested)
+    monkeypatch.setattr(protocol, "os", SimpleNamespace(name="posix", sched_getaffinity=lambda pid: set(mask), sched_setaffinity=change))
+    assert protocol.cpu_affinity()["actual_mask"] == hex((1 << 2) | (1 << 5))
+    assert protocol.cpu_affinity(1 << 5)["actual_mask"] == hex(1 << 5)
+    with pytest.raises(ValueError, match="nonzero subset"):
+        protocol.cpu_affinity(1 << 1)
+
+
+def test_unsupported_affinity_is_explicit_and_observation_is_optional(monkeypatch):
+    from types import SimpleNamespace
+    monkeypatch.setattr(protocol, "os", SimpleNamespace(name="posix"))
+    assert protocol.cpu_affinity() == dict(requested_mask=None, actual_mask=None, system_mask=None)
+    with pytest.raises(RuntimeError, match="unavailable"):
+        protocol.cpu_affinity(1)
+
+
+def test_benchmark_does_not_normalize_retired_constructor_options(tmp_path):
+    from benchmark import native_backends
+    assert native_backends.ROOT == Path(__file__).resolve().parents[1]
+    assert protocol.WORKLOAD == native_backends.ROOT / "benchmark/native_backends.py"
+    # The maintained stream recipes must already use the current JaxProp schema.
+    config, _ = native_backends.configuration("sco2_recuperated", "coolprop", 100, False, tmp_path)
+    assert all("exceptions" not in value for key, value in config["problem_formulation"]["fixed_parameters"].items()
+               if key.endswith("fluid"))

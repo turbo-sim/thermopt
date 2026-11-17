@@ -1,7 +1,7 @@
 """Run complete eager cycle benchmarks and compare matching phase checkpoints.
 
-Workload implementations currently live in development/bicubic/validate_060.py;
-the migration plan consolidates them here without duplicating their equations.
+Native workload implementations live in benchmark/native_backends.py.
+Historical development entry points delegate here without duplicating equations.
 No ordinary pytest assertion depends on these shared-machine wall times.
 """
 
@@ -18,7 +18,7 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-WORKLOAD = ROOT / "development/bicubic/validate_060.py"
+WORKLOAD = ROOT / "benchmark/native_backends.py"
 
 
 def read(path):
@@ -234,7 +234,7 @@ def main():
         },
     )
     manifest = dict(
-        schema=2,
+        schema=3,
         started_at_utc=datetime.now(timezone.utc).isoformat(),
         profile=args.profile,
         grid_size=grid,

@@ -1,9 +1,13 @@
 import pandas as pd
 import numpy as np
+import os
 
 # File path
-file_path = "results_baseline/optimal_solution.xlsx"
-output_txt = "component_states_summary.txt"
+input_dir = os.getenv("THERMOPT_INPUT_DIR", "results/baseline")
+output_dir = os.getenv("THERMOPT_RESULTS_DIR", "results/tables")
+os.makedirs(output_dir, exist_ok=True)
+file_path = os.path.join(input_dir, "optimal_solution.xlsx")
+output_txt = os.path.join(output_dir, "component_states_summary.txt")
 
 # Read Excel file: use row 0 as header, skip row 1 (units)
 df = pd.read_excel(file_path, sheet_name="cycle_states", header=0, skiprows=[1])
@@ -66,7 +70,7 @@ for _, row in discharge_df.iterrows():
 lines.append("-" * len(header))
 
 # Save and print
-with open(output_txt, "w") as f:
+with open(output_txt, "w", encoding="utf-8") as f:
     for line in lines:
         print(line)
         f.write(line + "\n")

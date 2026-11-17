@@ -118,7 +118,7 @@ def main():
         assert np.isclose(recovery*conversion, power_ratio, rtol=1e-8)
         paragraph(f"At the 20 °C limit, recovered source heat per kilogram changes by {100*(recovery-1):+.2f}% and net power per unit absorbed heat changes by {100*(conversion-1):+.2f}%. Their ratios multiply to give the {100*(power_ratio-1):+.2f}% net-power gain at equal geothermal flow. This comparison uses a 90%-efficient partial turbine and the 88.6%-efficient standard turbine.")
         if f == "novec":
-            effectiveness = [run.th.read_configuration_file(
+            effectiveness = [run.read_formulation(
                 run.RESULTS / "sensitivity_novec" / row["case"] / "optimal_solution.yaml"
             )["design_variables"]["recuperator_effectiveness"]["value"]
                 for row in (b70, equal_partial, b20, p20)]

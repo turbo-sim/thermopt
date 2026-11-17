@@ -360,10 +360,14 @@ ordinary user workflow works with the same native objects as the timed cases.
 
 ## Phase 7 — Audit and migrate maintained case studies
 
-**Status: in progress.** The small demonstration profile is verified; full
-scientific studies and input-dependent tools retain separate open checks.
-Tests of frozen inputs do not prove every standalone script works; maintain an
-explicit execution inventory.
+**Status: complete locally on 17 November 2026 for the declared bounded migration
+profile.** All 47 case-study Python programs have an execution classification;
+five additional real launcher runs converge, including three 200x200 table cases
+and the first PTES system-scale point. The two Rankine study families now own
+native models and invalidate stale caches at setup. Full research grids and
+external-input figure/report pipelines are explicitly unexecuted, rather than
+included in an "all examples pass" claim. See the
+[Phase 7/8 assessment](benchmark/PHASE7_8.md) and [evidence](benchmark/PHASE7_8.json).
 
 - [x] Consolidate the former examples directory into `case_studies/`, retaining
   its layout, tracked research inputs and local results. Update active runner,
@@ -375,9 +379,11 @@ explicit execution inventory.
   stale table options when the benchmark selects CoolProp from a bicubic YAML;
   two regression cases cover those source/table routes.
 
-- [ ] Catalogue runnable examples, scientific studies, input-dependent figure
+- [x] Catalogue runnable examples, scientific studies, input-dependent figure
   scripts and historical research material. Record commands, inputs, models,
   expected outputs, execution budget and numerical acceptance criteria.
+  [Execution inventory](case_studies/EXECUTION_INVENTORY.json): 47 programs,
+  including explicit unexecuted full research/external-input classifications.
 - [x] Inventory and run the small demonstration subset, preserving initial
   failures and final successful outcomes in `case_studies/SMALL_DEMOS.json`.
   Fix obsolete PHE fluid construction, heat-pump metadata/property-label access
@@ -390,7 +396,7 @@ explicit execution inventory.
   JaxProp Python files match the official PyPI 0.6.0 artifact for this profile.
   The full regression suite passes 564 tests plus four unchanged strict expected
   failures. This does not verify full sweeps, interactive watchers or movie encoding.
-- [ ] Make minimal new-interface edits in maintained programs. Replace old
+- [x] Make minimal new-interface edits in maintained programs. Replace old
   `thermopt.Fluid`, positional backend, `exceptions`, state mutation and state
   collection calls. Preserve useful explanations and physical assumptions.
   All 18 standard SLSQP case/template configurations now explicitly select the
@@ -402,57 +408,100 @@ explicit execution inventory.
   including three complete default-controlled cycle solves and a bounded
   six-configuration SciPy/controlled comparison. The broader research sweeps
   remain outside this verification scope.
-- [ ] Give the four validated native table studies convenient ordinary YAML
+- [x] Give the four validated native table studies convenient ordinary YAML
   configurations with justified table domains; source-only phase cases remain
   explicit. Reuse validated caches and configured models.
   Recompression now has an explicit CO2 bicubic/controlled-SLSQP YAML and a
   runner-defined 128x128 comparison of SLSQP, Pounce interior point and Pounce
-  SQP. See `case_studies/sCO2_recompression/README.md`; the broader inventory remains
-  open. PySolverView 0.8.2 with Pounce 0.13.0 is a new dependency context:
+  SQP. See `case_studies/sCO2_recompression/README.md`. The broader inventory is
+  complete. Recuperated/simple CO2 and nitrogen refrigeration gain 200x200 table
+  YAMLs; recompression gains the explicit source alternative. Runners accept
+  `THERMOPT_CONFIG`; variant tests retain the exact physical/solver settings.
+  PySolverView 0.8.2 with Pounce 0.13.0 is a new dependency context:
   previous phase timings remain historical, not automatically comparable.
-- [ ] Run bounded representative studies/headless figures and full declared
+- [x] Run bounded representative studies/headless figures and classify full
   scientific profiles separately. Label missing inputs, research limits and
   unexecuted full sweeps honestly. Larger redesigns get their own checklist item.
-- [ ] Verify interactive file-watcher and optional movie-encoding workflows
-  separately from the completed headless profiles, with declared dependencies.
-- [ ] Retire/archive the old 0.5 bicubic adapter and monkey-patching experiment
+  Five full normal solves pass, with callbacks and outputs; the PTES study selects
+  its first existing 1 MW point without reducing the solve's iteration budget.
+  Full Rankine/PTES/mesh grids and historical report pipelines are unexecuted.
+- [x] Verify interactive file-watcher control and optional movie encoding
+  separately from the numerical profiles, with declared dependencies. Headless
+  real-thread checks cover initial rendering, edits, reports, EOF and pickling.
+  GIF/MP4 are actually encoded/decoded for order/count/rate. Manual visible-window
+  behavior remains an explicit Phase 8 gate.
+- [x] Retire/archive the old 0.5 bicubic adapter and monkey-patching experiment
   after its useful provenance is retained and the native workflow replaces it.
-- [ ] Remove the historical benchmark input's `exceptions` normalization when
+  Three original scripts are preserved byte for byte under
+  `development/bicubic/archive/pre_060_adapter/`, with verified original hashes.
+- [x] Remove the historical benchmark input's `exceptions` normalization when
   consolidating the harness, verifying a new protocol/checkpoint explicitly.
-  Phase 2 keeps the old benchmark builder unchanged for comparable measurements.
-- [ ] Review study cache identity separately from physical-input schema. Existing
-  caches hash complete configurations and correctly reject changed schema/API
-  provenance; use a new results directory after migration. Do not rewrite old
-  cache signatures or relabel saved results as current-library evaluations.
-- [ ] Consolidate active comparison code under `benchmark/`, retaining dated
+  Protocol 3 records the canonical native builder; the complete release profile
+  passes numerical gates and records a baseline candidate. Protocol-2 contexts
+  differ and are not claimed as accepted between-phase timing comparisons.
+- [x] Review study cache identity separately from physical-input schema. Include
+  core/study/template code, dependencies, source references, retry/acceptance
+  policies and saved initializer bytes. Preserve design-only continuation.
+  Reject stale records without rewriting them; new wet/dry outputs belong under
+  `results/`, while historical `output/` records remain readable in place.
+  Recognized solver-domain failures count as failed attempts; typed unsupported
+  requests/configuration errors bypass the broad numerical-error handlers and
+  fail explicitly. Both study-family paths have regression assertions.
+- [x] Consolidate active comparison code under `benchmark/`, retaining dated
   evidence under `development/`. Keep tests independent of result generation.
-- [ ] Replace the legacy `get_property_fluid` process-global cache in the two
+  Native builders and solver comparisons have canonical modules plus thin
+  historical/case-local launchers. Numerical equations are not duplicated.
+- [x] Replace the legacy `get_property_fluid` process-global cache in the two
   Rankine study families with explicitly study-owned models and source-change
   handling. Phase 5 removes that helper from configured cycle/reference setup;
   retaining its existing study behavior avoids adding construction or provenance
-  probes to those studies' hot loops before their Phase 7 migration.
-- [ ] Scope the property-access AST inventory to project-owned source, excluding
+  probes to those studies' hot loops before their Phase 7 migration. Phase 7
+  removes the helper: configured models and bounded water caches are problem-owned.
+  Native parity/lifecycle checks pass, and a matched 60-sample ABBA full-study
+  evaluation gives ratio 0.980 against Phase 6; raw samples remain retained.
+- [x] Scope the property-access AST inventory to project-owned source, excluding
   ignored generated benchmark artifacts and frozen comparison trees. Preserve
-  coverage of real case_studies/studies. Phase 4's retained reference tree currently
-  causes the same historical example SyntaxWarning to be reported twice.
+  coverage of real case_studies/studies. The retained comparison trees no longer
+  duplicate the historical figure script's SyntaxWarning during the audit.
 
 Acceptance: every maintained program has a documented successful profile or a
 clear external-input/research classification; no blanket "all examples pass".
 
 ## Phase 8 — Integrate gates into CI and close the migration
 
-**Status: planned.**
+**Status: implemented and verified locally on 17 November 2026; external gates
+remain open.** Python 3.13 passes 623 tests; clean locked Python 3.11 passes 622
+with one explicit optional REFPROP skip. Both retain four unchanged strict expected
+failures. Final focused checks cover later CLI/restart/provenance assertions.
+The installed ThermOpt wheel and full native release numerical profile pass.
+Hosted CI, visible GUI, historical timing closure and upstream publication/reporting
+remain pending; this is not a declaration that the entire migration is closed.
 
-- [ ] Run locked source tests on supported Python versions/platforms and bounded
-  native bicubic/component/example checks. Document optional REFPROP selection.
-- [ ] Keep timing gates in controlled scheduled/manual jobs, with artifacts and
+- [x] Run full source tests locally on Python 3.11/3.13 with the declared
+  dependencies, including an isolated clean locked main-dependency installation.
+  Verify a built installed wheel outside repository import paths: all 23 source
+  files match, and native CoolProp/bicubic compressor checks pass. REFPROP is
+  exercised when available and explicitly skipped in the clean environment.
+- [x] Prepare the locked Windows/Ubuntu x Python 3.11/3.13 CI matrix, full tests,
+  bounded native smoke and retained artifacts. Static workflow policy tests pass.
+- [ ] Execute that hosted four-environment matrix after an authorized push.
+  Local Windows tests do not establish hosted Ubuntu or actual Linux behavior.
+- [x] Keep timing gates in manual jobs, with artifacts and
   repeated flags; do not fail ordinary shared-host CI on one noisy stopwatch.
+  The manual workflow records selectable smoke/phase/release profiles and retains
+  numerical identities/results. Controlled matched repeats remain required for
+  between-phase acceptance; no unrelated shared-runner baseline is imposed.
+- [x] Unit-test Linux and unsupported-platform affinity branches without changing
+  global platform identity. Windows observation/control is exercised locally.
 - [ ] Exercise optional affinity observation/control on Linux and unsupported
   platforms, including inherited worker masks. Phase 2 verifies Windows on a
   single processor group; do not infer multi-group or cross-platform coverage.
-- [ ] Run the full benchmark release profile and compare against accepted
-  checkpoints. Require source cross-evaluation, energy balances, feasibility,
+- [x] Run the full protocol-3 benchmark release numerical profile. Require source
+  cross-evaluation, energy balances, feasibility,
   physical metrics and iteration/call counts for complete optimizations.
+  Five 200x200 profiles and both recuperated optimization modes pass. Sources,
+  harness and lock remain fixed. This establishes a recorded baseline candidate;
+  incompatible historical checkpoints cannot supply a timing acceptance claim.
 - [ ] Reassess the carried absolute Phase 2/3 timing flags with stable matched
   artifact/context controls. Keep the original flags and successful metadata-fix
   follow-up separate; matched fix acceptance does not erase earlier ratios.
@@ -463,12 +512,20 @@ clear external-input/research classification; no blanket "all examples pass".
   normalizes these once; direct `jp.Fluid` tests still reproduce the Equinox
   warning. Prefer constructor normalization in JaxProp, with warning/regression
   coverage, over any checks in thermodynamic calculations.
-- [ ] Update package/API/example docs and migration notes to the supported 0.6
+  A concrete [upstream repro](benchmark/JAXPROP_STATIC_OPTIONS.md) is prepared
+  locally; external submission and the upstream fix remain pending.
+- [ ] Manually observe visible GUI/window behavior. Headless live-control and
+  real animation encoding tests are complete; no manual display coverage claimed.
+- [x] Update package/API/example docs and migration notes to the supported 0.6
   interface. Remove obsolete compatibility branches and installation caveats
   only when the corresponding checks actually pass.
-- [ ] Record final test totals, expected failures, dependency/source/artifact
+- [x] Record local final test totals, expected failures, dependency/source/artifact
   hashes, unresolved costs and explicit acceptance. Review each completed phase
   as a coherent change; no release/push occurs merely because a plan is checked.
+  [Assessment](benchmark/PHASE7_8.md) and [evidence](benchmark/PHASE7_8.json)
+  distinguish local verification from the remaining external closure gates.
+- [ ] Close Phase 8 only after its remaining external/timing gates have explicit
+  evidence or an explicitly scoped user acceptance decision.
 
 Acceptance: installed-release workflows, package tests, maintained examples,
 numerical agreement and performance gates pass or have explicit scoped decisions.
@@ -507,3 +564,5 @@ numerical agreement and performance gates pass or have explicit scoped decisions
 | Phase 5 lifecycle | 534 passed, four unchanged strict expected failures; 73 added cases plus 19 focused protocol/audit checks. Unchanged reloads are about 35%/85%/50% faster for source/bicubic/perfect gas. Three matched protocol-2 profiles, twelve paired cycle cases, four balanced 24-component runs and the release profile pass scoped gates. Initial setup, first reporting-shape compilation and older flags remain explicit. [Assessment](benchmark/PHASE5.md), [checkpoint](benchmark/checkpoints/phase5.json). |
 | Small demonstration workflows | 14 scripts and all 15 optimized cycle runs pass with fresh outputs and normal configured callbacks; two property/correlation scripts also pass. Actual variable order is preserved in default-solver tests. Minimal API/plot repairs and two explicit numerical stopping fixes retain physical inputs and acceptance gates. Official PyPI JaxProp 0.6.0 sources verified; 564 tests plus four unchanged strict expected failures. [Execution inventory](case_studies/SMALL_DEMOS.md). No broad sweep or performance acceptance claim. |
 | Phase 6 output boundaries | 598 tests plus four unchanged strict expected failures; 34 added cases. Rerunnable manager YAML, numeric bicubic energy cells, accepted-design callbacks, native phase backgrounds and shared solver-domain handling pass. Both ordinary CO2 demos retain objective/iteration results; the saved 200x200 bicubic solution reloads. Normalized-input 60-sample ratios 1.012/1.043 meet 1.10; initial 1.113 bicubic flag remains recorded. [Assessment](benchmark/PHASE6.md), [evidence](benchmark/PHASE6.json). |
+| Phase 7 study migration | Complete for the declared bounded profile: 47 programs classified, five additional real launcher runs converge, native study-owned models/cache invalidation and saved-input readers pass. Full study evaluation ratio 0.980 vs Phase 6 in the matched 60-sample ABBA check. Full research grids remain unexecuted. [Assessment](benchmark/PHASE7_8.md), [evidence](benchmark/PHASE7_8.json). |
+| Phase 8 local gates | Python 3.13: 623 passed; clean locked Python 3.11: 622 passed, one optional REFPROP skip; four unchanged strict expected failures in both. Final focused tests cover later CLI/cache/restart assertions. Installed-wheel QA, optional media/live controls and all five protocol-3 release numerical profiles pass. CI prepared, not executed remotely; upstream patch/report, visible GUI and historical timing gates remain open. [Assessment](benchmark/PHASE7_8.md). |

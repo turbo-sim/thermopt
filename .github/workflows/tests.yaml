@@ -9,16 +9,21 @@ permissions:
 
 jobs:
   pytest:
-    name: Python ${{ matrix.python-version }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
+    name: ${{ matrix.os }} / Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         python-version: ["3.11", "3.13"]
+        os: [ubuntu-latest, windows-latest]
     env:
       MPLBACKEND: Agg
       DISABLE_PLOTS: "1"
+      JAX_ENABLE_X64: "true"
+      JAX_PLATFORM_NAME: cpu
+      OMP_NUM_THREADS: "1"
+      PYTHONHASHSEED: "0"
       POETRY_VIRTUALENVS_IN_PROJECT: "true"
       POETRY_NO_INTERACTION: "1"
     steps:
@@ -36,7 +41,9 @@ jobs:
         run: python -m pip install "poetry==2.2.1"
 
       - name: Install locked production dependencies
-        run: poetry install --only main
+        run: |
+          poetry check --lock
+          poetry install --only main
 
       - name: Install test runner
         # Matches pytest in poetry.lock; avoid installing the full docs/dev group.
@@ -44,4 +51,19 @@ jobs:
         run: poetry run python -m pip install "pytest==8.4.2"
 
       - name: Run complete test suite
-        run: poetry run python -m pytest
+        run: poetry run python -m pytest --junitxml=benchmark/results/ci_tests.xml
+
+      - name: Run bounded native bicubic smoke profile
+        # Numerical correctness is gated here. Shared-runner timings are recorded
+        # but are not compared to an unrelated host/checkpoint as a pass criterion.
+        run: poetry run python benchmark/run.py --profile smoke --samples 4 --output benchmark/results/ci_smoke
+
+      - name: Retain numerical verification artifacts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: verification-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: |
+            benchmark/results/ci_tests.xml
+            benchmark/results/ci_smoke
+          retention-days: 14

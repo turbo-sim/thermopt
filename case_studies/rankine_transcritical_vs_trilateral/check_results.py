@@ -41,7 +41,7 @@ def main():
             directory = run.RESULTS / row["case"]
             checkpoint = json.loads((directory / "result.json").read_text(encoding="utf-8"))
             assert checkpoint["signature"] == run.signature(run.configuration(family, exploitation, pump, 0.9))
-            config = run.th.read_configuration_file(directory / "optimal_solution.yaml")
+            config = run.read_formulation(directory / "optimal_solution.yaml")
             fixed = config["fixed_parameters"]
             assert config["cycle_topology"] == "simple"
             assert fixed["heater"]["num_elements"] == fixed["cooler"]["num_elements"] == 100

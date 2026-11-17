@@ -3,11 +3,11 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-# Attempt to import imageio for video generatioj
+# Attempt to import imageio for video generation.
 try:
-    import imageio
+    import imageio.v2 as imageio
 
-    IMEGEIO_AVAILABLE = True
+    IMAGEIO_AVAILABLE = True
 except ImportError:
     IMAGEIO_AVAILABLE = False
 
@@ -233,7 +233,7 @@ def create_gif(image_folder, output_file, duration=0.5):
         Duration of each frame in the GIF, by default 0.5 seconds.
     """
 
-    if not IMEGEIO_AVAILABLE:
+    if not IMAGEIO_AVAILABLE:
         raise ImportError(
             "imageio is not installed. Please run `pip install imageio-ffmpeg` to run this function."
         )
@@ -244,7 +244,8 @@ def create_gif(image_folder, output_file, duration=0.5):
             file_path = os.path.join(image_folder, filename)
             images.append(imageio.imread(file_path))
 
-    imageio.mimsave(output_file, images, duration=duration)
+    # The public duration is seconds; the current Pillow writer expects ms.
+    imageio.mimsave(output_file, images, format="GIF", duration=1000 * duration, loop=0)
 
 
 def create_mp4(image_folder, output_file, fps=10):
@@ -261,7 +262,7 @@ def create_mp4(image_folder, output_file, fps=10):
         Frames per second in the output video, by default 10.
     """
 
-    if not IMEGEIO_AVAILABLE:
+    if not IMAGEIO_AVAILABLE:
         raise ImportError(
             "imageio is not installed. Please run `pip install imageio-ffmpeg` to run this function."
         )

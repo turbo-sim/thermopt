@@ -265,7 +265,7 @@ def fluid_page(f):
     ])
     recovery+='<p>The recovered-heat ratio multiplied by the heat-conversion ratio gives the net-power ratio. Both terms include the optimized state changes, and conversion includes the prescribed turbine efficiency and external pumping.</p>'
     if f=="novec":
-        effectiveness=[run.th.read_configuration_file(
+        effectiveness=[run.read_formulation(
             SOURCE/"sensitivity_novec"/row["case"]/"optimal_solution.yaml"
         )["design_variables"]["recuperator_effectiveness"]["value"] for row in (b,p,b20,p20)]
         recovery+=section("How much recuperation is selected","Effectiveness is optimized between zero and one")

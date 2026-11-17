@@ -19,6 +19,8 @@ for config in config_files:
     cycle = th.ThermodynamicCycleOptimization(config, out_dir=os.getenv("THERMOPT_RESULTS_DIR"))
     if os.getenv("DISABLE_PLOTS", "0") != "1":
         cycle.problem.plot_cycle_realtime(config, update_interval=0.1)
+        # Apply edited solver settings and constraint dimensions before solving.
+        cycle.read_config(config)
 
     # Perform cycle optimization
     cycle.run_optimization()

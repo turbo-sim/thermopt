@@ -1,17 +1,23 @@
 import os
+import jax
 import thermopt as th
 import matplotlib.pyplot as plt
+
+# Native bicubic states and finite-difference derivatives require full precision.
+jax.config.update("jax_enable_x64", True)
 
 # Print package info
 th.print_package_info()
 
 # Define configuration filename
-CONFIG_FILE = "case_sCO2_recuperated.yaml"
+CONFIG_FILE = os.getenv("THERMOPT_CONFIG", "case_sCO2_recuperated.yaml")
 
 # Initialize cycle problem
 cycle = th.ThermodynamicCycleOptimization(CONFIG_FILE, out_dir=os.getenv("THERMOPT_RESULTS_DIR"))
 if os.getenv("DISABLE_PLOTS", "0") != "1":
     cycle.problem.plot_cycle_realtime(CONFIG_FILE)
+    # Apply edited solver settings and constraint dimensions before solving.
+    cycle.read_config(CONFIG_FILE)
 
 # Optimize cycle
 cycle.run_optimization()

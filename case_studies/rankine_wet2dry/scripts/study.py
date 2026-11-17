@@ -1,7 +1,7 @@
 """Shared configuration, optimization and native verification for the study."""
 
-from thermopt.utilities.fluid_utils import get_property_fluid
 import jaxprop as props
+from pysolver_view import DomainError
 from contextlib import redirect_stdout
 from copy import deepcopy
 from functools import lru_cache
@@ -26,6 +26,7 @@ import yaml
 from paths import STUDY as HERE, SCRIPTS, PROJECT, OUTPUT, RESULTS, LOGS, ARCHIVE, REFERENCE_INPUTS
 sys.path.insert(0, str(PROJECT))
 import thermopt as th
+from case_studies.study_io import read_formulation, calculation_identity
 
 FAMILIES = {
     "butane": ("n-Butane", "simple", "n-Butane: simple cycle"),
@@ -48,10 +49,11 @@ def point_name(mode, minimum, efficiency):
     return f"{mode}_Tmin{minimum:03d}_eta{eta}"
 
 
-@lru_cache(maxsize=1)
-def fixed_reference_heat_J_per_kg():
-    return float(get_property_fluid('Water').get_state(props.PT_INPUTS, 1000000.0, 413.15).h
-                 - get_property_fluid('Water').get_state(props.PT_INPUTS, 1000000.0, 288.15).h)
+def fixed_reference_heat_J_per_kg(water=None):
+    """Use this operation's native source model; never reuse a global cursor."""
+    water = props.Fluid("Water", method="coolprop", backend="HEOS") if water is None else water
+    return float(water.get_state(props.PT_INPUTS, 1000000.0, 413.15).h
+                 - water.get_state(props.PT_INPUTS, 1000000.0, 288.15).h)
 
 
 def configuration(family, mode, minimum, efficiency, variables=None, seed="saved"):
@@ -64,17 +66,18 @@ def configuration(family, mode, minimum, efficiency, variables=None, seed="saved
     fixed["working_fluid"]["name"] = name
     fixed["heat_source"]["minimum_temperature"] = minimum+273.15
     fixed["expander"]["efficiency"] = efficiency
+    wf = th.fluid_from_configuration(fixed["working_fluid"])
     # Retain the original broad subcritical state bounds, recomputed per fluid.
-    pc = float(get_property_fluid(name).critical_point.p)
-    pmin = get_property_fluid(name).get_state(props.QT_INPUTS, 0, 273.15).p
-    hmin = get_property_fluid(name).get_state(props.QT_INPUTS, 0, 273.15).h
-    hliqmax = get_property_fluid(name).get_state(props.QT_INPUTS, 0, 413.15).h
-    hmax = get_property_fluid(name).get_state(props.PT_INPUTS, pmin, 413.15).h+50000
-    pp = get_property_fluid(name).get_state(props.QT_INPUTS, 0, 302.65).p
-    ph = get_property_fluid(name).get_state(props.PT_INPUTS, pp, 301.65).h
+    pc = float(wf.critical_point.p)
+    pmin = wf.get_state(props.QT_INPUTS, 0, 273.15).p
+    hmin = wf.get_state(props.QT_INPUTS, 0, 273.15).h
+    hliqmax = wf.get_state(props.QT_INPUTS, 0, 413.15).h
+    hmax = wf.get_state(props.PT_INPUTS, pmin, 413.15).h+50000
+    pp = wf.get_state(props.QT_INPUTS, 0, 302.65).p
+    ph = wf.get_state(props.PT_INPUTS, pp, 301.65).h
     ti = min(403.15, max(345., minimum+273.15-12))
-    hp = get_property_fluid(name).get_state(props.QT_INPUTS, 0, ti).p
-    hh = get_property_fluid(name).get_state(props.PT_INPUTS, hp, ti + 2).h if mode == "superheated" else get_property_fluid(name).get_state(props.QT_INPUTS, 0.3, ti).h
+    hp = wf.get_state(props.QT_INPUTS, 0, ti).p
+    hh = wf.get_state(props.PT_INPUTS, hp, ti + 2).h if mode == "superheated" else wf.get_state(props.QT_INPUTS, 0.3, ti).h
     design["heat_source_exit_temperature"].update(min=minimum+273.15, value=max(minimum+273.15, 343.15))
     design["compressor_inlet_pressure"] = dict(min=pmin, max=.95*pc, value=pp)
     design["compressor_inlet_enthalpy"] = dict(min=hmin, max=hliqmax, value=ph)
@@ -97,10 +100,14 @@ def configuration(family, mode, minimum, efficiency, variables=None, seed="saved
         fixed["recuperator"] = dict(pressure_drop_hot_side=.01, pressure_drop_cold_side=.01, num_elements=25)
         design["recuperator_effectiveness"] = dict(min=0., max=1., value=.5)
         c.append(dict(variable="$components.recuperator.temperature_difference", type=">", value=5., normalize=True))
+    config["study_inputs"] = {"initializer_sha256": None}
     if seed == "saved":
         path = INITIALIZERS / f"sensitivity_{family}" / point_name(mode, minimum, efficiency) / "optimal_solution.yaml"
         if path.exists():
-            old = yaml.safe_load(path.read_text(encoding="utf-8"))["design_variables"]
+            # Initial values do not identify a continuation point, but a changed
+            # external initializer must invalidate results that used its data.
+            config["study_inputs"]["initializer_sha256"] = "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()
+            old = read_formulation(path)["design_variables"]
             for variable_name, variable in design.items():
                 if variable_name in old:
                     variable["value"] = float(np.clip(old[variable_name]["value"], variable["min"], variable["max"]))
@@ -180,7 +187,7 @@ def measurements(cycle):
         optimization_class=type(cycle).__module__+"."+type(cycle).__name__,
         optimization_called=True,
         system_efficiency_pct=100*float(e["system_efficiency"]), cycle_efficiency_pct=100*float(e["cycle_efficiency"]),
-        fixed_reference_efficiency_pct=100*net/source_flow/fixed_reference_heat_J_per_kg(),
+        fixed_reference_efficiency_pct=100*net/source_flow/fixed_reference_heat_J_per_kg(native.fluids["heating_fluid"]),
         inlet_quality=float(c["expander"]["state_in"].Q), inlet_superheat_K=float(c["expander"]["state_in"].superheating),
         outlet_quality=float(c["expander"]["state_out"].Q),
         source_exit_C=float(c["heater"]["hot_side"]["state_out"].T)-273.15,
@@ -201,11 +208,12 @@ def measurements(cycle):
 
 
 def signature(config):
-    config = deepcopy(config)
+    config = th.convert_numpy_to_python(deepcopy(config), precision=None)
     for d in config["problem_formulation"]["design_variables"].values():
         d.pop("value", None)
     return hashlib.sha256(json.dumps(dict(config=config, backend=OPTIMIZATION_BACKEND,
-                                         native_sources=backend_sources()), sort_keys=True).encode()).hexdigest()
+                                         max_attempts=MAX_ATTEMPTS, feasibility_tolerance=FEASIBILITY_TOLERANCE,
+                                         native_sources=backend_sources(), provenance=calculation_identity(config, [Path(__file__), SCRIPTS / "paths.py", HERE / "case_template.yaml", PROJECT / "case_studies/study_io.py"])), sort_keys=True).encode()).hexdigest()
 
 
 def solve_point(family, mode, minimum, efficiency, warm=None):
@@ -228,7 +236,7 @@ def solve_point(family, mode, minimum, efficiency, warm=None):
     archived = INITIALIZERS / f"sensitivity_{family}" / name / "optimal_solution.yaml"
     archived_variables = None
     if archived.exists():
-        previous = th.read_configuration_file(archived)
+        previous = read_formulation(archived)
         archived_variables = {key: float(item["value"]) for key, item in previous["design_variables"].items()}
     starts = [("archived_initial_guess" if archived_variables else "saved", archived_variables),
               ("continuation", warm), ("generic", None)]
@@ -255,7 +263,11 @@ def solve_point(family, mode, minimum, efficiency, warm=None):
                 cycle.print_convergence_history(savefile=True)
                 cycle.print_optimization_report(savefile=True)
                 candidates.append(dict(row=attempt.copy(), variables=variables, config=deepcopy(cycle.problem.configuration), path=attempt_dir))
-        except (ValueError, RuntimeError, FloatingPointError, OverflowError, np.linalg.LinAlgError) as error:
+        except (props.InvalidConfigurationError, props.UnsupportedRequestError):
+            # Unsupported physics/options need a setup correction, not another
+            # starting point. Keep these typed ValueError subclasses visible.
+            raise
+        except (DomainError, ValueError, RuntimeError, FloatingPointError, OverflowError, np.linalg.LinAlgError) as error:
             attempt.update(solver_message=str(error), status="exception")
             (attempt_dir / "error.txt").write_text(traceback.format_exc(), encoding="utf-8")
         attempt["wall_seconds"] = time.perf_counter()-start

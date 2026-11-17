@@ -15,7 +15,9 @@ RUNNER = (
     Path(__file__).resolve().parents[1]
     / "case_studies/sCO2_recompression/compare_solvers.py"
 )
-spec = importlib.util.spec_from_file_location("recompression_comparison", RUNNER)
+spec = importlib.util.spec_from_file_location(
+    "recompression_comparison", RUNNER.parents[2] / "benchmark/recompression_solvers.py"
+)
 comparison = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(comparison)
 

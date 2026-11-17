@@ -247,7 +247,9 @@ def test_cycle_setup_does_not_use_the_shared_study_fluid_cache(tmp_path, monkeyp
     def unexpected(*args, **kwargs):
         raise AssertionError("Configured cycle references must be problem-owned")
 
-    monkeypatch.setattr(th.utilities, "get_property_fluid", unexpected)
+    # The old shared-cache helper is retired. Guard its former name as well as
+    # verifying that configured setup owns its models rather than consulting it.
+    monkeypatch.setattr(th.utilities, "get_property_fluid", unexpected, raising=False)
     problem = th.ThermodynamicCycleProblem(configuration(), out_dir=str(tmp_path))
     assert np.all(np.isfinite(problem.fitness(problem.x0)))
 

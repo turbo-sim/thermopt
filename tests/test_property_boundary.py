@@ -10,14 +10,26 @@ import tomllib
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def project_sources():
+def project_sources(root=ROOT):
     excluded = {".git", ".venv", "venv", "__pycache__", "node_modules", ".pytest_cache", ".test_artifacts", "_build"}
-    for directory, dirs, files in os.walk(ROOT):
-        dirs[:] = [name for name in dirs if name not in excluded and not name.startswith(".test_tmp")]
+    for directory, dirs, files in os.walk(root):
+        dirs[:] = [name for name in dirs if name not in excluded
+                   and name not in {"output", "archive"}
+                   and not name.startswith((".test_tmp", "results"))]
         for name in files:
             path = Path(directory) / name
             if path.suffix in {".py", ".ipynb"}:
                 yield path
+
+
+def test_source_inventory_excludes_generated_copies_but_keeps_real_studies(tmp_path):
+    active = tmp_path / "case_studies/live_study/run.py"
+    generated = tmp_path / "benchmark/results/frozen/thermopt/run.py"
+    archived = tmp_path / "development/bicubic/archive/old.py"
+    for path in (active, generated, archived):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("import CoolProp\n", encoding="utf-8")
+    assert set(project_sources(tmp_path)) == {active}
 
 
 def test_project_property_access_uses_jaxprop():

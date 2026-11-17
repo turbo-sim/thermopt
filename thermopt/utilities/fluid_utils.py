@@ -1,13 +1,11 @@
 """Shared property models for study scripts, owned entirely by jaxprop."""
 
 from collections.abc import Mapping
-from functools import lru_cache
 
 import jaxprop
 import numpy as np
 
 __all__ = [
-    "get_property_fluid",
     "fluid_from_configuration",
     "get_cycle_fluid",
     "process_state_options",
@@ -71,9 +69,3 @@ def process_state_options(fluid, *, generalize_quality=False):
     if generalize_quality and "generalize_quality" in supported:
         options["generalize_quality"] = True
     return options
-
-
-@lru_cache(maxsize=32)
-def get_property_fluid(name, backend="HEOS"):
-    """Reuse a jaxprop model within a process; obtain states with get_state."""
-    return jaxprop.Fluid(name=name, method="coolprop", backend=backend)

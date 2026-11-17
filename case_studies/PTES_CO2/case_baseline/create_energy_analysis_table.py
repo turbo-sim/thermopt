@@ -2,15 +2,18 @@ import thermopt as th
 import os
 
 # Load solver
-SOLVER_PATH = "results_baseline/solver.pkl"
+INPUT_DIR = os.getenv("THERMOPT_INPUT_DIR", "results/baseline")
+OUTPUT_DIR = os.getenv("THERMOPT_RESULTS_DIR", "results/tables")
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+SOLVER_PATH = os.path.join(INPUT_DIR, "solver.pkl")
 solver = th.load_from_pickle(SOLVER_PATH)
 energy = solver.problem.cycle_data["energy_analysis"]
 
 # Output file
-OUTPUT_FILE = "table_energy_analysis.txt"
+OUTPUT_FILE = os.path.join(OUTPUT_DIR, "table_energy_analysis.txt")
 
 # Initialize writer
-with open(OUTPUT_FILE, "w") as f:
+with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
 
     def write(text=""):
         print(text)
@@ -28,7 +31,7 @@ with open(OUTPUT_FILE, "w") as f:
             return value, "-"
 
     def fmt(x):
-        return f"{x:.3f}" if isinstance(x, (float, int)) else str(x)
+        return f"{float(x):.3f}"
 
     # Filters
     skip = ["energy_balance", "backwork_ratio", "pressure", "temperature", "efficiency"]

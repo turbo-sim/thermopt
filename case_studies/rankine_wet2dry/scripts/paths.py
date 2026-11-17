@@ -1,14 +1,18 @@
 """Shared locations; importing this module does not create files or run a case."""
 from pathlib import Path
+import os
 
 SCRIPTS = Path(__file__).resolve().parent
 STUDY = SCRIPTS.parent
 PROJECT = STUDY.parents[1]
-OUTPUT = STUDY / "output"
-RESULTS = OUTPUT / "results"
+LEGACY_OUTPUT = STUDY / "output"
+# New generated artifacts stay together. Existing research records remain at
+# their original locations and are never moved or relabeled as current solves.
+OUTPUT = Path(os.getenv("THERMOPT_RESULTS_DIR", STUDY / "results"))
+RESULTS = OUTPUT / "studies"
 LOGS = OUTPUT / "logs"
-ARCHIVE = OUTPUT / "archive"
-REFERENCE_INPUTS = OUTPUT / "reference_inputs"
+ARCHIVE = LEGACY_OUTPUT / "archive"
+REFERENCE_INPUTS = LEGACY_OUTPUT / "reference_inputs"
 WEB_ASSETS = SCRIPTS / "web_assets"
 HTML_PAGES = OUTPUT / "report"
 
@@ -26,5 +30,6 @@ def resolve_record_path(value):
     if current.exists():
         return current
     if path.parts and path.parts[0] in ("results", "archive", "reference_inputs", "report"):
-        return OUTPUT / path
+        historical = LEGACY_OUTPUT / path
+        return historical if historical.exists() else OUTPUT / path
     return current

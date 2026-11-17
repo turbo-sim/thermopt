@@ -30,8 +30,8 @@ isentropic efficiency: `h(p) = hin − ηt × [hin − h(p,sin)]`.
 Run from the repository root with an environment containing the project dependencies:
 
 ```console
-python case_studies/comparison_transcritical_two_phase/run_sensitivity.py
-python case_studies/comparison_transcritical_two_phase/build_report.py
+python case_studies/rankine_transcritical_vs_trilateral/run_sensitivity.py
+python case_studies/rankine_transcritical_vs_trilateral/build_report.py
 ```
 
 Configuration is in the globals of `run_sensitivity.py` and `case_template.yaml`.
@@ -47,12 +47,29 @@ resume completed work and reject changed model inputs. Use a new `RESULTS`
 directory when changing the formulation. Attempt logs, initial guesses, final
 vectors, and selected native configurations are kept for review.
 
-`fast_evaluator.py` calculates the same simple-cycle equations through low-level
-CoolProp during optimization. Every completed solver candidate is reevaluated
-with native ThermoOpt before acceptance; the native model supplies reported
-efficiencies and plots. Saturation departure fields are recomputed from returned
-states to avoid a wet-state derivative side effect in some jaxprop versions.
-The shared library and the earlier example are unchanged.
+`fast_evaluator.py` retains the study's simple-cycle equations and evaluates
+properties through problem-owned native JaxProp source models. Its bounded water
+state/temperature caches belong to the problem and reset if its water model is
+replaced. Unchanged problem reloads reuse them. No fluid construction, global
+mutable model cache or source-provenance checks occur in the repeated fitness
+path. Every completed solver candidate is reevaluated with native ThermOpt
+before acceptance; the native model supplies reported efficiencies and plots.
+
+Cache signatures include the template/configuration, study/core source,
+dependencies, EOS reference conventions and retry/acceptance settings. Current
+design values are excluded intentionally for continuation. Changed provenance
+rejects old records without rewriting them. Recognized invalid thermodynamic
+trials are recorded as failed solver attempts; typed JaxProp configuration errors
+and unsupported requests propagate. Saved-input readers select the formulation from
+either complete manager snapshots or problem exports, without adapting old fluid
+schemas. New outputs remain under `results/`; an absolute
+`THERMOPT_RESULTS_DIR` can select a fresh output root.
+
+Bounded native evaluations, saved-input behavior and cache invalidation are
+verified in the [Phase 7/8 assessment](../../benchmark/PHASE7_8.md). A matched
+60-sample ABBA check found the full study evaluation comparable to Phase 6.
+The full 900-case finite grid and 45 zero-heat records have not been regenerated.
+Existing research reports remain historical evidence.
 
 All comparison plots use net system power after all pumps divided by the source
 heat available between **140°C and 20°C** at 10 bar. This fixed denominator makes

@@ -8,6 +8,8 @@ Python package for modelling and optimization of thermodynamic cycles, including
 This development checkout uses the released **JaxProp 0.6 interface** and no
 longer targets JaxProp 0.5. The [phased migration plan](z_JAXPROP_060_IMPLEMENTATION_PLAN.md)
 tracks the remaining package/example cleanup and per-phase verification.
+See the [migration notes](MIGRATION_JAXPROP_060.md) for native fluid settings,
+saved-input contracts and the current verification limits.
 Run correctness checks from `tests/` and repeatable performance profiles through
 [benchmark/](benchmark/README.md). Cycle calculations remain eager NumPy/SciPy.
 
@@ -86,12 +88,12 @@ This guide walks you through installation for development using `Poetry`, which 
 
 The [case_studies/](case_studies/README.md) directory contains thermodynamic cycle configurations, runners and research studies for different working fluids and applications. It replaces the former examples directory. Consult each study's instructions for its supported workflow and required inputs.
 
-Each example:
-- Is defined in a `.yaml` input file
-- Is executed via a corresponding `run_optimization.py` script
-- Outputs results in a subdirectory called `results/`
-
-To run any example, navigate to the corresponding subfolder and execute the optimization script.
+Ordinary cycle demonstrations use a `.yaml` input and `run_optimization.py`
+from the corresponding case directory. Generated outputs belong in `results/`.
+The directory also contains longer scientific sweeps and tools requiring saved
+inputs; consult the [execution inventory](case_studies/EXECUTION_INVENTORY.json)
+before choosing a program. Four single-phase cases have convenient native
+CoolProp/bicubic inputs documented in the case-study guide.
 
 ## Tests
 

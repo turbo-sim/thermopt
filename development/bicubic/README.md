@@ -1,5 +1,22 @@
 # JaxProp 0.6 compatibility and native bicubic cases
 
+## Current entry points (17 November 2026)
+
+Maintained comparisons now live under `benchmark/`: use
+`python benchmark/run.py --profile phase` or `benchmark/native_backends.py`.
+`validate_060.py` is a thin historical command delegator. Ordinary native inputs
+and launchers are documented in [case_studies](../../case_studies/README.md).
+The old adapter/monkey-patching scripts are preserved byte for byte under
+`archive/pre_060_adapter/`, with verified original hashes and unmaintained status.
+Main-runner protocol 3 removes obsolete `exceptions` stripping; older checkpoints
+retain their original protocol and identities.
+
+The detailed guide and checklist below retain the earlier migration context.
+For current completion status and verification limits, use the
+[implementation plan](../../z_JAXPROP_060_IMPLEMENTATION_PLAN.md) and
+[Phase 7/8 assessment](../../benchmark/PHASE7_8.md). Dated reports/results are
+unchanged; older unchecked items below are not the current implementation status.
+
 This workflow keeps ThermOpt's eager NumPy/SciPy implementation. It selects
 actual JaxProp evaluators through YAML; there is no application fluid adapter,
 replacement thermodynamic solver, outer JIT or silent source fallback.

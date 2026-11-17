@@ -65,7 +65,7 @@ def main():
     identities = dict(reference=source_hash(reference_root), current=source_hash(ROOT))
     sys.path.insert(0, str(ROOT))
     sys.path.insert(0, str(ROOT / "tests"))
-    from development.bicubic.validate_060 import configuration
+    from benchmark.native_backends import configuration
     from regression_support import load_case
 
     configs = {}

@@ -32,6 +32,9 @@ SOLVER_POLICY = json.loads(
     (ROOT / "tests/data/case_solver_defaults_20261116.json").read_text(encoding="utf-8")
 )
 SOLVER_DEFAULTS = SOLVER_POLICY["cases"]
+NATIVE_VARIANTS = json.loads(
+    (ROOT / "case_studies/EXECUTION_INVENTORY.json").read_text(encoding="utf-8")
+)["native_variants"]
 ROLES = {
     "working_fluid",
     "heating_fluid",
@@ -65,7 +68,9 @@ def test_all_maintained_cycle_inputs_are_in_the_reviewed_inventory():
                 formulation.get("fixed_parameters", {})
             ):
                 found.add(path.relative_to(ROOT).as_posix())
-    assert found == set(BASELINES["cases"])
+    # Preserve the dated physical baseline; explicitly reviewed evaluator-only
+    # variants are checked against their source recipes in the study tests.
+    assert found == set(BASELINES["cases"]) | set(NATIVE_VARIANTS)
 
 
 def physical_values(value):

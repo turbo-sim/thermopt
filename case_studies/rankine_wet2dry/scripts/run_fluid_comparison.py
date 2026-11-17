@@ -18,7 +18,7 @@ def export_case(family, mode):
         raise RuntimeError(f"Comparison needs an accepted solution: {family}/{case}")
     for file in ("optimal_solution.yaml", "convergence_history.txt", "optimization_report.txt", "attempts.csv", "result.json"):
         shutil.copy2(source / file, directory / file)
-    problem = th.ThermodynamicCycleProblem(th.read_configuration_file(source / "optimal_solution.yaml"), out_dir=str(directory))
+    problem = th.ThermodynamicCycleProblem(run.read_formulation(source / "optimal_solution.yaml"), out_dir=str(directory))
     problem.fitness(problem.x0)
     assert run.physical_cycle_valid(problem) and run.violation(problem) < run.FEASIBILITY_TOLERANCE
     assert abs(100*problem.cycle_data["energy_analysis"]["system_efficiency"]-row["system_efficiency_pct"]) < 1e-7

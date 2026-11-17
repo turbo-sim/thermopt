@@ -1,0 +1,722 @@
+{
+  "schema": 1,
+  "date": "2026-11-17",
+  "scope": "Every project-owned Python program under case_studies, excluding generated output/cache trees",
+  "programs": [
+    {
+      "path": "HX_development/PHE_correlations.py",
+      "category": "small-demonstration",
+      "status": "Small-demo checkpoint verified; native backend variants have separate Phase 7 evidence",
+      "command": "<repository>/.venv/Scripts/python.exe PHE_correlations.py",
+      "cwd": "case_studies/HX_development",
+      "inputs": [],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "One/two complete solves; up to 600 seconds; no iteration-limit reduction",
+      "acceptance": "Native success, finite outputs, original feasibility/optimality gates; normal configured plots/reports/exports",
+      "bounded_profile": null
+    },
+    {
+      "path": "HX_development/blended_calculation.py",
+      "category": "small-demonstration",
+      "status": "Small-demo checkpoint verified; native backend variants have separate Phase 7 evidence",
+      "command": "<repository>/.venv/Scripts/python.exe blended_calculation.py",
+      "cwd": "case_studies/HX_development",
+      "inputs": [],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "One/two complete solves; up to 600 seconds; no iteration-limit reduction",
+      "acceptance": "Native success, finite outputs, original feasibility/optimality gates; normal configured plots/reports/exports",
+      "bounded_profile": null
+    },
+    {
+      "path": "PTES_CO2/case_baseline/create_energy_analysis_table.py",
+      "category": "saved-input-table-export",
+      "status": "Requires saved PTES cycle/solver data",
+      "command": "<repository>/.venv/Scripts/python.exe create_energy_analysis_table.py",
+      "cwd": "case_studies/PTES_CO2/case_baseline",
+      "inputs": [
+        "Saved PTES solver pickle at the path declared by the script"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "One export after inputs exist",
+      "acceptance": "Rows/units agree with the saved evaluated states",
+      "bounded_profile": null
+    },
+    {
+      "path": "PTES_CO2/case_baseline/create_thermodynamic_states_table.py",
+      "category": "saved-input-table-export",
+      "status": "Requires saved PTES cycle/solver data",
+      "command": "<repository>/.venv/Scripts/python.exe create_thermodynamic_states_table.py",
+      "cwd": "case_studies/PTES_CO2/case_baseline",
+      "inputs": [
+        "Saved PTES solver pickle at the path declared by the script"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "One export after inputs exist",
+      "acceptance": "Rows/units agree with the saved evaluated states",
+      "bounded_profile": null
+    },
+    {
+      "path": "PTES_CO2/case_baseline/run_optimization.py",
+      "category": "small-demonstration",
+      "status": "Small-demo checkpoint verified; native backend variants have separate Phase 7 evidence",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "cwd": "case_studies/PTES_CO2/case_baseline",
+      "inputs": [
+        "../case_PTES_CO2.yaml"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "One/two complete solves; up to 600 seconds; no iteration-limit reduction",
+      "acceptance": "Native success, finite outputs, original feasibility/optimality gates; normal configured plots/reports/exports",
+      "bounded_profile": null
+    },
+    {
+      "path": "PTES_CO2/case_ideal/run_optimization.py",
+      "category": "small-demonstration",
+      "status": "Small-demo checkpoint verified; native backend variants have separate Phase 7 evidence",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "cwd": "case_studies/PTES_CO2/case_ideal",
+      "inputs": [
+        "../case_PTES_CO2.yaml"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "One/two complete solves; up to 600 seconds; no iteration-limit reduction",
+      "acceptance": "Native success, finite outputs, original feasibility/optimality gates; normal configured plots/reports/exports",
+      "bounded_profile": null
+    },
+    {
+      "path": "PTES_CO2/case_shaft_constraint/run_optimization.py",
+      "category": "small-demonstration",
+      "status": "Small-demo checkpoint verified; native backend variants have separate Phase 7 evidence",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "cwd": "case_studies/PTES_CO2/case_shaft_constraint",
+      "inputs": [
+        "../case_PTES_CO2_turbo.yaml"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "One/two complete solves; up to 600 seconds; no iteration-limit reduction",
+      "acceptance": "Native success, finite outputs, original feasibility/optimality gates; normal configured plots/reports/exports",
+      "bounded_profile": null
+    },
+    {
+      "path": "PTES_CO2/case_turbo_model/run_optimization.py",
+      "category": "small-demonstration",
+      "status": "Small-demo checkpoint verified; native backend variants have separate Phase 7 evidence",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "cwd": "case_studies/PTES_CO2/case_turbo_model",
+      "inputs": [
+        "../case_PTES_CO2_turbo.yaml",
+        "../case_PTES_CO2.yaml"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "One/two complete solves; up to 600 seconds; no iteration-limit reduction",
+      "acceptance": "Native success, finite outputs, original feasibility/optimality gates; normal configured plots/reports/exports",
+      "bounded_profile": null
+    },
+    {
+      "path": "PTES_CO2/sensitivity_max_temperature/run_optimization.py",
+      "category": "scientific-parameter-sweep",
+      "status": "Full sweep reviewed, not run as a small demo",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "cwd": "case_studies/PTES_CO2/sensitivity_max_temperature",
+      "inputs": [],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Manual full sweep; fresh results required",
+      "acceptance": "Every point retains native solver success/feasibility checks; failed research points remain explicit",
+      "bounded_profile": null
+    },
+    {
+      "path": "PTES_CO2/sensitivity_pinch_point/run_optimization.py",
+      "category": "scientific-parameter-sweep",
+      "status": "Full sweep reviewed, not run as a small demo",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "cwd": "case_studies/PTES_CO2/sensitivity_pinch_point",
+      "inputs": [],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Manual full sweep; fresh results required",
+      "acceptance": "Every point retains native solver success/feasibility checks; failed research points remain explicit",
+      "bounded_profile": null
+    },
+    {
+      "path": "PTES_CO2/sensitivity_pinch_point/run_pinch_vs_temperature.py",
+      "category": "scientific-parameter-sweep",
+      "status": "Full sweep reviewed, not run as a small demo",
+      "command": "<repository>/.venv/Scripts/python.exe run_pinch_vs_temperature.py",
+      "cwd": "case_studies/PTES_CO2/sensitivity_pinch_point",
+      "inputs": [],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Manual full sweep; fresh results required",
+      "acceptance": "Every point retains native solver success/feasibility checks; failed research points remain explicit",
+      "bounded_profile": null
+    },
+    {
+      "path": "PTES_CO2/sensitivity_system_scale/run_optimization.py",
+      "category": "scientific-parameter-sweep",
+      "status": "Bounded native workflow executed; complete 21-point study remains unexecuted",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "cwd": "case_studies/PTES_CO2/sensitivity_system_scale",
+      "inputs": [],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Manual full sweep; fresh results required",
+      "acceptance": "Every point retains native solver success/feasibility checks; failed research points remain explicit",
+      "bounded_profile": "THERMOPT_SMOKE=1: one complete 1 MW shared-shaft solve"
+    },
+    {
+      "path": "PTES_CO2/sensitivity_turbo_efficiency/run_optimization.py",
+      "category": "scientific-parameter-sweep",
+      "status": "Full sweep reviewed, not run as a small demo",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "cwd": "case_studies/PTES_CO2/sensitivity_turbo_efficiency",
+      "inputs": [],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Manual full sweep; fresh results required",
+      "acceptance": "Every point retains native solver success/feasibility checks; failed research points remain explicit",
+      "bounded_profile": null
+    },
+    {
+      "path": "PTES_CO2/thesis_results/plot_Ts_diagram.py",
+      "category": "historical-figure-preparation",
+      "status": "Historical material; not maintained as a standalone demo",
+      "command": "<repository>/.venv/Scripts/python.exe plot_Ts_diagram.py",
+      "cwd": "case_studies/PTES_CO2/thesis_results",
+      "inputs": [
+        "Recorded study YAML/Excel data and local figure assets/fonts"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Original historical locations; not executed or rewritten in this migration",
+      "execution_budget": "No automatic run",
+      "acceptance": "Historical outputs are retained, not relabeled as current-library results",
+      "bounded_profile": null
+    },
+    {
+      "path": "demo_hx_node_snap/run_demo.py",
+      "category": "numerical-mesh-study",
+      "status": "Ten declared solve/check combinations; full profile not executed in Phase 7",
+      "command": "<repository>/.venv/Scripts/python.exe run_demo.py",
+      "cwd": "case_studies/demo_hx_node_snap",
+      "inputs": [
+        "case.yaml; source CoolProp equilibrium/saturation capability required"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Manual scientific profile",
+      "acceptance": "All native solver gates and independent fine-grid pinch checks; does not use bicubic saturation inputs",
+      "bounded_profile": null
+    },
+    {
+      "path": "heat_pump_CO2/run_comparison.py",
+      "category": "small-demonstration",
+      "status": "Small-demo checkpoint verified; native backend variants have separate Phase 7 evidence",
+      "command": "<repository>/.venv/Scripts/python.exe run_comparison.py",
+      "cwd": "case_studies/heat_pump_CO2",
+      "inputs": [
+        "./case_sCO2_heat_pump_valve.yaml",
+        "./case_sCO2_heat_pump_turbine.yaml"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "One/two complete solves; up to 600 seconds; no iteration-limit reduction",
+      "acceptance": "Native success, finite outputs, original feasibility/optimality gates; normal configured plots/reports/exports",
+      "bounded_profile": null
+    },
+    {
+      "path": "heat_pump_CO2/run_optimization.py",
+      "category": "small-demonstration",
+      "status": "Small-demo checkpoint verified; native backend variants have separate Phase 7 evidence",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "cwd": "case_studies/heat_pump_CO2",
+      "inputs": [
+        "./case_sCO2_heat_pump_valve.yaml"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "One/two complete solves; up to 600 seconds; no iteration-limit reduction",
+      "acceptance": "Native success, finite outputs, original feasibility/optimality gates; normal configured plots/reports/exports",
+      "bounded_profile": null
+    },
+    {
+      "path": "rankine_organic/run_optimization.py",
+      "category": "small-demonstration",
+      "status": "Small-demo checkpoint verified; native backend variants have separate Phase 7 evidence",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "cwd": "case_studies/rankine_organic",
+      "inputs": [
+        "./case_butane_ORC.yaml"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "One/two complete solves; up to 600 seconds; no iteration-limit reduction",
+      "acceptance": "Native success, finite outputs, original feasibility/optimality gates; normal configured plots/reports/exports",
+      "bounded_profile": null
+    },
+    {
+      "path": "rankine_steam/run_optimization.py",
+      "category": "small-demonstration",
+      "status": "Small-demo checkpoint verified; native backend variants have separate Phase 7 evidence",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "cwd": "case_studies/rankine_steam",
+      "inputs": [
+        "./case_water.yaml"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "One/two complete solves; up to 600 seconds; no iteration-limit reduction",
+      "acceptance": "Native success, finite outputs, original feasibility/optimality gates; normal configured plots/reports/exports",
+      "bounded_profile": null
+    },
+    {
+      "path": "rankine_transcritical_vs_trilateral/build_report.py",
+      "category": "saved-results-analysis",
+      "status": "Requires accepted study outputs; not a standalone cycle demonstration",
+      "command": "<repository>/.venv/Scripts/python.exe build_report.py",
+      "cwd": "case_studies/rankine_transcritical_vs_trilateral",
+      "inputs": [
+        "Accepted sweep_results.csv, result.json and saved YAML produced with matching source/dependency signatures"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Bounded validation once inputs exist; no optimization implied",
+      "acceptance": "Saved input/provenance/physical values must match; missing or stale records are not silently accepted",
+      "bounded_profile": null
+    },
+    {
+      "path": "rankine_transcritical_vs_trilateral/check_results.py",
+      "category": "saved-results-analysis",
+      "status": "Requires accepted study outputs; not a standalone cycle demonstration",
+      "command": "<repository>/.venv/Scripts/python.exe check_results.py",
+      "cwd": "case_studies/rankine_transcritical_vs_trilateral",
+      "inputs": [
+        "Accepted sweep_results.csv, result.json and saved YAML produced with matching source/dependency signatures"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Bounded validation once inputs exist; no optimization implied",
+      "acceptance": "Saved input/provenance/physical values must match; missing or stale records are not silently accepted",
+      "bounded_profile": null
+    },
+    {
+      "path": "rankine_transcritical_vs_trilateral/fast_evaluator.py",
+      "category": "study-helper",
+      "status": "Isolated setup/native-evaluation/source/cache tests; not a script launcher",
+      "command": null,
+      "cwd": "case_studies/rankine_transcritical_vs_trilateral",
+      "inputs": [],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Bounded unit/integration profile",
+      "acceptance": "Independent owned models, source-aware cache invalidation, unchanged numerical equations and native reevaluation",
+      "bounded_profile": null
+    },
+    {
+      "path": "rankine_transcritical_vs_trilateral/plot_results.py",
+      "category": "saved-results-analysis",
+      "status": "Requires accepted study outputs; not a standalone cycle demonstration",
+      "command": "<repository>/.venv/Scripts/python.exe plot_results.py",
+      "cwd": "case_studies/rankine_transcritical_vs_trilateral",
+      "inputs": [
+        "Accepted sweep_results.csv, result.json and saved YAML produced with matching source/dependency signatures"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Bounded validation once inputs exist; no optimization implied",
+      "acceptance": "Saved input/provenance/physical values must match; missing or stale records are not silently accepted",
+      "bounded_profile": null
+    },
+    {
+      "path": "rankine_transcritical_vs_trilateral/run_sensitivity.py",
+      "category": "scientific-study-driver",
+      "status": "Full research sweep/restart pipeline not executed in Phase 7",
+      "command": "<repository>/.venv/Scripts/python.exe run_sensitivity.py",
+      "cwd": "case_studies/rankine_transcritical_vs_trilateral",
+      "inputs": [
+        "case_template.yaml",
+        "Optional versioned inputs/initializers provide initial guesses only"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Manual full study; potentially many hours",
+      "acceptance": "Declared physical/solver gates and native candidate verification; no stale result reuse",
+      "bounded_profile": null
+    },
+    {
+      "path": "rankine_wet2dry/scripts/build_html_report.py",
+      "category": "saved-results-analysis",
+      "status": "Requires accepted study outputs; not a standalone cycle demonstration",
+      "command": "<repository>/.venv/Scripts/python.exe build_html_report.py",
+      "cwd": "case_studies/rankine_wet2dry/scripts",
+      "inputs": [
+        "Accepted sweep_results.csv, result.json and saved YAML produced with matching source/dependency signatures"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Bounded validation once inputs exist; no optimization implied",
+      "acceptance": "Saved input/provenance/physical values must match; missing or stale records are not silently accepted",
+      "bounded_profile": null
+    },
+    {
+      "path": "rankine_wet2dry/scripts/build_report.py",
+      "category": "saved-results-analysis",
+      "status": "Requires accepted study outputs; not a standalone cycle demonstration",
+      "command": "<repository>/.venv/Scripts/python.exe build_report.py",
+      "cwd": "case_studies/rankine_wet2dry/scripts",
+      "inputs": [
+        "Accepted sweep_results.csv, result.json and saved YAML produced with matching source/dependency signatures"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Bounded validation once inputs exist; no optimization implied",
+      "acceptance": "Saved input/provenance/physical values must match; missing or stale records are not silently accepted",
+      "bounded_profile": null
+    },
+    {
+      "path": "rankine_wet2dry/scripts/compare_results.py",
+      "category": "saved-results-analysis",
+      "status": "Requires accepted study outputs; not a standalone cycle demonstration",
+      "command": "<repository>/.venv/Scripts/python.exe compare_results.py",
+      "cwd": "case_studies/rankine_wet2dry/scripts",
+      "inputs": [
+        "Accepted sweep_results.csv, result.json and saved YAML produced with matching source/dependency signatures"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Bounded validation once inputs exist; no optimization implied",
+      "acceptance": "Saved input/provenance/physical values must match; missing or stale records are not silently accepted",
+      "bounded_profile": null
+    },
+    {
+      "path": "rankine_wet2dry/scripts/pack_standalone_report.py",
+      "category": "saved-results-analysis",
+      "status": "Requires accepted study outputs; not a standalone cycle demonstration",
+      "command": "<repository>/.venv/Scripts/python.exe pack_standalone_report.py",
+      "cwd": "case_studies/rankine_wet2dry/scripts",
+      "inputs": [
+        "Accepted sweep_results.csv, result.json and saved YAML produced with matching source/dependency signatures",
+        "Previously built HTML/figure assets"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Bounded validation once inputs exist; no optimization implied",
+      "acceptance": "Saved input/provenance/physical values must match; missing or stale records are not silently accepted",
+      "bounded_profile": null
+    },
+    {
+      "path": "rankine_wet2dry/scripts/paths.py",
+      "category": "study-helper",
+      "status": "Isolated setup/native-evaluation/source/cache tests; not a script launcher",
+      "command": null,
+      "cwd": "case_studies/rankine_wet2dry/scripts",
+      "inputs": [],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Bounded unit/integration profile",
+      "acceptance": "Independent owned models, source-aware cache invalidation, unchanged numerical equations and native reevaluation",
+      "bounded_profile": null
+    },
+    {
+      "path": "rankine_wet2dry/scripts/refine_results.py",
+      "category": "scientific-study-driver",
+      "status": "Full research sweep/restart pipeline not executed in Phase 7",
+      "command": "<repository>/.venv/Scripts/python.exe refine_results.py",
+      "cwd": "case_studies/rankine_wet2dry/scripts",
+      "inputs": [
+        "case_template.yaml",
+        "Optional versioned inputs/initializers provide initial guesses only"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Manual full study; potentially many hours",
+      "acceptance": "Declared physical/solver gates and native candidate verification; no stale result reuse",
+      "bounded_profile": null
+    },
+    {
+      "path": "rankine_wet2dry/scripts/render_report_pdf.py",
+      "category": "saved-results-analysis",
+      "status": "Requires accepted study outputs; not a standalone cycle demonstration",
+      "command": "<repository>/.venv/Scripts/python.exe render_report_pdf.py",
+      "cwd": "case_studies/rankine_wet2dry/scripts",
+      "inputs": [
+        "Accepted sweep_results.csv, result.json and saved YAML produced with matching source/dependency signatures",
+        "Previously built HTML report and locally installed supported browser/PDF renderer"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Bounded validation once inputs exist; no optimization implied",
+      "acceptance": "Saved input/provenance/physical values must match; missing or stale records are not silently accepted",
+      "bounded_profile": null
+    },
+    {
+      "path": "rankine_wet2dry/scripts/run_all.py",
+      "category": "scientific-study-driver",
+      "status": "Full research sweep/restart pipeline not executed in Phase 7",
+      "command": "<repository>/.venv/Scripts/python.exe run_all.py",
+      "cwd": "case_studies/rankine_wet2dry/scripts",
+      "inputs": [
+        "case_template.yaml",
+        "Optional versioned inputs/initializers provide initial guesses only"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Manual full study; potentially many hours",
+      "acceptance": "Declared physical/solver gates and native candidate verification; no stale result reuse",
+      "bounded_profile": null
+    },
+    {
+      "path": "rankine_wet2dry/scripts/run_fluid_comparison.py",
+      "category": "saved-results-analysis",
+      "status": "Requires accepted study outputs; not a standalone cycle demonstration",
+      "command": "<repository>/.venv/Scripts/python.exe run_fluid_comparison.py",
+      "cwd": "case_studies/rankine_wet2dry/scripts",
+      "inputs": [
+        "Accepted sweep_results.csv, result.json and saved YAML produced with matching source/dependency signatures"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Bounded validation once inputs exist; no optimization implied",
+      "acceptance": "Saved input/provenance/physical values must match; missing or stale records are not silently accepted",
+      "bounded_profile": null
+    },
+    {
+      "path": "rankine_wet2dry/scripts/run_sensitivity_efficiency_and_exploitation.py",
+      "category": "scientific-study-driver",
+      "status": "Full research sweep/restart pipeline not executed in Phase 7",
+      "command": "<repository>/.venv/Scripts/python.exe run_sensitivity_efficiency_and_exploitation.py",
+      "cwd": "case_studies/rankine_wet2dry/scripts",
+      "inputs": [
+        "case_template.yaml",
+        "Optional versioned inputs/initializers provide initial guesses only"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Manual full study; potentially many hours",
+      "acceptance": "Declared physical/solver gates and native candidate verification; no stale result reuse",
+      "bounded_profile": null
+    },
+    {
+      "path": "rankine_wet2dry/scripts/study.py",
+      "category": "study-helper",
+      "status": "Isolated setup/native-evaluation/source/cache tests; not a script launcher",
+      "command": null,
+      "cwd": "case_studies/rankine_wet2dry/scripts",
+      "inputs": [],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Bounded unit/integration profile",
+      "acceptance": "Independent owned models, source-aware cache invalidation, unchanged numerical equations and native reevaluation",
+      "bounded_profile": null
+    },
+    {
+      "path": "rankine_wet2dry/scripts/validate_saved_results.py",
+      "category": "saved-results-analysis",
+      "status": "Requires accepted study outputs; not a standalone cycle demonstration",
+      "command": "<repository>/.venv/Scripts/python.exe validate_saved_results.py",
+      "cwd": "case_studies/rankine_wet2dry/scripts",
+      "inputs": [
+        "Accepted sweep_results.csv, result.json and saved YAML produced with matching source/dependency signatures"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Bounded validation once inputs exist; no optimization implied",
+      "acceptance": "Saved input/provenance/physical values must match; missing or stale records are not silently accepted",
+      "bounded_profile": null
+    },
+    {
+      "path": "refrigeration_R134a/run_optimization.py",
+      "category": "small-demonstration",
+      "status": "Small-demo checkpoint verified; native backend variants have separate Phase 7 evidence",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "cwd": "case_studies/refrigeration_R134a",
+      "inputs": [
+        "./case_R134a_refrigeration.yaml"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "One/two complete solves; up to 600 seconds; no iteration-limit reduction",
+      "acceptance": "Native success, finite outputs, original feasibility/optimality gates; normal configured plots/reports/exports",
+      "bounded_profile": null
+    },
+    {
+      "path": "refrigeration_air/run_optimization.py",
+      "category": "small-demonstration",
+      "status": "Small-demo checkpoint verified; native backend variants have separate Phase 7 evidence",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "cwd": "case_studies/refrigeration_air",
+      "inputs": [
+        "./case_air_refrigeration_recuperated.yaml"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "One/two complete solves; up to 600 seconds; no iteration-limit reduction",
+      "acceptance": "Native success, finite outputs, original feasibility/optimality gates; normal configured plots/reports/exports",
+      "bounded_profile": null
+    },
+    {
+      "path": "sCO2_comparison/run_optimization.py",
+      "category": "small-demonstration",
+      "status": "New single-case launcher; Phase 7 native bicubic full-solve profile, not part of the older 14-demo checkpoint",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "cwd": "case_studies/sCO2_comparison",
+      "inputs": [
+        "case_sCO2_simple.yaml"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "One/two complete solves; up to 600 seconds; no iteration-limit reduction",
+      "acceptance": "Native success, finite outputs, original feasibility/optimality gates; normal configured plots/reports/exports",
+      "bounded_profile": null
+    },
+    {
+      "path": "sCO2_comparison/sensitivity_pressure_ratio.py",
+      "category": "scientific-parameter-sweep",
+      "status": "Full sweep reviewed, not run as a small demo",
+      "command": "<repository>/.venv/Scripts/python.exe sensitivity_pressure_ratio.py",
+      "cwd": "case_studies/sCO2_comparison",
+      "inputs": [],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Manual full sweep; fresh results required",
+      "acceptance": "Every point retains native solver success/feasibility checks; failed research points remain explicit",
+      "bounded_profile": null
+    },
+    {
+      "path": "sCO2_recompression/compare_solvers.py",
+      "category": "solver-backend-benchmark",
+      "status": "Maintained explicit comparison; excluded from routine demo checking",
+      "command": "<repository>/.venv/Scripts/python.exe compare_solvers.py",
+      "cwd": "case_studies/sCO2_recompression",
+      "inputs": [],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Six declared solver/backend runs; manual",
+      "acceptance": "Declared solver gates and source cross-evaluation, with all timing flags retained",
+      "bounded_profile": null
+    },
+    {
+      "path": "sCO2_recompression/figure_preparation/plot_cycle.py",
+      "category": "historical-figure-preparation",
+      "status": "Historical material; not maintained as a standalone demo",
+      "command": "<repository>/.venv/Scripts/python.exe plot_cycle.py",
+      "cwd": "case_studies/sCO2_recompression/figure_preparation",
+      "inputs": [
+        "Recorded study YAML/Excel data and local figure assets/fonts"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Original historical locations; not executed or rewritten in this migration",
+      "execution_budget": "No automatic run",
+      "acceptance": "Historical outputs are retained, not relabeled as current-library results",
+      "bounded_profile": null
+    },
+    {
+      "path": "sCO2_recompression/figure_preparation/solver_comparison.py",
+      "category": "historical-figure-preparation",
+      "status": "Historical material; not maintained as a standalone demo",
+      "command": "<repository>/.venv/Scripts/python.exe solver_comparison.py",
+      "cwd": "case_studies/sCO2_recompression/figure_preparation",
+      "inputs": [
+        "Recorded study YAML/Excel data and local figure assets/fonts"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Original historical locations; not executed or rewritten in this migration",
+      "execution_budget": "No automatic run",
+      "acceptance": "Historical outputs are retained, not relabeled as current-library results",
+      "bounded_profile": null
+    },
+    {
+      "path": "sCO2_recompression/run_optimization.py",
+      "category": "small-demonstration",
+      "status": "Small-demo checkpoint verified; native backend variants have separate Phase 7 evidence",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "cwd": "case_studies/sCO2_recompression",
+      "inputs": [
+        "./case_sCO2_recompression.yaml"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "One/two complete solves; up to 600 seconds; no iteration-limit reduction",
+      "acceptance": "Native success, finite outputs, original feasibility/optimality gates; normal configured plots/reports/exports",
+      "bounded_profile": null
+    },
+    {
+      "path": "sCO2_recuperated/compare_slsqp.py",
+      "category": "solver-backend-benchmark",
+      "status": "Maintained explicit comparison; excluded from routine demo checking",
+      "command": "<repository>/.venv/Scripts/python.exe compare_slsqp.py",
+      "cwd": "case_studies/sCO2_recuperated",
+      "inputs": [],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Six declared solver/backend runs; manual",
+      "acceptance": "Declared solver gates and source cross-evaluation, with all timing flags retained",
+      "bounded_profile": null
+    },
+    {
+      "path": "sCO2_recuperated/run_optimization.py",
+      "category": "small-demonstration",
+      "status": "Small-demo checkpoint verified; native backend variants have separate Phase 7 evidence",
+      "command": "<repository>/.venv/Scripts/python.exe run_optimization.py",
+      "cwd": "case_studies/sCO2_recuperated",
+      "inputs": [
+        "case_sCO2_recuperated.yaml"
+      ],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "One/two complete solves; up to 600 seconds; no iteration-limit reduction",
+      "acceptance": "Native success, finite outputs, original feasibility/optimality gates; normal configured plots/reports/exports",
+      "bounded_profile": null
+    },
+    {
+      "path": "study_io.py",
+      "category": "study-helper",
+      "status": "Isolated setup/native-evaluation/source/cache tests; not a script launcher",
+      "command": null,
+      "cwd": "case_studies",
+      "inputs": [],
+      "model_policy": "Native JaxProp 0.6; phase-change Rankine/HX/PTES studies keep source EOS. Only the explicitly validated single-phase cases select bicubic.",
+      "outputs": "Fresh generated outputs under the case's results/; existing historical output/ records remain unchanged",
+      "execution_budget": "Bounded unit/integration profile",
+      "acceptance": "Independent owned models, source-aware cache invalidation, unchanged numerical equations and native reevaluation",
+      "bounded_profile": null
+    }
+  ],
+  "native_variants": {
+    "case_studies/sCO2_recuperated/case_sCO2_recuperated_bicubic.yaml": {
+      "source": "case_studies/sCO2_recuperated/case_sCO2_recuperated.yaml",
+      "method": "bicubic",
+      "grid": [
+        200,
+        200
+      ]
+    },
+    "case_studies/sCO2_comparison/case_sCO2_simple_bicubic.yaml": {
+      "source": "case_studies/sCO2_comparison/case_sCO2_simple.yaml",
+      "method": "bicubic",
+      "grid": [
+        200,
+        200
+      ]
+    },
+    "case_studies/refrigeration_air/case_air_refrigeration_recuperated_bicubic.yaml": {
+      "source": "case_studies/refrigeration_air/case_air_refrigeration_recuperated.yaml",
+      "method": "bicubic",
+      "grid": [
+        200,
+        200
+      ]
+    },
+    "case_studies/sCO2_recompression/case_sCO2_recompression_coolprop.yaml": {
+      "source": "case_studies/sCO2_recompression/case_sCO2_recompression.yaml",
+      "method": "coolprop"
+    }
+  }
+}

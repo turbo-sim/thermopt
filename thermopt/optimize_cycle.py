@@ -339,11 +339,17 @@ class ThermodynamicCycleOptimization:
         ----------
         format : str, optional
             Format of animation ("gif", "mp4", or "both"), default is "both".
-        duration : float, optional
-            Duration of each frame in GIF (default is 0.5 sec).
         fps : int, optional
-            Frames per second for MP4 (default is 10).
+            Positive frames per second for GIF and MP4 (default is 1).
         """
+        if format not in {"gif", "mp4", "both"}:
+            raise ValueError("format must be 'gif', 'mp4' or 'both'.")
+        try:
+            frame_rate = float(fps)
+        except (TypeError, ValueError) as error:
+            raise ValueError("fps must be a finite positive number.") from error
+        if not np.isfinite(frame_rate) or frame_rate <= 0:
+            raise ValueError("fps must be a finite positive number.")
         image_folder = os.path.join(self.out_dir, "optimization")
         gif_file = os.path.join(self.out_dir, "optimization_animation.gif")
         mp4_file = os.path.join(self.out_dir, "optimization_animation.mp4")
@@ -356,11 +362,11 @@ class ThermodynamicCycleOptimization:
 
         # Call the utility functions
         if format in ["gif", "both"]:
-            utils.create_gif(image_folder, gif_file, duration=len(image_files) / fps)
+            utils.create_gif(image_folder, gif_file, duration=1.0 / frame_rate)
             print(f"GIF saved at {gif_file}")
 
         if format in ["mp4", "both"]:
-            utils.create_mp4(image_folder, mp4_file, fps=1)
+            utils.create_mp4(image_folder, mp4_file, fps=frame_rate)
             print(f"MP4 saved at {mp4_file}")
 
     # ------------------------------------------------------------------------- #
@@ -512,6 +518,16 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
         # Create a directory to save simulation results
         if not os.path.exists(self.out_dir):
             os.makedirs(self.out_dir)
+
+    def __getstate__(self):
+        """Serialize evaluated state without a terminal input thread/lock.
+
+        Native models retain their own serialization behavior. The watcher is
+        process-local orchestration and must not enter saved worker/solver data.
+        """
+        state = self.__dict__.copy()
+        state.pop("input_thread", None)
+        return state
 
     def load_configuration_file(self, config_file):
         """
@@ -799,12 +815,46 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
             Path to the configuration file.
         update_interval : float, optional
             Time interval in seconds between plot updates (default is 0.1 seconds).
+        write_report : bool, optional
+            Write the current design/constraint report under ``out_dir`` after
+            each refresh. This inspection report does not claim KKT convergence.
 
         """
 
         def wait_for_input():
-            input()
-            self.enter_pressed = True
+            try:
+                input()
+            except EOFError:
+                # Redirected/closed stdin is an exit request, not a daemon-thread
+                # failure that leaves the polling loop running indefinitely.
+                pass
+            finally:
+                self.enter_pressed = True
+
+        def refresh():
+            self.load_configuration_file(configuration_file)
+            self.fitness(self.x0)
+            self.plot_cycle()
+            self.figure.suptitle(
+                "Iterative thermodynamic cycle configuration", fontsize=14, y=0.95
+            )
+            if write_report:
+                # A reporter is rebuilt only at this interactive output boundary
+                # so edited constraint dimensions apply. Preserve the manager's
+                # scaling; no second property evaluator or optimizer run is used.
+                reporter = psv.OptimizationSolver(
+                    self, problem_scale=getattr(self, "problem_scale", None),
+                    print_convergence=False,
+                )
+                reporter.print_optimization_report(
+                    self.x0, include_kkt_conditions=False, savefile=True,
+                    filename="initial_guess_report.txt", output_dir=self.out_dir,
+                    to_console=False,
+                )
+
+        # Always leave a usable figure, including an immediate Enter/EOF. This
+        # prevents launchers from trying to export a nonexistent initial plot.
+        refresh()
 
         # Initialize secondary thread to wait for user input
         self.enter_pressed = False
@@ -825,22 +875,6 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
 
         # Update the plot until termination signal
         while not self.enter_pressed:
-            # Read the configuration file
-            self.load_configuration_file(configuration_file)
-            self.fitness(self.x0)
-            self.plot_cycle()
-            self.figure.suptitle(
-                f"Iterative thermodynamic cycle configuration", fontsize=14, y=0.95
-            )
-
-            # Write optimization report to file
-            # if write_report:
-            #     report = self.make_optimization_report(self.x0)
-            #     filename="initial_guess_report.txt"
-            #     fullfile = os.path.join(self.out_dir, filename)
-            #     with open(fullfile, "w") as f:
-            #         f.write(report)
-
             # Wait for the specified interval before updating again
             time.sleep(update_interval)
 
@@ -850,8 +884,10 @@ class ThermodynamicCycleProblem(psv.OptimizationProblem):
 
             # Exit interactive plotting when the user presses enter
             if self.enter_pressed:
-                plt.close(self.figure)
                 break
+            refresh()
+        if self.enter_pressed:
+            plt.close(self.figure)
 
     def _plot_thermodynamic_diagram(self, ax, cycle_data, plot_config, ax_index=0):
         """

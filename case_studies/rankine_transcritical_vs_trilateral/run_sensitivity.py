@@ -5,15 +5,13 @@ Independent fluid/expander-efficiency sweeps may run in separate processes; each
 sweep uses continuation and at most two restarts per point. Checkpoints are reused.
 """
 
-from thermopt.utilities.fluid_utils import get_property_fluid
-
 from concurrent.futures import ProcessPoolExecutor
 from contextlib import redirect_stdout
 from copy import deepcopy
-from functools import lru_cache
 import hashlib
 import io
 import json
+import os
 from pathlib import Path
 import sys
 import time
@@ -31,6 +29,7 @@ import yaml
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parents[1]))
 import thermopt as th
+from case_studies.study_io import read_formulation, calculation_identity
 
 EXPLOITATION_PCT = tuple(range(0, 101, 5))
 PUMP_EFFICIENCIES = tuple(round(x / 100, 2) for x in range(20, 101, 10))
@@ -41,19 +40,20 @@ MAX_ATTEMPTS = 3  # Primary start, independent start, conditional recovery.
 RESTART_GAIN_THRESHOLD = 0.002  # Third start if the first two differ by >0.2%.
 PATH_POINTS = 17
 FEASIBILITY_TOLERANCE = 1e-5
-RESULTS = HERE / "results"
+RESULTS = Path(os.getenv("THERMOPT_RESULTS_DIR", HERE / "results"))
 FLUIDS = {"propane": "Propane", "butane": "n-Butane"}
 
 
-@lru_cache(maxsize=None)
 def fluid(name):
-    return props.Fluid(name=FLUIDS[name], backend="HEOS")
+    """Construct a native source model for one setup/report operation."""
+    return props.Fluid(name=FLUIDS[name], method="coolprop", backend="HEOS")
 
 
-@lru_cache(maxsize=1)
-def reference_heat():
-    return float(get_property_fluid('Water').get_state(props.PT_INPUTS, 1000000.0, 413.15).h
-                 - get_property_fluid('Water').get_state(props.PT_INPUTS, 1000000.0, 293.15).h)
+def reference_heat(water=None):
+    """Evaluate this report's reference with an explicitly owned water model."""
+    water = props.Fluid("Water", method="coolprop", backend="HEOS") if water is None else water
+    return float(water.get_state(props.PT_INPUTS, 1000000.0, 413.15).h
+                 - water.get_state(props.PT_INPUTS, 1000000.0, 293.15).h)
 
 
 def expansion_path(problem, count=PATH_POINTS, subcritical_only=False):
@@ -67,11 +67,12 @@ def expansion_path(problem, count=PATH_POINTS, subcritical_only=False):
     expander = problem.cycle_data["components"]["expander"]
     inlet, outlet = expander["state_in"], expander["state_out"]
     name = problem.fixed_parameters["working_fluid"]["name"]
+    wf = problem.fluids["working_fluid"]
     upper = float(inlet.p)
     if subcritical_only:
-        upper = min(upper, 0.999999 * float(get_property_fluid(name).critical_point.p))
+        upper = min(upper, 0.999999 * float(wf.critical_point.p))
     pressure = np.geomspace(upper, float(outlet.p), count)
-    ideal_h = get_property_fluid(name).get_state(props.PSmass_INPUTS, pressure, float(inlet.s)).h
+    ideal_h = wf.get_state(props.PSmass_INPUTS, pressure, float(inlet.s)).h
     enthalpy = float(inlet.h) - expander["efficiency"] * (float(inlet.h) - ideal_h)
     return pressure, enthalpy
 
@@ -85,7 +86,7 @@ class ComparisonProblem(th.ThermodynamicCycleProblem):
         # returned state; retain its diagnostics and immutable state objects.
         if self.fixed_parameters["working_fluid"]["name"] == FLUIDS["propane"]:
             pressure, enthalpy = expansion_path(self, subcritical_only=True)
-            vapor_h = get_property_fluid(FLUIDS['propane']).get_state(props.PQ_INPUTS, pressure, 1).h
+            vapor_h = self.fluids["working_fluid"].get_state(props.PQ_INPUTS, pressure, 1).h
             self.path_vapor_margin = enthalpy - vapor_h
             self.c_ineq = np.r_[self.c_ineq, -self.path_vapor_margin / 1e5]
             result = psv.combine_objective_and_constraints(self.f, self.c_eq, self.c_ineq)
@@ -128,7 +129,7 @@ def configuration(family, exploitation, pump, turbine, seed_kind="high", variabl
     design["compressor_inlet_pressure"] = dict(min=float(cold.p), max=float(warm.p), value=float(pump_in.p))
     design["compressor_inlet_enthalpy"] = dict(min=float(cold.h)-20000, max=float(warm.h), value=float(pump_in.h))
     design["expander_inlet_pressure"] = dict(min=1.02*float(cold.p), max=3*critical_p, value=None)
-    dilute_h = get_property_fluid(FLUIDS[family]).get_state(props.PT_INPUTS, 101325, 413.15).h
+    dilute_h = wf.get_state(props.PT_INPUTS, 101325, 413.15).h
     design["expander_inlet_enthalpy"] = dict(min=float(cold.h), max=float(dilute_h)+50000, value=None)
     if family == "propane":
         p_high = (1.5 if seed_kind == "high" else 0.72) * critical_p
@@ -150,25 +151,27 @@ def violation(problem):
     return float(max(np.max(np.abs(problem.c_eq), initial=0), np.max(problem.c_ineq, initial=0)))
 
 
-def phase(state, family):
+def phase(state, family, wf=None):
     """Use actual saturation enthalpies; generalized Q is ambiguous above pcrit."""
+    wf = fluid(family) if wf is None else wf
     p, h = float(state.p), float(state.h)
-    if p >= float(fluid(family).critical_point.p):
+    if p >= float(wf.critical_point.p):
         return "supercritical_pressure", np.nan
-    liquid, vapor = get_property_fluid(FLUIDS[family]).get_state(props.PQ_INPUTS, p, [0, 1]).h
+    liquid, vapor = wf.get_state(props.PQ_INPUTS, p, [0, 1]).h
     q = (h-liquid)/(vapor-liquid)
     return ("liquid" if q < -1e-7 else "vapor" if q >= 1-1e-7 else "two_phase"), float(q)
 
 
-def inlet_superheat(pressure, enthalpy, temperature_C, family):
+def inlet_superheat(pressure, enthalpy, temperature_C, family, wf=None):
     """True saturation departure; no saturation superheat above critical pressure."""
-    if pressure >= float(fluid(family).critical_point.p):
+    wf = fluid(family) if wf is None else wf
+    if pressure >= float(wf.critical_point.p):
         return np.nan
     name = FLUIDS[family]
-    vapor_h = get_property_fluid(name).get_state(props.PQ_INPUTS, pressure, 1).h
+    vapor_h = wf.get_state(props.PQ_INPUTS, pressure, 1).h
     if enthalpy < vapor_h:
-        return float((enthalpy-vapor_h)/get_property_fluid(name).get_state(props.PQ_INPUTS, pressure, 1).cp)
-    return float(temperature_C+273.15-get_property_fluid(name).get_state(props.PQ_INPUTS, pressure, 1).T)
+        return float((enthalpy-vapor_h)/wf.get_state(props.PQ_INPUTS, pressure, 1).cp)
+    return float(temperature_C+273.15-wf.get_state(props.PQ_INPUTS, pressure, 1).T)
 
 
 def measurements(cycle, family):
@@ -177,30 +180,31 @@ def measurements(cycle, family):
     problem = ComparisonProblem(deepcopy(cycle.problem.configuration), out_dir=cycle.out_dir)
     cycle.problem = problem
     problem.fitness(solver.x_final)
+    wf = problem.fluids["working_fluid"]
     energy, components = problem.cycle_data["energy_analysis"], problem.cycle_data["components"]
     expander = components["expander"]
-    inlet_phase, inlet_q = phase(expander["state_in"], family)
-    outlet_phase, outlet_q = phase(expander["state_out"], family)
+    inlet_phase, inlet_q = phase(expander["state_in"], family, wf)
+    outlet_phase, outlet_q = phase(expander["state_out"], family, wf)
     valid = all(np.isfinite(energy[k]) and energy[k] > 0 for k in (
         "mass_flow_working_fluid", "mass_flow_heating_fluid", "mass_flow_cooling_fluid",
         "heater_heat_flow", "cooler_heat_flow", "net_system_power"))
     dense_margin = np.nan
     if family == "propane":
         p, h = expansion_path(problem, count=201, subcritical_only=True)
-        dense_margin = float(np.min(h - get_property_fluid(FLUIDS[family]).get_state(props.PQ_INPUTS, p, 1).h))
+        dense_margin = float(np.min(h - wf.get_state(props.PQ_INPUTS, p, 1).h))
         valid = valid and dense_margin >= -1.0
     constraint_violation = violation(problem)
     valid = valid and abs(float(energy["energy_balance"])) < 0.1
     high_p = float(expander["state_in"].p)
     low_p = float(expander["state_out"].p)
-    pc = float(fluid(family).critical_point.p)
+    pc = float(wf.critical_point.p)
     regime = "transcritical" if low_p < pc < high_p else "subcritical" if high_p < pc else "other"
     return dict(
         success=bool(solver.success and constraint_violation <= FEASIBILITY_TOLERANCE and valid),
         solver_success=bool(solver.success), physical_cycle_valid=bool(valid),
         solver_message=str(solver.message), max_constraint_violation=constraint_violation,
         system_efficiency_pct=100*float(energy["system_efficiency"]),
-        fixed_reference_efficiency_pct=100*float(energy["net_system_power"])/float(energy["mass_flow_heating_fluid"])/reference_heat(),
+        fixed_reference_efficiency_pct=100*float(energy["net_system_power"])/float(energy["mass_flow_heating_fluid"])/reference_heat(cycle.problem.fluids["heating_fluid"]),
         cycle_efficiency_pct=100*float(energy["cycle_efficiency"]),
         specific_system_power_kW_per_kg_s=float(energy["net_system_power"])/float(energy["mass_flow_heating_fluid"])/1000,
         source_exit_C=float(components["heater"]["hot_side"]["state_out"].T)-273.15,
@@ -208,7 +212,7 @@ def measurements(cycle, family):
         source_mass_flow_kg_s=float(energy["mass_flow_heating_fluid"]),
         high_pressure_bar=high_p/1e5, low_pressure_bar=low_p/1e5,
         pressure_ratio=high_p/low_p, critical_pressure_bar=pc/1e5,
-        critical_temperature_C=float(fluid(family).critical_point.T)-273.15,
+        critical_temperature_C=float(wf.critical_point.T)-273.15,
         pressure_regime=regime, backwork_ratio_pct=100*float(energy["backwork_ratio"]),
         expander_power_MW=float(energy["expander_power"])/1e6,
         working_fluid_pump_power_MW=float(energy["compressor_power"])/1e6,
@@ -218,7 +222,7 @@ def measurements(cycle, family):
         inlet_quality=inlet_q, outlet_quality=outlet_q,
         inlet_temperature_C=float(expander["state_in"].T)-273.15,
         inlet_superheat_K=inlet_superheat(high_p, float(expander["state_in"].h),
-                                         float(expander["state_in"].T)-273.15, family),
+                                         float(expander["state_in"].T)-273.15, family, wf),
         outlet_superheat_K=float(expander["state_out"].superheating),
         dense_path_vapor_margin_J_kg=dense_margin,
         energy_balance_W=float(energy["energy_balance"]),
@@ -227,12 +231,13 @@ def measurements(cycle, family):
 
 
 def signature(config):
-    schema = deepcopy(config)
+    schema = th.convert_numpy_to_python(deepcopy(config), precision=None)
     for variable in schema["problem_formulation"]["design_variables"].values():
         variable.pop("value", None)
     return hashlib.sha256(json.dumps(dict(config=schema, path_points=PATH_POINTS,
         max_attempts=MAX_ATTEMPTS, restart_threshold=RESTART_GAIN_THRESHOLD,
-        model_version=2), sort_keys=True).encode()).hexdigest()
+        feasibility_tolerance=FEASIBILITY_TOLERANCE,
+        model_version=3, provenance=calculation_identity(config, [Path(__file__), HERE / "fast_evaluator.py", HERE / "case_template.yaml", HERE.parent / "study_io.py"])), sort_keys=True).encode()).hexdigest()
 
 
 def write_table(table, path):
@@ -296,7 +301,11 @@ def solve_point(family, exploitation, pump, turbine, warm=None):
                 cycle.problem.save_current_configuration(str(attempt_dir / "last_solution.yaml"))
                 candidates.append(dict(row=attempt.copy(), variables=variables,
                                        config=deepcopy(cycle.problem.configuration)))
-        except (ValueError, RuntimeError, FloatingPointError, OverflowError, np.linalg.LinAlgError) as error:
+        except (props.InvalidConfigurationError, props.UnsupportedRequestError):
+            # These ValueError subclasses describe the study setup, not an
+            # optimizer trial that a different initial guess can repair.
+            raise
+        except (psv.DomainError, ValueError, RuntimeError, FloatingPointError, OverflowError, np.linalg.LinAlgError) as error:
             attempt.update(solver_message=str(error), status="exception")
             (attempt_dir / "error.txt").write_text(traceback.format_exc(), encoding="utf-8")
         attempt["wall_seconds"] = time.perf_counter()-started

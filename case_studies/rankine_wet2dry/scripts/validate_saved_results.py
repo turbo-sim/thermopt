@@ -50,7 +50,7 @@ def recorded_kkt(path):
 
 def evaluate(family, directory, row, saved):
     path = directory / row["case"] / "optimal_solution.yaml"
-    config = th.read_configuration_file(path)
+    config = run.read_formulation(path)
     expected = run.configuration(family, row["mode"], int(row["source_min_C"]),
                                  row["turbine_efficiency"], seed="generic")
     assert saved["signature"] == run.signature(expected), row["case"]
@@ -65,7 +65,7 @@ def evaluate(family, directory, row, saved):
     native_input = th.read_configuration_file(case_file)
     assert physics(native_input["problem_formulation"]) == physics(config)
     assert native_input["solver_options"] == expected["solver_options"]
-    initial = th.read_configuration_file(case_file.parent / "initial_guess.yaml")
+    initial = run.read_formulation(case_file.parent / "initial_guess.yaml")
     assert physics(initial) == physics(config)
     for name, variable in initial["design_variables"].items():
         value = native_input["problem_formulation"]["design_variables"][name]["value"]

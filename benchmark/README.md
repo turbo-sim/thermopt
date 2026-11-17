@@ -52,9 +52,15 @@ It compares the normalized-input exception boundary with its inherited
 PySolverView route on the same configured native model. It is not a new release
 benchmark or a substitute for the full phase/release profiles below.
 
-ThermOpt stays eager NumPy/SciPy. Current workload code is reused from
-`development/bicubic/validate_060.py`; consolidating shared implementations here
-is a later checklist item, not a second copy of the thermodynamic equations.
+ThermOpt stays eager NumPy/SciPy. The maintained workload implementation is
+`benchmark/native_backends.py`. The historical development command delegates
+to it; dated reports retain their original source identities. Current solver
+comparisons live in `recompression_solvers.py` and `recuperated_slsqp.py`, with
+thin case-local launchers preserving their documented commands.
+
+The [Phase 7/8 assessment](PHASE7_8.md) records study-owned models, five additional
+complete case runs, local Python 3.11/3.13 verification and installed-wheel QA.
+Hosted CI and older absolute timing gates remain explicitly open.
 
 Use the environment containing the released JaxProp 0.6 package, with no
 checkout or `PYTHONPATH` substitution:
@@ -185,9 +191,10 @@ python benchmark/run.py --profile phase --baseline benchmark/results/ACCEPTED_RU
 ```
 
 The runner rejects incompatible protocols, effective physical/solver inputs or
-environments. Main-runner protocol 2 sets `PYTHONHASHSEED=0` for each workload
-subprocess and records it in the schema, environment and comparison identity.
-Protocol-1 checkpoints are incompatible; retain them as historical evidence.
+environments. Main-runner protocol 3 retains protocol 2's `PYTHONHASHSEED=0` for
+each workload subprocess and adds the consolidated native workload source.
+It removes the obsolete `exceptions` normalization. Protocol-1/2 checkpoints
+are incompatible; retain them as historical evidence.
 Both source versions must use the same harness when capturing a new matched
 baseline. This improves reproducibility without proving that hash randomization
 caused any prior timing flag.
@@ -209,12 +216,11 @@ The runner excludes the table storage directory from the physical input
 signature; source and cache identities are otherwise validated by JaxProp.
 Numerical source hashes may change between phases and are always recorded.
 
-For the Phase 2 comparison, the unchanged historical workload builder removes
-the old `exceptions` field when constructing its comparison inputs. This keeps
-the pre/post scientific workload identical; it is not the production
-configuration path. ThermOpt's actual constructor rejects that field. Removing
-this obsolete benchmark normalization is part of Phase 7's harness consolidation
-and requires an explicitly checked new protocol/checkpoint.
+The Phase 2 records used a historical workload builder that removed the old
+`exceptions` field. That normalization is absent from the current builder and
+ThermOpt rejects the obsolete field. The Phase 7/8 release run establishes a
+protocol-3 baseline candidate; it does not establish a speedup against an
+incompatible protocol-2 artifact, solver or dependency environment.
 
 The provisional warm budget is 1.10 times the preceding accepted median for
 each matching model/workload. Exit code 2 means timing flags require assessment,
@@ -229,3 +235,23 @@ Ordinary correctness tests contain no timing assertions. Hosted shared-runner
 CI timing is advisory; controlled scheduled/manual runs carry performance
 acceptance. The initial smoke checkpoint validates the infrastructure and the
 published installation, not full phase/release performance acceptance.
+
+## Study-model ownership and CI
+
+For a matched full-evaluation comparison of the Rankine study evaluator, prepare
+an independent reference checkout containing the study and ThermOpt sources:
+
+```powershell
+python benchmark/study_models.py --reference-root PATH_TO_REFERENCE_TREE --samples 60 --output benchmark/results/study_models_run
+```
+
+Four fresh processes run reference/current/current/reference. Every complete
+residual vector must agree before medians are compared. Raw samples, source
+identities, dependency versions, setup costs and the 1.10 flag are retained.
+This measures the actual study `fitness`, including native full-state calls;
+it is separate from the general cycle release profile.
+
+Ordinary CI runs the locked tests and a bounded numerical smoke profile on
+Windows/Ubuntu and Python 3.11/3.13. The manual benchmark workflow records the
+selected profile and uploads artifacts. Shared-runner stopwatch observations
+do not replace matched controlled cohorts or automatically close timing flags.
