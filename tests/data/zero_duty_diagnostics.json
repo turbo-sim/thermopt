@@ -1,0 +1,40 @@
+{
+  "reason": "These recuperators are explicitly bypassed (zero effectiveness or refrigeration_simple). Both working-fluid streams have the same assigned mass flow. Dividing EOS roundoff in near-zero heat duties produced platform-dependent diagnostic ratios. Preserve original physical fixtures and correct only this derived reporting field to the existing bypass convention.",
+  "changes": [
+    {
+      "case": "orc_transcritical",
+      "point": "initial",
+      "component": "recuperator",
+      "previous": 2.0,
+      "expected": 1.0
+    },
+    {
+      "case": "heat_pump_co2_valve",
+      "point": "initial",
+      "component": "recuperator",
+      "previous": 0.125,
+      "expected": 1.0
+    },
+    {
+      "case": "heat_pump_co2_valve",
+      "point": "nearby",
+      "component": "recuperator",
+      "previous": -0.6666666666666666,
+      "expected": 1.0
+    },
+    {
+      "case": "heat_pump_co2_turbine",
+      "point": "initial",
+      "component": "recuperator",
+      "previous": 0.125,
+      "expected": 1.0
+    },
+    {
+      "case": "heat_pump_co2_turbine",
+      "point": "nearby",
+      "component": "recuperator",
+      "previous": -0.6666666666666666,
+      "expected": 1.0
+    }
+  ]
+}

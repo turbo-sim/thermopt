@@ -170,7 +170,7 @@ def heat_exchanger(
         - 'temperature_hot_side': ndarray, temperatures [K] for the hot side (ordered by increasing T)
         - 'temperature_cold_side': ndarray, temperatures [K] for the cold side
         - 'temperature_difference': ndarray, element-wise temperature difference [K]
-        - 'mass_flow_ratio': float, ratio of cold-side to hot-side mass flow required for heat balance
+        - 'mass_flow_ratio': float, ratio of hot-side to cold-side mass flow required for heat balance
     """
 
     if include_saturation_nodes:

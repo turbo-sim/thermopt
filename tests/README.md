@@ -42,9 +42,13 @@ separately in `initialization_060.json`. Corrected generalized-quality reporting
 outside the two-phase region and two initial R134a superheating-constraint
 residuals are kept in `source_annotations_060.json`. Those 38 values were
 independently checked through fresh JaxProp source calls and saturation endpoint
-formulas before acceptance. `read_baselines()` applies only these explicit
-versioned reporting corrections; it does not relax physical comparisons or
-regenerate references while testing.
+formulas before acceptance. A separate `zero_duty_diagnostics.json` records five
+mass-flow-ratio corrections for explicitly bypassed recuperators. Both streams
+have the same independently assigned cycle mass flow; the former ratios came
+from dividing EOS roundoff in zero heat duties and varied between Windows and
+Linux. The original state/energy/reference fixtures remain unchanged.
+`read_baselines()` applies these explicit reporting corrections without relaxing
+physical comparisons or regenerating references while testing.
 
 Tests use the new keyword backend spelling, explicit mask policies in already
 existing JAX-transformation tests, and public state serialization for mocked

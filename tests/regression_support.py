@@ -117,6 +117,13 @@ def read_baselines():
         else:
             assert change["kind"] == "diagnostic_constraint"
             target["residuals"][change["index"]] = change["expected_060"]
+    # Keep the captured fixtures unchanged while documenting the independently
+    # established equal-flow convention for explicitly bypassed recuperators.
+    diagnostics = json.loads((DATA / "zero_duty_diagnostics.json").read_text(encoding="utf-8"))
+    for change in diagnostics["changes"]:
+        component = records["cases"][change["case"]][change["point"]]["components"][change["component"]]
+        assert component["mass_flow_ratio"] == change["previous"]
+        component["mass_flow_ratio"] = change["expected"]
     return records
 
 

@@ -497,6 +497,16 @@ remain open.
   event policy. This does not create a tag or publish a release.
 - [ ] Execute that hosted four-environment matrix after an authorized push.
   Local Windows tests do not establish hosted Ubuntu or actual Linux behavior.
+  The first real hosted run on verification branch
+  `verification/jaxprop-060-phase8-20261117` passes both Windows jobs and exposes
+  five Linux zero-duty recuperator diagnostic failures. Preserve that run at
+  https://github.com/turbo-sim/thermopt/actions/runs/44138232729; verify the repair
+  with a new complete matrix rather than relabeling the first attempt as passed.
+- [x] Repair the Linux-exposed zero-duty diagnostic from explicit cycle semantics:
+  equal-flow bypass ratios are 1.0 when power-cycle effectiveness is exactly zero
+  or refrigeration recuperation is disabled. Preserve active/generic exchanger
+  calculations and all original physical reference files; record five derived
+  reporting corrections separately. Cover genuine small nonzero heat transfer.
 - [x] Keep timing gates in manual jobs, with artifacts and
   repeated flags; do not fail ordinary shared-host CI on one noisy stopwatch.
   The manual workflow records selectable smoke/phase/release profiles and retains
@@ -540,11 +550,10 @@ remain open.
   coverage, over any checks in thermodynamic calculations.
   A concrete [upstream repro](benchmark/JAXPROP_STATIC_OPTIONS.md) is prepared
   locally; external submission and the upstream fix remain pending.
-- [ ] Manually observe visible GUI/window behavior. Headless live-control and
-  real animation encoding tests are complete; no manual display coverage claimed.
-  The Tk/bicubic attempt opened a native window, but Computer Use app access timed
-  out and recovery found no target. Its harness ended before the planned edit;
-  visible/reload acceptance remains unverified, not a thermodynamic regression.
+- [x] Record the user's scope decision to ignore GUI aspects in this phase.
+  Retain prior GUI attempt logs without claiming a completed shutdown check.
+  No further GUI repair or interaction is required for this requested work;
+  existing headless plot/report/media tests remain regression coverage.
 - [x] Preserve retired adapter byte hashes under Windows checkout conversion.
   Reproduce three `core.autocrlf=true` hash mismatches, add scoped `*.py -text`
   attributes, and verify all original hashes after filtering without changing

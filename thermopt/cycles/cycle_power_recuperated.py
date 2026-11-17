@@ -120,6 +120,11 @@ def evaluate_cycle(
         num_steps=num_elements,
         include_saturation_nodes=parameters.get("recuperator", {}).pop("include_saturation_nodes", False),
     )
+    if eps == 0.0:
+        # Bypassed recuperator streams carry the same closed-loop mass flow.
+        # Zero heat transfer cannot determine that ratio from reflashed
+        # enthalpies: dividing their roundoff produces platform-dependent values.
+        recuperator["mass_flow_ratio"] = 1.0
 
     # Evaluate heater
     h_in_cold = recuperator["cold_side"]["state_out"].enthalpy

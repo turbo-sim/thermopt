@@ -108,6 +108,11 @@ def evaluate_cycle(
         counter_current=True,
         num_steps=num_elements,
     )
+    if not recuperated:
+        # A disabled recuperator is a bypass with equal working-fluid flows.
+        # Its ratio is known from the topology, not two near-zero heat duties
+        # whose reflashed endpoint roundoff can differ across platforms.
+        recuperator["mass_flow_ratio"] = 1.0
 
     # Evaluate heater
     h_in_cold = expander["state_out"].enthalpy
