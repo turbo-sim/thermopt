@@ -259,3 +259,16 @@ Ordinary CI runs the locked tests and a bounded numerical smoke profile on
 Windows/Ubuntu and Python 3.11/3.13. The manual benchmark workflow records the
 selected profile and uploads artifacts. Shared-runner stopwatch observations
 do not replace matched controlled cohorts or automatically close timing flags.
+
+To check actual worker affinity and inheritance without changing the calling
+process's CPU mask or importing numerical libraries:
+
+```powershell
+python benchmark/verify_affinity.py --require-supported --output benchmark/results/affinity_check.json
+```
+
+A disposable child selects one allowed CPU and launches a grandchild. Their
+kernel masks must agree, and the parent must retain its original mask. CI retains
+this receipt alongside numerical results on both supported platforms. Use a new
+output filename for each run. Unsupported platforms are reported explicitly;
+`--require-supported` makes missing OS support a failed verification.

@@ -491,6 +491,10 @@ remain open.
   exercised when available and explicitly skipped in the clean environment.
 - [x] Prepare the locked Windows/Ubuntu x Python 3.11/3.13 CI matrix, full tests,
   bounded native smoke and retained artifacts. Static workflow policy tests pass.
+- [x] Restrict the existing PyPI publication workflow to version-tag pushes.
+  It previously also attempted publication for pull requests. Use the verified
+  Poetry 2.2.1 lock tooling in that workflow, with regression coverage for the
+  event policy. This does not create a tag or publish a release.
 - [ ] Execute that hosted four-environment matrix after an authorized push.
   Local Windows tests do not establish hosted Ubuntu or actual Linux behavior.
 - [x] Keep timing gates in manual jobs, with artifacts and
@@ -500,6 +504,9 @@ remain open.
   between-phase acceptance; no unrelated shared-runner baseline is imposed.
 - [x] Unit-test Linux and unsupported-platform affinity branches without changing
   global platform identity. Windows observation/control is exercised locally.
+- [x] Add a real subprocess/grandchild affinity verifier and include its receipt
+  in the CI matrix artifacts. Local Windows integration and workflow/protocol
+  checks pass (26 tests); actual hosted Linux execution remains pending below.
 - [ ] Exercise optional affinity observation/control on Linux and unsupported
   platforms, including inherited worker masks. Phase 2 verifies Windows on a
   single processor group; do not infer multi-group or cross-platform coverage.

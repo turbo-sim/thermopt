@@ -53,6 +53,9 @@ jobs:
       - name: Run complete test suite
         run: poetry run python -m pytest --junitxml=benchmark/results/ci_tests.xml
 
+      - name: Verify real worker affinity and inheritance
+        run: poetry run python benchmark/verify_affinity.py --require-supported --output benchmark/results/ci_affinity.json
+
       - name: Run bounded native bicubic smoke profile
         # Numerical correctness is gated here. Shared-runner timings are recorded
         # but are not compared to an unrelated host/checkpoint as a pass criterion.
@@ -65,5 +68,6 @@ jobs:
           name: verification-${{ matrix.os }}-py${{ matrix.python-version }}
           path: |
             benchmark/results/ci_tests.xml
+            benchmark/results/ci_affinity.json
             benchmark/results/ci_smoke
           retention-days: 14
